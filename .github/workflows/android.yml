@@ -107,6 +107,25 @@ jobs:
           print("APK looks well formed")
           PY
 
+      - name: Verify APK (signature + manifest + contents)
+        run: |
+          set -euo pipefail
+          APK=build/android/micro_world_living.apk
+          BT=$(ls -d "$ANDROID_SDK_ROOT"/build-tools/*/ | sort -V | tail -1)
+          echo "build-tools: $BT"
+          {
+            echo "=== apksigner verify ==="
+            "$BT/apksigner" verify --verbose --print-certs "$APK" || true
+            echo ""
+            echo "=== aapt2 dump badging (manifest) ==="
+            "$BT/aapt2" dump badging "$APK" | head -20 || true
+            echo ""
+            echo "=== native libs + key entries ==="
+            unzip -l "$APK" | awk '{print $4}' | grep -E "^(lib/|assets/|AndroidManifest|classes|META-INF|res/)" | head -30 || true
+          } | tee APK_VERIFY.txt
+          echo "--- fail if unsigned ---"
+          "$BT/apksigner" verify "$APK"
+
       - name: Prepare release notes
         run: |
           set -euo pipefail
@@ -142,6 +161,12 @@ jobs:
             echo "**ما هو غير مُتحقَّق:** لم يُشغَّل هذا الملف على هاتف حقيقي بعد (لا جهاز في بيئة البناء)."
             echo "الأداء (FPS / draw calls) غير مقيس. عند التجربة افتح طبقة الأداء بـ F3،"
             echo "وسيُكتب \`user://perf_log.txt\` كل 5 ثوانٍ — أرسله لنعبّئ تقرير الأداء."
+            echo ""
+            echo "## تحقق آلي من الـ APK (من داخل CI)"
+            echo ""
+            echo "\`\`\`"
+            sed -n '1,60p' APK_VERIFY.txt
+            echo "\`\`\`"
             echo ""
             echo "**التحكم:** عصا افتراضية يسار · سحب الكاميرا يمين · ATK / JUMP / USE / RUN / BAG / LOG / STAT."
             echo ""
