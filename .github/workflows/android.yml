@@ -82,16 +82,17 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
-          xvfb-run -a --server-args="-screen 0 1280x720x24" \
+          timeout 240 xvfb-run -a --server-args="-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-            tests/screenshot_probe.tscn 2>&1 | tail -30 || true
+            tests/screenshot_probe.tscn 2>&1 | tail -40 || echo "screenshot probe exited non-zero / timed out"
+          cat docs/reports/screenshot_probe_log.txt || true
           ls -lh docs/screenshots || true
 
       - name: Commit measured results back to the branch
         if: always()
         run: |
           set -euo pipefail
-          FILES="docs/reports/perf_probe_results.txt docs/reports/headless_test_results.txt docs/screenshots"
+          FILES="docs/reports/perf_probe_results.txt docs/reports/headless_test_results.txt docs/reports/screenshot_probe_log.txt docs/screenshots"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $FILES 2>/dev/null || true

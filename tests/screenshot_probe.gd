@@ -19,12 +19,38 @@ const SHOTS := [
 	{"name": "08_gameplay_hud", "pos": Vector3(-2.0, 0.0, 10.0), "yaw": 25.0, "pitch": -14.0, "dist": 11.0, "hud": true},
 ]
 
+const LOG_PATH := "res://docs/reports/screenshot_probe_log.txt"
+
 var _game: Node
 var _player: Player
 var _ui: Node
+var _log: PackedStringArray = []
+var _finished := false
 
 func _ready() -> void:
+	_watchdog()
 	_run()
+
+## Hard safety net: never leave CI hanging if a coroutine dies on a script error.
+func _watchdog() -> void:
+	await get_tree().create_timer(120.0).timeout
+	if _finished:
+		return
+	_log.append("WATCHDOG: still running after 120s - aborting")
+	_flush_log()
+	print("screenshot probe: watchdog timeout")
+	get_tree().quit(2)
+
+func _flush_log() -> void:
+	var file := FileAccess.open(LOG_PATH, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(_log) + "\n")
+		file.close()
+
+func _note(text: String) -> void:
+	_log.append(text)
+	print("[shot] " + text)
+	_flush_log()
 
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(OUT_DIR)
@@ -53,13 +79,17 @@ func _run() -> void:
 	add_child(menu)
 	await _frames(15)
 	await _save("09_main_menu")
-	print("screenshot probe: done")
+	_note("done")
+	_finished = true
 	get_tree().quit(0)
 
 func _capture(shot: Dictionary) -> void:
 	_player.global_position = shot["pos"] as Vector3
 	_player.velocity = Vector3.ZERO
 	var rig := _player.camera_rig
+	if rig == null:
+		_note("ERROR: camera_rig is null")
+		return
 	rig.yaw = deg_to_rad(float(shot["yaw"]))
 	rig.pitch = float(shot["pitch"])
 	rig._target_distance = float(shot["dist"])
@@ -69,18 +99,24 @@ func _capture(shot: Dictionary) -> void:
 		_ui.visible = bool(shot["hud"])
 	await _frames(18)
 	await _save(String(shot["name"]))
+	_note("captured %s" % String(shot["name"]))
 	if _ui != null:
 		_ui.visible = true
 
 func _save(shot_name: String) -> void:
-	await RenderingServer.frame_post_draw
-	var image := get_viewport().get_texture().get_image()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var texture := get_viewport().get_texture()
+	if texture == null:
+		_note("ERROR: no viewport texture for " + shot_name)
+		return
+	var image := texture.get_image()
 	if image == null:
-		push_warning("screenshot probe: no image for " + shot_name)
+		_note("ERROR: no image for " + shot_name)
 		return
 	var path := "%s/%s.png" % [OUT_DIR, shot_name]
 	var err := image.save_png(path)
-	print("shot %s -> %s (%s)" % [shot_name, path, "ok" if err == OK else "err %d" % err])
+	_note("%s -> %s (%s)" % [shot_name, path, "ok" if err == OK else "err %d" % err])
 
 func _find_ui() -> Node:
 	for child: Node in _game.get_children():
