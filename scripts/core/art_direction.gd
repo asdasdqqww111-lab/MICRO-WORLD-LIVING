@@ -59,24 +59,25 @@ static func water_material() -> StandardMaterial3D:
 
 ## Adapts Kenney Nature/Castle GLB surfaces (which export with metallic=1.0 and
 ## bright teal foliage) into Eldoria's natural matte botanical/stone palette.
-static func harmonize_mesh(source: Mesh, variant: String = "") -> ArrayMesh:
-	if source == null:
-		return null
+static func harmonize_mesh(source: Mesh, variant: String = "") -> Mesh:
+	if source == null or DisplayServer.get_name() == "headless":
+		return source
 	var cache_key := "%s::%s" % [source.resource_path, variant]
 	if _mat_cache.has(cache_key):
-		return _mat_cache[cache_key] as ArrayMesh
+		return _mat_cache[cache_key] as Mesh
 	var out := ArrayMesh.new()
 	var surf_count := source.get_surface_count()
 	for i in surf_count:
 		var arrays := source.surface_get_arrays(i)
-		if arrays.is_empty():
+		if arrays.is_empty() or arrays[Mesh.ARRAY_VERTEX] == null:
 			continue
 		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 		var orig := source.surface_get_material(i)
 		var mat := _adapt_surface_material(orig, variant, i)
 		out.surface_set_material(out.get_surface_count() - 1, mat)
-	_mat_cache[cache_key] = out
-	return out
+	var result: Mesh = out if out.get_surface_count() > 0 else source
+	_mat_cache[cache_key] = result
+	return result
 
 static func _adapt_surface_material(orig: Material, variant: String, surf_idx: int) -> StandardMaterial3D:
 	var m_name := orig.resource_name.to_lower() if orig != null else ""

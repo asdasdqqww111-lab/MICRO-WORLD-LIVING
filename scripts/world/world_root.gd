@@ -320,6 +320,7 @@ func _spawn_population() -> void:
 	spawn_creature("forest_goblin", "forest_goblin_0", _pos_on_terrain(-44.0, -14.0), overworld_root)
 	spawn_creature("forest_goblin", "forest_goblin_1", _pos_on_terrain(-58.0, -30.0), overworld_root)
 	spawn_creature("wolf", "forest_wolf_0", _pos_on_terrain(-38.0, -34.0), overworld_root)
+	spawn_creature("wolf", "forest_wolf_1", _pos_on_terrain(-54.0, -16.0), overworld_root)
 	spawn_creature("slime", "lake_slime_0", _pos_on_terrain(2.0, 48.0), overworld_root)
 
 	# 2. Passive Grazing Wildlife (Highland Stags in Southern Meadows & Lakeside)

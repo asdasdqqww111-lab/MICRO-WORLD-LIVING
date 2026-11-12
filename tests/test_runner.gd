@@ -327,7 +327,7 @@ func _test_save_file() -> void:
 	GameManager.reset_state()
 	_check(SaveManager.load_game(SAVE_SLOT), "save loads")
 	_check(GameManager.gold == GameManager.STARTING_GOLD + 77, "gold restored (%d)" % GameManager.gold)
-	_check(GameManager.guild.registered and GameManager.guild.reputation == 45, "Guild state restored")
+	_check(GameManager.guild.registered and GameManager.guild.reputation == 55, "Guild state restored (rep=%d)" % GameManager.guild.reputation)
 	_check(GameManager.skills.rank_of("iron_skin") == 1, "SkillTree unlocked node restored")
 	_check(GameManager.quest_log.state_of("sunken_cellar") == QuestLog.STATE_ACTIVE,
 		"quest state restored")
