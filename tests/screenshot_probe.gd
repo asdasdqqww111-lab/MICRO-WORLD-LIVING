@@ -53,6 +53,9 @@ func _note(text: String) -> void:
 	_flush_log()
 
 func _run() -> void:
+	_note("start: renderer=%s adapter=%s" % [
+		ProjectSettings.get_setting("rendering/renderer/rendering_method"),
+		RenderingServer.get_video_adapter_name()])
 	DirAccess.make_dir_recursive_absolute(OUT_DIR)
 	_game = load("res://scenes/game/game.tscn").instantiate()
 	add_child(_game)
@@ -60,6 +63,7 @@ func _run() -> void:
 
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_ui = _find_ui()
+	_note("scene ready: player=%s ui=%s" % [str(_player != null), str(_ui != null)])
 	if _player == null:
 		push_error("screenshot probe: no player")
 		get_tree().quit(1)

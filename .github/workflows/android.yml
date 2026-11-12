@@ -72,27 +72,38 @@ jobs:
           echo "--- glxinfo (sanity) ---"
           xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B | head -12 || true
           echo "--- perf probe ---"
-          xvfb-run -a --server-args="-screen 0 1280x720x24" \
+          set +e
+          timeout 300 xvfb-run -a --server-args="-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-            tests/perf_probe.tscn 2>&1 | tail -60 || true
-          echo "--- results file ---"
-          cat docs/reports/perf_probe_results.txt || echo "no results file"
+            tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
+          echo "perf probe exit=$?" | tee -a docs/reports/ci_perf_probe.log
+          set -e
+          tail -20 docs/reports/ci_perf_probe.log || true
 
       - name: Capture screenshots (real rasteriser)
         continue-on-error: true
         run: |
           set -euo pipefail
-          timeout 240 xvfb-run -a --server-args="-screen 0 1280x720x24" \
+          set +e
+          echo "=== headless smoke (fast, dummy renderer) ==="
+          timeout 90 godot --headless --path . tests/screenshot_probe.tscn \
+            > docs/reports/ci_screenshot_headless.log 2>&1
+          echo "headless exit=$?" | tee -a docs/reports/ci_screenshot_headless.log
+          echo "=== windowed GLES3 capture ==="
+          timeout 300 xvfb-run -a --server-args="-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-            tests/screenshot_probe.tscn 2>&1 | tail -40 || echo "screenshot probe exited non-zero / timed out"
-          cat docs/reports/screenshot_probe_log.txt || true
+            tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
+          echo "gles3 exit=$?" | tee -a docs/reports/ci_screenshot_gl.log
+          set -e
+          tail -25 docs/reports/ci_screenshot_gl.log || true
+          tail -10 docs/reports/ci_screenshot_headless.log || true
           ls -lh docs/screenshots || true
 
       - name: Commit measured results back to the branch
         if: always()
         run: |
           set -euo pipefail
-          FILES="docs/reports/perf_probe_results.txt docs/reports/headless_test_results.txt docs/reports/screenshot_probe_log.txt docs/screenshots"
+          FILES="docs/reports/perf_probe_results.txt docs/reports/headless_test_results.txt docs/reports/screenshot_probe_log.txt docs/screenshots docs/reports/ci_perf_probe.log docs/reports/ci_screenshot_headless.log docs/reports/ci_screenshot_gl.log"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $FILES 2>/dev/null || true
