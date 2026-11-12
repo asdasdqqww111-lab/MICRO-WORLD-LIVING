@@ -36,10 +36,15 @@ jobs:
           godot --version
 
       - name: Import project
-        run: godot --headless --path . --import
+        run: |
+          mkdir -p docs/reports
+          godot --headless --path . --import 2>&1 | tee docs/reports/ci_import.log
 
       - name: Headless acceptance tests
-        run: timeout 180 godot --headless --path . tests/test_runner.tscn
+        run: |
+          set -o pipefail
+          mkdir -p docs/reports
+          timeout 180 godot --headless --path . tests/test_runner.tscn 2>&1 | tee docs/reports/ci_headless_stdout.log
 
       - name: Renderer + probes (GLES3 over Mesa)
         run: |

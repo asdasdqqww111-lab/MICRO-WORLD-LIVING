@@ -171,8 +171,8 @@ func _capture_world_shot(shot: Dictionary) -> void:
 	if _world.day_night != null:
 		_world.day_night.sync_from_state()
 	var pos: Vector3 = shot["pos"]
-	if zone == "village":
-		pos.y = Terrain.height_at(pos.x, pos.z) + 0.15
+	if zone == "village" and _world != null and _world.terrain != null:
+		pos.y = _world.terrain.height_at(pos.x, pos.z) + 0.15
 	_player.teleport(pos, zone)
 	_set_cam(float(shot["yaw"]), float(shot["pitch"]), float(shot["dist"]))
 	if _ui != null:

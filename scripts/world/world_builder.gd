@@ -372,13 +372,13 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	var mill_z := -16.0
 	var mill_x := (terrain.river_center_x(mill_z) - 5.5) if terrain != null else 33.0
 	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_watermill_blue.gltf",
-		Vector3(mill_x, maxf(0.0, y_at.call(mill_x, mill_z)), mill_z), deg_to_rad(90.0), 7.2,
+		Vector3(mill_x, maxf(0.0, float(y_at.call(mill_x, mill_z))), mill_z), deg_to_rad(90.0), 7.2,
 		Vector3(7.0, 7.5, 7.0), "RiversideWatermill")
 	place_model(parent, "res://assets/environments/mountains/cliff-steps-rock.glb",
-		Vector3(41.0, maxf(0.0, y_at.call(41.0, -56.0) - 1.0), -56.0), 0.0, 5.5, Vector3.ZERO, "NorthernWaterfall")
+		Vector3(41.0, maxf(0.0, float(y_at.call(41.0, -56.0)) - 1.0), -56.0), 0.0, 5.5, Vector3.ZERO, "NorthernWaterfall")
 
 	# 3. Eastern Ancient Ruins (x=62, z=-18)
-	var ruins_y := y_at.call(62.0, -18.0)
+	var ruins_y: float = float(y_at.call(62.0, -18.0))
 	var ruins_pos := Vector3(62.0, ruins_y, -18.0)
 	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_destroyed.gltf", ruins_pos, 0.4, 8.2,
 		Vector3(7.5, 5.5, 7.5), "AncientRuinsMain")
@@ -387,7 +387,7 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	place_model(parent, "res://assets/environments/dungeons/statue-columndamaged.glb", ruins_pos + Vector3(3.5, 0.0, 4.5), 0.6, 2.8)
 
 	# 4. Northern Shadowfang Cave Mouth (x=-14, z=-64)
-	var cave_y := y_at.call(-14.0, -64.0)
+	var cave_y: float = float(y_at.call(-14.0, -64.0))
 	var cave_pos := Vector3(-14.0, cave_y, -64.0)
 	place_model(parent, "res://assets/environments/mountains/cliff-cave-rock.glb", cave_pos, 0.0, 5.8,
 		Vector3.ZERO, "ShadowfangCave")
@@ -395,7 +395,7 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", cave_pos + Vector3(2.6, 1.4, 3.2), 0.0, 1.0)
 
 	# 5. Western Monster Camp (x=-60, z=-24)
-	var camp_y := y_at.call(-60.0, -24.0)
+	var camp_y: float = float(y_at.call(-60.0, -24.0))
 	var camp_pos := Vector3(-60.0, camp_y, -24.0)
 	place_model(parent, "res://assets/environments/villages/tent-detailedopen.glb", camp_pos + Vector3(-3.8, 0.0, -2.5), 0.8, 2.8,
 		Vector3(2.8, 2.2, 2.8), "CampTentA")
@@ -403,14 +403,14 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	_add_omni_light(parent, camp_pos + Vector3(0.0, 0.9, 0.0), Color(1.0, 0.52, 0.18), 1.1, 7.5)
 
 	# 6. Southwest Sacred Ancient Grove (Hidden Area: x=-54, z=42)
-	var grove_y := y_at.call(-54.0, 42.0)
+	var grove_y: float = float(y_at.call(-54.0, 42.0))
 	var grove_pos := Vector3(-54.0, grove_y, 42.0)
 	place_model(parent, "res://assets/environments/dungeons/statue-obelisk.glb", grove_pos, 0.0, 3.4,
 		Vector3(1.5, 4.2, 1.5), "SacredGroveShrine")
 	_add_omni_light(parent, grove_pos + Vector3(0.0, 2.2, 0.0), Color(0.42, 0.82, 1.0), 1.3, 9.0)
 
 	# 7. Sunken Crypt Dungeon Entrance (East of Stone Bridge: x=52, z=22)
-	var crypt_y := y_at.call(52.0, 22.0)
+	var crypt_y: float = float(y_at.call(52.0, 22.0))
 	var entrance := Vector3(52.0, crypt_y, 22.0)
 	place_model(parent, AssetLibrary.DUNGEON_DIR + "stairs.glb", entrance, deg_to_rad(180.0), 1.15,
 		Vector3.ZERO, "DungeonStairs")

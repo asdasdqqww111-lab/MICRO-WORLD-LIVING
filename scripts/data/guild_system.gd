@@ -93,7 +93,7 @@ func can_promote(player_level: int = -1) -> bool:
 		return false
 	return reputation >= int(req["rep"]) and contracts_completed >= int(req.get("contracts", 0))
 
-func promote(player_level: int = -1) -> Variant:
+func promote(player_level: int = -1) -> Dictionary:
 	if not can_promote(player_level):
 		return {}
 	rank_index += 1

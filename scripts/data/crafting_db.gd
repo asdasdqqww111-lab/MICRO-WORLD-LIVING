@@ -114,11 +114,11 @@ static func can_craft(recipe_id: String, inventory: Inventory = null) -> bool:
 			return false
 	return not inv.is_full()
 
-static func craft(recipe_id: String, inventory: Inventory = null, craft_skill_rank: int = 0) -> Variant:
+static func craft(recipe_id: String, inventory: Inventory = null, craft_skill_rank: int = 0) -> Dictionary:
 	var inv: Inventory = inventory if inventory != null else (GameManager.inventory if GameManager != null else null)
 	var r := get_recipe(recipe_id)
 	if r.is_empty() or inv == null or not can_craft(recipe_id, inv):
-		return false
+		return {}
 	for ing: Dictionary in r.get("ingredients", []):
 		inv.remove_item(String(ing["id"]), int(ing["count"]))
 	var out_id := String(r["output_id"])
