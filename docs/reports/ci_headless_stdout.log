@@ -1,0 +1,1168 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+
+PASS  ItemDB loads >= 25 items (got 27)
+PASS  QuestDB loads >= 10 quests & contracts (got 11)
+PASS  SkillDB loads 24 skill tree nodes across 4 branches (got 24)
+PASS  CreatureDB loads >= 10 creature archetypes (got 11)
+PASS  every item resource has id/name/stack and a valid 5-slot equip_slot
+PASS  core & mythic items exist across weapon/shield/accessory
+PASS  model exists for creature 'cave_bat'
+PASS  model exists for creature 'crypt_boss'
+PASS  model exists for creature 'forest_goblin'
+PASS  model exists for creature 'grove_guardian'
+PASS  model exists for creature 'rock_golem'
+PASS  model exists for creature 'skeleton_dungeon'
+PASS  model exists for creature 'skeleton_forest'
+PASS  model exists for creature 'wraith_elite'
+PASS  quest 'skeleton_menace' present
+PASS  main quest 'main_guild_call' present
+PASS  guild contract 'contract_forest_cull' present
+PASS  level 1 needs 60 xp (got 60)
+PASS  60 xp levels up to 2
+PASS  leftover xp is carried correctly (got 0)
+PASS  xp is capped at max level 20 (got 20)
+PASS  tier-1 skill locked before prerequisite
+PASS  tier-0 warrior skill unlocks
+PASS  tier-1 warrior skill unlocks after mighty_blow
+PASS  heavy_cleave unlocked
+PASS  skill points tracked accurately
+PASS  skill tree reset refunds all spent points
+PASS  new hero starts unregistered at Guild
+PASS  hero registers as Rank F adventurer
+PASS  initial Guild rank is F
+PASS  eligible for Rank E promotion
+PASS  promoted to Rank E
+PASS  Guild rank grants merchant discount
+PASS  can craft Iron Sword with materials
+PASS  forging Iron Sword succeeds
+PASS  crafted Iron Sword added to inventory
+PASS  Arabic language mode activates RTL
+PASS  Arabic string table returns localized label
+PASS  English string table restores cleanly
+PASS  AudioManager autoload registered
+PASS  adding 40 bones fits
+PASS  bone count is 40 (got 40)
+PASS  40 bones use 2 stacks of 30 (got 2)
+PASS  removing 39 bones works
+PASS  one bone left
+WARNING: Inventory.add_item: unknown item 'does_not_exist'
+     at: push_warning (core/variant/variant_utility.cpp:1112)
+PASS  unknown items are rejected
+PASS  equip rusty_sword in weapon slot
+PASS  equip oak_shield in shield slot
+PASS  equip guild_ring in accessory slot
+PASS  5-slot equipment holds shield + accessory
+PASS  equip iron_sword over rusty_sword
+PASS  old weapon returns to the bags
+PASS  gear bonuses stack across slots
+PASS  unequip weapon
+PASS  20 full stacks fill the inventory
+PASS  no room means leftover
+PASS  inventory serialises consumables
+PASS  inventory serialises equipment
+PASS  damage scales with attack
+PASS  damage never drops below 1
+PASS  crit can be disabled
+PASS  clock rolls over into day 2
+PASS  hour is 01:00 after rollover (got 1)
+PASS  01:00 counts as night
+PASS  dead creatures are tracked
+PASS  world state round-trips
+PASS  potion has a price
+PASS  same day = same price
+PASS  sell price is below buy price
+PASS  prices change across days (5 distinct)
+PASS  blacksmith has stock
+PASS  guild quartermaster has stock
+PASS  08:00 is work time
+PASS  06:00 starts work
+PASS  18:00 is rest
+PASS  21:00 is rest
+PASS  22:00 is sleep
+PASS  03:00 is sleep
+PASS  quest starts unstarted
+PASS  quest can be started
+PASS  quest is active
+PASS  3 kills make the quest ready to hand in
+PASS  quest turns in
+PASS  quest is completed
+PASS  reward xp is applied
+PASS  reward gold is applied (+20)
+PASS  reward items are applied (+2 potions)
+PASS  a quest cannot be turned in twice
+PASS  save writes to disk
+PASS  save file exists
+PASS  save file carries schema_version 3
+PASS  save loads
+PASS  gold restored (112)
+FAIL  Guild state restored
+PASS  SkillTree unlocked node restored
+PASS  quest state restored
+PASS  v1 save migrates and loads
+PASS  migrated save keeps gold
+PASS  migrated save keeps level
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:576)
+ERROR: SaveManager: corrupt save (invalid JSON)
+   at: push_error (core/variant/variant_utility.cpp:1092)
+PASS  corrupt save is refused
+PASS  corrupt save reports a reason
+ERROR: SaveManager: save version 99 is newer than supported 3
+   at: push_error (core/variant/variant_utility.cpp:1092)
+PASS  newer schema version is refused
+PASS  game.tscn loads
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  world root created
+PASS  player created
+PASS  ui root created
+PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
+PASS  Eldoria landmarks built (20)
+PASS  village NPCs exist
+PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
+FAIL  wildlife, monsters & crypt boss spawned (17)
+PASS  MultiMesh biome instancing is real (12 batches, 0 broken)
+PASS  player Knight character model instantiated
+PASS  animation states resolved from KayKit rig clips
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  player lands on the ground
+PASS  player stands at ground height (y=0.00)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  joystick input moves the player (3.38m)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  camera yaw responds to drag
+PASS  camera zoom changes distance
+PASS  UI screens open and refresh without error
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  a forest skeleton exists
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  player can swing melee combo
+PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton aggroes when hit
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  killing 3 skeletons completes the objective
+PASS  farmer accepts the quest turn-in
+PASS  turn-in reports the reward
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  loot drop spawned
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  loot is collected into the inventory (got 2)
+PASS  Adventurers Guild door exists
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  door moves player into Adventurers Guild Hall
+PASS  house door exists
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  door moves player into house zone
+PASS  Malakor the Bone Warden boss exists in Sunken Crypt
+PASS  scene state saves
+PASS  dead creatures recorded (3)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+PASS  scene state reloads
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+PASS  dead creatures stay dead after reload (14 alive vs 17 before)
+PASS  player position restored (0.6m off)
+PASS  quest completion survives reload
+PASS  inventory survives reload
+ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
+   at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+PASS  save/load survives 10 rounds
+
+=== 140 passed, 2 failed ===
+FAILED: Guild state restored
+FAILED: wildlife, monsters & crypt boss spawned (17)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2284)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:604)
