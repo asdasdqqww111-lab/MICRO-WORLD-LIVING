@@ -15,7 +15,8 @@
 | اختبارات آلية (headless) | **TESTED — 113 / 113 نجحت** (`docs/reports/headless_test_results.txt`) |
 | بناء المحرك + استيراد + فتح المشروع | **TESTED** — `4.3.stable.custom_build`, `--quit` = 0 (`docs/reports/TEST_RUN_LOG.md`) |
 | اختبار على هاتف حقيقي | **BLOCKED** — لا يوجد جهاز، ولا GPU في بيئة البناء |
-| بناء APK | **BLOCKED** — لا Android SDK / JDK في البيئة، والشبكة تمنع `dl.google.com` |
+| بناء APK | **BUILT ✅** — عبر GitHub Actions (موقَّع v1+v2+v3، 55.7 MB) |
+| تثبيت وتشغيل على هاتف | **NOT VERIFIED** — لا جهاز في البيئة |
 | الأداء (Draw Calls / FPS) | **NOT MEASURED** — dummy driver أعطى 0 لكل شيء |
 | الرسومات/الواجهة بالعين | **NOT VERIFIED** — لا GPU في البيئة |
 
@@ -25,6 +26,16 @@
 `docs/reports/PHASE_1_REPORT.md` و `docs/reports/ANDROID_BUILD_REPORT.md`.
 
 ---
+
+## نزّل الـ APK واختبره
+
+**[micro_world_living.apk](https://github.com/asdasdqqww111-lab/MICRO-WORLD-LIVING/releases/download/v0.1-debug/micro_world_living.apk)** ← تنزيل مباشر (55.7 MB)
+
+- صفحة الإصدار (فيها SHA-256 وتفاصيل التحقق): [releases/tag/v0.1-debug](https://github.com/asdasdqqww111-lab/MICRO-WORLD-LIVING/releases/tag/v0.1-debug)
+- التثبيت: افتح الرابط من متصفح الهاتف ⇒ نزّل ⇒ السماح بالتثبيت من هذا المصدر ⇒ Install.
+- المتطلبات: Android 5.0+ (minSdk 21)، ذراع 32/64 بت، OpenGL ES 3.0.
+- أول تشغيل يبدأ على إعداد رسومي **Low** تلقائيًا (شاشة الأداء بـ F3).
+- التوقيع debug (للاختبار فقط). الأداء لم يُقس بعد — راجع `docs/reports/ANDROID_BUILD_REPORT.md`.
 
 ## ما تحتويه النسخة 0.1
 

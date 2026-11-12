@@ -78,3 +78,10 @@
 
 Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
 سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.
+
+### تحديث 2026-11-12 — APK مبني
+
+`docs/reports/ANDROID_BUILD_REPORT.md` كان يقول BLOCKED. الآن: **debug APK مبني على
+GitHub Actions**، موقَّع v1+v2+v3، متحقَّق آليًا بـ apksigner/aapt2، منشور في
+Release `v0.1-debug`. توقيع الإصدار النهائي (release keystore) ما زال غير متاح،
+وتجربة الجهاز ما زالت **NOT VERIFIED**.

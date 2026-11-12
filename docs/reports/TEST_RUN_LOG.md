@@ -82,3 +82,24 @@ godot --headless --path . --quit    # فحص فتح المشروع
 متوقَّع: `113 passed, 0 failed`. (التحذيرات المقصودة أثناء التشغيل: `corrupt save`,
 `save version 99 is newer`, `unknown item 'does_not_exist'`, و`SceneTreeTimer` leaks
 من `create_timer` في الاختبار — كلها أجزاء من فحوص سلبية مقصودة.)
+
+---
+
+## 7. البناء على GitHub Actions (2026-11-12)
+
+بما أن الصندوق بلا JDK/Android SDK/قوالب تصدير، أُضيف `.github/workflows/android.yml`
+الذي يبني الـ APK على `ubuntu-latest`:
+
+| خطوة | النتيجة |
+|---|---|
+| Godot 4.3-stable + export templates | ✅ تنزيل ناجح (شبكة الـ runner كاملة) |
+| `--import` | ✅ |
+| 113 فحصًا headless | ✅ 113/113 (البناء يفشل لو فشل فحص واحد) |
+| debug keystore + `--export-debug "Android"` | ✅ `micro_world_living.apk` (58,386,088 بايت) |
+| `apksigner verify` | ✅ v1 + v2 + v3 |
+| `aapt2 dump badging` | ✅ `com.microworldliving.game`, SDK 21→34, label "Micro World: Living" |
+| نشر Release | ✅ `v0.1-debug` |
+
+زمن الـ workflow: **~60 ثانية**. التفاصيل الكاملة في `docs/reports/ANDROID_BUILD_REPORT.md`.
+**الفارق المهم:** هذا يُثبت أن الملف صالح للتثبيت (بنية + توقيع)، **ولا يُثبت أنه يعمل**؛
+ذلك يحتاج هاتفًا.

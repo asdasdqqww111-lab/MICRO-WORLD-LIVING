@@ -23,6 +23,9 @@ func _ready() -> void:
 func load_settings() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(SETTINGS_PATH) != OK:
+		# First launch: budget phones start at LOW so the slice can hold 30 FPS;
+		# desktop starts at MEDIUM. Both are switchable in Settings/Pause.
+		graphics_preset = GraphicsPreset.LOW if is_mobile() else GraphicsPreset.MEDIUM
 		save_settings()
 		return
 	graphics_preset = int(cfg.get_value("video", "graphics_preset", GraphicsPreset.MEDIUM))
