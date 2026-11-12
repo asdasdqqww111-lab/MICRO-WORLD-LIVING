@@ -16,14 +16,14 @@ Extended renderer info (GLX_MESA_query_renderer):
     Max GLES[23] profile version: 3.2
 Memory info (GL_ATI_meminfo):
     VBO free memory - total: 28 MB, largest block: 28 MB
-    VBO free aux. memory - total: 14990 MB, largest block: 14990 MB
+    VBO free aux. memory - total: 14987 MB, largest block: 14987 MB
     Texture free memory - total: 28 MB, largest block: 28 MB
-    Texture free aux. memory - total: 14990 MB, largest block: 14990 MB
+    Texture free aux. memory - total: 14987 MB, largest block: 14987 MB
     Renderbuffer free memory - total: 28 MB, largest block: 28 MB
-    Renderbuffer free aux. memory - total: 14990 MB, largest block: 14990 MB
+    Renderbuffer free aux. memory - total: 14987 MB, largest block: 14987 MB
 Memory info (GL_NVX_gpu_memory_info):
-    Dedicated video memory: 4293607687 MB
-    Total available memory: 4293623670 MB
+    Dedicated video memory: 4293134539 MB
+    Total available memory: 4293150522 MB
     Currently available dedicated video memory: 28 MB
 OpenGL vendor string: Mesa
 OpenGL renderer string: llvmpipe (LLVM 21.1.8, 256 bits)
@@ -43,3 +43,4 @@ OpenGL ES profile shading language version string: OpenGL ES GLSL ES 3.20
 === perf probe ===
 perf exit=0
 === screenshot probe (12 views) ===
+screenshot exit=0
