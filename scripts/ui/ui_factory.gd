@@ -12,6 +12,7 @@ const STAMINA_TEAL := Color(0.32, 0.78, 0.72)
 const TEXT := Color(0.95, 0.94, 0.90)
 const TEXT_DIM := Color(0.68, 0.72, 0.78)
 const GOLD := Color(0.96, 0.80, 0.34)
+const GOLD_DIM := Color(0.68, 0.56, 0.28)
 const DANGER := Color(0.88, 0.30, 0.30)
 
 static var _theme: Theme
@@ -86,6 +87,15 @@ static func panel(alpha: float = 1.0) -> PanelContainer:
 	if alpha < 1.0:
 		p.modulate.a = alpha
 	return p
+
+static func make_panel_style(bg: Color, border: Color, border_w: int = 2, corner: int = 8, pad: int = 8) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.set_border_width_all(border_w)
+	sb.set_corner_radius_all(corner)
+	sb.set_content_margin_all(pad)
+	return sb
 
 static func card_panel(border_col: Color = BORDER_GOLD, bg_col: Color = BG_SOFT) -> PanelContainer:
 	var p := PanelContainer.new()

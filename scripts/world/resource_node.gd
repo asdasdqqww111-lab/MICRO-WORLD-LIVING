@@ -32,8 +32,8 @@ func _build_visual() -> void:
 	match resource_kind:
 		"ore":
 			var rock := AssetLibrary.instantiate_gltfs([
-				"res://assets/nature/rocks/Rock002.glb",
-				"res://assets/nature/rocks/stone_tallA.glb",
+				"res://assets/environments/mountains/rock-largeb.glb",
+				"res://assets/environments/mountains/rock-talla.glb",
 			], 1.15)
 			if rock != null:
 				_visual_root.add_child(rock)
@@ -48,21 +48,21 @@ func _build_visual() -> void:
 			_visual_root.add_child(crystal)
 		"wood":
 			var stump := AssetLibrary.instantiate_gltfs([
-				"res://assets/nature/props/tree_log_small.glb",
-				"res://assets/nature/props/tree_stump.glb",
+				"res://assets/environments/forests/log-large.glb",
+				"res://assets/environments/forests/stump-old.glb",
 			], 1.45)
 			if stump != null:
 				_visual_root.add_child(stump)
 		"moonpetal":
 			var fl := AssetLibrary.instantiate_gltfs([
-				"res://assets/nature/bushes/flower_purpleA.glb",
+				"res://assets/environments/forests/flower-purplea.glb",
 			], 1.75)
 			if fl != null:
 				_visual_root.add_child(fl)
 		_:
 			var shroom := AssetLibrary.instantiate_gltfs([
-				"res://assets/nature/bushes/mushroom_redGroup.glb",
-				"res://assets/nature/bushes/flower_redA.glb",
+				"res://assets/environments/forests/mushroom-redgroup.glb",
+				"res://assets/environments/forests/flower-reda.glb",
 			], 1.75)
 			if shroom != null:
 				_visual_root.add_child(shroom)

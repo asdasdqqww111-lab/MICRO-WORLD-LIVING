@@ -137,6 +137,24 @@ static func _adapt_surface_material(orig: Material, variant: String, surf_idx: i
 	)
 	return stylized_material("generic_%s_%d_%s" % [variant, surf_idx, m_name], fallback_col, 0.90)
 
+static func harmonize_material(orig: Material, variant: String = "") -> StandardMaterial3D:
+	return _adapt_surface_material(orig, variant, 0)
+
+static func terrain_detail_texture() -> ImageTexture:
+	if _mat_cache.has("terrain_detail_tex"):
+		return _mat_cache["terrain_detail_tex"] as ImageTexture
+	var img := Image.create(64, 64, true, Image.FORMAT_RGBA8)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4242
+	for y in 64:
+		for x in 64:
+			var n := 0.88 + rng.randf() * 0.22
+			img.set_pixel(x, y, Color(n, n * 0.99, n * 0.97, 1.0))
+	img.generate_mipmaps()
+	var tex := ImageTexture.create_from_image(img)
+	_mat_cache["terrain_detail_tex"] = tex
+	return tex
+
 ## Harmonizes an instantiated Node3D hierarchy in-place (strips metallic=1 glare).
 static func harmonize_node(root: Node, variant: String = "") -> void:
 	if root == null:

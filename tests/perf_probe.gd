@@ -10,9 +10,19 @@ var _game: Node
 var _player: Player
 var _world: WorldRoot
 var _lines: PackedStringArray = []
+var _finished: bool = false
 
 func _ready() -> void:
+	_watchdog()
 	_run()
+
+func _watchdog() -> void:
+	await get_tree().create_timer(160.0).timeout
+	if _finished:
+		return
+	_lines.append("WATCHDOG: perf_probe timed out after 160s")
+	_flush(true)
+	get_tree().quit(2)
 
 func _run() -> void:
 	_lines.append("MICRO WORLD: LIVING — Eldoria Edition v1.0 GLES3 Performance Probe")
@@ -62,6 +72,7 @@ func _run() -> void:
 
 	_flush(true)
 	print("\n".join(_lines))
+	_finished = true
 	get_tree().quit(0)
 
 func _safe_step(label: String, method: Callable) -> void:

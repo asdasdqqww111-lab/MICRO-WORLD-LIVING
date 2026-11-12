@@ -98,14 +98,15 @@ func _run() -> void:
 
 	# 8. Active Combat + Full HUD + Touch Controls
 	GameManager.world.time_of_day = 10.2 * 3600.0
-	_world._day_night.sync_from_state()
+	if _world.day_night != null:
+		_world.day_night.sync_from_state()
 	_player.teleport(Vector3(4.0, 0.6, 8.0), "village")
-	var combat_mob := _world.spawn_creature("goblin_raider", "shot_goblin", Vector3(3.2, 0.6, 4.2))
+	var combat_mob := _world.spawn_creature("forest_goblin", "shot_goblin", Vector3(3.2, 0.6, 4.2))
 	var combat_skel := _world.spawn_creature("skeleton_forest", "shot_skel", Vector3(5.6, 0.6, 4.8))
 	if combat_mob != null:
 		combat_mob.take_hit(14.0, _player, true)
-	GameManager.start_quest("main_welcome_guild")
-	GameManager.guild.register_member()
+	GameManager.start_quest("main_guild_call")
+	GameManager.register_in_guild()
 	GameManager.guild.add_reputation(45)
 	_ui.visible = true
 	_ui.close_current_screen()
@@ -121,24 +122,24 @@ func _run() -> void:
 
 	# Populate rich RPG state for UI inspection screenshots
 	GameManager.gain_gold(340)
-	GameManager.gain_item("silver_longsword", 1)
+	GameManager.gain_item("steel_greatsword", 1)
 	GameManager.gain_item("knight_plate", 1)
-	GameManager.gain_item("knight_kite_shield", 1)
-	GameManager.gain_item("emerald_ring", 1)
-	GameManager.gain_item("eldoria_relic_blade", 1)
-	GameManager.gain_item("mana_potion", 4)
-	GameManager.gain_item("moonpetal", 6)
-	GameManager.inventory.equip("silver_longsword")
+	GameManager.gain_item("guild_aegis", 1)
+	GameManager.gain_item("guild_ring", 1)
+	GameManager.gain_item("eldoria_mythic_blade", 1)
+	GameManager.gain_item("mana_elixir", 4)
+	GameManager.gain_item("herb_moonpetal", 6)
+	GameManager.inventory.equip("steel_greatsword")
 	GameManager.inventory.equip("knight_plate")
-	GameManager.inventory.equip("knight_kite_shield")
-	GameManager.inventory.equip("emerald_ring")
+	GameManager.inventory.equip("guild_aegis")
+	GameManager.inventory.equip("guild_ring")
 	GameManager.progression.add_xp(360)
 	GameManager.skills.add_points(6)
-	GameManager.skills.unlock("mighty_blow")
-	GameManager.skills.unlock("cleave_strike")
-	GameManager.skills.unlock("iron_skin")
-	GameManager.skills.unlock("arcane_spark")
-	GameManager.skills.unlock("swift_feet")
+	GameManager.skills.upgrade("mighty_blow")
+	GameManager.skills.upgrade("heavy_cleave")
+	GameManager.skills.upgrade("iron_skin")
+	GameManager.skills.upgrade("fire_bolt")
+	GameManager.skills.upgrade("swift_feet")
 
 	# 9. Inventory & 5-Slot Equipment Screen
 	_ui.open_screen("inventory")
@@ -153,7 +154,7 @@ func _run() -> void:
 	await _save("10_skill_tree")
 
 	# 11. Adventurers Guild & Contracts Board Screen
-	GameManager.start_quest("guild_f_slimes_goblins")
+	GameManager.start_quest("contract_forest_cull")
 	_ui.open_screen("guild")
 	await _frames(15)
 	await _save("11_quest_guild_board")
@@ -167,8 +168,8 @@ func _capture_world_shot(shot: Dictionary) -> void:
 	var zone := String(shot.get("zone", "village"))
 	var tod := float(shot.get("time", 10.0)) * 3600.0
 	GameManager.world.time_of_day = tod
-	if _world._day_night != null:
-		_world._day_night.sync_from_state()
+	if _world.day_night != null:
+		_world.day_night.sync_from_state()
 	var pos: Vector3 = shot["pos"]
 	if zone == "village":
 		pos.y = Terrain.height_at(pos.x, pos.z) + 0.15

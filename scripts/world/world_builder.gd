@@ -145,9 +145,9 @@ static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array
 
 static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary:
 	var hex := AssetLibrary.HEXAGON_DIR
-	var vdir := "res://assets/village/buildings/"
-	var vprop := "res://assets/village/props/"
-	var nprop := "res://assets/nature/props/"
+	var vdir := AssetLibrary.HEXAGON_DIR
+	var vprop := AssetLibrary.HEXAGON_DIR
+	var nprop := "res://assets/environments/villages/"
 	var b := AssetLibrary.SCALE_BUILDING
 
 	# Major Village Districts: Guild Hall (North), Tavern, Chapel, Market,
@@ -205,7 +205,7 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	# Central Village Square: Well + Memorial Obelisk + Lanterns
 	place_model(parent, hex + "building_well_green.gltf", Vector3(0.0, 0.0, 2.0), 0.0, 2.5,
 		Vector3(1.8, 2.1, 1.8), "CentralWell")
-	place_model(parent, nprop + "statue_obelisk.glb", Vector3(0.0, 0.0, -5.5), 0.0, 2.4,
+	place_model(parent, "res://assets/environments/dungeons/statue-obelisk.glb", Vector3(0.0, 0.0, -5.5), 0.0, 2.4,
 		Vector3(1.2, 3.2, 1.2), "PlazaObelisk")
 
 	# Guarded South & West Gates + Stone Perimeter Segments
@@ -259,8 +259,8 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.2), Vector3(fx, 0.0, fz)))
 	for px: int in 4:
 		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.1), Vector3(-6.5 + float(px) * 1.5, 0.0, 26.8)))
-	build_multimesh(parent, "res://assets/village/crops/crops_wheatStageB.glb", wheat_xforms, "FarmWheat", false, 65.0)
-	build_multimesh(parent, "res://assets/village/crops/crop_pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 65.0)
+	build_multimesh(parent, "res://assets/environments/villages/crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 65.0)
+	build_multimesh(parent, "res://assets/environments/villages/crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 65.0)
 
 	# Interactive World Stations in Village: Quest Board, Blacksmith Forge, Alchemy Table
 	var ext_board := QuestBoardProp.new()
@@ -364,32 +364,32 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	# 2. East Stone Arch Bridge across Eldoria River + Solid Walkable Deck Collider
 	var bridge_x := terrain.river_center_x(-4.0) if terrain != null else 39.0
 	var bridge_pos := Vector3(bridge_x, 0.0, -4.0)
-	place_model(parent, "res://assets/village/buildings/building_bridge_A.gltf", bridge_pos, 0.0, 7.5,
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_bridge_A.gltf", bridge_pos, 0.0, 7.5,
 		Vector3.ZERO, "EastStoneBridge")
 	add_box_body(parent, bridge_pos + Vector3(0.0, -0.35, 0.0), Vector3(14.5, 0.55, 4.4), "BridgeDeckCollider")
 
 	# Riverside Watermill & Northern Waterfall Cliff
 	var mill_z := -16.0
 	var mill_x := (terrain.river_center_x(mill_z) - 5.5) if terrain != null else 33.0
-	place_model(parent, "res://assets/village/buildings/building_watermill_yellow.gltf",
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_watermill_blue.gltf",
 		Vector3(mill_x, maxf(0.0, y_at.call(mill_x, mill_z)), mill_z), deg_to_rad(90.0), 7.2,
 		Vector3(7.0, 7.5, 7.0), "RiversideWatermill")
-	place_model(parent, "res://assets/nature/rocks/cliff_waterfall_stone.glb",
+	place_model(parent, "res://assets/environments/mountains/cliff-steps-rock.glb",
 		Vector3(41.0, maxf(0.0, y_at.call(41.0, -56.0) - 1.0), -56.0), 0.0, 5.5, Vector3.ZERO, "NorthernWaterfall")
 
 	# 3. Eastern Ancient Ruins (x=62, z=-18)
 	var ruins_y := y_at.call(62.0, -18.0)
 	var ruins_pos := Vector3(62.0, ruins_y, -18.0)
-	place_model(parent, "res://assets/village/buildings/building_destroyed.gltf", ruins_pos, 0.4, 8.2,
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_destroyed.gltf", ruins_pos, 0.4, 8.2,
 		Vector3(7.5, 5.5, 7.5), "AncientRuinsMain")
 	place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", ruins_pos + Vector3(-5.0, 0.0, 4.0), 0.0, 1.2)
 	place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", ruins_pos + Vector3(5.0, 0.0, -4.0), 0.2, 1.2)
-	place_model(parent, "res://assets/nature/props/statue_columnDamaged.glb", ruins_pos + Vector3(3.5, 0.0, 4.5), 0.6, 2.8)
+	place_model(parent, "res://assets/environments/dungeons/statue-columndamaged.glb", ruins_pos + Vector3(3.5, 0.0, 4.5), 0.6, 2.8)
 
 	# 4. Northern Shadowfang Cave Mouth (x=-14, z=-64)
 	var cave_y := y_at.call(-14.0, -64.0)
 	var cave_pos := Vector3(-14.0, cave_y, -64.0)
-	place_model(parent, "res://assets/nature/rocks/cliff_cave_stone.glb", cave_pos, 0.0, 5.8,
+	place_model(parent, "res://assets/environments/mountains/cliff-cave-rock.glb", cave_pos, 0.0, 5.8,
 		Vector3.ZERO, "ShadowfangCave")
 	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", cave_pos + Vector3(-2.6, 1.4, 3.2), 0.0, 1.0)
 	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", cave_pos + Vector3(2.6, 1.4, 3.2), 0.0, 1.0)
@@ -397,15 +397,15 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	# 5. Western Monster Camp (x=-60, z=-24)
 	var camp_y := y_at.call(-60.0, -24.0)
 	var camp_pos := Vector3(-60.0, camp_y, -24.0)
-	place_model(parent, "res://assets/nature/props/tent_detailedOpen.glb", camp_pos + Vector3(-3.8, 0.0, -2.5), 0.8, 2.8,
+	place_model(parent, "res://assets/environments/villages/tent-detailedopen.glb", camp_pos + Vector3(-3.8, 0.0, -2.5), 0.8, 2.8,
 		Vector3(2.8, 2.2, 2.8), "CampTentA")
-	place_model(parent, "res://assets/nature/props/campfire_stones.glb", camp_pos, 0.0, 2.4)
+	place_model(parent, "res://assets/environments/villages/campfire-stones.glb", camp_pos, 0.0, 2.4)
 	_add_omni_light(parent, camp_pos + Vector3(0.0, 0.9, 0.0), Color(1.0, 0.52, 0.18), 1.1, 7.5)
 
 	# 6. Southwest Sacred Ancient Grove (Hidden Area: x=-54, z=42)
 	var grove_y := y_at.call(-54.0, 42.0)
 	var grove_pos := Vector3(-54.0, grove_y, 42.0)
-	place_model(parent, "res://assets/nature/props/statue_obelisk.glb", grove_pos, 0.0, 3.4,
+	place_model(parent, "res://assets/environments/dungeons/statue-obelisk.glb", grove_pos, 0.0, 3.4,
 		Vector3(1.5, 4.2, 1.5), "SacredGroveShrine")
 	_add_omni_light(parent, grove_pos + Vector3(0.0, 2.2, 0.0), Color(0.42, 0.82, 1.0), 1.3, 9.0)
 
@@ -531,14 +531,14 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
 		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
 
-	build_multimesh(parent, "res://assets/nature/trees/tree_oak.glb", oak_xforms, "ForestOaks", true)
-	build_multimesh(parent, "res://assets/nature/trees/TreeHigh001.glb", dense_xforms, "ForestCanopyTrees", true)
-	build_multimesh(parent, "res://assets/nature/trees/tree_pineTallA.glb", pine_xforms, "HighlandPines", true)
-	build_multimesh(parent, "res://assets/nature/trees/tree_thin.glb", birch_xforms, "LakesideBirches", true)
-	build_multimesh(parent, "res://assets/nature/rocks/Rock001.glb", rock_xforms, "WorldRocks", false, 95.0)
-	build_multimesh(parent, "res://assets/nature/bushes/plant_bushLarge.glb", bush_xforms, "ForestBushes", false, 68.0)
-	build_multimesh(parent, "res://assets/nature/bushes/flower_yellowA.glb", flower_xforms, "MeadowFlowers", false, 58.0)
-	build_multimesh(parent, "res://assets/nature/bushes/Reed001.glb", reed_xforms, "LakeReeds", false, 70.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-oak.glb", oak_xforms, "ForestOaks", true)
+	build_multimesh(parent, "res://assets/environments/forests/tree-detailed-dark.glb", dense_xforms, "ForestCanopyTrees", true)
+	build_multimesh(parent, "res://assets/environments/forests/tree-pinetalla-detailed.glb", pine_xforms, "HighlandPines", true)
+	build_multimesh(parent, "res://assets/environments/forests/tree-thin.glb", birch_xforms, "LakesideBirches", true)
+	build_multimesh(parent, "res://assets/environments/mountains/rock-largea.glb", rock_xforms, "WorldRocks", false, 95.0)
+	build_multimesh(parent, "res://assets/environments/forests/plant-bushlarge.glb", bush_xforms, "ForestBushes", false, 68.0)
+	build_multimesh(parent, "res://assets/environments/forests/flower-yellowa.glb", flower_xforms, "MeadowFlowers", false, 58.0)
+	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 70.0)
 
 	# Batched single StaticBody3D for tree trunks within playable elevation
 	var trunk_body := StaticBody3D.new()
@@ -664,7 +664,7 @@ static func build_guild_interior(parent: Node3D) -> Dictionary:
 		for px: float in [-6.8, 6.8]:
 			place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", origin + Vector3(px, 0.0, pz), 0.0, 1.35,
 				Vector3(0.9, 5.2, 0.9), "GuildPillar")
-			place_model(parent, "res://assets/dungeon/props/banner_blue.glb", origin + Vector3(px * 0.92, 2.2, pz),
+			place_model(parent, "res://assets/environments/dungeons/banner_blue.glb", origin + Vector3(px * 0.92, 2.2, pz),
 				PI * 0.5 if px < 0 else -PI * 0.5, 1.2)
 
 	# 1) Reception Counter (West-Center)
@@ -682,7 +682,7 @@ static func build_guild_interior(parent: Node3D) -> Dictionary:
 	_solid_box(parent, origin + Vector3(0.0, 0.0, -8.8), Vector3(7.6, 0.35, 4.2), Color(0.44, 0.41, 0.38), "MasterDais")
 	place_model(parent, AssetLibrary.FURNITURE_DIR + "table_small.gltf", origin + Vector3(0.0, 0.35, -8.8), 0.0, 1.6,
 		Vector3(1.8, 1.0, 1.2), "MasterDesk")
-	place_model(parent, "res://assets/dungeon/props/banner_shield_blue.glb", origin + Vector3(0.0, 2.8, -11.6), 0.0, 1.8)
+	place_model(parent, "res://assets/environments/dungeons/banner_blue.glb", origin + Vector3(0.0, 2.8, -11.6), 0.0, 1.8)
 
 	# 4) Quartermaster Armory Corner (Northwest) & Training Area (Southeast)
 	place_model(parent, AssetLibrary.HEXAGON_DIR + "weaponrack.gltf", origin + Vector3(-7.6, 0.0, -5.5), PI * 0.5, 3.6)
@@ -741,8 +741,8 @@ static func build_dungeon(parent: Node3D) -> Dictionary:
 	# Columns, Rubble, Banners & Torches
 	for p_off: Vector3 in [Vector3(1.0, 0.0, 1.0), Vector3(7.0, 0.0, 1.0), Vector3(-2.5, 0.0, 30.0), Vector3(10.5, 0.0, 30.0), Vector3(-2.5, 0.0, 38.0), Vector3(10.5, 0.0, 38.0)]:
 		place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", origin + p_off, 0.0, 1.1, Vector3(0.8, 4.0, 0.8))
-	place_model(parent, "res://assets/dungeon/props/banner_red.glb", origin + Vector3(0.5, 2.2, 39.6), PI, 1.4)
-	place_model(parent, "res://assets/dungeon/props/banner_red.glb", origin + Vector3(7.5, 2.2, 39.6), PI, 1.4)
+	place_model(parent, "res://assets/environments/dungeons/banner_red.glb", origin + Vector3(0.5, 2.2, 39.6), PI, 1.4)
+	place_model(parent, "res://assets/environments/dungeons/banner_red.glb", origin + Vector3(7.5, 2.2, 39.6), PI, 1.4)
 
 	for torch_pos: Vector3 in [Vector3(0.4, 2.0, 2.0), Vector3(5.6, 2.0, 12.0), Vector3(0.4, 2.0, 20.0), Vector3(14.5, 2.0, 20.0), Vector3(-3.4, 2.0, 34.0), Vector3(11.4, 2.0, 34.0)]:
 		place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", origin + torch_pos, 0.0, 1.0)

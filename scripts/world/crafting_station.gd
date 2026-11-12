@@ -24,11 +24,11 @@ func _build_visual() -> void:
 		table.position = Vector3(0.0, 0.425, 0.0)
 		table.material_override = ProceduralModels.make_material(Color(0.36, 0.24, 0.15), 0.88)
 		root.add_child(table)
-		var bottle := AssetLibrary.instantiate("res://assets/dungeon/props/bottle_A_green.glb", 1.1)
+		var bottle := AssetLibrary.instantiate("res://assets/weapons/mug_full.gltf", 1.1)
 		if bottle != null:
 			bottle.position = Vector3(-0.25, 0.86, 0.0)
 			root.add_child(bottle)
-		var candle := AssetLibrary.instantiate("res://assets/dungeon/props/candle_lit.glb", 1.0)
+		var candle := AssetLibrary.instantiate("res://assets/models/dungeon/candle_lit.glb", 1.0)
 		if candle != null:
 			candle.position = Vector3(0.32, 0.86, 0.1)
 			root.add_child(candle)

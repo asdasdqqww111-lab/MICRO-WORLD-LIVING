@@ -11,6 +11,20 @@ var points: int = 0
 func rank_of(skill_id: String) -> int:
 	return int(ranks.get(skill_id, 0))
 
+func add_points(amount: int) -> void:
+	if amount > 0:
+		points += amount
+		changed.emit()
+
+func can_unlock(skill_id: String) -> bool:
+	return can_upgrade(skill_id)
+
+func unlock(skill_id: String) -> bool:
+	return upgrade(skill_id)
+
+func spent_points() -> int:
+	return total_spent_points()
+
 func is_unlocked(skill_id: String) -> bool:
 	return rank_of(skill_id) > 0
 

@@ -4,25 +4,41 @@ extends Node
 
 const SFX_PATHS := {
 	"sword_swing": "res://assets/sounds/sword_swing.wav",
+	"sword_swing_1": "res://assets/sounds/sword_swing.wav",
+	"sword_swing_2": "res://assets/sounds/sword_swing.wav",
 	"heavy_swing": "res://assets/sounds/heavy_swing.wav",
+	"heavy_slash": "res://assets/sounds/heavy_swing.wav",
 	"hit_impact": "res://assets/sounds/hit_impact.wav",
+	"hit_flesh": "res://assets/sounds/hit_impact.wav",
+	"hit_armor": "res://assets/sounds/shield_block.wav",
 	"shield_block": "res://assets/sounds/shield_block.wav",
 	"dodge_whoosh": "res://assets/sounds/dodge_whoosh.wav",
+	"dodge_roll": "res://assets/sounds/dodge_whoosh.wav",
+	"spell_cast": "res://assets/sounds/spell_fire.wav",
 	"spell_fire": "res://assets/sounds/spell_fire.wav",
 	"spell_ice": "res://assets/sounds/spell_ice.wav",
 	"spell_lightning": "res://assets/sounds/spell_lightning.wav",
 	"footstep_grass": "res://assets/sounds/footstep_grass.wav",
 	"footstep_stone": "res://assets/sounds/footstep_stone.wav",
 	"pickup_item": "res://assets/sounds/pickup_item.wav",
+	"coin_pickup": "res://assets/sounds/pickup_item.wav",
+	"equip_gear": "res://assets/sounds/craft_anvil.wav",
 	"chest_open": "res://assets/sounds/chest_open.wav",
 	"quest_complete": "res://assets/sounds/quest_complete.wav",
 	"level_up": "res://assets/sounds/level_up.wav",
 	"craft_anvil": "res://assets/sounds/craft_anvil.wav",
+	"gather_mine": "res://assets/sounds/craft_anvil.wav",
+	"gather_chop": "res://assets/sounds/heavy_swing.wav",
+	"gather_herb": "res://assets/sounds/pickup_item.wav",
+	"npc_greet": "res://assets/sounds/ui_click.wav",
 	"ui_click": "res://assets/sounds/ui_click.wav",
 }
 
 const MUSIC_PATHS := {
 	"village": "res://assets/music/music_eldoria_village.wav",
+	"guild": "res://assets/music/music_eldoria_village.wav",
+	"house": "res://assets/music/music_eldoria_village.wav",
+	"menu": "res://assets/music/music_eldoria_village.wav",
 	"dungeon": "res://assets/music/music_dungeon_crypt.wav",
 }
 const AMBIENCE_PATH := "res://assets/music/ambient_wind_river.wav"
@@ -59,10 +75,11 @@ func _build_players() -> void:
 		p.bus = "SFX"
 		add_child(p)
 		_sfx_pool.append(p)
+
 	_music_player = AudioStreamPlayer.new()
 	_music_player.name = "MusicPlayer"
 	_music_player.bus = "Music"
-	_music_player.volume_db = -6.0
+	_music_player.volume_db = -8.0
 	add_child(_music_player)
 	_music_player.finished.connect(func() -> void:
 		if not _current_music.is_empty():
@@ -118,6 +135,11 @@ func play_music(track_key: String) -> void:
 	_current_music = track_key
 	_music_player.stream = stream
 	_music_player.play()
+
+func play_music_for_zone(zone_id: String) -> void:
+	var key := "dungeon" if zone_id == "dungeon" else ("menu" if zone_id == "menu" else "village")
+	play_music(key)
+	set_ambience_active(zone_id == "" or zone_id == "village")
 
 func set_ambience_active(active: bool) -> void:
 	if _ambience_player == null:

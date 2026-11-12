@@ -104,27 +104,29 @@ static func get_recipe(recipe_id: String) -> Dictionary:
 			return r
 	return {}
 
-static func can_craft(recipe_id: String, inventory: Inventory) -> bool:
+static func can_craft(recipe_id: String, inventory: Inventory = null) -> bool:
+	var inv: Inventory = inventory if inventory != null else (GameManager.inventory if GameManager != null else null)
 	var r := get_recipe(recipe_id)
-	if r.is_empty() or inventory == null:
+	if r.is_empty() or inv == null:
 		return false
 	for ing: Dictionary in r.get("ingredients", []):
-		if inventory.count_item(String(ing["id"])) < int(ing["count"]):
+		if inv.count_item(String(ing["id"])) < int(ing["count"]):
 			return false
-	return not inventory.is_full()
+	return not inv.is_full()
 
-static func craft(recipe_id: String, inventory: Inventory, craft_skill_rank: int = 0) -> Dictionary:
+static func craft(recipe_id: String, inventory: Inventory = null, craft_skill_rank: int = 0) -> Variant:
+	var inv: Inventory = inventory if inventory != null else (GameManager.inventory if GameManager != null else null)
 	var r := get_recipe(recipe_id)
-	if r.is_empty() or not can_craft(recipe_id, inventory):
-		return {}
+	if r.is_empty() or inv == null or not can_craft(recipe_id, inv):
+		return false
 	for ing: Dictionary in r.get("ingredients", []):
-		inventory.remove_item(String(ing["id"]), int(ing["count"]))
+		inv.remove_item(String(ing["id"]), int(ing["count"]))
 	var out_id := String(r["output_id"])
 	var out_count := int(r["output_count"])
 	var item_data := ItemDB.get_item(out_id)
 	if craft_skill_rank > 0 and item_data != null and item_data.is_consumable():
 		out_count += 1
-	inventory.add_item(out_id, out_count)
+	inv.add_item(out_id, out_count)
 	return {
 		"item_id": out_id,
 		"count": out_count,

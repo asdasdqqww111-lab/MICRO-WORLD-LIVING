@@ -18,6 +18,7 @@ var _draw_calls: int = 0
 var _triangles: int = 0
 var _nodes: float = 0.0
 var _fps: float = 0.0
+var _finished: bool = false
 
 class MockTouch:
 	extends Node
@@ -42,8 +43,16 @@ class MockTouch:
 		return false
 
 func _ready() -> void:
+	_watchdog()
 	await get_tree().process_frame
 	await _run_all()
+
+func _watchdog() -> void:
+	await get_tree().create_timer(110.0).timeout
+	if _finished:
+		return
+	_failures.append("WATCHDOG timeout (coroutine aborted on script error)")
+	_report()
 
 func _collect_multimeshes(node: Node, found: Array) -> void:
 	if node is MultiMeshInstance3D:
@@ -108,15 +117,15 @@ func _test_databases() -> void:
 		if not valid_slots.has(item.equip_slot):
 			valid = false
 	_check(valid, "every item resource has id/name/stack and a valid 5-slot equip_slot")
-	_check(ItemDB.has("rusty_sword") and ItemDB.has("oak_shield") and ItemDB.has("emerald_ring") and ItemDB.has("eldoria_relic_blade"),
-		"core & legendary items exist across weapon/shield/accessory")
+	_check(ItemDB.has("rusty_sword") and ItemDB.has("oak_shield") and ItemDB.has("guild_ring") and ItemDB.has("eldoria_mythic_blade"),
+		"core & mythic items exist across weapon/shield/accessory")
 	for creature: CreatureData in CreatureDB.all_creatures():
 		if not creature.model_path.is_empty():
 			_check(AssetLibrary.has_model(creature.model_path),
 				"model exists for creature '%s'" % creature.id)
 	_check(QuestDB.get_quest("skeleton_menace") != null, "quest 'skeleton_menace' present")
-	_check(QuestDB.get_quest("main_welcome_guild") != null, "main quest 'main_welcome_guild' present")
-	_check(QuestDB.get_quest("guild_f_slimes_goblins") != null, "guild contract 'guild_f_slimes_goblins' present")
+	_check(QuestDB.get_quest("main_guild_call") != null, "main quest 'main_guild_call' present")
+	_check(QuestDB.get_quest("contract_forest_cull") != null, "guild contract 'contract_forest_cull' present")
 
 # --- progression & 24-node skill tree ----------------------------------------
 
@@ -133,11 +142,11 @@ func _test_progression_and_skill_tree() -> void:
 
 	var tree := SkillTree.new()
 	tree.add_points(5)
-	_check(not tree.can_unlock("cleave_strike"), "tier-1 skill locked before prerequisite")
-	_check(tree.unlock("mighty_blow"), "tier-0 combat skill unlocks")
-	_check(tree.can_unlock("cleave_strike"), "tier-1 combat skill unlocks after mighty_blow")
-	_check(tree.unlock("cleave_strike"), "cleave_strike unlocked")
-	_check(tree.points == 3 and tree.spent_points() == 2, "skill points tracked accurately")
+	_check(not tree.can_upgrade("heavy_cleave", 5), "tier-1 skill locked before prerequisite")
+	_check(tree.upgrade("mighty_blow", 5), "tier-0 warrior skill unlocks")
+	_check(tree.can_upgrade("heavy_cleave", 5), "tier-1 warrior skill unlocks after mighty_blow")
+	_check(tree.upgrade("heavy_cleave", 5), "heavy_cleave unlocked")
+	_check(tree.points == 3 and tree.total_spent_points() == 2, "skill points tracked accurately")
 	var refunded := tree.reset_all()
 	_check(refunded == 2 and tree.points == 5 and tree.ranks.is_empty(), "skill tree reset refunds all spent points")
 
@@ -147,21 +156,21 @@ func _test_guild_and_crafting() -> void:
 	_section("Adventurers Guild (Ranks F-S) & Crafting")
 	GameManager.start_new_game()
 	_check(not GameManager.guild.registered, "new hero starts unregistered at Guild")
-	_check(GameManager.guild.register_member(), "hero registers as Rank F adventurer")
+	_check(GameManager.guild.register_adventurer(), "hero registers as Rank F adventurer")
 	_check(GameManager.guild.current_rank() == "F", "initial Guild rank is F")
 	GameManager.guild.add_reputation(90)
 	GameManager.guild.contracts_completed = 2
-	_check(GameManager.guild.can_promote(), "eligible for Rank E promotion")
-	_check(GameManager.guild.promote() and GameManager.guild.current_rank() == "E", "promoted to Rank E")
+	_check(GameManager.guild.can_promote(2), "eligible for Rank E promotion")
+	var promo: Dictionary = GameManager.guild.promote(2) as Dictionary
+	_check(not promo.is_empty() and GameManager.guild.current_rank() == "E", "promoted to Rank E")
 	_check(GameManager.guild.shop_discount_multiplier() < 1.0, "Guild rank grants merchant discount")
 
 	# Crafting test
-	GameManager.gain_item("iron_ore", 5)
+	GameManager.gain_item("iron_ingot", 3)
 	GameManager.gain_item("wood", 3)
-	GameManager.gain_gold(50)
-	_check(CraftingDB.can_craft("forge_iron_sword"), "can craft Iron Broadsword with materials")
-	_check(CraftingDB.craft("forge_iron_sword"), "forging Iron Broadsword succeeds")
-	_check(GameManager.inventory.count_item("iron_sword") >= 1, "crafted Iron Broadsword added to inventory")
+	_check(CraftingDB.can_craft("forge_iron_sword", GameManager.inventory), "can craft Iron Sword with materials")
+	_check(GameManager.craft_recipe("forge_iron_sword"), "forging Iron Sword succeeds")
+	_check(GameManager.inventory.count_item("iron_sword") >= 1, "crafted Iron Sword added to inventory")
 
 # --- localization & audio ----------------------------------------------------
 
@@ -189,11 +198,11 @@ func _test_inventory() -> void:
 	inv.clear()
 	inv.add_item("rusty_sword", 1)
 	inv.add_item("oak_shield", 1)
-	inv.add_item("emerald_ring", 1)
+	inv.add_item("guild_ring", 1)
 	_check(inv.equip("rusty_sword"), "equip rusty_sword in weapon slot")
 	_check(inv.equip("oak_shield"), "equip oak_shield in shield slot")
-	_check(inv.equip("emerald_ring"), "equip emerald_ring in accessory slot")
-	_check(inv.equipped("shield") == "oak_shield" and inv.equipped("accessory") == "emerald_ring",
+	_check(inv.equip("guild_ring"), "equip guild_ring in accessory slot")
+	_check(inv.equipped("shield") == "oak_shield" and inv.equipped("accessory") == "guild_ring",
 		"5-slot equipment holds shield + accessory")
 	inv.add_item("iron_sword", 1)
 	_check(inv.equip("iron_sword"), "equip iron_sword over rusty_sword")
@@ -486,7 +495,7 @@ func _test_game_scene() -> void:
 		await _wait_physics(3)
 		_check(player.zone == "house" and world.house_root.visible, "door moves player into house zone")
 
-	var boss: Creature = world._creatures.get("crypt_boss_malakor", null) as Creature
+	var boss: Creature = world._creatures.get("malakor_crypt_boss", null) as Creature
 	_check(boss != null and boss.data.is_boss, "Malakor the Bone Warden boss exists in Sunken Crypt")
 
 	_draw_calls = int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
@@ -550,6 +559,7 @@ func _test_game_scene() -> void:
 # --- report ------------------------------------------------------------------
 
 func _report() -> void:
+	_finished = true
 	var info := Engine.get_version_info()
 	var lines: PackedStringArray = []
 	lines.append("MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.0)")

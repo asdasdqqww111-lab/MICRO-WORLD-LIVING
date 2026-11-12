@@ -10,6 +10,10 @@ on:
     branches: ["arena/**"]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -35,7 +39,7 @@ jobs:
         run: godot --headless --path . --import
 
       - name: Headless acceptance tests
-        run: godot --headless --path . tests/test_runner.tscn
+        run: timeout 180 godot --headless --path . tests/test_runner.tscn
 
       - name: Renderer + probes (GLES3 over Mesa)
         run: |

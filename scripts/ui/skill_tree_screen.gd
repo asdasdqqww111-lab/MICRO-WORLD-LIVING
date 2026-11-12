@@ -1,38 +1,57 @@
 class_name SkillTreeScreen
 extends MenuScreen
-## Interactive 24-Node 4-Branch RPG Skill Tree (Section 17):
-##   - Branches: Warrior, Mage, Ranger, Survival (6 skills each = 24 skills)
-##   - Zoomable (0.75x..1.30x) & scrollable node graph with custom _draw()
-##     prerequisite connection lines (Gold = unlocked, Cyan = available, Grey = locked)
-##   - Node inspector with prerequisites, level gate, rank, cost & Upgrade button
-##   - Confirmed Skill Reset modal (refunds all spent skill points)
-
-class SkillGraphCanvas extends Control:
-	var edges: Array = []   # [{"from": Vector2, "to": Vector2, "color": Color, "width": float}]
-
-	func _draw() -> void:
-		for e: Dictionary in edges:
-			var a := e["from"] as Vector2
-			var b := e["to"] as Vector2
-			var col := e["color"] as Color
-			var w := float(e["width"])
-			var mid_y := (a.y + b.y) * 0.5
-			draw_line(a, Vector2(a.x, mid_y), col, w, true)
-			draw_line(Vector2(a.x, mid_y), Vector2(b.x, mid_y), col, w, true)
-			draw_line(Vector2(b.x, mid_y), b, col, w, true)
-			draw_circle(b, w * 1.4, col)
+## Interactive 4-Branch 24-Node Skill Tree UI:
+##   - 4 Branches: Warrior, Mage, Ranger, Survival (6 tiered nodes each = 24 nodes)
+##   - Custom _draw() prerequisite connector lines (gold=unlocked, emerald=ready, dim=locked)
+##   - Zoom In / Out (75% - 135%) & Smooth Scrollable Canvas
+##   - Detailed Right-Side Node Inspector + Unlock Button + Confirmed Reset Dialog
 
 const BRANCH_META := {
-	"warrior": {"label": "⚔ Warrior", "color": Color(0.92, 0.42, 0.34)},
-	"mage": {"label": "🔥 Mage", "color": Color(0.42, 0.70, 1.0)},
-	"ranger": {"label": "🏹 Ranger", "color": Color(0.46, 0.84, 0.50)},
-	"survival": {"label": "🌿 Survival", "color": Color(0.92, 0.76, 0.34)},
+	"warrior": {"key": "branch_warrior", "icon": "⚔", "color": Color(0.95, 0.45, 0.35), "col_x": 0},
+	"mage": {"key": "branch_mage", "icon": "✦", "color": Color(0.42, 0.68, 1.0), "col_x": 1},
+	"ranger": {"key": "branch_ranger", "icon": "🏹", "color": Color(0.92, 0.78, 0.38), "col_x": 2},
+	"survival": {"key": "branch_survival", "icon": "🌿", "color": Color(0.38, 0.88, 0.56), "col_x": 3},
 }
 
-var _branch_filter: String = "all"
-var _zoom: float = 1.0
-var _selected_skill_id: String = "mighty_blow"
-var _confirming_reset: bool = false
+class TreeCanvas extends Control:
+	var screen_ref: SkillTreeScreen
+
+	func _draw() -> void:
+		if screen_ref == null:
+			return
+		var z := screen_ref.zoom_scale
+		for skill_id: String in screen_ref.node_buttons.keys():
+			var skill := SkillDB.get_skill(skill_id)
+			var to_btn := screen_ref.node_buttons[skill_id] as Control
+			if skill == null or to_btn == null:
+				continue
+			var to_center := to_btn.position + to_btn.size * 0.5
+			var rank := GameManager.skills.rank_of(skill_id)
+			var can := GameManager.skills.can_upgrade(skill_id)
+			for req_id: String in skill.prerequisites:
+				if not screen_ref.node_buttons.has(req_id):
+					continue
+				var from_btn := screen_ref.node_buttons[req_id] as Control
+				var from_center := from_btn.position + from_btn.size * 0.5
+				var req_rank := GameManager.skills.rank_of(req_id)
+				var line_col := Color(0.28, 0.34, 0.42, 0.65)
+				var width := 2.5 * z
+				if rank > 0 and req_rank > 0:
+					line_col = UIFactory.GOLD
+					width = 4.0 * z
+				elif can and req_rank > 0:
+					line_col = UIFactory.ACCENT
+					width = 3.2 * z
+				draw_line(from_center, to_center, Color(0, 0, 0, 0.55), width + 2.5)
+				draw_line(from_center, to_center, line_col, width, true)
+
+var zoom_scale: float = 1.0
+var selected_skill_id: String = "mighty_blow"
+var node_buttons: Dictionary = {}
+var _canvas: TreeCanvas
+var _inspector_box: VBoxContainer
+var _points_label: Label
+var _confirm_reset_box: HBoxContainer
 
 func _ready() -> void:
 	configure("Skill Tree", "skills")
@@ -43,249 +62,199 @@ func _ready() -> void:
 
 func refresh() -> void:
 	clear_content()
-	SkillDB.ensure_loaded()
+	node_buttons.clear()
 
-	# Top Control Bar: Available Skill Points, Branch Filter Tabs, Zoom Controls & Reset
-	var top_bar := HBoxContainer.new()
-	top_bar.add_theme_constant_override("separation", 8)
-	content.add_child(top_bar)
+	# Top Bar: Available Points, Spent Points, Zoom Controls, Reset Button
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 12)
+	content.add_child(top)
 
-	var pts_lbl := UIFactory.label("%s: %d   |   %s %d" % [
+	_points_label = UIFactory.label("%s: %d   (Lv %d · Spent: %d)" % [
 		Localization.tr_key("skill_points"), GameManager.skills.points,
-		Localization.tr_key("level"), GameManager.progression.level], 18, UIFactory.GOLD)
-	top_bar.add_child(pts_lbl)
-
-	var spacer_ctrl := Control.new()
-	spacer_ctrl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top_bar.add_child(spacer_ctrl)
-
-	for bf: String in ["all", "warrior", "mage", "ranger", "survival"]:
-		var b_title := "All (24)" if bf == "all" else Localization.tr_key("branch_" + bf)
-		var tab := UIFactory.button(b_title, 38)
-		tab.toggle_mode = true
-		tab.button_pressed = (_branch_filter == bf)
-		tab.pressed.connect(func() -> void:
-			_branch_filter = bf
-			_confirming_reset = false
-			refresh())
-		top_bar.add_child(tab)
+		GameManager.progression.level, GameManager.skills.total_spent_points()
+	], 18, UIFactory.GOLD)
+	_points_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(_points_label)
 
 	var zoom_out := UIFactory.button("−", 38)
-	zoom_out.custom_minimum_size = Vector2(40, 38)
+	zoom_out.custom_minimum_size = Vector2(44, 38)
 	zoom_out.pressed.connect(func() -> void:
-		_zoom = clampf(_zoom - 0.15, 0.75, 1.30)
+		zoom_scale = clampf(zoom_scale - 0.15, 0.75, 1.35)
 		refresh())
-	top_bar.add_child(zoom_out)
+	top.add_child(zoom_out)
+
+	top.add_child(UIFactory.label("%d%%" % int(round(zoom_scale * 100.0)), 15, UIFactory.TEXT_DIM))
 
 	var zoom_in := UIFactory.button("+", 38)
-	zoom_in.custom_minimum_size = Vector2(40, 38)
+	zoom_in.custom_minimum_size = Vector2(44, 38)
 	zoom_in.pressed.connect(func() -> void:
-		_zoom = clampf(_zoom + 0.15, 0.75, 1.30)
+		zoom_scale = clampf(zoom_scale + 0.15, 0.75, 1.35)
 		refresh())
-	top_bar.add_child(zoom_in)
+	top.add_child(zoom_in)
 
-	content.add_child(UIFactory.hsep())
+	var reset_btn := UIFactory.button(Localization.tr_key("reset_skills"), 38)
+	reset_btn.disabled = GameManager.skills.total_spent_points() == 0
+	reset_btn.pressed.connect(func() -> void:
+		if _confirm_reset_box != null:
+			_confirm_reset_box.visible = not _confirm_reset_box.visible)
+	top.add_child(reset_btn)
 
-	# Split Body: Scrollable/Zoomable Interactive Graph (Left) + Skill Inspector (Right)
+	# Confirmation Banner for Skill Reset
+	_confirm_reset_box = HBoxContainer.new()
+	_confirm_reset_box.visible = false
+	_confirm_reset_box.add_theme_constant_override("separation", 10)
+	_confirm_reset_box.add_child(UIFactory.label("Refund all %d spent skill points?" % GameManager.skills.total_spent_points(), 15, UIFactory.GOLD))
+	var yes_btn := UIFactory.button(Localization.tr_key("reset_confirm"), 36)
+	yes_btn.pressed.connect(func() -> void:
+		var refunded := GameManager.skills.reset_all()
+		GameManager.recalc_stats()
+		EventBus.skill_tree_changed.emit()
+		EventBus.notify.emit("Refunded %d Skill Points!" % refunded)
+		refresh())
+	_confirm_reset_box.add_child(yes_btn)
+	content.add_child(_confirm_reset_box)
+
+	# Split: Left = Scrollable 4-Branch Tree Canvas | Right = Node Inspector Card
 	var split := HBoxContainer.new()
+	split.add_theme_constant_override("separation", 14)
 	split.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	split.custom_minimum_size = Vector2(0, 430)
-	split.add_theme_constant_override("separation", 12)
 	content.add_child(split)
 
-	var graph_scroll := ScrollContainer.new()
-	graph_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	graph_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	graph_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	graph_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	split.add_child(graph_scroll)
+	var tree_scroll := ScrollContainer.new()
+	tree_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tree_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	tree_scroll.custom_minimum_size = Vector2(680, 430)
+	split.add_child(tree_scroll)
 
-	var canvas := _build_graph_canvas()
-	graph_scroll.add_child(canvas)
+	_canvas = TreeCanvas.new()
+	_canvas.screen_ref = self
+	var col_w := 196.0 * zoom_scale
+	var row_h := 94.0 * zoom_scale
+	_canvas.custom_minimum_size = Vector2(col_w * 4.0 + 36.0, row_h * 4.6 + 64.0)
+	tree_scroll.add_child(_canvas)
 
-	var inspector := UIFactory.card_panel()
-	inspector.custom_minimum_size = Vector2(290, 0)
-	split.add_child(inspector)
-	_populate_inspector(inspector)
+	# Branch Column Headers & 24 Skill Nodes
+	for b_key: String in ["warrior", "mage", "ranger", "survival"]:
+		var meta: Dictionary = BRANCH_META[b_key]
+		var col_idx := int(meta["col_x"])
+		var base_x := 16.0 + float(col_idx) * col_w
 
-func _build_graph_canvas() -> SkillGraphCanvas:
-	var canvas := SkillGraphCanvas.new()
-	var branches_to_show: Array[String] = []
-	if _branch_filter == "all":
-		branches_to_show.assign(SkillDB.BRANCHES)
-	else:
-		branches_to_show.append(_branch_filter)
-
-	var col_w := 315.0 * _zoom
-	var tier_h := 118.0 * _zoom
-	var node_w := 136.0 * _zoom
-	var node_h := 74.0 * _zoom
-	canvas.custom_minimum_size = Vector2(maxf(580.0, float(branches_to_show.size()) * col_w + 40.0), 4.0 * tier_h + 70.0)
-
-	var centers: Dictionary = {}   # skill_id -> Vector2
-
-	for b_idx: int in branches_to_show.size():
-		var b_name := branches_to_show[b_idx]
-		var meta: Dictionary = BRANCH_META[b_name]
-		var base_x := 20.0 + float(b_idx) * col_w
-
-		var hdr := UIFactory.label(Localization.tr_key("branch_" + b_name), int(18.0 * _zoom), meta["color"] as Color)
+		var hdr := UIFactory.label("%s %s" % [String(meta["icon"]), Localization.tr_key(String(meta["key"]))],
+			int(17.0 * zoom_scale), meta["color"] as Color)
 		hdr.position = Vector2(base_x, 8.0)
-		hdr.custom_minimum_size = Vector2(col_w - 20.0, 28.0)
+		hdr.size = Vector2(col_w - 14.0, 30.0)
 		hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		canvas.add_child(hdr)
+		_canvas.add_child(hdr)
 
-		var branch_skills := SkillDB.skills_for_branch(b_name)
-		for skill: SkillData in branch_skills:
-			var nx := base_x + float(skill.column) * (node_w + 16.0 * _zoom)
-			if skill.tier >= 2 and _has_single_node_in_tier(branch_skills, skill.tier):
-				nx = base_x + (node_w + 16.0 * _zoom) * 0.5
-			var ny := 46.0 + float(skill.tier) * tier_h
-			centers[skill.id] = Vector2(nx + node_w * 0.5, ny + node_h * 0.5)
+		var branch_skills := SkillDB.skills_for_branch(b_key)
+		var tier_buckets: Dictionary = {}
+		for s: SkillData in branch_skills:
+			if not tier_buckets.has(s.tier):
+				tier_buckets[s.tier] = []
+			(tier_buckets[s.tier] as Array).append(s)
 
-			var btn := _create_skill_node_button(skill, Vector2(nx, ny), Vector2(node_w, node_h), meta["color"] as Color)
-			canvas.add_child(btn)
+		for tier_key: int in tier_buckets.keys():
+			var row_list: Array = tier_buckets[tier_key]
+			for sub_idx: int in row_list.size():
+				var s: SkillData = row_list[sub_idx]
+				var btn := _make_node_button(s, meta["color"] as Color)
+				var node_w := (col_w - 22.0) if row_list.size() == 1 else (col_w * 0.47)
+				var node_h := 64.0 * zoom_scale
+				var nx := base_x + (0.0 if row_list.size() == 1 else float(sub_idx) * (node_w + 8.0))
+				var ny := 48.0 + float(tier_key) * row_h
+				btn.position = Vector2(nx, ny)
+				btn.size = Vector2(node_w, node_h)
+				btn.custom_minimum_size = Vector2(node_w, node_h)
+				_canvas.add_child(btn)
+				node_buttons[s.id] = btn
 
-	# Build prerequisite connection lines
-	var edges: Array = []
-	for b_name: String in branches_to_show:
-		for skill: SkillData in SkillDB.skills_for_branch(b_name):
-			if not centers.has(skill.id):
-				continue
-			var dst := centers[skill.id] as Vector2
-			for pre_id: String in skill.prerequisites:
-				if not centers.has(pre_id):
-					continue
-				var src := centers[pre_id] as Vector2
-				var unlocked := GameManager.skills.rank_of(skill.id) > 0
-				var avail := GameManager.skills.rank_of(pre_id) > 0
-				var line_col := UIFactory.GOLD if unlocked else (Color(0.40, 0.80, 1.0, 0.9) if avail else Color(0.32, 0.36, 0.42, 0.75))
-				edges.append({
-					"from": src + Vector2(0.0, node_h * 0.48),
-					"to": dst - Vector2(0.0, node_h * 0.48),
-					"color": line_col,
-					"width": 3.2 if unlocked else 2.2,
-				})
-	canvas.edges = edges
-	canvas.queue_redraw()
-	return canvas
+	_canvas.queue_redraw()
 
-func _has_single_node_in_tier(list: Array[SkillData], tier: int) -> bool:
-	var c := 0
-	for s: SkillData in list:
-		if s.tier == tier:
-			c += 1
-	return c == 1
+	# Right Inspector Card
+	var inspector_card := UIFactory.card_panel()
+	inspector_card.custom_minimum_size = Vector2(290, 420)
+	split.add_child(inspector_card)
+	_inspector_box = VBoxContainer.new()
+	_inspector_box.add_theme_constant_override("separation", 8)
+	inspector_card.add_child(_inspector_box)
+	_populate_inspector()
 
-func _create_skill_node_button(skill: SkillData, pos: Vector2, sz: Vector2, branch_col: Color) -> Button:
+func _make_node_button(skill: SkillData, branch_col: Color) -> Button:
 	var rank := GameManager.skills.rank_of(skill.id)
-	var maxed := rank >= skill.max_rank
-	var can_up := GameManager.skills.can_upgrade(skill.id, GameManager.progression.level)
-	var title_txt := skill.title_ar if (Localization.is_arabic() and not skill.title_ar.is_empty()) else skill.title
+	var can := GameManager.skills.can_upgrade(skill.id)
+	var disp := skill.title_ar if (Localization.is_arabic() and not skill.title_ar.is_empty()) else skill.title
+	var label_txt := "%s %s\n[%d/%d]" % [skill.icon_glyph, disp, rank, skill.max_rank]
+	var b := UIFactory.button(label_txt, int(58.0 * zoom_scale))
+	b.add_theme_font_size_override("font_size", maxi(11, int(13.0 * zoom_scale)))
+	b.clip_text = true
 
-	var btn := Button.new()
-	btn.theme = UIFactory.theme()
-	btn.position = pos
-	btn.custom_minimum_size = sz
-	btn.size = sz
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.text = "%s %s\n[%d/%d]" % [skill.icon_glyph, title_txt, rank, skill.max_rank]
-	btn.add_theme_font_size_override("font_size", maxi(12, int(13.0 * _zoom)))
-
-	var sb := StyleBoxFlat.new()
-	sb.set_corner_radius_all(8)
-	sb.set_border_width_all(3 if _selected_skill_id == skill.id else 2)
-	if maxed:
-		sb.bg_color = Color(0.24, 0.20, 0.08, 0.96)
-		sb.border_color = UIFactory.GOLD
+	var fill := Color(0.11, 0.14, 0.19, 0.94)
+	var border := Color(0.32, 0.36, 0.44, 0.85)
+	if rank >= skill.max_rank:
+		fill = branch_col.darkened(0.55)
+		border = UIFactory.GOLD
 	elif rank > 0:
-		sb.bg_color = branch_col.darkened(0.68)
-		sb.border_color = branch_col.lightened(0.18)
-	elif can_up:
-		sb.bg_color = Color(0.14, 0.22, 0.30, 0.96)
-		sb.border_color = Color(0.45, 0.85, 1.0)
-	else:
-		sb.bg_color = Color(0.09, 0.10, 0.13, 0.88)
-		sb.border_color = Color(0.28, 0.30, 0.35)
-	if _selected_skill_id == skill.id:
-		sb.border_color = Color.WHITE
-	btn.add_theme_stylebox_override("normal", sb)
-	btn.add_theme_stylebox_override("hover", sb)
-	btn.add_theme_stylebox_override("pressed", sb)
+		fill = branch_col.darkened(0.65)
+		border = branch_col.lightened(0.25)
+	elif can:
+		fill = Color(0.14, 0.24, 0.20, 0.96)
+		border = UIFactory.ACCENT
+	if selected_skill_id == skill.id:
+		border = Color(1.0, 0.96, 0.76)
 
-	btn.pressed.connect(func() -> void:
-		_selected_skill_id = skill.id
-		_confirming_reset = false
-		if AudioManager != null:
-			AudioManager.play_sfx("ui_click", -5.0)
+	var sb := UIFactory.make_panel_style(fill, border, 2, 8, 4)
+	b.add_theme_stylebox_override("normal", sb)
+	b.add_theme_stylebox_override("hover", UIFactory.make_panel_style(fill.lightened(0.10), UIFactory.GOLD, 2, 8, 4))
+	b.pressed.connect(func() -> void:
+		selected_skill_id = skill.id
 		refresh())
-	return btn
+	return b
 
-func _populate_inspector(panel_box: PanelContainer) -> void:
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 8)
-	panel_box.add_child(box)
-
-	var skill := SkillDB.get_skill(_selected_skill_id)
+func _populate_inspector() -> void:
+	for c: Node in _inspector_box.get_children():
+		c.queue_free()
+	var skill := SkillDB.get_skill(selected_skill_id)
 	if skill == null:
-		box.add_child(UIFactory.label("Select a skill node", 16, UIFactory.TEXT_DIM))
+		_inspector_box.add_child(UIFactory.label("Select a skill node", 16, UIFactory.TEXT_DIM))
 		return
 
+	var meta: Dictionary = BRANCH_META.get(skill.branch, BRANCH_META["warrior"])
+	var disp := skill.title_ar if (Localization.is_arabic() and not skill.title_ar.is_empty()) else skill.title
+	_inspector_box.add_child(UIFactory.label("%s  %s" % [skill.icon_glyph, disp], 20, meta["color"] as Color))
 	var rank := GameManager.skills.rank_of(skill.id)
-	var title_txt := skill.title_ar if (Localization.is_arabic() and not skill.title_ar.is_empty()) else skill.title
-	box.add_child(UIFactory.label("%s  %s" % [skill.icon_glyph, title_txt], 20, UIFactory.GOLD))
-	box.add_child(UIFactory.label("%s · Rank %d / %d" % [
-		Localization.tr_key("branch_" + skill.branch), rank, skill.max_rank], 14, UIFactory.ACCENT))
-	box.add_child(UIFactory.hsep())
+	_inspector_box.add_child(UIFactory.label("Tier %d · Rank %d / %d · Cost %d SP" % [
+		skill.tier + 1, rank, skill.max_rank, skill.point_cost], 14, UIFactory.GOLD))
+	_inspector_box.add_child(UIFactory.hsep())
+	_inspector_box.add_child(UIFactory.wrapped_label(skill.description, 15, UIFactory.TEXT))
 
-	box.add_child(UIFactory.wrapped_label(skill.description, 15, UIFactory.TEXT))
-	box.add_child(UIFactory.label("Required Level: %d   |   Cost: %d pt" % [skill.required_level, skill.point_cost],
-		14, UIFactory.TEXT_DIM))
+	if skill.required_level > 1:
+		var lv_ok := GameManager.progression.level >= skill.required_level
+		_inspector_box.add_child(UIFactory.label("Requires Hero Level %d" % skill.required_level, 14,
+			UIFactory.ACCENT if lv_ok else UIFactory.DANGER))
 
 	if not skill.prerequisites.is_empty():
-		var pre_names: PackedStringArray = []
-		for pid: String in skill.prerequisites:
-			var ps := SkillDB.get_skill(pid)
-			var met := GameManager.skills.rank_of(pid) > 0
-			pre_names.append(("%s " % ("✔" if met else "✖")) + (ps.title if ps != null else pid))
-		box.add_child(UIFactory.wrapped_label("Requires: " + ", ".join(pre_names), 14,
-			UIFactory.ACCENT if GameManager.skills.prerequisites_met(skill.id) else UIFactory.DANGER))
+		var req_names: PackedStringArray = []
+		for req_id: String in skill.prerequisites:
+			var rs := SkillDB.get_skill(req_id)
+			req_names.append(rs.title if rs != null else req_id)
+		var req_met := GameManager.skills.prerequisites_met(skill.id)
+		_inspector_box.add_child(UIFactory.wrapped_label("Prerequisite: " + ", ".join(req_names), 14,
+			UIFactory.ACCENT if req_met else UIFactory.DANGER))
 
-	var upgrade_btn := UIFactory.button(
-		"Max Rank Reached" if rank >= skill.max_rank else ("%s (%d pt)" % [Localization.tr_key("unlock_skill"), skill.point_cost]), 46)
-	upgrade_btn.disabled = not GameManager.skills.can_upgrade(skill.id, GameManager.progression.level)
-	upgrade_btn.pressed.connect(func() -> void:
-		if GameManager.upgrade_skill(skill.id):
-			refresh())
-	box.add_child(upgrade_btn)
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_inspector_box.add_child(spacer)
 
-	box.add_child(UIFactory.spacer(8))
-	box.add_child(UIFactory.hsep())
-
-	# Confirmed Skill Reset Section
-	var spent := GameManager.skills.total_spent_points()
-	if not _confirming_reset:
-		var reset_btn := UIFactory.button("%s (%dg)" % [Localization.tr_key("reset_skills"), GameManager.SKILL_RESET_COST], 40)
-		reset_btn.disabled = spent <= 0
-		reset_btn.pressed.connect(func() -> void:
-			_confirming_reset = true
+	var can := GameManager.skills.can_upgrade(skill.id)
+	var unlock_btn := UIFactory.button(
+		"MAXED" if rank >= skill.max_rank else "%s (%d SP)" % [Localization.tr_key("unlock"), skill.point_cost], 48)
+	unlock_btn.disabled = not can
+	unlock_btn.pressed.connect(func() -> void:
+		if GameManager.skills.upgrade(skill.id):
+			GameManager.recalc_stats()
+			EventBus.skill_tree_changed.emit()
+			if AudioManager != null:
+				AudioManager.play_sfx("level_up")
+			EventBus.notify.emit("Unlocked %s (Rank %d)!" % [skill.title, GameManager.skills.rank_of(skill.id)])
 			refresh())
-		box.add_child(reset_btn)
-	else:
-		box.add_child(UIFactory.wrapped_label("Refund all %d spent skill points for %d Gold?" % [spent, GameManager.SKILL_RESET_COST], 14, UIFactory.GOLD))
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 6)
-		var yes_btn := UIFactory.button("Confirm Reset", 40)
-		yes_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		yes_btn.pressed.connect(func() -> void:
-			_confirming_reset = false
-			GameManager.reset_skill_tree(true)
-			refresh())
-		var no_btn := UIFactory.button("Cancel", 40)
-		no_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		no_btn.pressed.connect(func() -> void:
-			_confirming_reset = false
-			refresh())
-		row.add_child(yes_btn)
-		row.add_child(no_btn)
-		box.add_child(row)
+	_inspector_box.add_child(unlock_btn)

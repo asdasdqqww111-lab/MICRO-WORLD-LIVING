@@ -6,13 +6,13 @@ extends RefCounted
 const RANKS: Array[String] = ["F", "E", "D", "C", "B", "A", "S"]
 
 const RANK_REQUIREMENTS := {
-	"F": {"rep": 0, "level": 1, "title": "Novice Adventurer", "bonus_gold": 15, "reward_item": "health_potion"},
-	"E": {"rep": 80, "level": 2, "title": "Bronze Scout", "bonus_gold": 40, "reward_item": "mana_elixir"},
-	"D": {"rep": 200, "level": 3, "title": "Iron Vanguard", "bonus_gold": 75, "reward_item": "oak_shield"},
-	"C": {"rep": 380, "level": 5, "title": "Silver Pathfinder", "bonus_gold": 130, "reward_item": "guild_ring"},
-	"B": {"rep": 650, "level": 8, "title": "Gold Sentinel", "bonus_gold": 220, "reward_item": "guild_aegis"},
-	"A": {"rep": 1050, "level": 11, "title": "Mythril Champion", "bonus_gold": 360, "reward_item": "knight_plate"},
-	"S": {"rep": 1600, "level": 14, "title": "Grand Legend of Eldoria", "bonus_gold": 600, "reward_item": "eldoria_mythic_blade"},
+	"F": {"rep": 0, "level": 1, "contracts": 0, "title": "Novice Adventurer", "bonus_gold": 15, "reward_item": "health_potion"},
+	"E": {"rep": 80, "level": 1, "contracts": 1, "title": "Bronze Scout", "bonus_gold": 40, "reward_item": "mana_elixir"},
+	"D": {"rep": 200, "level": 3, "contracts": 3, "title": "Iron Vanguard", "bonus_gold": 75, "reward_item": "oak_shield"},
+	"C": {"rep": 380, "level": 5, "contracts": 5, "title": "Silver Pathfinder", "bonus_gold": 130, "reward_item": "guild_ring"},
+	"B": {"rep": 650, "level": 8, "contracts": 8, "title": "Gold Sentinel", "bonus_gold": 220, "reward_item": "guild_aegis"},
+	"A": {"rep": 1050, "level": 11, "contracts": 11, "title": "Mythril Champion", "bonus_gold": 360, "reward_item": "knight_plate"},
+	"S": {"rep": 1600, "level": 14, "contracts": 15, "title": "Grand Legend of Eldoria", "bonus_gold": 600, "reward_item": "eldoria_mythic_blade"},
 }
 
 var registered: bool = false
@@ -48,10 +48,19 @@ func register_adventurer() -> bool:
 	reputation = maxi(reputation, 10)
 	return true
 
+func register_member() -> bool:
+	return register_adventurer()
+
 func add_reputation(amount: int) -> void:
 	if amount <= 0:
 		return
 	reputation += amount
+
+func active_contract_limit() -> int:
+	return 2 + mini(rank_index, 4)
+
+func can_accept_more_contracts(active_count: int) -> bool:
+	return registered and active_count < active_contract_limit()
 
 func next_rank() -> String:
 	if not registered:
@@ -60,14 +69,31 @@ func next_rank() -> String:
 		return ""
 	return RANKS[rank_index + 1]
 
-func can_promote(player_level: int) -> bool:
+func next_promotion_requirements() -> Dictionary:
+	var nxt := next_rank()
+	if nxt.is_empty():
+		return {}
+	var req: Dictionary = RANK_REQUIREMENTS[nxt]
+	return {
+		"next_rank": nxt,
+		"rep": int(req["rep"]),
+		"level": int(req["level"]),
+		"contracts": int(req.get("contracts", 1)),
+	}
+
+func can_promote(player_level: int = -1) -> bool:
 	if not registered or rank_index + 1 >= RANKS.size():
 		return false
+	var lv := player_level
+	if lv < 0 and GameManager != null and GameManager.progression != null:
+		lv = GameManager.progression.level
 	var nxt := RANKS[rank_index + 1]
 	var req: Dictionary = RANK_REQUIREMENTS[nxt]
-	return reputation >= int(req["rep"]) and player_level >= int(req["level"])
+	if lv > 0 and lv < int(req["level"]):
+		return false
+	return reputation >= int(req["rep"]) and contracts_completed >= int(req.get("contracts", 0))
 
-func promote(player_level: int) -> Dictionary:
+func promote(player_level: int = -1) -> Variant:
 	if not can_promote(player_level):
 		return {}
 	rank_index += 1

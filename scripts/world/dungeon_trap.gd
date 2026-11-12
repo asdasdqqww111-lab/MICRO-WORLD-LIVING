@@ -17,7 +17,7 @@ func _ready() -> void:
 	_build_visual()
 
 func _build_visual() -> void:
-	var grate := AssetLibrary.instantiate("res://assets/dungeon/traps/floor_tile_grate.glb", 0.5)
+	var grate := AssetLibrary.instantiate("res://assets/models/dungeon/floor_tile_big_spikes.glb", 0.5)
 	if grate != null:
 		add_child(grate)
 
