@@ -1,7 +1,7 @@
 MICRO WORLD: LIVING — headless test results
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-12T20:41:56
+run at: 2026-11-12T20:54:35
 checks passed: 113
 checks failed: 0
 
@@ -125,7 +125,7 @@ PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 PASS  a forest skeleton exists
 PASS  player can swing with stamina
-PASS  skeleton takes damage (46.0 -> 33.8)
+PASS  skeleton takes damage (46.0 -> 28.9)
 PASS  skeleton aggroes when hit
 PASS  killing 3 skeletons completes the objective
 PASS  farmer offers dialog actions

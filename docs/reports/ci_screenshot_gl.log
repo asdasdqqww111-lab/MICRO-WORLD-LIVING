@@ -17,7 +17,25 @@ ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
 WARNING: All audio drivers failed, falling back to the dummy driver.
      at: initialize (servers/audio_server.cpp:247)
 
-SCRIPT ERROR: Parse Error: Cannot assign a new value to a constant.
-          at: GDScript::reload (res://tests/screenshot_probe.gd:74)
-ERROR: Failed to load script "res://tests/screenshot_probe.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:2936)
+[shot] start: renderer=gl_compatibility adapter=llvmpipe (LLVM 21.1.8, 256 bits)
+[shot] scene ready: player=true ui=true
+[shot] 01_village_overview -> res://docs/screenshots/01_village_overview.png (ok)
+[shot] captured 01_village_overview
+[shot] 02_village_street -> res://docs/screenshots/02_village_street.png (ok)
+[shot] captured 02_village_street
+[shot] 03_mountains -> res://docs/screenshots/03_mountains.png (ok)
+[shot] captured 03_mountains
+[shot] 04_sky_clouds -> res://docs/screenshots/04_sky_clouds.png (ok)
+[shot] captured 04_sky_clouds
+[shot] 05_forest_floor -> res://docs/screenshots/05_forest_floor.png (ok)
+[shot] captured 05_forest_floor
+[shot] 06_house_interior -> res://docs/screenshots/06_house_interior.png (ok)
+[shot] captured 06_house_interior
+[shot] 07_dungeon -> res://docs/screenshots/07_dungeon.png (ok)
+[shot] captured 07_dungeon
+[shot] 08_gameplay_hud -> res://docs/screenshots/08_gameplay_hud.png (ok)
+[shot] captured 08_gameplay_hud
+[shot] 09_main_menu -> res://docs/screenshots/09_main_menu.png (ok)
+[shot] done
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2284)
