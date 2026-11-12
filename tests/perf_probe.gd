@@ -62,6 +62,7 @@ func _run() -> void:
 	await _teleport_and_measure("Phase 5 · dungeon", Vector3(-500.0, 1.0, 3.0))
 
 	_structural_audit()
+	_offenders()
 
 	_write()
 	print("\n".join(_lines))
@@ -107,6 +108,70 @@ func _structural_audit() -> void:
 	_lines.append("  shadow casting dir:   %d" % shadow_lights)
 	_lines.append("  => worst-case draw call bound (1 per MeshInstance3D surface,")
 	_lines.append("     1 per MultiMesh batch): %d + surfaces" % (meshes + multimeshes))
+
+## What actually costs draw calls / triangles. Runs with a real rasteriser only
+## (surface counts are unavailable under the dummy driver).
+func _offenders() -> void:
+	var rows: Array = []
+	var shadow_casters := 0
+	var unshadowed := 0
+	var with_lod := 0
+	var stack: Array[Node] = [_game]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		var mi := node as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			var surfaces := 0
+			var tris := 0
+			surfaces = mi.mesh.get_surface_count()
+			for i in surfaces:
+				tris += mi.mesh.surface_get_array_len(i) / 3
+			if mi.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+				shadow_casters += 1
+			else:
+				unshadowed += 1
+			if mi.visibility_range_end > 0.0:
+				with_lod += 1
+			rows.append({"name": _path_of(mi), "surfaces": surfaces, "tris": tris})
+		var mmi := node as MultiMeshInstance3D
+		if mmi != null and mmi.multimesh != null and mmi.multimesh.mesh != null:
+			var mm_mesh := mmi.multimesh.mesh
+			var per := 0
+			for i in mm_mesh.get_surface_count():
+				per += mm_mesh.surface_get_array_len(i) / 3
+			rows.append({"name": "%s [x%d]" % [_path_of(mmi), mmi.multimesh.instance_count],
+				"surfaces": mm_mesh.get_surface_count(),
+				"tris": per * mmi.multimesh.instance_count})
+		for child: Node in node.get_children():
+			stack.append(child)
+
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return int(a["tris"]) > int(b["tris"]))
+	_lines.append("")
+	_lines.append("TOP TRIANGLE CONSUMERS (visible scene, whole world)")
+	for i in mini(12, rows.size()):
+		var r: Dictionary = rows[i]
+		_lines.append("  %7d tris  %2d surf  %s" % [int(r["tris"]), int(r["surfaces"]), String(r["name"])])
+	var by_surfaces: Array = rows.duplicate()
+	by_surfaces.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return int(a["surfaces"]) > int(b["surfaces"]))
+	_lines.append("")
+	_lines.append("TOP SURFACE (draw call) CONSUMERS")
+	for i in mini(10, by_surfaces.size()):
+		var r: Dictionary = by_surfaces[i]
+		_lines.append("  %2d surf  %7d tris  %s" % [int(r["surfaces"]), int(r["tris"]), String(r["name"])])
+	_lines.append("")
+	_lines.append("SHADOW / LOD")
+	_lines.append("  shadow casters: %d   shadow off: %d   with visibility_range: %d" % [
+		shadow_casters, unshadowed, with_lod])
+
+func _path_of(node: Node) -> String:
+	var parts: PackedStringArray = []
+	var current := node
+	while current != null and current != _game and parts.size() < 4:
+		parts.insert(0, String(current.name))
+		current = current.get_parent()
+	return "/".join(parts)
 
 func _teleport_and_measure(label: String, position: Vector3) -> void:
 	_player.global_position = position
