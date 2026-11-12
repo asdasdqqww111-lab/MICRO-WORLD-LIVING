@@ -1,0 +1,121 @@
+name: Android APK
+
+# Builds a debug APK on GitHub's runners (they ship JDK 17 + the Android SDK,
+# which this sandbox does not have). Download the APK from the run's Artifacts
+# section, or from the Release it is attached to.
+
+on:
+  push:
+    branches: ["arena/**", "main"]
+    paths-ignore: ["docs/**", "**.md"]
+  workflow_dispatch:
+
+jobs:
+  apk:
+    name: Export debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot 4.3 stable
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/godot.zip \
+            https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
+          sudo mv /tmp/godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+
+      - name: Install export templates
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/templates.tpz \
+            https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates
+          unzip -q /tmp/templates.tpz -d /tmp/tpl
+          mv /tmp/tpl/templates ~/.local/share/godot/export_templates/4.3.stable
+          ls ~/.local/share/godot/export_templates/4.3.stable/android*
+
+      - name: Point Godot at the Android + Java SDKs
+        run: |
+          set -euo pipefail
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          echo "JAVA_HOME=$JAVA_HOME"
+          mkdir -p ~/.config/godot
+          cat > ~/.config/godot/editor_settings-4.3.tres <<EOF
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$ANDROID_SDK_ROOT"
+          export/android/java_sdk_path = "$JAVA_HOME"
+          EOF
+          cat ~/.config/godot/editor_settings-4.3.tres
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Headless acceptance tests
+        run: godot --headless --path . tests/test_runner.tscn
+
+      - name: Create debug keystore and wire it into the preset
+        run: |
+          set -euo pipefail
+          keytool -genkeypair -v -keystore "$GITHUB_WORKSPACE/debug.keystore" \
+            -storepass android -keypass android -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+          python3 - <<'PY'
+          import os, pathlib
+          p = pathlib.Path("export_presets.cfg")
+          text = p.read_text()
+          if "keystore/debug=" not in text:
+              ks = os.environ["GITHUB_WORKSPACE"] + "/debug.keystore"
+              block = (
+                  'keystore/debug="%s"\n'
+                  'keystore/debug_user="androiddebugkey"\n'
+                  'keystore/debug_password="android"\n'
+                  'keystore/release=""\n'
+                  'keystore/release_user=""\n'
+                  'keystore/release_password=""\n' % ks
+              )
+              text = text.replace("[preset.0.options]\n\n", "[preset.0.options]\n\n" + block, 1)
+              p.write_text(text)
+          print(text[:1200])
+          PY
+
+      - name: Export debug APK
+        run: |
+          set -euo pipefail
+          mkdir -p build/android
+          godot --headless --path . --export-debug "Android" build/android/micro_world_living.apk
+          ls -lh build/android
+          python3 - <<'PY'
+          import zipfile
+          z = zipfile.ZipFile("build/android/micro_world_living.apk")
+          names = z.namelist()
+          libs = sorted(n for n in names if n.startswith("lib/"))
+          print("entries:", len(names))
+          print("native libs:", libs)
+          assert any("arm64-v8a" in n for n in libs), "no arm64-v8a native libs in APK"
+          assert "assets/_cl_" in " ".join(names) or any(n.startswith("assets/") for n in names), "no game data in APK"
+          print("APK looks well formed")
+          PY
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: micro-world-living-debug-apk
+          path: build/android/micro_world_living.apk
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: headless-test-results
+          path: docs/reports/headless_test_results.txt
+          if-no-files-found: warn
