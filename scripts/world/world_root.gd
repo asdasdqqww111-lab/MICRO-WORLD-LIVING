@@ -9,7 +9,10 @@ var interior: Dictionary = {}
 var dungeon: Dictionary = {}
 var forest_spawns: Array = []
 
+var terrain: StaticBody3D
 var sun: DirectionalLight3D
+var moon: DirectionalLight3D
+var clouds: CloudLayer
 var world_environment: WorldEnvironment
 var environment: Environment
 var day_night: DayNightCycle
@@ -34,20 +37,33 @@ func _build_environment() -> void:
 	environment.background_mode = Environment.BG_SKY
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color(0.32, 0.55, 0.86)
-	sky_material.sky_horizon_color = Color(0.72, 0.82, 0.92)
-	sky_material.ground_bottom_color = Color(0.24, 0.26, 0.24)
-	sky_material.sun_angle_max = 12.0
+	# Semi-realistic stylized sky: deeper zenith, soft horizon haze, warm sun.
+	sky_material.sky_top_color = Color(0.22, 0.42, 0.76)
+	sky_material.sky_horizon_color = Color(0.66, 0.77, 0.88)
+	sky_material.sky_curve = 0.12
+	sky_material.ground_horizon_color = Color(0.42, 0.46, 0.44)
+	sky_material.ground_bottom_color = Color(0.2, 0.22, 0.21)
+	sky_material.ground_curve = 0.05
+	sky_material.sun_angle_max = 18.0
+	sky_material.sun_curve = 0.1
+	sky_material.sky_energy_multiplier = 1.0
 	sky.sky_material = sky_material
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	environment.ambient_light_sky_contribution = 0.85
-	environment.ambient_light_energy = 0.7
+	environment.ambient_light_sky_contribution = 1.0
+	environment.ambient_light_energy = 0.9
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	environment.tonemap_exposure = 1.05
+	# Gentle grade so the world is not washed-out; keeps mobile cost at zero.
+	environment.adjustment_enabled = true
+	environment.adjustment_contrast = 1.05
+	environment.adjustment_saturation = 1.08
+	environment.adjustment_brightness = 1.0
 	environment.fog_enabled = true
-	environment.fog_density = 0.006
-	environment.fog_light_color = Color(0.66, 0.73, 0.8)
-	environment.fog_sky_affect = 0.35
+	environment.fog_density = 0.0045
+	environment.fog_light_color = Color(0.62, 0.7, 0.8)
+	environment.fog_sky_affect = 0.3
+	environment.fog_aerial_perspective = 0.35
 	world_environment.environment = environment
 	add_child(world_environment)
 
@@ -55,12 +71,27 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 70.0
-	sun.shadow_bias = 0.05
+	sun.directional_shadow_max_distance = 80.0
+	sun.shadow_bias = 0.04
+	sun.light_energy = 1.05
+	sun.light_color = Color(1.0, 0.96, 0.88)
 	add_child(sun)
 
+	moon = DirectionalLight3D.new()
+	moon.name = "Moon"
+	moon.shadow_enabled = false
+	moon.light_energy = 0.0
+	moon.light_color = Color(0.62, 0.72, 1.0)
+	add_child(moon)
+
+	clouds = CloudLayer.new()
+	clouds.name = "CloudLayer"
+	add_child(clouds)
+
 func _build_world() -> void:
-	WorldBuilder.build_ground(self, WorldBuilder.GROUND_SIZE)
+	# Terrain replaces the old flat plane (village + forest stay flat at y=0 so
+	# every authored position/collider remains valid).
+	terrain = Terrain.build(self, WorldBuilder.GROUND_SIZE)
 	landmarks = WorldBuilder.build_village(self)
 	interior = WorldBuilder.build_house_interior(self)
 	dungeon = WorldBuilder.build_dungeon(self)
