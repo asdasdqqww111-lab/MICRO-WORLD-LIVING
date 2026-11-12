@@ -1,20 +1,2 @@
-start: renderer=gl_compatibility adapter=
-scene ready: player=true ui=true
-ERROR: no image for 01_village_overview
-captured 01_village_overview
-ERROR: no image for 02_village_street
-captured 02_village_street
-ERROR: no image for 03_mountains
-captured 03_mountains
-ERROR: no image for 04_sky_clouds
-captured 04_sky_clouds
-ERROR: no image for 05_forest_floor
-captured 05_forest_floor
-ERROR: no image for 06_house_interior
-captured 06_house_interior
-ERROR: no image for 07_dungeon
-captured 07_dungeon
-ERROR: no image for 08_gameplay_hud
-captured 08_gameplay_hud
-ERROR: no image for 09_main_menu
-done
+start: renderer=gl_compatibility adapter=llvmpipe (LLVM 21.1.8, 256 bits)
+01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)

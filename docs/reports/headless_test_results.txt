@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.0)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-12T22:23:08
-checks passed: 140
-checks failed: 2
+run at: 2026-11-12T22:24:57
+checks passed: 142
+checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 135.0
+  fps: 144.0
   draw calls: 0
   triangles: 0
-  nodes: 2097
+  nodes: 2112
 
 checks:
 
@@ -127,7 +127,7 @@ PASS  save file exists
 PASS  save file carries schema_version 3
 PASS  save loads
 PASS  gold restored (112)
-FAIL  Guild state restored
+PASS  Guild state restored (rep=55)
 PASS  SkillTree unlocked node restored
 PASS  quest state restored
 PASS  v1 save migrates and loads
@@ -146,7 +146,7 @@ PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
 PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
-FAIL  wildlife, monsters & crypt boss spawned (17)
+PASS  wildlife, monsters & crypt boss spawned (18)
 PASS  MultiMesh biome instancing is real (12 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
@@ -158,7 +158,7 @@ PASS  camera zoom changes distance
 PASS  UI screens open and refresh without error
 PASS  a forest skeleton exists
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton takes damage (46.0 -> 33.7)
 PASS  skeleton aggroes when hit
 PASS  killing 3 skeletons completes the objective
 PASS  farmer accepts the quest turn-in
@@ -173,12 +173,8 @@ PASS  Malakor the Bone Warden boss exists in Sunken Crypt
 PASS  scene state saves
 PASS  dead creatures recorded (3)
 PASS  scene state reloads
-PASS  dead creatures stay dead after reload (14 alive vs 17 before)
+PASS  dead creatures stay dead after reload (15 alive vs 18 before)
 PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
 PASS  save/load survives 10 rounds
-
-FAILURES:
-  - Guild state restored
-  - wildlife, monsters & crypt boss spawned (17)

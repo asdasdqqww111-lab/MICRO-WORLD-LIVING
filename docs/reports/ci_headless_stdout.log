@@ -95,7 +95,7 @@ PASS  save file exists
 PASS  save file carries schema_version 3
 PASS  save loads
 PASS  gold restored (112)
-FAIL  Guild state restored
+PASS  Guild state restored (rep=55)
 PASS  SkillTree unlocked node restored
 PASS  quest state restored
 PASS  v1 save migrates and loads
@@ -196,7 +196,7 @@ PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
 PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
-FAIL  wildlife, monsters & crypt boss spawned (17)
+PASS  wildlife, monsters & crypt boss spawned (18)
 PASS  MultiMesh biome instancing is real (12 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
@@ -430,7 +430,7 @@ ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recent
 ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
    at: is_action_just_pressed (core/input/input.cpp:312)
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton takes damage (46.0 -> 33.7)
 PASS  skeleton aggroes when hit
 ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
    at: is_action_just_pressed (core/input/input.cpp:312)
@@ -482,6 +482,26 @@ PASS  scene state saves
 PASS  dead creatures recorded (3)
 ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
    at: is_action_just_pressed (core/input/input.cpp:312)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
@@ -849,7 +869,7 @@ ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recent
    at: is_action_just_pressed (core/input/input.cpp:312)
 ERROR: The InputMap action "camera_recenter" doesn't exist. Did you mean "recenter_camera"?
    at: is_action_just_pressed (core/input/input.cpp:312)
-PASS  dead creatures stay dead after reload (14 alive vs 17 before)
+PASS  dead creatures stay dead after reload (15 alive vs 18 before)
 PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
@@ -1157,12 +1177,30 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  save/load survives 10 rounds
 
-=== 140 passed, 2 failed ===
-FAILED: Guild state restored
-FAILED: wildlife, monsters & crypt boss spawned (17)
+=== 142 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
+ERROR: 4 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:604)
