@@ -22,6 +22,9 @@ var guild: GuildSystem
 var world: WorldState
 
 var gold: int = STARTING_GOLD
+var hero_class: String = "knight"
+var hero_name: String = "Alden"
+var show_prologue_on_enter: bool = false
 var play_time: float = 0.0
 var is_playing: bool = false
 var pending_zone: String = ""
@@ -45,25 +48,39 @@ func reset_state() -> void:
 	guild = GuildSystem.new()
 	world = WorldState.new()
 	gold = STARTING_GOLD
+	hero_class = "knight"
+	hero_name = "Alden"
+	show_prologue_on_enter = false
 	play_time = 0.0
 	recalc_stats()
 
-func start_new_game() -> void:
+func start_new_game(chosen_class: String = "knight", chosen_name: String = "", with_prologue: bool = false) -> void:
 	reset_state()
+	hero_class = chosen_class if HeroClassDB.has_class(chosen_class) else "knight"
+	hero_name = chosen_name.strip_edges() if not chosen_name.strip_edges().is_empty() else Localization.tr_key("hero_default_name")
+	show_prologue_on_enter = with_prologue
 	is_playing = true
 	pending_zone = "village"
 	gold = STARTING_GOLD
-	for entry: Dictionary in STARTING_ITEMS:
+	var class_def := HeroClassDB.get_class_def(hero_class)
+	var start_items: Array = class_def.get("items", STARTING_ITEMS)
+	for entry: Dictionary in start_items:
 		var item_id := String(entry.get("id", ""))
 		if ItemDB.has(item_id):
 			inventory.add_item(item_id, int(entry.get("count", 1)))
-	inventory.equip("rusty_sword")
-	if inventory.count_item("oak_shield") > 0:
-		inventory.equip("oak_shield")
+	var equip_list: Array = class_def.get("equip", ["rusty_sword", "oak_shield"])
+	for eq_id: Variant in equip_list:
+		var eid := String(eq_id)
+		if inventory.count_item(eid) > 0:
+			inventory.equip(eid)
 	world = WorldState.new()
+	var start_skill := String(class_def.get("starting_skill", ""))
+	if not start_skill.is_empty():
+		skills.ranks[start_skill] = 1
 	skills.points = 1   # Grant 1 starting skill point so players can pick their initial specialization!
 	recalc_stats()
 	_emit_all_state()
+	EventBus.hero_class_changed.emit(hero_class)
 
 func recalc_stats() -> void:
 	stats.recalc_for_level(progression.level)
@@ -72,29 +89,40 @@ func is_new_game() -> bool:
 	return quest_log.entries.is_empty() and progression.level == 1 and play_time < 1.0
 
 # --- Derived combat & magic values -------------------------------------------
+func _class_def() -> Dictionary:
+	return HeroClassDB.get_class_def(hero_class)
+
 func attack_power() -> float:
-	return (stats.strength + inventory.total_attack_bonus() + skills.attack_bonus()) * skills.creature_damage_multiplier()
+	var c_atk := float(_class_def().get("atk_bonus", 0.0))
+	return (stats.strength + c_atk + inventory.total_attack_bonus() + skills.attack_bonus()) * skills.creature_damage_multiplier()
 
 func defense_power() -> float:
-	return stats.defense + inventory.total_defense_bonus() + skills.defense_bonus()
+	var c_def := float(_class_def().get("def_bonus", 0.0))
+	return stats.defense + c_def + inventory.total_defense_bonus() + skills.defense_bonus()
 
 func spell_power() -> float:
-	return stats.intelligence + inventory.total_magic_bonus() + skills.spell_power_bonus()
+	var c_mag := float(_class_def().get("mag_bonus", 0.0))
+	return stats.intelligence + c_mag + inventory.total_magic_bonus() + skills.spell_power_bonus()
 
 func max_health() -> float:
-	return stats.max_health + skills.health_bonus()
+	var c_hp := float(_class_def().get("hp_bonus", 0.0))
+	return maxf(40.0, stats.max_health + c_hp + skills.health_bonus())
 
 func max_stamina() -> float:
-	return stats.max_stamina + skills.stamina_bonus()
+	var c_sp := float(_class_def().get("sp_bonus", 0.0))
+	return maxf(40.0, stats.max_stamina + c_sp + skills.stamina_bonus())
 
 func max_mana() -> float:
-	return stats.max_mana + skills.mana_bonus()
+	var c_mp := float(_class_def().get("mp_bonus", 0.0))
+	return maxf(20.0, stats.max_mana + c_mp + skills.mana_bonus())
 
 func move_speed_multiplier() -> float:
-	return skills.speed_multiplier()
+	var c_spd := float(_class_def().get("speed_mult", 1.0))
+	return skills.speed_multiplier() * c_spd
 
 func crit_chance() -> float:
-	return clampf(stats.crit_chance() + inventory.total_crit_bonus() + skills.crit_chance_bonus(), 0.0, 0.75)
+	var c_crit := float(_class_def().get("crit_bonus", 0.0))
+	return clampf(stats.crit_chance() + c_crit + inventory.total_crit_bonus() + skills.crit_chance_bonus(), 0.0, 0.75)
 
 func compute_damage(attack: float, defense: float, crit_allowed: bool = true) -> Dictionary:
 	var raw := maxf(1.0, attack - defense * 0.5)
@@ -240,6 +268,8 @@ func _on_item_picked_up(item_id: String, amount: int) -> void:
 func to_dict() -> Dictionary:
 	return {
 		"gold": gold,
+		"hero_class": hero_class,
+		"hero_name": hero_name,
 		"play_time": play_time,
 		"pending_zone": pending_zone,
 		"level": progression.level,
@@ -255,6 +285,9 @@ func to_dict() -> Dictionary:
 func apply_dict(data: Dictionary) -> void:
 	reset_state()
 	gold = maxi(0, int(data.get("gold", STARTING_GOLD)))
+	var saved_cls := String(data.get("hero_class", "knight"))
+	hero_class = saved_cls if HeroClassDB.has_class(saved_cls) else "knight"
+	hero_name = String(data.get("hero_name", "Alden"))
 	play_time = maxf(0.0, float(data.get("play_time", 0.0)))
 	pending_zone = String(data.get("pending_zone", "village"))
 	progression.level = clampi(int(data.get("level", 1)), 1, Progression.MAX_LEVEL)

@@ -25,6 +25,11 @@ var quest_box: VBoxContainer
 var boss_panel: PanelContainer
 var boss_name_label: Label
 var boss_hp_bar: ProgressBar
+var target_panel: PanelContainer
+var target_name_label: Label
+var target_hp_bar: ProgressBar
+var waypoint_label: Label
+var _ribbon_buttons: Dictionary = {}
 var interact_panel: PanelContainer
 var interact_label: Label
 var notifications: VBoxContainer
@@ -111,22 +116,25 @@ func _build_top_bar_and_boss() -> void:
 	add_child(ribbon)
 
 	var items := [
-		["inventory", "BAG"],
-		["skills", "SKILLS"],
-		["guild", "GUILD"],
-		["journal", "QUESTS"],
-		["map", "MAP"],
-		["character", "HERO"],
-		["pause", "II"],
+		["inventory", "BAG", "حقيبة"],
+		["skills", "SKILLS", "مهارات"],
+		["guild", "GUILD", "نقابة"],
+		["journal", "QUESTS", "مهام"],
+		["map", "MAP", "خريطة"],
+		["character", "HERO", "البطل"],
+		["pause", "II", "II"],
 	]
 	for pair: Array in items:
 		var scr := String(pair[0])
-		var lbl := String(pair[1])
+		var lbl_en := String(pair[1])
+		var lbl_ar := String(pair[2])
+		var lbl := lbl_ar if Localization.is_arabic() else lbl_en
 		var btn := UIFactory.button(lbl, 38)
-		btn.custom_minimum_size = Vector2(68 if lbl != "II" else 44, 38)
+		btn.custom_minimum_size = Vector2(72 if lbl_en != "II" else 44, 38)
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.pressed.connect(func() -> void: quick_menu_pressed.emit(scr))
 		ribbon.add_child(btn)
+		_ribbon_buttons[scr] = {"btn": btn, "en": lbl_en, "ar": lbl_ar}
 
 	# Dynamic Boss Health Bar right beneath the ribbon
 	boss_panel = UIFactory.card_panel(Color(0.88, 0.28, 0.34))
@@ -145,6 +153,24 @@ func _build_top_bar_and_boss() -> void:
 	bbox.add_child(boss_name_label)
 	boss_hp_bar = UIFactory.progress_bar(Color(0.88, 0.22, 0.28), 14)
 	bbox.add_child(boss_hp_bar)
+
+	# Target Lock-On Enemy Card (shown when locked onto a non-boss hostile)
+	target_panel = UIFactory.card_panel(UIFactory.GOLD)
+	target_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	target_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	target_panel.position = Vector2(0, 58)
+	target_panel.custom_minimum_size = Vector2(310, 0)
+	target_panel.visible = false
+	target_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(target_panel)
+	var tbox := VBoxContainer.new()
+	tbox.add_theme_constant_override("separation", 3)
+	target_panel.add_child(tbox)
+	target_name_label = UIFactory.label("◎ Target", 15, UIFactory.GOLD)
+	target_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tbox.add_child(target_name_label)
+	target_hp_bar = UIFactory.progress_bar(UIFactory.DANGER, 10)
+	tbox.add_child(target_hp_bar)
 
 func _build_top_right() -> void:
 	var wrap := VBoxContainer.new()
@@ -235,10 +261,17 @@ func _connect_signals() -> void:
 	EventBus.quest_completed.connect(_on_quest_updated)
 	EventBus.damage_dealt.connect(_on_damage_dealt)
 	EventBus.boss_health_changed.connect(_on_boss_health)
+	EventBus.target_locked_changed.connect(func(_t: Node) -> void: _refresh_target_card())
+	EventBus.hero_class_changed.connect(func(_c: String) -> void: refresh_all())
 	EventBus.graphics_settings_changed.connect(_on_settings_changed)
 	EventBus.language_changed.connect(func(_l: String) -> void: refresh_all())
 
 func refresh_all() -> void:
+	for scr: String in _ribbon_buttons.keys():
+		var info: Dictionary = _ribbon_buttons[scr]
+		var btn := info["btn"] as Button
+		if btn != null:
+			btn.text = String(info["ar"] if Localization.is_arabic() else info["en"])
 	_on_xp_changed(GameManager.progression.level, GameManager.progression.xp,
 		GameManager.progression.xp_to_next())
 	_on_gold_changed(GameManager.gold)
@@ -250,11 +283,15 @@ func refresh_all() -> void:
 		_on_mana_changed(_player.mana, GameManager.max_mana())
 		_on_stamina_changed(_player.stamina, GameManager.max_stamina())
 	_refresh_quest_tracker()
+	_refresh_target_card()
 
 func _refresh_guild_badge() -> void:
 	if guild_label != null:
 		var rk := GameManager.guild.current_rank()
-		guild_label.text = ("Rank " + rk) if GameManager.guild.registered else "Unreg."
+		if Localization.is_arabic():
+			guild_label.text = ("رتبة " + rk) if GameManager.guild.registered else "غير مسجّل"
+		else:
+			guild_label.text = ("Rank " + rk) if GameManager.guild.registered else "Unreg."
 
 func _on_health_changed(current: float, maximum: float) -> void:
 	health_bar.set_values(current, maximum)
@@ -266,7 +303,9 @@ func _on_stamina_changed(current: float, maximum: float) -> void:
 	stamina_bar.set_values(current, maximum)
 
 func _on_xp_changed(level: int, xp: int, xp_to_next: int) -> void:
-	level_label.text = "%s %d" % [Localization.tr_key("level"), level]
+	var cdef := HeroClassDB.get_class_def(GameManager.hero_class)
+	var glyph := String(cdef.get("glyph", "⚔"))
+	level_label.text = "%s %s %d" % [glyph, Localization.tr_key("level"), level]
 	xp_bar.set_values(xp, xp_to_next)
 	xp_bar.visible = level < Progression.MAX_LEVEL
 
@@ -322,11 +361,13 @@ func _on_quest_updated(_quest_id: String) -> void:
 func _refresh_quest_tracker() -> void:
 	for child: Node in quest_box.get_children():
 		child.queue_free()
+	waypoint_label = null
 	var tracked := GameManager.quest_log.tracked_quests()
 	if tracked.is_empty():
 		quest_panel.visible = false
 		return
 	quest_panel.visible = true
+	var ar := Localization.is_arabic()
 	var shown := 0
 	for quest_id: String in tracked:
 		if shown >= 2:
@@ -335,19 +376,38 @@ func _refresh_quest_tracker() -> void:
 		if quest == null:
 			continue
 		shown += 1
-		quest_box.add_child(UIFactory.label(quest.title, 15, UIFactory.GOLD))
+		quest_box.add_child(UIFactory.label(Localization.quest_title(quest), 15, UIFactory.GOLD))
 		for i: int in quest.objectives.size():
 			var objective: Dictionary = quest.objectives[i]
 			var progress := GameManager.quest_log.objective_progress(quest_id, i)
 			var required := int(objective.get("required", 1))
 			var done := progress >= required
-			var text := "%s %d/%d" % [String(objective.get("label", "Objective")), progress, required]
+			var olabel := Localization.quest_obj_label(quest, i, String(objective.get("label", "Objective")))
+			var text := "%s %d/%d" % [olabel, progress, required]
 			if done:
 				text = "✔ " + text
 			quest_box.add_child(UIFactory.label("  " + text, 13,
 				UIFactory.ACCENT if done else UIFactory.TEXT_DIM))
 		if GameManager.quest_log.can_turn_in(quest_id):
-			quest_box.add_child(UIFactory.label("  ★ Ready to turn in!", 13, UIFactory.ACCENT))
+			quest_box.add_child(UIFactory.label("  ★ جاهزة للتسليم!" if ar else "  ★ Ready to turn in!", 13, UIFactory.ACCENT))
+	waypoint_label = UIFactory.label("", 13, Color(1.0, 0.88, 0.36))
+	quest_box.add_child(waypoint_label)
+
+func _refresh_target_card() -> void:
+	if target_panel == null:
+		return
+	if _player == null or _player.locked_target == null or not is_instance_valid(_player.locked_target):
+		target_panel.visible = false
+		return
+	var cr := _player.locked_target as Creature
+	if cr == null or cr.health == null or cr.health.is_dead() or (cr.data != null and cr.data.is_boss and boss_panel != null and boss_panel.visible):
+		target_panel.visible = false
+		return
+	target_panel.visible = true
+	var cname := Localization.creature_name(cr.data) if cr.data != null else "Target"
+	target_name_label.text = "◎ %s  (%d/%d)" % [cname, int(ceil(cr.health.current_health)), int(ceil(cr.health.max_health))]
+	target_hp_bar.max_value = maxf(1.0, cr.health.max_health)
+	target_hp_bar.value = clampf(cr.health.current_health, 0.0, cr.health.max_health)
 
 func show_notification(text: String) -> void:
 	var label := UIFactory.label(text, 15, UIFactory.TEXT)
@@ -368,6 +428,18 @@ func _on_settings_changed() -> void:
 		perf_label.visible = SettingsManager.show_performance_overlay
 
 func _process(delta: float) -> void:
+	if _player != null and _player.locked_target != null:
+		_refresh_target_card()
+	elif target_panel != null and target_panel.visible:
+		target_panel.visible = false
+	if waypoint_label != null and is_instance_valid(waypoint_label) and _player != null and get_tree() != null:
+		var wp := get_tree().get_first_node_in_group("quest_waypoint") as QuestWaypoint3D
+		if wp != null and wp.has_waypoint:
+			var dist := int(round(_player.global_position.distance_to(wp.target_position)))
+			waypoint_label.visible = true
+			waypoint_label.text = ("  ◆ المسافة للهدف: %d م" % dist) if Localization.is_arabic() else ("  ◆ Objective Distance: %dm" % dist)
+		else:
+			waypoint_label.visible = false
 	if perf_label == null or not perf_label.visible:
 		return
 	_perf_timer += delta

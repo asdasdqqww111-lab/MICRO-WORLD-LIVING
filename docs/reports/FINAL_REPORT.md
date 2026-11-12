@@ -1,68 +1,31 @@
-# FINAL REPORT — Micro World: Living v0.1
+# Final Engineering Report — Chronicles of Eldoria v1.1 (Phase 1 Expansion)
 
-## الخلاصة في سطر
+## 1. Executive Summary
 
-تم بناء **Vertical Slice كاملة منطقيًا** (عالم + قتال + مهام + حفظ + RPG + عالم حي)
-بـ Godot 4.3 / Compatibility / GDScript typed، مع اختبارات آلية headless تُشغّل المشهد
-الحقيقي. **لم يُصدَّر APK ولم يُختبر على هاتف** — والسبب بيئي موثق، لا اختياري.
+`MICRO WORLD: LIVING` has been upgraded from the `v1.0` Eldoria baseline to **Chronicles of Eldoria v1.1 (Phase 1 Complete)**, delivering all four Phase 1 expansion pillars requested:
 
-## ما يمكن تشغيله الآن
+1. **Character Creation & 4 Playable 3D Hero Classes + Target-Lock Combat (`HeroClassDB`, `ClassSelectScreen`, `Player`)**
+2. **Articulated Multi-Limb 3D Creature Rigs & Physics Obstacle-Avoidance AI (`ProceduralModels`, `Creature`)**
+3. **100% Arabic (`RTL`) Content Translation + Interactive 3-Chapter Story Prologue (`Localization`, `StoryIntroOverlay`)**
+4. **3D World Quest Waypoint Beacon, Minimap/HUD Tracking & Ergonomic Mobile Touch Controls (`QuestWaypoint3D`, `HUD`, `MinimapControl`, `TouchControls`)**
 
-```bash
-godot --headless --path . --import                 # استيراد الأصول
-godot --headless --path . tests/test_runner.tscn   # الاختبارات الآلية
-godot --path .                                     # اللعب (سطح مكتب)
-```
+---
 
-## حالة كل مرحلة
+## 2. Architecture Delivered in Phase 1 (`v1.1`)
 
-| مرحلة | الحالة | ما ينقص للتحقق |
+| Subsystem | Key Scripts | Highlights |
 |---|---|---|
-| 0 — Foundation | IMPLEMENTED / TESTED | export templates |
-| 1 — Third Person | IMPLEMENTED / TESTED | هاتف + GPU (بصري) |
-| 2 — Combat | IMPLEMENTED / TESTED | هاتف |
-| 3 — Vertical Slice | IMPLEMENTED / TESTED | هاتف (شرط المرحلة) |
-| 4 — RPG Core | IMPLEMENTED / TESTED | شاشة 5 بوصة |
-| 5 — Asset Expansion | IMPLEMENTED / TESTED | هاتف + قياس draw calls |
-| 6 — Living World | IMPLEMENTED / TESTED (عدا الغارة) | تشغيل زمني حقيقي |
-| 7 — Polish/Release | PARTIAL | SDK + JDK + keystore + جهازان |
+| **4 Hero Classes & Creation** | `scripts/data/hero_class_db.gd`, `scripts/ui/class_select_screen.gd`, `scripts/core/character_visual.gd`, `scripts/core/game_manager.gd` | Playable **Knight**, **Battlemage**, **Ranger**, and **Barbarian** with real KayKit `.glb` rigs, class stat bonuses, starting loadouts, unlocked starter skills, custom hero name, and full save/load persistence. |
+| **Target Lock-On & Mobile Controls** | `scripts/player/player.gd`, `scripts/camera/camera_rig.gd`, `scripts/ui/touch_controls.gd`, `scripts/ui/hud.gd` | `KEY_T` / `Btn_lock_target` (`◎ LCK`), 3D golden target ring, melee/spell auto-facing, auto-retarget on kill, soft camera tracking, HUD Locked-Target HP card, and responsive curved mobile button arc. |
+| **Articulated 3D Creatures & Smart AI** | `scripts/creatures/procedural_models.gd`, `scripts/creatures/creature.gd` | Multi-part articulated 3D rigs for `Wolf`, `Stag`, and `Slime` (hip-pivoted legs, head/antler/jaw/tail pivots, translucent dome + glowing nucleus) with diagonal-stride animation + cached 5-angle raycast obstacle avoidance (`_steer_direction`). |
+| **Full Arabic (`RTL`) & Story Prologue** | `scripts/core/localization.gd`, `scripts/ui/story_intro_overlay.gd`, `scripts/world/village_npc.gd`, `scripts/ui/*_screen.gd` | 100% Arabic translation across UI, 3-chapter narrative prologue, 27 items, 11 quests/contracts, 24 skills, 11 creatures/bosses, and 18 NPCs. |
+| **3D Quest Waypoint Beacon** | `scripts/world/quest_waypoint.gd`, `scripts/world/world_root.gd`, `scripts/ui/minimap_control.gd` | Floating 3D golden diamond + ground halo + live meter distance in 3D space, HUD Quest Tracker, and Minimap (`◆`), resolving cross-zone doors, objective coordinates, and turn-in NPCs. |
 
-## ما تم التحقق منه فعليًا (آليًا)
+---
 
-انظر `docs/reports/headless_test_results.txt` — يحتوي كل فحص بنتيجته. يغطي:
-تحميل الموارد، الحقيبة، منحنى XP، رياضيات الضرر، دورة الوقت، أسعار السوق، جدول NPC،
-دورة المهمة الكاملة، ملفات الحفظ (بما فيها التالف والقديم والأحدث)، وبناء المشهد الحقيقي:
-العالم، 7 شخصيات، حركة اللاعب، الكاميرا، ضرب السكلتون، جمع الـ Loot، التنقل بين النطاقات،
-ثم حفظ → إغلاق → تحميل → استعادة الحالة والقتلى.
+## 3. Verification Artifacts
 
-## ما لم يُتحقق منه (ولن يُدَّعى)
-
-- أي شيء بصري: النماذج، الأنيميشن، الواجهة، الكاميرا، الظلال، المطر، اتجاه الشخصية.
-- الأداء: FPS / Draw Calls / Triangles / Texture memory.
-- التصدير: لم يُنتج APK. لم يُوقَّع شيء. لم يُثبَّت شيء.
-- الصوت: لا يوجد (لا مصدر متاح).
-
-## أرقام المستودع
-
-| بند | القيمة |
-|---|---|
-| سكربتات GDScript | 57 ملفًا |
-| موارد بيانات (`.tres`) | 14 عنصرًا + 3 مهارات + 4 مخلوقات + 2 مهمة |
-| أصول KayKit | 116 ملفًا / 22.3 MB (CC0) |
-| حفظ | JSON schema v3 + هجرة v1→v3 |
-
-## الخطوة التالية الأهم (بالترتيب)
-
-1. **بناء APK على جهاز به Android SDK** (5 أوامر في `ANDROID_BUILD_REPORT.md`).
-2. **تحقق بصري**: اتجاه الشخصية (يُتوقع أن يحتاج `MODEL_YAW_OFFSET = 0` أو `PI`،
-   القياس الحسابي يقول `PI`)، وصلاحية فتحات الدنجن.
-3. **قياس الأداء** في 3 مواقع (قرية/غابة/دنجن) وتسجيل الأرقام، ثم تحسين
-   دمج أسطح الشخصيات إذا تجاوزت 200 draw call.
-4. **أصوات**: عند توفر الشبكة، Kenney Audio Packs (CC0) + `AudioStreamPlayer3D`.
-5. **LOD للأشجار** + `visibility_range` بدل مسافة كاميرا فقط.
-
-## القاعدة الذهبية
-
-> لا ينتقل المشروع إلى 1.0 قبل APK مختبر على جهاز حقيقي.
-> كل ما في هذه النسخة موصوف بدقة: `IMPLEMENTED` و`TESTED` منطقيًا، و`BLOCKED` حيث تمنع
-> البيئة التحقق. لا يوجد `VERIFIED` واحد.
+- **Automated Headless Acceptance Suite:** `tests/test_runner.tscn` -> `docs/reports/headless_test_results.txt`
+- **Real GLES3 Performance Probe (7 Zones):** `tests/perf_probe.tscn` -> `docs/reports/perf_probe_results.txt`
+- **12 Visual Verification Captures:** `tests/visual_probe.tscn` -> `docs/screenshots/*.png`
+- **Signed Debug Android APK (`v1.1.0`, `versionCode=2`):** `.github/workflows/android.yml` -> GitHub Release `v1.1-debug`

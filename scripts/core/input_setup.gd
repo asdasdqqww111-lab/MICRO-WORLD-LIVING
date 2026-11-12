@@ -18,6 +18,7 @@ const ACTIONS := {
 	"block": [KEY_B],
 	"interact": [KEY_E],
 	"dodge": [KEY_Q],
+	"lock_target": [KEY_T],
 	"recenter_camera": [KEY_V],
 	"camera_recenter": [KEY_V],
 	"toggle_inventory": [KEY_I, KEY_TAB],

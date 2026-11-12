@@ -28,6 +28,8 @@ var _slow_mult: float = 1.0
 var _time: float = 0.0
 var _speed_now: float = 0.0
 var _distant_accum: float = 0.0
+var _steer_timer: float = 0.0
+var _steered_dir: Vector3 = Vector3.ZERO
 var _hp_label: Label3D
 var _boss_phase: int = 1
 var _boss_nova_timer: float = 5.5
@@ -98,6 +100,7 @@ func _build() -> void:
 			add_child(model_root)
 
 	_build_aura_and_label()
+	EventBus.language_changed.connect(func(_l: String) -> void: _refresh_hp_label())
 	_wander_target = home
 
 func _build_aura_and_label() -> void:
@@ -212,10 +215,11 @@ func _physics_process(delta: float) -> void:
 	_animate()
 
 func _tick_boss_phase(delta: float, player: Player, distance: float) -> void:
-	EventBus.boss_health_changed.emit(data.display_name, health.current_health, health.max_health, _boss_phase, true)
+	var cname := Localization.creature_name(data)
+	EventBus.boss_health_changed.emit(cname, health.current_health, health.max_health, _boss_phase, true)
 	if _boss_phase == 1 and health.ratio() <= 0.55:
 		_boss_phase = 2
-		EventBus.notify.emit("%s enters Phase II — Crimson Dread!" % data.display_name)
+		EventBus.notify.emit(("%s يدخل المرحلة الثانية — غضب السرداب القرمزي!" % cname) if Localization.is_arabic() else ("%s enters Phase II — Crimson Dread!" % cname))
 		if AudioManager != null:
 			AudioManager.play_sfx("magic_cast", 0.0, 0.75)
 
@@ -250,11 +254,36 @@ func _move_towards(target: Vector3, speed: float) -> float:
 	to_target.y = 0.0
 	if to_target.length() < 0.05:
 		return 0.0
-	var dir := to_target.normalized()
+	var desired := to_target.normalized()
+	var dir := _steer_direction(desired)
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
-	rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), 0.16)
+	rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), 0.18)
 	return speed
+
+func _steer_direction(desired: Vector3) -> Vector3:
+	_steer_timer -= get_physics_process_delta_time()
+	if _steer_timer > 0.0 and _steered_dir != Vector3.ZERO and _steered_dir.dot(desired) > 0.25:
+		return _steered_dir
+	_steer_timer = 0.12
+	var w3d := get_world_3d()
+	if w3d == null or w3d.direct_space_state == null:
+		_steered_dir = desired
+		return desired
+	var origin := global_position + Vector3(0.0, 0.65, 0.0)
+	var look := 1.65
+	var q0 := PhysicsRayQueryParameters3D.create(origin, origin + desired * look, 1)
+	if w3d.direct_space_state.intersect_ray(q0).is_empty():
+		_steered_dir = desired
+		return desired
+	for ang: float in [0.65, -0.65, 1.25, -1.25]:
+		var alt := desired.rotated(Vector3.UP, ang)
+		var qa := PhysicsRayQueryParameters3D.create(origin, origin + alt * look, 1)
+		if w3d.direct_space_state.intersect_ray(qa).is_empty():
+			_steered_dir = alt
+			return alt
+	_steered_dir = desired
+	return desired
 
 func _wander(delta: float) -> float:
 	_wander_timer -= delta
@@ -268,11 +297,11 @@ func _wander(delta: float) -> float:
 		velocity.x = move_toward(velocity.x, 0.0, 8.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 8.0 * delta)
 		return 0.0
-	var dir := to_target.normalized()
+	var dir := _steer_direction(to_target.normalized())
 	var speed := data.move_speed * 0.32 * _slow_mult
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
-	rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), 0.08)
+	rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), 0.10)
 	return speed
 
 func _try_attack(player: Player) -> void:
@@ -323,10 +352,10 @@ func take_hit(amount: float, source: Node, is_crit: bool = false) -> void:
 		anim.play("hit", true)
 
 func _refresh_hp_label() -> void:
-	if _hp_label == null or health == null:
+	if _hp_label == null or health == null or data == null:
 		return
 	var pfx := "☠ " if data.is_boss else ("★ " if data.is_elite else "")
-	_hp_label.text = "%s%s  %d/%d" % [pfx, data.display_name, int(ceil(health.current_health)), int(health.max_health)]
+	_hp_label.text = "%s%s  %d/%d" % [pfx, Localization.creature_name(data), int(ceil(health.current_health)), int(ceil(health.max_health))]
 
 func defense_value() -> float:
 	return data.defense

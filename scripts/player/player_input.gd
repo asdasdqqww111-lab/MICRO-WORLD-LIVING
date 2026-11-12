@@ -48,6 +48,9 @@ func potion_pressed() -> bool:
 func interact_pressed() -> bool:
 	return Input.is_action_just_pressed("interact") or _touch_pressed("interact")
 
+func lock_target_pressed() -> bool:
+	return Input.is_action_just_pressed("lock_target") or _touch_pressed("lock_target")
+
 func _touch_pressed(action: String) -> bool:
 	if not is_instance_valid(_touch) or not _touch.has_method("consume_pressed"):
 		return false

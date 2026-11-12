@@ -53,6 +53,8 @@ func _ready() -> void:
 		schedule = {"work": global_position, "rest": global_position, "sleep": global_position}
 	EventBus.quest_updated.connect(_on_quest_or_guild_changed)
 	EventBus.guild_updated.connect(_on_guild_changed)
+	EventBus.language_changed.connect(func(_l: String) -> void: _refresh_nameplate())
+	_refresh_nameplate()
 	_refresh_marker()
 
 func _build_visual() -> void:
@@ -71,14 +73,13 @@ func _build_visual() -> void:
 
 func _build_labels() -> void:
 	_nameplate = Label3D.new()
-	var subtitle := role_title if not role_title.is_empty() else role.capitalize()
-	_nameplate.text = "%s\n<%s>" % [display_name, subtitle]
 	_nameplate.font_size = 20
 	_nameplate.outline_size = 6
 	_nameplate.modulate = Color(0.96, 0.92, 0.80)
 	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_nameplate.position = Vector3(0.0, 2.22 * model_scale, 0.0)
 	add_child(_nameplate)
+	_refresh_nameplate()
 
 	_quest_marker = Label3D.new()
 	_quest_marker.text = "!"
@@ -89,6 +90,14 @@ func _build_labels() -> void:
 	_quest_marker.position = Vector3(0.0, 2.68 * model_scale, 0.0)
 	_quest_marker.visible = false
 	add_child(_quest_marker)
+
+func _refresh_nameplate() -> void:
+	if _nameplate == null:
+		return
+	var nm := Localization.npc_name(npc_id, display_name)
+	var sub_fb := role_title if not role_title.is_empty() else role.capitalize()
+	var subtitle := Localization.npc_title(npc_id, sub_fb)
+	_nameplate.text = "%s\n<%s>" % [nm, subtitle]
 
 ## Schedule: work 06-18, rest 18-22, sleep 22-06 (preserved for unit tests).
 static func activity_for_hour(hour: int) -> String:
@@ -176,9 +185,10 @@ func can_interact(_player: Node) -> bool:
 	return always_awake or activity != "sleep"
 
 func prompt_for(_player: Node) -> String:
+	var nm := Localization.npc_name(npc_id, display_name)
 	if not always_awake and activity == "sleep":
-		return "%s is asleep" % display_name
-	return "Talk to %s" % display_name
+		return ("%s نائم الآن" % nm) if Localization.is_arabic() else ("%s is asleep" % nm)
+	return ("تحدّث مع %s" % nm) if Localization.is_arabic() else ("Talk to %s" % nm)
 
 func interact(player: Node) -> void:
 	if player is Node3D:
@@ -190,71 +200,84 @@ func interact(player: Node) -> void:
 	EventBus.dialog_requested.emit(self)
 
 func dialog_payload() -> Dictionary:
+	var ar := Localization.is_arabic()
+	var nm := Localization.npc_name(npc_id, display_name)
+	var sub_fb := role_title if not role_title.is_empty() else role.capitalize()
+	var stitle := Localization.npc_title(npc_id, sub_fb)
 	var actions: Array = []
 	for quest: QuestData in QuestDB.quests_involving_npc(npc_id):
 		var st := GameManager.quest_log.state_of(quest.id)
+		var qtitle := Localization.quest_title(quest)
 		if st == QuestLog.STATE_READY and quest.turn_in_npc == npc_id:
-			actions.append({"type": "quest_turnin", "quest_id": quest.id, "label": "Turn in: %s" % quest.title})
+			actions.append({"type": "quest_turnin", "quest_id": quest.id,
+				"label": ("تسليم المهمة: %s" % qtitle) if ar else ("Turn in: %s" % qtitle)})
 		elif st == QuestLog.STATE_NOT_STARTED and quest.giver_npc == npc_id:
 			if not quest.is_guild_contract or GameManager.guild.meets_rank(quest.required_guild_rank):
-				actions.append({"type": "quest_offer", "quest_id": quest.id, "label": "Quest: %s" % quest.title})
+				actions.append({"type": "quest_offer", "quest_id": quest.id,
+					"label": ("مهمة: %s" % qtitle) if ar else ("Quest: %s" % qtitle)})
 		elif st == QuestLog.STATE_ACTIVE:
-			actions.append({"type": "quest_progress", "quest_id": quest.id, "label": "About: %s" % quest.title})
+			actions.append({"type": "quest_progress", "quest_id": quest.id,
+				"label": ("حول المهمة: %s" % qtitle) if ar else ("About: %s" % qtitle)})
 
 	if guild_role == "receptionist":
 		if not GameManager.guild.registered:
-			actions.append({"type": "guild_register", "label": "Register as Rank F Adventurer"})
+			actions.append({"type": "guild_register", "label": Localization.tr_key("register_guild")})
 		else:
 			if GameManager.guild.can_promote(GameManager.progression.level):
-				actions.append({"type": "guild_promote", "label": "Promote to Rank %s!" % GameManager.guild.next_rank()})
-			actions.append({"type": "open_guild", "label": "Guild Contracts & Ranks"})
+				actions.append({"type": "guild_promote",
+					"label": ("ترقية إلى الرتبة %s!" % GameManager.guild.next_rank()) if ar else ("Promote to Rank %s!" % GameManager.guild.next_rank())})
+			actions.append({"type": "open_guild", "label": "عقود النقابة والرتب" if ar else "Guild Contracts & Ranks"})
 	elif guild_role == "master":
-		actions.append({"type": "open_guild", "label": "Guild Ledger"})
+		actions.append({"type": "open_guild", "label": "سجل نقابة المغامرين" if ar else "Guild Ledger"})
 	elif guild_role == "trainer":
-		actions.append({"type": "open_skills", "label": "Skill Tree Mastery"})
+		actions.append({"type": "open_skills", "label": "شجرة المهارات القتالية" if ar else "Skill Tree Mastery"})
 
 	if service_type == "healer":
-		actions.append({"type": "heal_blessing", "label": "Chapel Blessing (Full Heal)"})
+		actions.append({"type": "heal_blessing", "label": "بركة المعبد (شفاء كامل)" if ar else "Chapel Blessing (Full Heal)"})
 	elif service_type == "innkeeper":
-		actions.append({"type": "inn_rest", "label": "Rest Until Dawn (10g)"})
+		actions.append({"type": "inn_rest", "label": "استراحة حتى الفجر (10 ذهب)" if ar else "Rest Until Dawn (10g)"})
 	elif service_type == "forge" or role == "blacksmith":
-		actions.append({"type": "open_forge", "label": "Craft at Forge"})
+		actions.append({"type": "open_forge", "label": "التصنيع في كور الحدادة" if ar else "Craft at Forge"})
 
 	if has_shop or role == "blacksmith" or role == "merchant" or guild_role == "quartermaster":
-		actions.append({"type": "shop", "label": "Trade with %s" % display_name})
+		actions.append({"type": "shop", "label": ("المتاجرة مع %s" % nm) if ar else ("Trade with %s" % nm)})
 
-	actions.append({"type": "close", "label": "Leave"})
+	actions.append({"type": "close", "label": Localization.tr_key("leave")})
 	return {
 		"npc_id": npc_id,
-		"name": "%s · %s" % [display_name, role_title] if not role_title.is_empty() else display_name,
+		"name": "%s · %s" % [nm, stitle] if not stitle.is_empty() else nm,
 		"role": role,
 		"lines": _contextual_lines(),
 		"actions": actions,
 	}
 
 func _contextual_lines() -> Array:
+	var ar := Localization.is_arabic()
 	var lines: Array = []
 	if guild_role == "receptionist" and not GameManager.guild.registered:
-		lines.append("Welcome to the Eldoria Adventurers Guild! Register at my desk to earn your Rank F badge and accept official contracts.")
+		lines.append("مرحباً بك في نقابة مغامري إلدوريا! سجّل اسمك لديّ لتحصل على شارة الرتبة F وتبدأ قبول العقود الرسمية." if ar else "Welcome to the Eldoria Adventurers Guild! Register at my desk to earn your Rank F badge and accept official contracts.")
 	for quest: QuestData in QuestDB.quests_involving_npc(npc_id):
 		var st := GameManager.quest_log.state_of(quest.id)
 		if st == QuestLog.STATE_READY and quest.turn_in_npc == npc_id:
-			lines.append("%s: Splendid work, adventurer! Here is your reward." % quest.title)
+			var qt := Localization.quest_title(quest)
+			lines.append(("%s: أحسنت صنعاً أيها المغامر! تفضّل مكافأتك المستحقة." % qt) if ar else ("%s: Splendid work, adventurer! Here is your reward." % qt))
 	if GameManager.world.weather == "rain" and lines.is_empty():
-		lines.append("Rain sweeps down from the Eldoria peaks — mind your footing on the cobbles.")
-	for line: String in dialog_lines:
-		lines.append(line)
+		lines.append("تهطل الأمطار من قمم إلدوريا الشمالية — احذر الانزلاق على الحجارة." if ar else "Rain sweeps down from the Eldoria peaks — mind your footing on the cobbles.")
+	for line: Variant in Localization.npc_lines(npc_id, dialog_lines):
+		lines.append(String(line))
 	return lines
 
 func execute_action(action: Dictionary) -> String:
+	var ar := Localization.is_arabic()
 	match String(action.get("type", "")):
 		"quest_offer":
 			var quest_id := String(action.get("quest_id", ""))
 			if GameManager.start_quest(quest_id):
 				_refresh_marker()
 				var quest := QuestDB.get_quest(quest_id)
-				return "Quest started: %s" % (quest.title if quest != null else quest_id)
-			return "You do not meet the requirements for that quest yet."
+				var qt := Localization.quest_title(quest) if quest != null else quest_id
+				return ("بدأت المهمة: %s" % qt) if ar else ("Quest started: %s" % qt)
+			return "لا تستوفي متطلبات هذه المهمة بعد." if ar else "You do not meet the requirements for that quest yet."
 		"quest_progress":
 			var quest := QuestDB.get_quest(String(action.get("quest_id", "")))
 			if quest == null:
@@ -262,7 +285,8 @@ func execute_action(action: Dictionary) -> String:
 			var parts: PackedStringArray = []
 			for i: int in quest.objectives.size():
 				var objective: Dictionary = quest.objectives[i]
-				parts.append("%s: %d/%d" % [String(objective.get("label", "Objective")),
+				var olabel := Localization.quest_obj_label(quest, i, String(objective.get("label", "Objective")))
+				parts.append("%s: %d/%d" % [olabel,
 					GameManager.quest_log.objective_progress(quest.id, i),
 					int(objective.get("required", 1))])
 			return " | ".join(parts)
@@ -271,18 +295,20 @@ func execute_action(action: Dictionary) -> String:
 			var quest := QuestDB.get_quest(quest_id)
 			if GameManager.turn_in_quest(quest_id):
 				_refresh_marker()
-				return "Reward: %d XP, %d Gold" % [quest.reward_xp, quest.reward_gold] if quest != null else "Reward granted"
-			return "Finish the objectives first."
+				if quest != null:
+					return ("المكافأة: %d خبرة، %d ذهب" % [quest.reward_xp, quest.reward_gold]) if ar else ("Reward: %d XP, %d Gold" % [quest.reward_xp, quest.reward_gold])
+				return "تم استلام المكافأة" if ar else "Reward granted"
+			return "أكمل أهداف المهمة أولاً." if ar else "Finish the objectives first."
 		"guild_register":
 			GameManager.register_in_guild()
 			_refresh_marker()
-			return "Registered as Rank F Adventurer! Check the Quest Board for contracts."
+			return "تم تسجيلك كمغامر رتبة F! راجع لوحة عقود النقابة." if ar else "Registered as Rank F Adventurer! Check the Quest Board for contracts."
 		"guild_promote":
 			var info := GameManager.promote_guild_rank()
 			_refresh_marker()
 			if not info.is_empty():
-				return "Promoted to Guild Rank %s — %s!" % [String(info["rank"]), String(info["title"])]
-			return "Keep completing contracts to earn promotion."
+				return ("تمت ترقيتك إلى الرتبة %s!" % String(info["rank"])) if ar else ("Promoted to Guild Rank %s — %s!" % [String(info["rank"]), String(info["title"])])
+			return "واصل إنجاز العقود لرفع سمعتك والترقية." if ar else "Keep completing contracts to earn promotion."
 		"open_guild":
 			EventBus.guild_board_opened.emit()
 			return "__close__"
@@ -297,14 +323,14 @@ func execute_action(action: Dictionary) -> String:
 			if p != null:
 				p.heal(999.0)
 				p.restore_mana(999.0)
-			return "Chapel light restores your Health & Mana!"
+			return "نور المعبد استعاد صحتك والمانا بالكامل!" if ar else "Chapel light restores your Health & Mana!"
 		"inn_rest":
 			if GameManager.spend_gold(10):
 				var p := get_tree().get_first_node_in_group("player") as Player
 				if p != null:
 					p.sleep_until_morning()
-				return "Rested at the Hearthstone Inn until dawn!"
-			return "You need 10 gold to rent a warm room."
+				return "استرحت في نُزل الموقد حتى إشراقة الفجر!" if ar else "Rested at the Hearthstone Inn until dawn!"
+			return "تحتاج إلى 10 قطع ذهبية لاستئجار غرفة دافئة." if ar else "You need 10 gold to rent a warm room."
 		"shop":
 			EventBus.shop_requested.emit(self)
 			return ""

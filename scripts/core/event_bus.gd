@@ -24,6 +24,8 @@ signal damage_dealt(target: Node, amount: float, is_crit: bool)
 signal creature_died(creature_id: String, uid: String, position: Vector3)
 signal creature_aggro(creature: Node)
 signal boss_health_changed(boss_name: String, current: float, maximum: float, phase: int, visible_bar: bool)
+signal target_locked_changed(target: Node)
+signal hero_class_changed(class_id: String)
 
 # --- Quests & Adventurers Guild ----------------------------------------------
 signal quest_started(quest_id: String)

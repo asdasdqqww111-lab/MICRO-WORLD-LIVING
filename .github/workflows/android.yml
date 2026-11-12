@@ -188,20 +188,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          TAG="v1.0-debug"
           APK=build/android/micro_world_living.apk
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$APK" --clobber
-            gh release edit "$TAG" \
-              --title "MICRO WORLD: LIVING — Eldoria Edition v1.0 debug APK" \
-              --notes-file RELEASE_NOTES.md
-          else
-            gh release create "$TAG" "$APK" \
-              --target "${{ github.sha }}" \
-              --title "MICRO WORLD: LIVING — Eldoria Edition v1.0 debug APK" \
-              --notes-file RELEASE_NOTES.md \
-              --prerelease
-          fi
+          for TAG in v1.1-debug v1.0-debug; do
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release upload "$TAG" "$APK" --clobber
+              gh release edit "$TAG" \
+                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v1.1 (Phase 1) APK" \
+                --notes-file RELEASE_NOTES.md
+            else
+              gh release create "$TAG" "$APK" \
+                --target "${{ github.sha }}" \
+                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v1.1 (Phase 1) APK" \
+                --notes-file RELEASE_NOTES.md \
+                --prerelease
+            fi
+          done
 
       - name: Upload APK verification log
         if: always()

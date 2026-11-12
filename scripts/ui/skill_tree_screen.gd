@@ -219,26 +219,28 @@ func _populate_inspector() -> void:
 		return
 
 	var meta: Dictionary = BRANCH_META.get(skill.branch, BRANCH_META["warrior"])
-	var disp := skill.title_ar if (Localization.is_arabic() and not skill.title_ar.is_empty()) else skill.title
+	var ar := Localization.is_arabic()
+	var disp := Localization.skill_title(skill)
 	_inspector_box.add_child(UIFactory.label("%s  %s" % [skill.icon_glyph, disp], 20, meta["color"] as Color))
 	var rank := GameManager.skills.rank_of(skill.id)
-	_inspector_box.add_child(UIFactory.label("Tier %d · Rank %d / %d · Cost %d SP" % [
+	_inspector_box.add_child(UIFactory.label(
+		("المستوى %d · الرتبة %d / %d · التكلفة %d ن.م" if ar else "Tier %d · Rank %d / %d · Cost %d SP") % [
 		skill.tier + 1, rank, skill.max_rank, skill.point_cost], 14, UIFactory.GOLD))
 	_inspector_box.add_child(UIFactory.hsep())
-	_inspector_box.add_child(UIFactory.wrapped_label(skill.description, 15, UIFactory.TEXT))
+	_inspector_box.add_child(UIFactory.wrapped_label(Localization.skill_desc(skill), 15, UIFactory.TEXT))
 
 	if skill.required_level > 1:
 		var lv_ok := GameManager.progression.level >= skill.required_level
-		_inspector_box.add_child(UIFactory.label("Requires Hero Level %d" % skill.required_level, 14,
+		_inspector_box.add_child(UIFactory.label(("يتطلب مستوى البطل %d" if ar else "Requires Hero Level %d") % skill.required_level, 14,
 			UIFactory.ACCENT if lv_ok else UIFactory.DANGER))
 
 	if not skill.prerequisites.is_empty():
 		var req_names: PackedStringArray = []
 		for req_id: String in skill.prerequisites:
 			var rs := SkillDB.get_skill(req_id)
-			req_names.append(rs.title if rs != null else req_id)
+			req_names.append(Localization.skill_title(rs) if rs != null else req_id)
 		var req_met := GameManager.skills.prerequisites_met(skill.id)
-		_inspector_box.add_child(UIFactory.wrapped_label("Prerequisite: " + ", ".join(req_names), 14,
+		_inspector_box.add_child(UIFactory.wrapped_label(("المتطلب السابق: " if ar else "Prerequisite: ") + "، ".join(req_names), 14,
 			UIFactory.ACCENT if req_met else UIFactory.DANGER))
 
 	var spacer := Control.new()

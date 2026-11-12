@@ -14,6 +14,7 @@ var journal: JournalScreen
 var character: CharacterScreen
 var shop: ShopScreen
 var pause_menu: PauseScreen
+var story_intro: StoryIntroOverlay
 
 var player: Player
 var world: WorldRoot
@@ -102,6 +103,15 @@ func _build() -> void:
 	dialog.name = "DialogScreen"
 	add_child(dialog)
 	dialog.closed.connect(_refresh_pause_state)
+
+	story_intro = StoryIntroOverlay.new()
+	story_intro.name = "StoryIntroOverlay"
+	story_intro.visible = false
+	add_child(story_intro)
+	story_intro.finished.connect(_refresh_pause_state)
+	if GameManager != null and GameManager.show_prologue_on_enter:
+		GameManager.show_prologue_on_enter = false
+		story_intro.call_deferred("start_prologue")
 
 func _connect() -> void:
 	hud.quick_menu_pressed.connect(toggle_screen)
@@ -226,11 +236,12 @@ func _on_request_main_menu() -> void:
 	await SceneManager.go_to_main_menu()
 
 func _refresh_pause_state() -> void:
-	var should_pause := current_screen != null or dialog.visible
+	var intro_open := story_intro != null and story_intro.visible
+	var should_pause := current_screen != null or dialog.visible or intro_open
 	get_tree().paused = should_pause
 	if hud != null:
-		hud.visible = (current_screen == null)
+		hud.visible = (current_screen == null and not intro_open)
 	if touch != null:
-		touch.visible = (current_screen == null and not dialog.visible)
+		touch.visible = (current_screen == null and not dialog.visible and not intro_open and SettingsManager.show_touch_controls)
 	touch.set_controls_visible(not should_pause and SettingsManager.show_touch_controls)
 	EventBus.pause_toggled.emit(should_pause)

@@ -90,6 +90,17 @@ func set_zoom_factor(factor: float) -> void:
 func recenter_behind(body_yaw: float) -> void:
 	yaw = body_yaw
 
+func soft_track_target(world_target: Vector3, delta: float) -> void:
+	var follow := get_parent() as Node3D
+	if follow == null:
+		return
+	var to_t := world_target - follow.global_position
+	to_t.y = 0.0
+	if to_t.length_squared() < 0.25:
+		return
+	var desired_yaw := atan2(-to_t.x, -to_t.z)
+	yaw = lerp_angle(yaw, desired_yaw, clampf(delta * 4.2, 0.0, 1.0))
+
 func reset() -> void:
 	yaw = 0.0
 	pitch = -15.0

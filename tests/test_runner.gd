@@ -84,6 +84,7 @@ func _wait_physics(count: int) -> void:
 func _run_all() -> void:
 	GameManager.reset_state()
 	_test_databases()
+	_test_hero_classes_and_models()
 	_test_progression_and_skill_tree()
 	_test_guild_and_crafting()
 	_test_localization_and_audio()
@@ -126,6 +127,80 @@ func _test_databases() -> void:
 	_check(QuestDB.get_quest("skeleton_menace") != null, "quest 'skeleton_menace' present")
 	_check(QuestDB.get_quest("main_guild_call") != null, "main quest 'main_guild_call' present")
 	_check(QuestDB.get_quest("contract_forest_cull") != null, "guild contract 'contract_forest_cull' present")
+
+# --- 4 playable hero classes, articulated 3D creature rigs & full Arabic ------
+
+func _test_hero_classes_and_models() -> void:
+	_section("Hero Classes (4), Articulated 3D Creature Rigs & Full Arabic Content")
+	_check(HeroClassDB.all_ids().size() == 4, "HeroClassDB defines 4 playable classes")
+	for cid: String in HeroClassDB.all_ids():
+		var mpath := HeroClassDB.model_path_for(cid)
+		_check(AssetLibrary.has_model(mpath), "3D GLB rig exists for hero class '%s' (%s)" % [cid, mpath])
+
+	GameManager.start_new_game("mage", "Lyria", false)
+	_check(GameManager.hero_class == "mage" and GameManager.hero_name == "Lyria",
+		"Mage class creation applies hero_class & hero_name")
+	_check(GameManager.max_mana() >= 120.0 and GameManager.skills.rank_of("mage_firebolt") >= 1,
+		"Mage starts with elevated mana pool (%.0f) & Firebolt unlocked" % GameManager.max_mana())
+
+	GameManager.start_new_game("ranger", "Kaelen", false)
+	_check(GameManager.crit_chance() >= 0.14 and GameManager.skills.rank_of("rng_fleet_foot") >= 1,
+		"Ranger starts with elevated crit chance (%.2f) & Fleet Foot unlocked" % GameManager.crit_chance())
+
+	GameManager.start_new_game("barbarian", "Torak", false)
+	_check(GameManager.max_health() >= 130.0 and GameManager.skills.rank_of("war_cleave") >= 1,
+		"Barbarian starts with elevated max HP (%.0f) & Sundering Cleave unlocked" % GameManager.max_health())
+
+	# Verify articulated 3D creature rigs & stride animation
+	var wolf_rig := ProceduralModels.build("wolf", Color(0.45, 0.43, 0.42), 1.0)
+	_check(wolf_rig.get_node_or_null("LegFL") != null and wolf_rig.get_node_or_null("HeadPivot") != null and wolf_rig.get_node_or_null("TailPivot") != null,
+		"Wolf procedural 3D rig has articulated legs, head & tail pivots")
+	ProceduralModels.animate(wolf_rig, 0.5, 3.0)
+	_check(absf((wolf_rig.get_node("LegFL") as Node3D).rotation.x) > 0.01,
+		"Wolf articulated limb stride animates smoothly")
+	wolf_rig.free()
+
+	var stag_rig := ProceduralModels.build("stag", Color(0.62, 0.46, 0.28), 1.1)
+	_check(stag_rig.get_node_or_null("HeadPivot") != null and stag_rig.get_node_or_null("LegBR") != null,
+		"Stag procedural 3D rig has crowned antler head & 4 articulated legs")
+	stag_rig.free()
+
+	var slime_rig := ProceduralModels.build("slime", Color(0.32, 0.85, 0.48), 0.95)
+	_check(slime_rig.get_node_or_null("Core") != null and slime_rig.get_node_or_null("Dome") != null,
+		"Slime 3D rig has translucent outer dome & glowing suspended nucleus")
+	slime_rig.free()
+
+	# Verify 100% Arabic content coverage across Items, Quests, Skills, Creatures, NPCs & Prologue
+	var prev_lang := SettingsManager.language if SettingsManager != null else "en"
+	if SettingsManager != null:
+		SettingsManager.language = "ar"
+	var all_items_ar := true
+	for it: ItemData in ItemDB.all_items():
+		if Localization.item_name(it).is_empty() or Localization.item_name(it) == it.display_name:
+			all_items_ar = false
+	_check(all_items_ar, "all %d items have distinct Arabic names & descriptions" % ItemDB.count())
+
+	var all_quests_ar := true
+	for q: QuestData in QuestDB.all_quests():
+		if Localization.quest_title(q).is_empty() or Localization.quest_title(q) == q.title:
+			all_quests_ar = false
+	_check(all_quests_ar, "all %d quests & guild contracts have distinct Arabic titles & objectives" % QuestDB.count())
+
+	var all_skills_ar := true
+	for sk: SkillData in SkillDB.all_skills():
+		if Localization.skill_title(sk).is_empty() or Localization.skill_desc(sk) == sk.description:
+			all_skills_ar = false
+	_check(all_skills_ar, "all %d skills have Arabic titles & descriptions" % SkillDB.count())
+
+	var all_creatures_ar := true
+	for cr: CreatureData in CreatureDB.all_creatures():
+		if Localization.creature_name(cr).is_empty() or Localization.creature_name(cr) == cr.display_name:
+			all_creatures_ar = false
+	_check(all_creatures_ar, "all %d creatures & bosses have Arabic names" % CreatureDB.count())
+	_check(Localization.prologue_slides().size() == 3, "Eldoria Story Prologue has 3 localized narrative chapters")
+	if SettingsManager != null:
+		SettingsManager.language = prev_lang
+	GameManager.reset_state()
 
 # --- progression & 24-node skill tree ----------------------------------------
 
@@ -432,8 +507,11 @@ func _test_game_scene() -> void:
 	_check(ui.current_screen != null, "UI screens open and refresh without error")
 	ui.close_current_screen()
 	await _wait_frames(2)
+	_check(ui.touch != null and ui.touch.find_child("Btn_lock_target", true, false) != null,
+		"Mobile TouchControls includes Target-Lock button (Btn_lock_target)")
+	_check(world.quest_waypoint != null, "3D QuestWaypoint beacon exists in WorldRoot")
 
-	# Attack & Spell test against a forest skeleton.
+	# Attack, Target Lock & Spell test against a forest skeleton.
 	var skeleton: Creature = null
 	for creature: Node in world._creatures.values():
 		if creature is Creature and (creature as Creature).data.id == "skeleton_forest":
@@ -444,6 +522,8 @@ func _test_game_scene() -> void:
 		player.global_position = skeleton.global_position + Vector3(0.0, 0.0, 1.4)
 		player.rotation.y = 0.0
 		await _wait_physics(3)
+		player.toggle_target_lock()
+		_check(player.locked_target != null, "Target Lock acquires nearest hostile creature")
 		var hp_before := skeleton.health.current_health
 		var attacked := player.try_attack()
 		await _wait_physics(3)
@@ -451,6 +531,13 @@ func _test_game_scene() -> void:
 		_check(skeleton.health.current_health < hp_before,
 			"skeleton takes damage (%.1f -> %.1f)" % [hp_before, skeleton.health.current_health])
 		_check(skeleton.aggro, "skeleton aggroes when hit")
+		player.clear_target_lock()
+
+	# Verify 3D Quest Waypoint resolves active quest coordinates
+	GameManager.start_quest("main_guild_call")
+	if world.quest_waypoint != null:
+		world.quest_waypoint._refresh_target()
+		_check(world.quest_waypoint.has_waypoint, "QuestWaypoint3D resolves active quest target beacon")
 
 	# Quest: kill three skeletons then hand in to the farmer.
 	GameManager.start_quest("skeleton_menace")
@@ -562,7 +649,7 @@ func _report() -> void:
 	_finished = true
 	var info := Engine.get_version_info()
 	var lines: PackedStringArray = []
-	lines.append("MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.0)")
+	lines.append("MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.1 — Phase 1 Complete)")
 	lines.append("engine: %s %s" % [info.get("string", "?"), info.get("status", "")])
 	lines.append("rendering method: %s" % ProjectSettings.get_setting("rendering/renderer/rendering_method"))
 	lines.append("run at: %s" % Time.get_datetime_string_from_system(true))

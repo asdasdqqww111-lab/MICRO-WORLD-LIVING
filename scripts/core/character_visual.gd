@@ -91,10 +91,11 @@ func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void
 			if low.contains(String(v).to_lower()):
 				mi.visible = true
 
-## Dynamically updates Knight player 3D equipment meshes from Inventory!
-func sync_player_equipment(inventory: Inventory) -> void:
+## Dynamically updates Hero 3D equipment meshes across all 4 playable KayKit rigs!
+func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> void:
 	if inventory == null or _submeshes.is_empty():
 		return
+	var cls := hero_class if not hero_class.is_empty() else (GameManager.hero_class if GameManager != null else "knight")
 	var weapon_id := inventory.equipped("weapon")
 	var shield_id := inventory.equipped("shield")
 	var helmet_id := inventory.equipped("helmet")
@@ -102,25 +103,69 @@ func sync_player_equipment(inventory: Inventory) -> void:
 
 	for k: String in _submeshes.keys():
 		var low := k.to_lower()
+		var mi := _submeshes[k] as MeshInstance3D
+		if mi == null:
+			continue
+		if cls == "mage":
+			if k == "2H_Staff":
+				mi.visible = not weapon_id.is_empty()
+			elif k == "1H_Wand" or k == "Spellbook":
+				mi.visible = false
+			elif k == "Spellbook_open":
+				mi.visible = not shield_id.is_empty() or not inventory.equipped("accessory").is_empty()
+			elif k == "Mage_Hat":
+				mi.visible = true
+			elif k == "Mage_Cape":
+				mi.visible = true
+			continue
+		if cls == "ranger":
+			if k == "Knife":
+				mi.visible = not weapon_id.is_empty()
+			elif k == "Knife_Offhand":
+				mi.visible = not weapon_id.is_empty() and shield_id.is_empty()
+			elif k == "1H_Crossbow":
+				mi.visible = not shield_id.is_empty()
+			elif k == "2H_Crossbow" or k == "Throwable":
+				mi.visible = false
+			elif k == "Rogue_Cape":
+				mi.visible = true
+			continue
+		if cls == "barbarian":
+			if k == "2H_Axe":
+				mi.visible = (weapon_id == "steel_greatsword")
+			elif k == "1H_Axe":
+				mi.visible = not weapon_id.is_empty() and weapon_id != "steel_greatsword"
+			elif k == "1H_Axe_Offhand":
+				mi.visible = not weapon_id.is_empty() and shield_id.is_empty() and weapon_id != "steel_greatsword"
+			elif k == "Barbarian_Round_Shield":
+				mi.visible = not shield_id.is_empty()
+			elif k == "Mug":
+				mi.visible = false
+			elif k == "Barbarian_Hat":
+				mi.visible = not helmet_id.is_empty()
+			elif k == "Barbarian_Cape":
+				mi.visible = true
+			continue
+		# Default Knight rig
 		if low.contains("offhand"):
-			(_submeshes[k] as MeshInstance3D).visible = false
+			mi.visible = false
 		elif low == "1h_sword":
-			(_submeshes[k] as MeshInstance3D).visible = not weapon_id.is_empty() and weapon_id != "steel_greatsword"
+			mi.visible = not weapon_id.is_empty() and weapon_id != "steel_greatsword"
 		elif low == "2h_sword":
-			(_submeshes[k] as MeshInstance3D).visible = (weapon_id == "steel_greatsword")
+			mi.visible = (weapon_id == "steel_greatsword")
 		elif low.contains("shield"):
 			if k == "Round_Shield":
-				(_submeshes[k] as MeshInstance3D).visible = (shield_id == "oak_shield")
+				mi.visible = (shield_id == "oak_shield")
 			elif k == "Spike_Shield":
-				(_submeshes[k] as MeshInstance3D).visible = (shield_id == "iron_shield")
+				mi.visible = (shield_id == "iron_shield")
 			elif k == "Badge_Shield":
-				(_submeshes[k] as MeshInstance3D).visible = (shield_id == "guild_aegis")
+				mi.visible = (shield_id == "guild_aegis")
 			else:
-				(_submeshes[k] as MeshInstance3D).visible = (not shield_id.is_empty() and shield_id != "oak_shield" and shield_id != "iron_shield" and shield_id != "guild_aegis")
+				mi.visible = (not shield_id.is_empty() and shield_id != "oak_shield" and shield_id != "iron_shield" and shield_id != "guild_aegis")
 		elif low.contains("helmet"):
-			(_submeshes[k] as MeshInstance3D).visible = not helmet_id.is_empty()
+			mi.visible = not helmet_id.is_empty()
 		elif low.contains("cape"):
-			(_submeshes[k] as MeshInstance3D).visible = not armor_id.is_empty()
+			mi.visible = not armor_id.is_empty()
 
 func _resolve_clip(aliases: Array) -> String:
 	if anim_player == null:

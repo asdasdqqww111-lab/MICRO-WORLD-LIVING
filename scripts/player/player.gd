@@ -50,7 +50,11 @@ var input := PlayerInput.new()
 var zone: String = "village"
 var dead: bool = false
 var is_blocking: bool = false
+var locked_target: Node3D = null
 
+var _loaded_class_id: String = ""
+var _target_ring: MeshInstance3D
+var _ring_spin: float = 0.0
 var _attack_timer: float = 0.0
 var _spell_timer: float = 0.0
 var _dodge_timer: float = 0.0
@@ -71,6 +75,7 @@ func _ready() -> void:
 	collision_mask = 1
 	_build_collision()
 	_build_visual()
+	_build_target_ring()
 	_build_camera()
 	_build_health()
 	stamina = GameManager.max_stamina()
@@ -79,6 +84,7 @@ func _ready() -> void:
 	EventBus.player_level_up.connect(_on_level_up)
 	EventBus.skill_tree_changed.connect(_on_stats_updated)
 	EventBus.equipment_changed.connect(_sync_equipment_visuals)
+	EventBus.hero_class_changed.connect(_on_hero_class_changed)
 	if GameManager.inventory != null and not GameManager.inventory.equipment_changed.is_connected(_sync_equipment_visuals):
 		GameManager.inventory.equipment_changed.connect(_sync_equipment_visuals)
 	_sync_equipment_visuals()
@@ -98,13 +104,46 @@ func _build_visual() -> void:
 	visual.name = "Visual"
 	visual.rotation.y = MODEL_YAW_OFFSET
 	add_child(visual)
-	var chosen := MODEL_PATH if AssetLibrary.has_model(MODEL_PATH) else FALLBACK_MODEL_PATH
+	_loaded_class_id = GameManager.hero_class if GameManager != null else "knight"
+	var class_model := HeroClassDB.model_for(_loaded_class_id)
+	var chosen := class_model if AssetLibrary.has_model(class_model) else (MODEL_PATH if AssetLibrary.has_model(MODEL_PATH) else FALLBACK_MODEL_PATH)
 	if not visual.setup(chosen, MODEL_SCALE):
 		push_warning("Player: character model missing")
 
+func _on_hero_class_changed(new_class: String) -> void:
+	if new_class == _loaded_class_id and visual != null:
+		_sync_equipment_visuals()
+		return
+	if visual != null:
+		remove_child(visual)
+		visual.queue_free()
+		visual = null
+	_build_visual()
+	_sync_equipment_visuals()
+	_on_stats_updated()
+
+func _build_target_ring() -> void:
+	_target_ring = MeshInstance3D.new()
+	_target_ring.name = "TargetLockRing"
+	_target_ring.top_level = true
+	_target_ring.visible = false
+	_target_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.62
+	torus.outer_radius = 0.78
+	torus.rings = 18
+	torus.ring_segments = 8
+	_target_ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(1.0, 0.82, 0.28, 0.92)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_target_ring.material_override = mat
+	add_child(_target_ring)
+
 func _sync_equipment_visuals() -> void:
 	if visual != null and GameManager != null and GameManager.inventory != null:
-		visual.sync_player_equipment(GameManager.inventory)
+		visual.sync_player_equipment(GameManager.inventory, GameManager.hero_class)
 
 func _build_camera() -> void:
 	camera_rig = CameraRig.new()
@@ -197,6 +236,8 @@ func _physics_process(delta: float) -> void:
 			if AudioManager != null:
 				AudioManager.play_sfx("footstep_grass", -6.0, randf_range(0.9, 1.12))
 
+	if input.lock_target_pressed():
+		toggle_target_lock()
 	if input.dodge_pressed():
 		try_dodge(direction)
 	if input.attack_pressed():
@@ -213,9 +254,85 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("camera_recenter") and camera_rig != null:
 		camera_rig.recenter_behind(rotation.y)
 
+	_update_target_lock(delta)
 	_update_vitals_regen(delta)
 	_update_interactable()
 	_update_animation(sprinting, planar)
+
+func toggle_target_lock() -> Node3D:
+	var candidates: Array[Node3D] = []
+	for n: Node in get_tree().get_nodes_in_group("creature"):
+		var c := n as Creature
+		if c == null or not c.is_visible_in_tree() or c.health == null or c.health.is_dead():
+			continue
+		if c.data != null and not c.data.hostile and not c.aggro:
+			continue
+		if global_position.distance_to(c.global_position) <= 18.5:
+			candidates.append(c)
+	if candidates.is_empty():
+		clear_target_lock()
+		return null
+	candidates.sort_custom(func(a: Node3D, b: Node3D) -> bool:
+		return global_position.distance_squared_to(a.global_position) < global_position.distance_squared_to(b.global_position))
+	if locked_target != null and is_instance_valid(locked_target):
+		var idx := candidates.find(locked_target)
+		if idx >= 0 and idx + 1 < candidates.size():
+			locked_target = candidates[idx + 1]
+		else:
+			clear_target_lock()
+			return null
+	else:
+		locked_target = candidates[0]
+	if AudioManager != null:
+		AudioManager.play_sfx("ui_click", -3.0, 1.2)
+	EventBus.target_locked_changed.emit(locked_target)
+	return locked_target
+
+func clear_target_lock() -> void:
+	if locked_target != null:
+		locked_target = null
+		EventBus.target_locked_changed.emit(null)
+	if _target_ring != null:
+		_target_ring.visible = false
+
+func _face_locked_target() -> void:
+	if locked_target == null or not is_instance_valid(locked_target):
+		return
+	var to_t := locked_target.global_position - global_position
+	to_t.y = 0.0
+	if to_t.length_squared() > 0.04:
+		rotation.y = atan2(-to_t.x, -to_t.z)
+
+func _update_target_lock(delta: float) -> void:
+	if locked_target == null:
+		if _target_ring != null:
+			_target_ring.visible = false
+		return
+	var valid := is_instance_valid(locked_target) and locked_target.is_inside_tree() and locked_target.is_visible_in_tree()
+	if valid and locked_target is Creature:
+		var c := locked_target as Creature
+		if c.health == null or c.health.is_dead():
+			valid = false
+	if valid and global_position.distance_to(locked_target.global_position) > 22.0:
+		valid = false
+	if not valid:
+		clear_target_lock()
+		# Auto-acquire next nearby aggroed foe if one is right in front of us
+		for n: Node in get_tree().get_nodes_in_group("creature"):
+			var c2 := n as Creature
+			if c2 != null and c2.aggro and c2.health != null and not c2.health.is_dead() and global_position.distance_to(c2.global_position) <= 12.0:
+				locked_target = c2
+				EventBus.target_locked_changed.emit(locked_target)
+				break
+		if locked_target == null:
+			return
+	_ring_spin += delta * 2.4
+	if _target_ring != null:
+		_target_ring.visible = true
+		_target_ring.global_position = locked_target.global_position + Vector3(0.0, 0.08, 0.0)
+		_target_ring.rotation = Vector3(0.0, _ring_spin, 0.0)
+	if camera_rig != null and not Input.is_action_pressed("camera_drag"):
+		camera_rig.soft_track_target(locked_target.global_position, delta)
 
 func _update_vitals_regen(delta: float) -> void:
 	var regen_mult := GameManager.skills.potion_multiplier()
@@ -292,6 +409,7 @@ func try_dodge(move_dir: Vector3 = Vector3.ZERO) -> bool:
 func try_attack() -> bool:
 	if dead or _attack_timer > 0.0 or stamina < ATTACK_COST:
 		return false
+	_face_locked_target()
 	_attack_index = (_attack_index + 1) % 2 if _combo_reset > 0.0 else 0
 	_combo_reset = COMBO_WINDOW
 	_attack_timer = ATTACK_DURATION
@@ -313,6 +431,7 @@ func try_attack() -> bool:
 func try_heavy_attack() -> bool:
 	if dead or _attack_timer > 0.0 or stamina < HEAVY_COST:
 		return false
+	_face_locked_target()
 	_attack_timer = HEAVY_DURATION
 	_combo_reset = 0.0
 	stamina = maxf(0.0, stamina - HEAVY_COST)
@@ -351,18 +470,20 @@ func try_cast_spell() -> bool:
 		"ice": col = Color(0.48, 0.88, 1.0)
 		"lightning": col = Color(0.96, 0.88, 0.30)
 
+	_face_locked_target()
 	var fwd := (-global_transform.basis.z).normalized()
 	var origin := global_position + Vector3(0.0, 1.15, 0.0) + fwd * 0.7
-	var best_t: Node3D = null
+	var best_t: Node3D = locked_target if (locked_target != null and is_instance_valid(locked_target)) else null
 	var best_d := 13.5
-	for n: Node in get_tree().get_nodes_in_group(Combat.DAMAGEABLE_GROUP):
-		if n == self or not (n is Node3D) or not (n as Node3D).is_visible_in_tree():
-			continue
-		var t := n as Node3D
-		var dv := (t.global_position + Vector3.UP * 0.9) - origin
-		if dv.length() < best_d and fwd.dot(dv.normalized()) > 0.32:
-			best_d = dv.length()
-			best_t = t
+	if best_t == null:
+		for n: Node in get_tree().get_nodes_in_group(Combat.DAMAGEABLE_GROUP):
+			if n == self or not (n is Node3D) or not (n as Node3D).is_visible_in_tree():
+				continue
+			var t := n as Node3D
+			var dv := (t.global_position + Vector3.UP * 0.9) - origin
+			if dv.length() < best_d and fwd.dot(dv.normalized()) > 0.32:
+				best_d = dv.length()
+				best_t = t
 	var hit_pos := (best_t.global_position + Vector3.UP * 0.9) if best_t != null else (origin + fwd * 10.0)
 	_spawn_spell_orb(origin, hit_pos, col)
 	var blast_r := 2.8 + GameManager.skills.bonus_total(SkillData.Effect.ELEMENTAL_MASTERY) * 2.5
@@ -571,5 +692,6 @@ func apply_save_state(data: Dictionary) -> void:
 	mana = clampf(float(data.get("mana", GameManager.max_mana())), 0.0, GameManager.max_mana())
 	if camera_rig != null:
 		camera_rig.snap_to_parent()
+	_on_hero_class_changed(GameManager.hero_class)
 	_sync_equipment_visuals()
 	_emit_vitals()

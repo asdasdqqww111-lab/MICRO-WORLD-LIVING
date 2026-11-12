@@ -77,6 +77,15 @@ func _draw() -> void:
 						is_h = cdata.hostile
 					draw_circle(_to_map(Vector2(cp.x, cp.z), p_xz, half), 2.6,
 						Color(0.94, 0.32, 0.32) if is_h else Color(0.55, 0.88, 0.55))
+					if player.locked_target == cr:
+						draw_arc(_to_map(Vector2(cp.x, cp.z), p_xz, half), 5.0, 0.0, TAU, 16, UIFactory.GOLD, 1.6)
+		var wp := get_tree().get_first_node_in_group("quest_waypoint") as QuestWaypoint3D
+		if wp != null and wp.has_waypoint:
+			var wpt := _to_map(Vector2(wp.target_position.x, wp.target_position.z), p_xz, half)
+			var dpoly := PackedVector2Array([
+				wpt + Vector2(0, -5.2), wpt + Vector2(5.2, 0),
+				wpt + Vector2(0, 5.2), wpt + Vector2(-5.2, 0)])
+			draw_colored_polygon(dpoly, Color(1.0, 0.88, 0.24, 0.95))
 
 	# Player directional chevron at center
 	var yaw := player.rotation.y

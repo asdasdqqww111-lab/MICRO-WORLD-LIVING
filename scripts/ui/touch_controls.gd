@@ -75,17 +75,18 @@ func _build() -> void:
 		sprint_button.modulate = Color(1.0, 0.95, 0.65, 1.0) if _sprint else Color(1, 1, 1, 0.78))
 	add_child(sprint_button)
 
-	# Ergonomic Right-Hand Action Cluster (no overlap, clear silhouettes)
-	_place_action_button("attack", "⚔ ATK", 24.0, 26.0, 108.0, UIFactory.DANGER)
-	_place_action_button("attack_heavy", "🪓 HVY", 144.0, 24.0, 74.0, Color(0.96, 0.58, 0.24))
-	_place_action_button("cast_spell", "✦ MAG", 228.0, 24.0, 72.0, UIFactory.MANA_BLUE)
-	_place_action_button("dodge", "💨 DGE", 144.0, 108.0, 72.0, UIFactory.STAMINA_TEAL)
-	_place_action_button("jump", "⬆ JMP", 26.0, 146.0, 74.0, Color(0.55, 0.78, 1.0))
-	_place_action_button("interact", "✦ USE", 110.0, 190.0, 72.0, UIFactory.GOLD)
-	_place_action_button("quick_potion", "⚗ POT", 228.0, 106.0, 64.0, UIFactory.ACCENT)
+	# Ergonomic Right-Hand Curved Action Cluster (larger mobile targets + Target Lock!)
+	_place_action_button("attack", "⚔ ATK", 22.0, 22.0, 114.0, UIFactory.DANGER)
+	_place_action_button("attack_heavy", "🪓 HVY", 148.0, 20.0, 78.0, Color(0.96, 0.58, 0.24))
+	_place_action_button("cast_spell", "✦ MAG", 236.0, 20.0, 76.0, UIFactory.MANA_BLUE)
+	_place_action_button("dodge", "💨 DGE", 146.0, 108.0, 76.0, UIFactory.STAMINA_TEAL)
+	_place_action_button("jump", "⬆ JMP", 24.0, 148.0, 76.0, Color(0.55, 0.78, 1.0))
+	_place_action_button("interact", "✦ USE", 112.0, 194.0, 74.0, UIFactory.GOLD)
+	_place_action_button("quick_potion", "⚗ POT", 234.0, 106.0, 68.0, UIFactory.ACCENT)
+	_place_action_button("lock_target", "◎ LCK", 200.0, 186.0, 68.0, Color(1.0, 0.84, 0.30))
 
 	# Hold-to-Block Shield Button
-	block_button = _place_action_button("block", "🛡 BLK", 26.0, 230.0, 68.0, Color(0.72, 0.78, 0.92))
+	block_button = _place_action_button("block", "🛡 BLK", 24.0, 234.0, 70.0, Color(0.72, 0.78, 0.92))
 	block_button.button_down.connect(func() -> void: _blocking = true)
 	block_button.button_up.connect(func() -> void: _blocking = false)
 
@@ -101,11 +102,15 @@ func _place_action_button(action: String, text: String, right_margin: float, bot
 	b.offset_top = -(bottom_margin + btn_size)
 	b.offset_right = -right_margin
 	b.offset_bottom = -bottom_margin
-	b.modulate = Color(1, 1, 1, 0.90)
-	b.add_theme_font_size_override("font_size", 15 if btn_size < 95.0 else 18)
-	b.add_theme_color_override("font_color", tint.lerp(Color.WHITE, 0.30))
-	if action != "block":
-		b.button_down.connect(func() -> void: _pressed[action] = true)
+	b.modulate = Color(1, 1, 1, 0.92)
+	b.add_theme_font_size_override("font_size", 15 if btn_size < 95.0 else 19)
+	b.add_theme_color_override("font_color", tint.lerp(Color.WHITE, 0.32))
+	b.button_down.connect(func() -> void:
+		b.modulate = Color(1.22, 1.18, 1.05, 1.0)
+		if action != "block":
+			_pressed[action] = true)
+	b.button_up.connect(func() -> void:
+		b.modulate = Color(1, 1, 1, 0.92))
 	add_child(b)
 	return b
 

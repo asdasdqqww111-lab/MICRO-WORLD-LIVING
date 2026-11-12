@@ -36,6 +36,7 @@ var _quit_button: Button
 var _title_label: Label
 var _subtitle_label: Label
 var _settings_panel: PanelContainer
+var _class_select: ClassSelectScreen
 var _info_label: Label
 var _save_button: Button
 
@@ -98,12 +99,17 @@ func _build() -> void:
 	_info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	center.add_child(_info_label)
 
-	var version := UIFactory.label("Eldoria Edition v1.0  ·  Godot 4.3 Mobile Compatibility  ·  100% Free CC0/OFL Assets", 13, UIFactory.TEXT_DIM)
+	var version := UIFactory.label("Eldoria Edition v1.1  ·  Godot 4.3 Mobile Compatibility  ·  EN & العربية (RTL)", 13, UIFactory.TEXT_DIM)
 	version.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	version.position = Vector2(18, -30)
 	add_child(version)
 
 	_build_settings_panel()
+	_class_select = ClassSelectScreen.new()
+	_class_select.name = "ClassSelectScreen"
+	_class_select.visible = false
+	_class_select.confirmed.connect(_on_class_confirmed)
+	add_child(_class_select)
 	_refresh_save_state()
 
 func _build_settings_panel() -> void:
@@ -182,12 +188,15 @@ func _refresh_save_state() -> void:
 	_continue_button.text = Localization.tr_key("continue_game")
 	_new_button.text = Localization.tr_key("new_game")
 	_settings_button.text = Localization.tr_key("settings")
+	_save_button.text = Localization.tr_key("delete_save")
 	_quit_button.text = Localization.tr_key("quit")
+	if _class_select != null and _class_select.visible:
+		_class_select.refresh()
 
 	var has_save := SaveManager.has_save(SaveManager.DEFAULT_SLOT)
 	_continue_button.disabled = not has_save
 	_save_button.visible = has_save
-	_info_label.text = ("Saved Adventure: %s" % _save_timestamp()) if has_save else "Offline Adventure Ready — Start a New Game"
+	_info_label.text = ("Saved Adventure: %s" % _save_timestamp()) if has_save else Localization.tr_key("no_save")
 	var touch_toggle := _settings_panel.find_child("TouchToggle", true, false) as Button
 	if touch_toggle != null:
 		touch_toggle.text = "Touch Controls: %s" % ("ON" if SettingsManager.show_touch_controls else "OFF")
@@ -212,7 +221,14 @@ func _toggle_settings() -> void:
 	_refresh_save_state()
 
 func _on_new_game() -> void:
-	await SceneManager.new_game()
+	if _class_select != null:
+		_class_select.open_modal()
+	else:
+		await SceneManager.new_game()
+
+func _on_class_confirmed(class_id: String, hero_name: String) -> void:
+	GameManager.start_new_game(class_id, hero_name, true)
+	await SceneManager.change_scene(SceneManager.GAME)
 
 func _on_continue() -> void:
 	if not SaveManager.load_game(SaveManager.DEFAULT_SLOT):

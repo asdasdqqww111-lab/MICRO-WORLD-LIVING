@@ -45,7 +45,7 @@ func refresh() -> void:
 			continue
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 8)
-		var info := UIFactory.label("%s [%s] — %dg" % [item.display_name, item.rarity_name(), int(entry["price"])], 15, item.rarity_color())
+		var info := UIFactory.label("%s [%s] — %dg" % [Localization.item_name(item), item.rarity_name(), int(entry["price"])], 15, item.rarity_color())
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(info)
 		var buy := UIFactory.button(Localization.tr_key("buy"), 40)
@@ -79,7 +79,7 @@ func refresh() -> void:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 8)
 		var price := Market.sell_price(item_id, day)
-		var info := UIFactory.label("%s ×%d — %dg ea." % [item.display_name, count, price], 15, item.rarity_color())
+		var info := UIFactory.label("%s ×%d — %dg ea." % [Localization.item_name(item), count, price], 15, item.rarity_color())
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(info)
 		var sell := UIFactory.button(Localization.tr_key("sell"), 40)

@@ -91,11 +91,12 @@ func _build_contract_card(q: QuestData) -> Control:
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_theme_constant_override("separation", 3)
 	row.add_child(info)
+	var ar := Localization.is_arabic()
 
-	info.add_child(UIFactory.label("%s  ·  [%s]" % [q.title, q.contract_category.capitalize()], 17,
+	info.add_child(UIFactory.label("%s  ·  [%s]" % [Localization.quest_title(q), q.contract_category.capitalize()], 17,
 		UIFactory.GOLD if unlocked else UIFactory.TEXT_DIM))
-	info.add_child(UIFactory.wrapped_label(q.description, 14, UIFactory.TEXT_DIM))
-	info.add_child(UIFactory.label("Rewards: %d Gold · %d XP · +%d Guild Rep" % [q.reward_gold, q.reward_xp, q.reward_reputation],
+	info.add_child(UIFactory.wrapped_label(Localization.quest_desc(q), 14, UIFactory.TEXT_DIM))
+	info.add_child(UIFactory.label(("المكافآت: %d ذهب · %d خبرة · +%d سمعة نقابة" if ar else "Rewards: %d Gold · %d XP · +%d Guild Rep") % [q.reward_gold, q.reward_xp, q.reward_reputation],
 		14, UIFactory.ACCENT))
 
 	if st == QuestLog.STATE_COMPLETED:

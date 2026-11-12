@@ -51,12 +51,12 @@ func _build_recipe_row(recipe: Dictionary) -> Control:
 	left.add_theme_constant_override("separation", 3)
 	row.add_child(left)
 
-	var rname := String(recipe.get("title", item.display_name if item != null else rid))
+	var rname := Localization.item_name(item) if (Localization.is_arabic() and item != null) else String(recipe.get("title", item.display_name if item != null else rid))
 	left.add_child(UIFactory.label("%s ×%d  [%s]" % [
 		rname, out_cnt, item.rarity_name() if item != null else "Craft"], 18,
 		item.rarity_color() if item != null else UIFactory.GOLD))
 	if item != null:
-		left.add_child(UIFactory.wrapped_label(item.description, 14, UIFactory.TEXT_DIM))
+		left.add_child(UIFactory.wrapped_label(Localization.item_desc(item), 14, UIFactory.TEXT_DIM))
 
 	var req_parts: PackedStringArray = []
 	for ing: Dictionary in recipe.get("ingredients", []):
@@ -64,7 +64,7 @@ func _build_recipe_row(recipe: Dictionary) -> Control:
 		var need := int(ing.get("count", 1))
 		var have := GameManager.inventory.count_item(mat_id)
 		var mat_item := ItemDB.get_item(mat_id)
-		var mname := mat_item.display_name if mat_item != null else mat_id
+		var mname := Localization.item_name(mat_item) if mat_item != null else mat_id
 		req_parts.append("%s (%d/%d)" % [mname, have, need])
 	left.add_child(UIFactory.wrapped_label("Materials: " + "  ·  ".join(req_parts), 14,
 		UIFactory.ACCENT if can else UIFactory.TEXT_DIM))

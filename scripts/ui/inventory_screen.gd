@@ -61,7 +61,9 @@ func refresh() -> void:
 func _build_equipment_button(slot_name: String) -> Button:
 	var item_id := GameManager.inventory.equipped(slot_name)
 	var data := ItemDB.get_item(item_id)
-	var text := "%s\n%s" % [slot_name.capitalize(), data.display_name if data != null else "—"]
+	var slot_ar := {"weapon": "السلاح", "armor": "الدرع", "helmet": "الخوذة", "shield": "الترس", "accessory": "الإكسسوار"}
+	var slot_lbl := String(slot_ar.get(slot_name, slot_name.capitalize())) if Localization.is_arabic() else slot_name.capitalize()
+	var text := "%s\n%s" % [slot_lbl, Localization.item_name(data) if data != null else "—"]
 	var b := UIFactory.button(text, 58)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.custom_minimum_size = Vector2(140, 58)
@@ -155,28 +157,29 @@ func _rebuild_detail() -> void:
 		item_id = String(entry.get("id", ""))
 	elif not selected_equipment_slot.is_empty():
 		item_id = GameManager.inventory.equipped(selected_equipment_slot)
+	var ar := Localization.is_arabic()
 	if item_id.is_empty():
-		_detail.add_child(UIFactory.label("Select an item to inspect", 16, UIFactory.TEXT_DIM))
+		_detail.add_child(UIFactory.label("اختر عنصراً لمعاينته" if ar else "Select an item to inspect", 16, UIFactory.TEXT_DIM))
 		return
 	var item := ItemDB.get_item(item_id)
 	if item == null:
 		return
-	_detail.add_child(UIFactory.label(item.display_name, 20, item.rarity_color()))
+	_detail.add_child(UIFactory.label(Localization.item_name(item), 20, item.rarity_color()))
 	_detail.add_child(UIFactory.label("[%s]" % item.rarity_name(), 14, item.rarity_color()))
-	_detail.add_child(UIFactory.wrapped_label(item.description, 15, UIFactory.TEXT_DIM))
+	_detail.add_child(UIFactory.wrapped_label(Localization.item_desc(item), 15, UIFactory.TEXT_DIM))
 	if item.attack_bonus > 0.0:
-		_detail.add_child(UIFactory.label("⚔ Attack +%.1f" % item.attack_bonus, 15, UIFactory.ACCENT))
+		_detail.add_child(UIFactory.label(("⚔ هجوم +%.1f" if ar else "⚔ Attack +%.1f") % item.attack_bonus, 15, UIFactory.ACCENT))
 	if item.defense_bonus > 0.0:
-		_detail.add_child(UIFactory.label("🛡 Defense +%.1f" % item.defense_bonus, 15, UIFactory.ACCENT))
+		_detail.add_child(UIFactory.label(("🛡 دفاع +%.1f" if ar else "🛡 Defense +%.1f") % item.defense_bonus, 15, UIFactory.ACCENT))
 	if item.magic_bonus > 0.0:
-		_detail.add_child(UIFactory.label("✦ Spell Power +%.1f" % item.magic_bonus, 15, UIFactory.MANA_BLUE))
+		_detail.add_child(UIFactory.label(("✦ قوة سحرية +%.1f" if ar else "✦ Spell Power +%.1f") % item.magic_bonus, 15, UIFactory.MANA_BLUE))
 	if item.crit_bonus > 0.0:
-		_detail.add_child(UIFactory.label("🎯 Crit Chance +%.0f%%" % (item.crit_bonus * 100.0), 15, UIFactory.GOLD))
+		_detail.add_child(UIFactory.label(("🎯 ضربة حرجة +%.0f%%" if ar else "🎯 Crit Chance +%.0f%%") % (item.crit_bonus * 100.0), 15, UIFactory.GOLD))
 	if item.heal_amount > 0.0:
-		_detail.add_child(UIFactory.label("❤ Restores %.0f HP" % item.heal_amount, 15, Color(0.95, 0.55, 0.55)))
+		_detail.add_child(UIFactory.label(("❤ يستعيد %.0f صحة" if ar else "❤ Restores %.0f HP") % item.heal_amount, 15, Color(0.95, 0.55, 0.55)))
 	if item.mana_amount > 0.0:
-		_detail.add_child(UIFactory.label("💧 Restores %.0f MP" % item.mana_amount, 15, UIFactory.MANA_BLUE))
-	_detail.add_child(UIFactory.label("Value: %d gold" % item.value, 14, UIFactory.TEXT_DIM))
+		_detail.add_child(UIFactory.label(("💧 يستعيد %.0f مانا" if ar else "💧 Restores %.0f MP") % item.mana_amount, 15, UIFactory.MANA_BLUE))
+	_detail.add_child(UIFactory.label(("القيمة: %d ذهب" if ar else "Value: %d gold") % item.value, 14, UIFactory.TEXT_DIM))
 
 	if not selected_equipment_slot.is_empty():
 		var unequip := UIFactory.button(Localization.tr_key("unequip"))

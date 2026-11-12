@@ -42,22 +42,24 @@ func refresh() -> void:
 		content.add_child(UIFactory.label("No matching quests yet — speak with Elder Theron, Villagers, or the Adventurers Guild!", 16, UIFactory.TEXT_DIM))
 
 func _quest_card(quest: QuestData, is_completed: bool) -> Control:
+	var ar := Localization.is_arabic()
 	var card := UIFactory.card_panel(UIFactory.ACCENT if is_completed else UIFactory.GOLD)
 	var row := VBoxContainer.new()
 	row.add_theme_constant_override("separation", 4)
 	card.add_child(row)
 
-	var tag := "[MAIN] " if quest.is_main_quest else ("[GUILD] " if quest.is_guild_contract else "[SIDE] ")
-	row.add_child(UIFactory.label(tag + quest.title, 18, UIFactory.GOLD))
-	row.add_child(UIFactory.wrapped_label(quest.description, 14, UIFactory.TEXT_DIM))
+	var tag := ("[رئيسية] " if quest.is_main_quest else ("[نقابة] " if quest.is_guild_contract else "[جانبية] ")) if ar else ("[MAIN] " if quest.is_main_quest else ("[GUILD] " if quest.is_guild_contract else "[SIDE] "))
+	row.add_child(UIFactory.label(tag + Localization.quest_title(quest), 18, UIFactory.GOLD))
+	row.add_child(UIFactory.wrapped_label(Localization.quest_desc(quest), 14, UIFactory.TEXT_DIM))
 
 	for i: int in quest.objectives.size():
 		var obj: Dictionary = quest.objectives[i]
 		var prog := GameManager.quest_log.objective_progress(quest.id, i)
 		var req := int(obj.get("required", 1))
 		var done := is_completed or prog >= req
-		row.add_child(UIFactory.label("  %s %s (%d/%d)" % ["✔" if done else "○", String(obj.get("label", "Objective")), prog, req],
+		var olabel := Localization.quest_obj_label(quest, i, String(obj.get("label", "Objective")))
+		row.add_child(UIFactory.label("  %s %s (%d/%d)" % ["✔" if done else "○", olabel, prog, req],
 			15, UIFactory.ACCENT if done else UIFactory.TEXT))
 
-	row.add_child(UIFactory.label("Rewards: %d XP · %d Gold · +%d Guild Rep" % [quest.reward_xp, quest.reward_gold, quest.reward_reputation], 14, UIFactory.GOLD))
+	row.add_child(UIFactory.label(("المكافآت: %d خبرة · %d ذهب · +%d سمعة نقابة" if ar else "Rewards: %d XP · %d Gold · +%d Guild Rep") % [quest.reward_xp, quest.reward_gold, quest.reward_reputation], 14, UIFactory.GOLD))
 	return card

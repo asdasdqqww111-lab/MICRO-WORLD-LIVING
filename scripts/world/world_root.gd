@@ -29,6 +29,7 @@ var environment: Environment
 var day_night: DayNightCycle
 var weather: WeatherSystem
 var raid: RaidEvent
+var quest_waypoint: QuestWaypoint3D
 
 var _creatures: Dictionary = {}     # uid -> Creature
 var _npcs: Dictionary = {}          # npc_id -> VillageNPC
@@ -39,6 +40,10 @@ func _ready() -> void:
 	_build_world()
 	_build_systems()
 	_spawn_population()
+	quest_waypoint = QuestWaypoint3D.new()
+	quest_waypoint.name = "QuestWaypoint3D"
+	quest_waypoint.setup(self)
+	add_child(quest_waypoint)
 	_optimize_static_props()
 	call_deferred("_optimize_static_props")
 	_apply_graphics()
@@ -205,7 +210,7 @@ func _optimize_static_props() -> void:
 func _is_player_branch(node: Node) -> bool:
 	var current := node
 	while current != null and current != self:
-		if current is Player:
+		if current is Player or current is QuestWaypoint3D:
 			return true
 		current = current.get_parent()
 	return false
