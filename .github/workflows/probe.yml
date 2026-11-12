@@ -8,6 +8,7 @@ name: Perf + Visual Probe
 on:
   push:
     branches: ["arena/**"]
+    paths-ignore: ["docs/**", "**.md", ".github/workflows/**"]
   workflow_dispatch:
 
 concurrency:
