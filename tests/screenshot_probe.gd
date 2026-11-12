@@ -71,7 +71,7 @@ func _run() -> void:
 
 	# Fixed morning light so every capture is comparable run-to-run.
 	if GameManager.world != null:
-		GameManager.world.hour = 9.0
+		GameManager.world.time_of_day = 9.0 * 3600.0
 
 	for shot: Dictionary in SHOTS:
 		await _capture(shot)

@@ -12,7 +12,7 @@ extends RefCounted
 ## Generation is seeded, so saved worlds reload identically.
 
 const SIZE := 200.0
-const RES := 72
+const RES := 60
 const FLAT_RADIUS := 50.0
 const HILL_END := 78.0
 const RIDGE_END := 100.0

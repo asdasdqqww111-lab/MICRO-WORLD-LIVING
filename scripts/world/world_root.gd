@@ -71,7 +71,7 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 52.0
+	sun.directional_shadow_max_distance = 44.0
 	sun.shadow_bias = 0.04
 	sun.light_energy = 1.05
 	sun.light_color = Color(1.0, 0.96, 0.88)
@@ -117,6 +117,10 @@ func _optimize_static_props() -> void:
 		if mi.is_in_group("player") or mi.is_in_group("creature"):
 			continue
 		if _is_animated_branch(mi):
+			# Keep the silhouette's shadow, drop the tiny attached bits
+			# (eyes, weapons, straps) which cost a shadow draw call each.
+			if mi.get_aabb().size.length() < 1.4:
+				mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			continue
 		var aabb := mi.get_aabb()
 		var size := aabb.size.length()
