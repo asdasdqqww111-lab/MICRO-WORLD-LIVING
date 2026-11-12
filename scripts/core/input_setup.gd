@@ -19,6 +19,7 @@ const ACTIONS := {
 	"interact": [KEY_E],
 	"dodge": [KEY_Q],
 	"recenter_camera": [KEY_V],
+	"camera_recenter": [KEY_V],
 	"toggle_inventory": [KEY_I, KEY_TAB],
 	"toggle_journal": [KEY_J],
 	"toggle_character": [KEY_C],

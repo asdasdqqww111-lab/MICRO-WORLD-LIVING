@@ -116,6 +116,9 @@ func set_weather_darkness(value: float) -> void:
 	_weather_darkness = clampf(value, 0.0, 1.0)
 	apply_now()
 
+func sync_from_state() -> void:
+	apply_now()
+
 func is_daytime() -> bool:
 	var h := GameManager.world.hour_float()
 	return h >= SUNRISE_HOUR and h < SUNSET_HOUR

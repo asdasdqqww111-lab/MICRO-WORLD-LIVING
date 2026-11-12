@@ -42,6 +42,7 @@ var _log: PackedStringArray = []
 var _finished := false
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_watchdog()
 	_run()
 

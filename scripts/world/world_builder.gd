@@ -532,9 +532,9 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
 
 	build_multimesh(parent, "res://assets/environments/forests/tree-oak.glb", oak_xforms, "ForestOaks", true)
-	build_multimesh(parent, "res://assets/environments/forests/tree-detailed-dark.glb", dense_xforms, "ForestCanopyTrees", true)
-	build_multimesh(parent, "res://assets/environments/forests/tree-pinetalla-detailed.glb", pine_xforms, "HighlandPines", true)
-	build_multimesh(parent, "res://assets/environments/forests/tree-thin.glb", birch_xforms, "LakesideBirches", true)
+	build_multimesh(parent, "res://assets/environments/forests/tree-detailed-dark.glb", dense_xforms, "ForestCanopyTrees", false, 130.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-pinetalla-detailed.glb", pine_xforms, "HighlandPines", false, 145.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-thin.glb", birch_xforms, "LakesideBirches", false, 125.0)
 	build_multimesh(parent, "res://assets/environments/mountains/rock-largea.glb", rock_xforms, "WorldRocks", false, 95.0)
 	build_multimesh(parent, "res://assets/environments/forests/plant-bushlarge.glb", bush_xforms, "ForestBushes", false, 68.0)
 	build_multimesh(parent, "res://assets/environments/forests/flower-yellowa.glb", flower_xforms, "MeadowFlowers", false, 58.0)

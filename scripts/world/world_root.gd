@@ -127,7 +127,6 @@ func _build_world() -> void:
 
 	spawn_point = landmarks.get("spawn", spawn_point) as Vector3
 	_build_zone_doors()
-	_optimize_static_props()
 
 func _on_zone_entered(zone_id: String) -> void:
 	_apply_zone_visibility(zone_id)
@@ -142,6 +141,8 @@ func _apply_zone_visibility(zone_id: String) -> void:
 		overworld_root.visible = in_overworld
 	if clouds != null:
 		clouds.visible = in_overworld
+	if sun != null:
+		sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	if house_root != null:
 		house_root.visible = (zone_id == "house")
 	if guild_root != null:
@@ -158,19 +159,19 @@ func _optimize_static_props() -> void:
 		var mi := node as MeshInstance3D
 		if mi == null or mi.mesh == null:
 			continue
-		if mi.is_in_group("player") or mi.is_in_group("creature"):
-			continue
 		if _is_animated_branch(mi):
-			if mi.get_aabb().size.length() < 1.0:
-				mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mi.visibility_range_end = 56.0
+			mi.visibility_range_end_margin = 8.0
+			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 			continue
 		var aabb := mi.get_aabb()
 		var sz := aabb.size.length()
-		if sz < 3.4:
+		if sz < 5.5:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		if sz < 2.4:
-			mi.visibility_range_end = 72.0
-			mi.visibility_range_end_margin = 10.0
+		if sz < 3.6:
+			mi.visibility_range_end = 66.0
+			mi.visibility_range_end_margin = 8.0
 			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 
 func _is_animated_branch(node: Node) -> bool:
@@ -275,8 +276,9 @@ func _apply_graphics() -> void:
 	if sun == null:
 		return
 	var quality := SettingsManager.shadow_quality()
-	sun.shadow_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
-	sun.directional_shadow_max_distance = 45.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 70.0
+	var in_overworld := overworld_root == null or overworld_root.visible
+	sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
+	sun.directional_shadow_max_distance = 36.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 46.0
 	RenderingServer.directional_soft_shadow_filter_set_quality(quality)
 	if world_environment != null and world_environment.environment != null:
 		world_environment.environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
