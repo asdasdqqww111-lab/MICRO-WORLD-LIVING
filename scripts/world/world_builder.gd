@@ -252,15 +252,15 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	# Farming District Wheat & Pumpkin Rows (batched MultiMesh)
 	var wheat_xforms: Array = []
 	var pumpkin_xforms: Array = []
-	for rx: int in 6:
-		for rz: int in 5:
-			var fx := -8.5 + float(rx) * 1.35
-			var fz := 19.5 + float(rz) * 1.35
-			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.2), Vector3(fx, 0.0, fz)))
+	for rx: int in 4:
+		for rz: int in 4:
+			var fx := -8.5 + float(rx) * 1.85
+			var fz := 19.8 + float(rz) * 1.75
+			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.75), Vector3(fx, 0.0, fz)))
 	for px: int in 4:
 		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.1), Vector3(-6.5 + float(px) * 1.5, 0.0, 26.8)))
-	build_multimesh(parent, "res://assets/environments/villages/crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 65.0)
-	build_multimesh(parent, "res://assets/environments/villages/crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 65.0)
+	build_multimesh(parent, "res://assets/environments/villages/crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 42.0)
+	build_multimesh(parent, "res://assets/environments/villages/crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 42.0)
 
 	# Interactive World Stations in Village: Quest Board, Blacksmith Forge, Alchemy Table
 	var ext_board := QuestBoardProp.new()
@@ -477,29 +477,29 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 
 		match biome:
 			"pine_highlands", "alpine":
-				var sp := rng.randf_range(2.6, 3.9)
+				var sp := rng.randf_range(4.4, 6.6)
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 				trunk_positions.append(pos)
 			"lakeside_birch":
-				var sb := rng.randf_range(2.4, 3.5)
+				var sb := rng.randf_range(4.0, 5.8)
 				birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sb), pos))
 				trunk_positions.append(pos)
 			"dense_woodland", "ancient_grove":
 				if rng.randf() < 0.55:
-					var sd := rng.randf_range(1.15, 1.65)
+					var sd := rng.randf_range(2.6, 3.9)
 					dense_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sd), pos))
 				else:
-					var so := rng.randf_range(2.8, 4.2)
+					var so := rng.randf_range(4.6, 6.8)
 					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * so), pos))
 				trunk_positions.append(pos)
 			"rocky_hills":
 				if rng.randf() < 0.35:
-					var srp := rng.randf_range(2.2, 3.2)
+					var srp := rng.randf_range(3.8, 5.4)
 					pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * srp), pos))
 					trunk_positions.append(pos)
 			_:
 				if rng.randf() < 0.55:
-					var sm := rng.randf_range(2.4, 3.5)
+					var sm := rng.randf_range(4.2, 5.8)
 					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sm), pos))
 					trunk_positions.append(pos)
 
@@ -531,10 +531,10 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
 		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
 
-	build_multimesh(parent, "res://assets/environments/forests/tree-oak.glb", oak_xforms, "ForestOaks", true)
-	build_multimesh(parent, "res://assets/environments/forests/tree-detailed-dark.glb", dense_xforms, "ForestCanopyTrees", false, 130.0)
-	build_multimesh(parent, "res://assets/environments/forests/tree-pinetalla-detailed.glb", pine_xforms, "HighlandPines", false, 145.0)
-	build_multimesh(parent, "res://assets/environments/forests/tree-thin.glb", birch_xforms, "LakesideBirches", false, 125.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-oak.glb", oak_xforms, "ForestOaks", false, 110.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-detailed-dark.glb", dense_xforms, "ForestCanopyTrees", false, 105.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-pinetalla-detailed.glb", pine_xforms, "HighlandPines", false, 118.0)
+	build_multimesh(parent, "res://assets/environments/forests/tree-thin.glb", birch_xforms, "LakesideBirches", false, 100.0)
 	build_multimesh(parent, "res://assets/environments/mountains/rock-largea.glb", rock_xforms, "WorldRocks", false, 95.0)
 	build_multimesh(parent, "res://assets/environments/forests/plant-bushlarge.glb", bush_xforms, "ForestBushes", false, 68.0)
 	build_multimesh(parent, "res://assets/environments/forests/flower-yellowa.glb", flower_xforms, "MeadowFlowers", false, 58.0)
@@ -735,8 +735,9 @@ static func build_dungeon(parent: Node3D) -> Dictionary:
 		wall_transforms[i] = _offset_transform(wall_transforms[i], origin)
 
 	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "floor_tile_large.glb", floor_transforms, "DungeonFloors", false)
-	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "wall.glb", wall_transforms, "DungeonWalls")
+	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "wall.glb", wall_transforms, "DungeonWalls", false)
 	_add_dungeon_colliders(parent, wall_transforms)
+	_solid_box(parent, origin + Vector3(6.0, 4.35, 20.0), Vector3(28.0, 0.35, 44.0), Color(0.11, 0.12, 0.15), "DungeonCeiling")
 
 	# Columns, Rubble, Banners & Torches
 	for p_off: Vector3 in [Vector3(1.0, 0.0, 1.0), Vector3(7.0, 0.0, 1.0), Vector3(-2.5, 0.0, 30.0), Vector3(10.5, 0.0, 30.0), Vector3(-2.5, 0.0, 38.0), Vector3(10.5, 0.0, 38.0)]:

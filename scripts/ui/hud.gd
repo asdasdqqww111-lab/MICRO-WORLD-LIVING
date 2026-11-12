@@ -18,6 +18,7 @@ var guild_label: Label
 var clock_label: Label
 var gold_label: Label
 var weather_label: Label
+var _top_left_stack: VBoxContainer
 var minimap: MinimapControl
 var quest_panel: PanelContainer
 var quest_box: VBoxContainer
@@ -56,12 +57,17 @@ func _ready() -> void:
 	refresh_all()
 
 func _build_vitals() -> void:
+	_top_left_stack = VBoxContainer.new()
+	_top_left_stack.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	_top_left_stack.position = Vector2(14, 12)
+	_top_left_stack.add_theme_constant_override("separation", 8)
+	_top_left_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_top_left_stack)
+
 	var panel := UIFactory.panel(0.94)
-	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	panel.position = Vector2(14, 12)
 	panel.custom_minimum_size = Vector2(276, 0)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(panel)
+	_top_left_stack.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
@@ -170,11 +176,9 @@ func _build_top_right() -> void:
 
 func _build_quest_tracker() -> void:
 	quest_panel = UIFactory.panel(0.86)
-	quest_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	quest_panel.position = Vector2(14, 174)
-	quest_panel.custom_minimum_size = Vector2(268, 0)
+	quest_panel.custom_minimum_size = Vector2(276, 0)
 	quest_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(quest_panel)
+	_top_left_stack.add_child(quest_panel)
 	quest_box = VBoxContainer.new()
 	quest_box.add_theme_constant_override("separation", 2)
 	quest_box.mouse_filter = Control.MOUSE_FILTER_IGNORE

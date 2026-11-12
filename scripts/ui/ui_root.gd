@@ -228,5 +228,9 @@ func _on_request_main_menu() -> void:
 func _refresh_pause_state() -> void:
 	var should_pause := current_screen != null or dialog.visible
 	get_tree().paused = should_pause
+	if hud != null:
+		hud.visible = (current_screen == null)
+	if touch != null:
+		touch.visible = (current_screen == null and not dialog.visible)
 	touch.set_controls_visible(not should_pause and SettingsManager.show_touch_controls)
 	EventBus.pause_toggled.emit(should_pause)

@@ -62,7 +62,7 @@ func _run() -> void:
 	await _teleport_and_measure("Zone 4 · River, Stone Bridge & Crystal Lake", Vector3(36.0, 1.0, 18.0), "village")
 	await _teleport_and_measure("Zone 5 · Adventurers Guild Grand Hall Interior", Vector3(500.0, 0.6, 207.5), "guild")
 	await _teleport_and_measure("Zone 6 · Hero Cottage Interior", Vector3(500.0, 0.6, 2.2), "house")
-	await _teleport_and_measure("Zone 7 · Sunken Crypt Dungeon & Boss Sanctum", Vector3(-500.0, 0.6, -12.0), "dungeon")
+	await _teleport_and_measure("Zone 7 · Sunken Crypt Dungeon & Boss Sanctum", Vector3(-496.0, 0.6, 28.5), "dungeon")
 
 	# Return to village before structural audit so overworld counts are visible
 	_player.teleport(Vector3(0.0, 0.6, 12.0), "village")

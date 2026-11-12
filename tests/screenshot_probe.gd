@@ -25,13 +25,13 @@ const WORLD_SHOTS := [
 	{"name": "04_guild_interior", "zone": "guild", "time": 11.0,
 		"pos": Vector3(500.0, 0.6, 206.5), "yaw": 0.0, "pitch": -10.0, "dist": 8.2, "hud": false},
 	{"name": "05_forest_exploration", "zone": "village", "time": 10.0,
-		"pos": Vector3(-48.0, 1.5, 6.0), "yaw": 78.0, "pitch": -10.0, "dist": 9.5, "hud": false},
+		"pos": Vector3(-52.0, 1.5, -12.0), "yaw": 125.0, "pitch": -14.0, "dist": 10.5, "hud": false},
 	{"name": "06_river_lake_bridge", "zone": "village", "time": 14.5,
-		"pos": Vector3(28.0, 0.8, 12.0), "yaw": -55.0, "pitch": -15.0, "dist": 15.0, "hud": false},
-	{"name": "07_mountains_sunset", "zone": "village", "time": 17.6,
-		"pos": Vector3(-2.0, 0.6, 10.0), "yaw": 12.0, "pitch": 8.0, "dist": 10.0, "hud": false},
+		"pos": Vector3(46.0, 0.8, 14.0), "yaw": 32.0, "pitch": -18.0, "dist": 15.0, "hud": false},
+	{"name": "07_mountains_sunset", "zone": "village", "time": 17.7,
+		"pos": Vector3(-22.0, 1.6, 36.0), "yaw": 22.0, "pitch": -11.0, "dist": 13.5, "hud": false},
 	{"name": "12_sunken_crypt_dungeon", "zone": "dungeon", "time": 12.0,
-		"pos": Vector3(-500.0, 0.6, -13.0), "yaw": 0.0, "pitch": -10.0, "dist": 9.5, "hud": false},
+		"pos": Vector3(-496.0, 0.6, 28.5), "yaw": 180.0, "pitch": -9.0, "dist": 6.8, "hud": false},
 ]
 
 var _game: Node

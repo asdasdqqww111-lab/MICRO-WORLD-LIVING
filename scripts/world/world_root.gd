@@ -39,6 +39,8 @@ func _ready() -> void:
 	_build_world()
 	_build_systems()
 	_spawn_population()
+	_optimize_static_props()
+	call_deferred("_optimize_static_props")
 	_apply_graphics()
 	EventBus.zone_entered.connect(_on_zone_entered)
 	_apply_zone_visibility(GameManager.pending_zone if not GameManager.pending_zone.is_empty() else "village")
@@ -142,7 +144,30 @@ func _apply_zone_visibility(zone_id: String) -> void:
 	if clouds != null:
 		clouds.visible = in_overworld
 	if sun != null:
+		sun.visible = in_overworld
 		sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
+	if moon != null:
+		moon.visible = in_overworld
+	if environment != null:
+		if zone_id == "dungeon":
+			environment.background_mode = Environment.BG_COLOR
+			environment.background_color = Color(0.05, 0.05, 0.08)
+			environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+			environment.ambient_light_color = Color(0.24, 0.22, 0.30)
+			environment.ambient_light_energy = 0.78
+			environment.fog_enabled = false
+		elif not in_overworld:
+			environment.background_mode = Environment.BG_COLOR
+			environment.background_color = Color(0.10, 0.11, 0.15)
+			environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+			environment.ambient_light_color = Color(0.76, 0.74, 0.72)
+			environment.ambient_light_energy = 0.72
+			environment.fog_enabled = false
+		else:
+			environment.background_mode = Environment.BG_SKY
+			environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+			environment.ambient_light_energy = 0.48
+			environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	if house_root != null:
 		house_root.visible = (zone_id == "house")
 	if guild_root != null:
@@ -159,24 +184,41 @@ func _optimize_static_props() -> void:
 		var mi := node as MeshInstance3D
 		if mi == null or mi.mesh == null:
 			continue
+		if _is_player_branch(mi):
+			continue
 		if _is_animated_branch(mi):
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			mi.visibility_range_end = 56.0
-			mi.visibility_range_end_margin = 8.0
-			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+			mi.visibility_range_end = 36.0
+			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+			continue
+		if mi.name == "TerrainMesh" or mi.name == "RiverMesh" or mi.name == "LakeMesh":
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			continue
 		var aabb := mi.get_aabb()
-		var sz := aabb.size.length()
-		if sz < 5.5:
+		var sz := aabb.size.length() * mi.global_transform.basis.get_scale().x
+		if sz < 7.0:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		if sz < 3.6:
-			mi.visibility_range_end = 66.0
-			mi.visibility_range_end_margin = 8.0
-			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+		if sz < 5.5:
+			mi.visibility_range_end = 42.0
+			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+
+func _is_player_branch(node: Node) -> bool:
+	var current := node
+	while current != null and current != self:
+		if current is Player:
+			return true
+		current = current.get_parent()
+	return false
 
 func _is_animated_branch(node: Node) -> bool:
 	var current := node
 	while current != null and current != self:
+		if current is Player:
+			return false
+		if current is VillageNPC or current is Creature or current is CharacterVisual:
+			return true
+		if current is ResourceNode or current is TreasureChest or current is CraftingStation or current is QuestBoardProp:
+			return true
 		if current is Skeleton3D or current is AnimationPlayer or current is AnimationTree:
 			return true
 		current = current.get_parent()
