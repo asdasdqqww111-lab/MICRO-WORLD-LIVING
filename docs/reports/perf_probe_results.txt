@@ -3,7 +3,7 @@ engine: 4.3-stable (official)
 rendering method: gl_compatibility
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-12T20:55:09
+run at: 2026-11-12T21:02:07
 
 budget: draw calls < 200 (hard cap 300) · triangles < 150k · fps >= 30
 
@@ -11,18 +11,18 @@ Phase 1 · village spawn (player + camera + ground)
   draw calls (max): 183  [OK]
   triangles (max):  171513  [OVER]
   objects:          250
-  static memory:    67.5 MB
+  static memory:    67.6 MB
   fps (min, this driver): 4.0
   creatures in world: 10
 Phase 2 · village + 3 skeletons
   draw calls (max): 237  [OVER]
-  triangles (max):  193521  [OVER]
+  triangles (max):  193697  [OVER]
   objects:          304
   static memory:    69.1 MB
   fps (min, this driver): 3.0
 Phase 3 · forest (MultiMesh trees)
   draw calls (max): 158  [OK]
-  triangles (max):  156578  [OVER]
+  triangles (max):  156754  [OVER]
   objects:          224
   static memory:    69.1 MB
   fps (min, this driver): 4.0
