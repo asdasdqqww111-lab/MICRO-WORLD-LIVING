@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.1 — Phase 1 Complete)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-12T23:32:40
-checks passed: 145
+run at: 2026-11-12T23:39:52
+checks passed: 164
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 0.0
+  fps: 136.0
   draw calls: 0
   triangles: 0
-  nodes: 0
+  nodes: 2211
 
 checks:
 
@@ -181,5 +181,24 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.0)
+PASS  skeleton takes damage (46.0 -> 34.6)
 PASS  skeleton aggroes when hit
+PASS  QuestWaypoint3D resolves active quest target beacon
+PASS  killing 3 skeletons completes the objective
+PASS  farmer accepts the quest turn-in
+PASS  turn-in reports the reward
+PASS  loot drop spawned
+PASS  loot is collected into the inventory (got 2)
+PASS  Adventurers Guild door exists
+PASS  door moves player into Adventurers Guild Hall
+PASS  house door exists
+PASS  door moves player into house zone
+PASS  Malakor the Bone Warden boss exists in Sunken Crypt
+PASS  scene state saves
+PASS  dead creatures recorded (3)
+PASS  scene state reloads
+PASS  dead creatures stay dead after reload (15 alive vs 18 before)
+PASS  player position restored (0.6m off)
+PASS  quest completion survives reload
+PASS  inventory survives reload
+PASS  save/load survives 10 rounds
