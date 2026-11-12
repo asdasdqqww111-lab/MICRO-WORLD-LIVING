@@ -63,50 +63,63 @@ jobs:
       - name: Headless acceptance tests
         run: godot --headless --path . tests/test_runner.tscn
 
-      - name: Measure performance (real rasteriser via Mesa llvmpipe, GLES3)
+      - name: Measure performance + capture screenshots (GLES3 over Mesa)
         continue-on-error: true
         run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils
-          echo "--- glxinfo (sanity) ---"
-          xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B | head -12 || true
-          echo "--- perf probe ---"
           set +e
-          timeout 300 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-            godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-            tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
-          echo "perf probe exit=$?" | tee -a docs/reports/ci_perf_probe.log
-          set -e
-          tail -20 docs/reports/ci_perf_probe.log || true
+          DIAG=docs/reports/ci_env.log
+          mkdir -p docs/reports docs/screenshots
+          {
+            echo "date: $(date -u)"
+            echo "godot: $(command -v godot)"
+            godot --version 2>&1 | head -2
+            echo "xvfb-run before apt: $(command -v xvfb-run)"
+            echo "glxinfo before apt: $(command -v glxinfo)"
+          } > "$DIAG" 2>&1
 
-      - name: Capture screenshots (real rasteriser)
-        continue-on-error: true
-        run: |
-          set -euo pipefail
-          set +e
-          echo "=== headless smoke (fast, dummy renderer) ==="
-          timeout 90 godot --headless --path . tests/screenshot_probe.tscn \
+          sudo apt-get update -qq >> "$DIAG" 2>&1
+          echo "apt update exit=$?" >> "$DIAG"
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1
+          echo "apt install exit=$?" >> "$DIAG"
+          echo "xvfb-run after apt: $(command -v xvfb-run)" >> "$DIAG"
+          echo "glxinfo after apt: $(command -v glxinfo)" >> "$DIAG"
+          tail -6 "$DIAG"
+
+          if command -v xvfb-run > /dev/null 2>&1; then
+            echo "=== glxinfo ===" > docs/reports/ci_renderer.log
+            xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B >> docs/reports/ci_renderer.log 2>&1
+            echo "=== perf probe ===" >> docs/reports/ci_renderer.log
+            timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
+              godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+              tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
+            echo "perf probe exit=$?" >> docs/reports/ci_renderer.log
+            echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
+            timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
+              godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+              tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
+            echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
+          else
+            echo "xvfb-run unavailable - skipping GPU-dependent probes" | tee docs/reports/ci_renderer.log
+          fi
+
+          echo "=== headless smoke of the screenshot probe (always runs) ==="
+          timeout 120 godot --headless --path . tests/screenshot_probe.tscn \
             > docs/reports/ci_screenshot_headless.log 2>&1
-          echo "headless exit=$?" | tee -a docs/reports/ci_screenshot_headless.log
-          echo "=== windowed GLES3 capture ==="
-          timeout 300 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-            godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-            tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
-          echo "gles3 exit=$?" | tee -a docs/reports/ci_screenshot_gl.log
-          set -e
-          tail -25 docs/reports/ci_screenshot_gl.log || true
-          tail -10 docs/reports/ci_screenshot_headless.log || true
-          ls -lh docs/screenshots || true
+          echo "headless exit=$?" >> docs/reports/ci_screenshot_headless.log
+
+          tail -15 docs/reports/ci_perf_probe.log 2>/dev/null
+          tail -15 docs/reports/ci_screenshot_gl.log 2>/dev/null
+          ls -lh docs/screenshots 2>/dev/null
+          exit 0
 
       - name: Commit measured results back to the branch
         if: always()
         run: |
           set -euo pipefail
-          FILES="docs/reports/perf_probe_results.txt docs/reports/headless_test_results.txt docs/reports/screenshot_probe_log.txt docs/screenshots docs/reports/ci_perf_probe.log docs/reports/ci_screenshot_headless.log docs/reports/ci_screenshot_gl.log"
+          FILES="docs/reports docs/screenshots"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add $FILES 2>/dev/null || true
+          git add -A $FILES 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no result changes to commit"
           else
