@@ -63,70 +63,6 @@ jobs:
       - name: Headless acceptance tests
         run: godot --headless --path . tests/test_runner.tscn
 
-      - name: Measure performance + capture screenshots (GLES3 over Mesa)
-        continue-on-error: true
-        run: |
-          set +e
-          DIAG=docs/reports/ci_env.log
-          mkdir -p docs/reports docs/screenshots
-          {
-            echo "date: $(date -u)"
-            echo "godot: $(command -v godot)"
-            godot --version 2>&1 | head -2
-            echo "xvfb-run before apt: $(command -v xvfb-run)"
-            echo "glxinfo before apt: $(command -v glxinfo)"
-          } > "$DIAG" 2>&1
-
-          sudo apt-get update -qq >> "$DIAG" 2>&1
-          echo "apt update exit=$?" >> "$DIAG"
-          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1
-          echo "apt install exit=$?" >> "$DIAG"
-          echo "xvfb-run after apt: $(command -v xvfb-run)" >> "$DIAG"
-          echo "glxinfo after apt: $(command -v glxinfo)" >> "$DIAG"
-          tail -6 "$DIAG"
-
-          if command -v xvfb-run > /dev/null 2>&1; then
-            echo "=== glxinfo ===" > docs/reports/ci_renderer.log
-            xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B >> docs/reports/ci_renderer.log 2>&1
-            echo "=== perf probe ===" >> docs/reports/ci_renderer.log
-            timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-              godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-              tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
-            echo "perf probe exit=$?" >> docs/reports/ci_renderer.log
-            echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
-            timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-              godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-              tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
-            echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
-          else
-            echo "xvfb-run unavailable - skipping GPU-dependent probes" | tee docs/reports/ci_renderer.log
-          fi
-
-          echo "=== headless smoke of the screenshot probe (always runs) ==="
-          timeout 120 godot --headless --path . tests/screenshot_probe.tscn \
-            > docs/reports/ci_screenshot_headless.log 2>&1
-          echo "headless exit=$?" >> docs/reports/ci_screenshot_headless.log
-
-          tail -15 docs/reports/ci_perf_probe.log 2>/dev/null
-          tail -15 docs/reports/ci_screenshot_gl.log 2>/dev/null
-          ls -lh docs/screenshots 2>/dev/null
-          exit 0
-
-      - name: Commit measured results back to the branch
-        if: always()
-        run: |
-          set -euo pipefail
-          FILES="docs/reports docs/screenshots"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A $FILES 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "no result changes to commit"
-          else
-            git commit -m "ci: measured results (draw calls / triangles / headless checks) [skip ci]"
-            git push
-          fi
-
       - name: Create debug keystore and wire it into the preset
         run: |
           set -euo pipefail
@@ -244,24 +180,33 @@ jobs:
           } > RELEASE_NOTES.md
           cat RELEASE_NOTES.md
 
-      - name: Publish APK to GitHub Release
+      - name: Publish APK to GitHub Release (main branch only)
+        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          TAG="v0.1-debug"
+          TAG="v1.0-debug"
           APK=build/android/micro_world_living.apk
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$APK" --clobber
             gh release edit "$TAG" --notes-file RELEASE_NOTES.md
           else
             gh release create "$TAG" "$APK" \
-              --title "MICRO WORLD: LIVING — v0.1 debug APK" \
+              --title "MICRO WORLD: LIVING — Eldoria Edition v1.0 debug APK" \
               --notes-file RELEASE_NOTES.md \
               --prerelease
           fi
-          echo "Release URL: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
-          echo "Direct APK:  https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/micro_world_living.apk"
+
+      - name: Upload APK verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-verify-report
+          path: |
+            APK_VERIFY.txt
+            RELEASE_NOTES.md
+          if-no-files-found: warn
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

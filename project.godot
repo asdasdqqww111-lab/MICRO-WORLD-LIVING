@@ -5,17 +5,18 @@ config_version=5
 [application]
 
 config/name="Micro World: Living"
-config/description="Third-person low-poly living-world RPG slice. Android first, offline first."
+config/description="High-quality semi-realistic stylized 3D fantasy open-world RPG in Eldoria. Godot 4.3 Android-first, offline-first."
 run/main_scene="res://scenes/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
-boot_splash/bg_color=Color(0.09, 0.11, 0.14, 1)
-config/version="0.1"
+boot_splash/bg_color=Color(0.07, 0.09, 0.12, 1)
+config/version="1.0"
 
 [autoload]
 
 EventBus="*res://scripts/core/event_bus.gd"
 SettingsManager="*res://scripts/core/settings_manager.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
 GameManager="*res://scripts/core/game_manager.gd"
 SaveManager="*res://scripts/core/save_manager.gd"
 SceneManager="*res://scripts/core/scene_manager.gd"

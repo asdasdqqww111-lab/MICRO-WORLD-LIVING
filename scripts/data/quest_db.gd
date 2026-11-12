@@ -48,3 +48,12 @@ static func quests_for_npc(npc_id: String) -> Array:
 		if quest.giver_npc == npc_id:
 			out.append(quest)
 	return out
+
+## Returns quests where `npc_id` is either the quest giver OR turn-in NPC!
+static func quests_involving_npc(npc_id: String) -> Array:
+	ensure_loaded()
+	var out: Array = []
+	for quest: QuestData in _quests.values():
+		if quest.giver_npc == npc_id or quest.turn_in_npc == npc_id:
+			out.append(quest)
+	return out

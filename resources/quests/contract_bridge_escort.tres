@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "contract_bridge_escort"
+title = "[Rank D] Escort Route: Shadowfang Pass"
+description = "Guild Escort & Patrol Contract: Clear 2 Shadowfang Bats threatening Traveler Vane's caravan route near the northern cave."
+giver_npc = "guild_receptionist"
+turn_in_npc = "guild_receptionist"
+objectives = [{"type": "kill", "target": "cave_bat", "required": 2, "label": "Shadowfang Bats cleared"}]
+reward_xp = 130
+reward_gold = 80
+reward_items = [{"id": "steel_greatsword", "count": 1}]
+is_guild_contract = true
+contract_category = "escort"
+required_guild_rank = "D"
+reward_reputation = 125

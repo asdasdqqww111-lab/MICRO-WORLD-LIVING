@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "guild_ring"
+display_name = "Wayfarer's Arcane Signet"
+description = "Silver Guild signet ring channeling strength and spell focus."
+category = 8
+rarity = 3
+max_stack = 1
+value = 135
+attack_bonus = 4.0
+magic_bonus = 6.0
+crit_bonus = 0.06
+icon_color = Color(0.78, 0.48, 0.96, 1)
+equip_slot = "accessory"

@@ -1,20 +1,21 @@
 class_name WorldState
 extends RefCounted
-## Persistent world clock + flags.  Serialised by SaveManager.
+## Persistent world clock, weather, harvested nodes, defeated creatures, and story flags.
 
 const DAY_SECONDS := 86400.0
 const HOURS_PER_DAY := 24
 
-var time_of_day: float = 8.0 * 3600.0   # seconds since midnight (game time)
+var time_of_day: float = 8.5 * 3600.0
 var day: int = 1
-var weather: String = "clear"           # "clear" | "rain"
-var weather_remaining: float = 240.0    # game minutes until the next roll
+var weather: String = "clear"
+var weather_remaining: float = 240.0
 var dead_creatures: Array[String] = []
 var looted_containers: Array[String] = []
+var harvested_nodes: Dictionary = {}   # node_uid -> day_harvested (respawns next day!)
 var flags: Dictionary = {}
 var raid_active: bool = false
 var raid_day: int = -1
-var npc_overrides: Dictionary = {}      # npc_id -> "work" | "rest" | "sleep"
+var npc_overrides: Dictionary = {}
 
 func hour() -> int:
 	return int(time_of_day / 3600.0) % HOURS_PER_DAY
@@ -32,7 +33,6 @@ func is_night() -> bool:
 func clock_text() -> String:
 	return "%02d:%02d" % [hour(), minute()]
 
-## Advances the clock by `game_seconds`.  Returns true when a new day starts.
 func advance(game_seconds: float) -> bool:
 	if game_seconds <= 0.0:
 		return false
@@ -58,6 +58,12 @@ func mark_looted(container_uid: String) -> void:
 func is_looted(container_uid: String) -> bool:
 	return looted_containers.has(container_uid)
 
+func mark_harvested(node_uid: String) -> void:
+	harvested_nodes[node_uid] = day
+
+func is_harvested_today(node_uid: String) -> bool:
+	return int(harvested_nodes.get(node_uid, -99)) >= day
+
 func set_flag(key: String, value: Variant) -> void:
 	flags[key] = value
 
@@ -72,6 +78,7 @@ func to_dict() -> Dictionary:
 		"weather_remaining": weather_remaining,
 		"dead_creatures": dead_creatures.duplicate(),
 		"looted_containers": looted_containers.duplicate(),
+		"harvested_nodes": harvested_nodes.duplicate(),
 		"flags": flags.duplicate(true),
 		"raid_active": raid_active,
 		"raid_day": raid_day,
@@ -79,7 +86,7 @@ func to_dict() -> Dictionary:
 	}
 
 func from_dict(data: Dictionary) -> void:
-	time_of_day = clampf(float(data.get("time_of_day", 8.0 * 3600.0)), 0.0, DAY_SECONDS - 1.0)
+	time_of_day = clampf(float(data.get("time_of_day", 8.5 * 3600.0)), 0.0, DAY_SECONDS - 1.0)
 	day = maxi(1, int(data.get("day", 1)))
 	weather = String(data.get("weather", "clear"))
 	weather_remaining = maxf(0.0, float(data.get("weather_remaining", 240.0)))
@@ -89,6 +96,8 @@ func from_dict(data: Dictionary) -> void:
 	looted_containers.clear()
 	for uid: Variant in data.get("looted_containers", []):
 		looted_containers.append(String(uid))
+	var raw_harv: Dictionary = data.get("harvested_nodes", {})
+	harvested_nodes = raw_harv.duplicate()
 	var raw_flags: Dictionary = data.get("flags", {})
 	flags = raw_flags.duplicate(true)
 	raid_active = bool(data.get("raid_active", false))

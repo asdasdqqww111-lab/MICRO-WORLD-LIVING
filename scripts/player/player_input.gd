@@ -1,6 +1,6 @@
 class_name PlayerInput
 extends RefCounted
-## Merges keyboard/mouse with the on-screen touch controls into one API.
+## Merges keyboard/mouse with the on-screen touch controls into one clean API.
 
 var _touch: Node
 
@@ -20,11 +20,30 @@ func is_sprinting() -> bool:
 		return bool(_touch.call("is_sprinting"))
 	return false
 
+func is_blocking() -> bool:
+	if Input.is_action_pressed("block"):
+		return true
+	if is_instance_valid(_touch) and _touch.has_method("is_blocking"):
+		return bool(_touch.call("is_blocking"))
+	return false
+
 func jump_pressed() -> bool:
 	return Input.is_action_just_pressed("jump") or _touch_pressed("jump")
 
+func dodge_pressed() -> bool:
+	return Input.is_action_just_pressed("dodge") or _touch_pressed("dodge")
+
 func attack_pressed() -> bool:
 	return Input.is_action_just_pressed("attack") or _touch_pressed("attack")
+
+func heavy_attack_pressed() -> bool:
+	return Input.is_action_just_pressed("attack_heavy") or _touch_pressed("attack_heavy")
+
+func spell_pressed() -> bool:
+	return Input.is_action_just_pressed("cast_spell") or _touch_pressed("cast_spell")
+
+func potion_pressed() -> bool:
+	return Input.is_action_just_pressed("quick_potion") or _touch_pressed("quick_potion")
 
 func interact_pressed() -> bool:
 	return Input.is_action_just_pressed("interact") or _touch_pressed("interact")

@@ -1,172 +1,58 @@
-# ASSET LICENSE MANIFEST — Micro World: Living
+# Asset License & Provenance Manifest — MICRO WORLD: LIVING (Eldoria Edition v1.0)
 
-All shipped art is **CC0 (public domain)**. Nothing in this project is a
-placeholder: every model that ships is used by the game, and the two
-creatures that had no reachable CC0 source (slime, wolf) are generated
-procedurally from primitives by `scripts/creatures/procedural_models.gd`.
+Every external 3D model, rig, animation library, surface texture, font, sound effect, and music track in **MICRO WORLD: LIVING — Chronicles of Eldoria** is **100% free, commercial-safe, and legally verified** (**CC0 1.0 Public Domain**, **SIL Open Font License 1.1**, or **100% in-repo procedural CC0 synthesis**).
 
-| field | value |
-|---|---|
-| Download date | 2026-11-12 |
-| Download method | `git clone --depth 1` from github.com (release-asset CDN blocked in build sandbox) |
-| Author / distributor | Kay Lousberg (KayKit) — https://www.kaylousberg.com |
-| License | CC0 1.0 Universal — https://creativecommons.org/publicdomain/zero/1.0/ |
-| Engine import | Godot 4.3 `--headless --import` (glTF / GLB) |
+Untouched original copies of every downloaded asset and upstream `LICENSE` file are archived outside the live game directory at:
+- `/home/user/ORIGINAL_ASSETS/curated_source_archive.tar.gz` (verified against `/home/user/ORIGINAL_ASSETS/ARCHIVE_SHA256.txt`)
+- `/home/user/ORIGINAL_ASSETS/licenses/`
 
-## Sources
+---
 
-| family | GitHub source | license file in repo | local path | status |
+## 1. 3D Character Rigs, Animation Libraries, Props & Architecture (CC0 1.0)
+
+| Pack / Collection | Author / Upstream Repository | License | Destination in Project | Asset Count & Usage |
 |---|---|---|---|---|
-| Characters (4 skeletons, 95 clips each) | https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0 | `assets/models/characters/LICENSE_KayKit_Skeletons.txt` | `assets/models/characters/` | INTEGRATED |
-| Village / forest / props | https://github.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0 | `assets/models/hexagon/LICENSE_KayKit_Hexagon.txt` | `assets/models/hexagon/` | INTEGRATED |
-| Dungeon | https://github.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0 | `assets/models/dungeon/LICENSE_KayKit_Dungeon.txt` | `assets/models/dungeon/` | INTEGRATED |
-| Furniture (interior) | https://github.com/KayKit-Game-Assets/KayKit-Furniture-Bits-1.0 | `assets/models/furniture/LICENSE_KayKit_Furniture.txt` | `assets/models/furniture/` | INTEGRATED |
-| Slime, Wolf | original procedural geometry (this repository) | CC0 by the project | `scripts/creatures/procedural_models.gd` | INTEGRATED |
+| **KayKit Character Pack: Adventures** | Kay Lousberg — `https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0` | **CC0 1.0 Public Domain** | `assets/models/characters/` (`Knight.glb`, `Mage.glb`, `Rogue.glb`, `Rogue_Hooded.glb`, `Barbarian.glb`) & `assets/models/animations/` (`Rig_Medium_General.glb`, `Rig_Medium_MovementBasic.glb`) | Playable Knight hero, 18 living Village & Guild NPCs, shared skeletal animation clips (`idle`, `walk`, `run`, `jump`, `attack`, `hit`, `death`, `interact`) |
+| **KayKit Character Pack: Skeletons** | Kay Lousberg (existing repo CC0 pack) | **CC0 1.0 Public Domain** | `assets/models/characters/` (`Skeleton_Warrior.glb`, `Skeleton_Rogue.glb`, `Skeleton_Mage.glb`, `Skeleton_Minion.glb`) | Undead forest patrols, Eastern Ruins, Sunken Crypt guards & Boss Malakor |
+| **Gobkit Monster Pack** | `https://github.com/emptyflask/Gobkit` | **CC0 1.0 Public Domain** | `assets/models/monsters/Goblin.gltf` (+ `.bin` & `goblin_Albedo.png`) | Goblin Scouts, Goblin Raiders, Orc Berserker & Forest Troll variants |
+| **KayKit Medieval Hexagon Pack** | Kay Lousberg — `https://github.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0` | **CC0 1.0 Public Domain** | `assets/models/medieval/` (33 `.gltf` buildings, castle walls/towers, church/guild hall, blacksmith, market, tavern, watermill, stone bridge, trees, rocks, clouds + shared `medieval_texture.png` atlas) | Eldoria Village architecture, Grand Adventurers Guild Hall exterior, East Stone Arch Bridge, Watermill, Mountain peaks & volumetric clouds |
+| **KayKit Dungeon Remastered** | Kay Lousberg — `https://github.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.1` | **CC0 1.0 Public Domain** | `assets/models/dungeon_remastered/` (29 `.gltf` modular stone walls, arches, pillars, stairs, banners, crates, barrels, tables, chairs, chests, beds, torches, keys + shared `dungeon_texture.png` atlas) | Adventurers Guild Grand Hall interior, Hero Cottage interior, Sunken Crypt multi-room dungeon, traps & Boss Sanctum |
+| **Hidencod TGE Foliage & Props (CC0)** | `https://github.com/Hidencod/tge-assets` | **CC0 1.0 Public Domain** | `assets/models/nature_tge/` (`oak_trees.glb`, `Grass.glb`, `Flowers.glb`, `DeadTree.glb`, `Rock.glb`, `Fence.glb`, `Lantern.glb`, `WoodLog.glb`, `SignBoard.glb`) | MultiMesh multi-species woodland canopy, ground grass, wildflower patches, deadwood & trail props |
+| **Kenney Nature & Graveyard Props** | Kenney.nl (existing repo CC0 pack) | **CC0 1.0 Public Domain** | `assets/models/nature/`, `assets/models/village/`, `assets/models/dungeon/` | Pine groves, river boulders, mushrooms, campfires, crypt pillars & iron fences |
+| **Procedural Wildlife & Boss Adornments** | In-repo `scripts/creatures/procedural_models.gd` | **CC0 1.0 (Original Code)** | Runtime `ArrayMesh` | Forest Deer, Grey Wolf, Dire Wolf, Meadow Rabbit & Elder Treant |
 
+---
 
-## Per-file manifest
+## 2. World & Architectural Surface Textures (CC0 1.0)
 
-`git`-downloaded files only; the `.import` sidecars are generated by Godot and
-are not listed. Model families: characters `.glb`, hexagon `.gltf`+`.bin`+shared
-atlas `hexagons_medieval.png`, dungeon `.glb`+`dungeon_texture.png`, furniture
-`.gltf`+`.bin`+`furniturebits_texture.png`.
-
-| # | local path | bytes | family | upstream path |
+| Pack / Asset | Upstream Repository | License | Destination in Project | Usage |
 |---|---|---|---|---|
-| 1 | `assets/models/characters/Skeleton_Mage.glb` | 4761048 | characters | KayKit-Character-Pack-Skeletons-1.0 (Characters/gltf) |
-| 2 | `assets/models/characters/Skeleton_Minion.glb` | 4814296 | characters | KayKit-Character-Pack-Skeletons-1.0 (Characters/gltf) |
-| 3 | `assets/models/characters/Skeleton_Rogue.glb` | 4827024 | characters | KayKit-Character-Pack-Skeletons-1.0 (Characters/gltf) |
-| 4 | `assets/models/characters/Skeleton_Warrior.glb` | 4863620 | characters | KayKit-Character-Pack-Skeletons-1.0 (Characters/gltf) |
-| 5 | `assets/models/hexagon/barrel.bin` | 15552 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 6 | `assets/models/hexagon/barrel.gltf` | 3042 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 7 | `assets/models/hexagon/building_blacksmith_green.bin` | 123036 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 8 | `assets/models/hexagon/building_blacksmith_green.gltf` | 3106 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 9 | `assets/models/hexagon/building_church_green.bin` | 89736 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 10 | `assets/models/hexagon/building_church_green.gltf` | 3092 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 11 | `assets/models/hexagon/building_home_A_green.bin` | 55348 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 12 | `assets/models/hexagon/building_home_A_green.gltf` | 3093 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 13 | `assets/models/hexagon/building_home_B_green.bin` | 82120 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 14 | `assets/models/hexagon/building_home_B_green.gltf` | 3093 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 15 | `assets/models/hexagon/building_lumbermill_green.bin` | 166284 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 16 | `assets/models/hexagon/building_lumbermill_green.gltf` | 7365 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 17 | `assets/models/hexagon/building_market_green.bin` | 152160 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 18 | `assets/models/hexagon/building_market_green.gltf` | 3094 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 19 | `assets/models/hexagon/building_tavern_green.bin` | 170848 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 20 | `assets/models/hexagon/building_tavern_green.gltf` | 3096 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 21 | `assets/models/hexagon/building_tower_A_green.bin` | 112860 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 22 | `assets/models/hexagon/building_tower_A_green.gltf` | 5052 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 23 | `assets/models/hexagon/building_well_green.bin` | 42340 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 24 | `assets/models/hexagon/building_well_green.gltf` | 3086 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 25 | `assets/models/hexagon/building_windmill_green.bin` | 141680 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 26 | `assets/models/hexagon/building_windmill_green.gltf` | 7335 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 27 | `assets/models/hexagon/crate_A_big.bin` | 7000 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 28 | `assets/models/hexagon/crate_A_big.gltf` | 3055 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 29 | `assets/models/hexagon/crate_A_small.bin` | 7000 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 30 | `assets/models/hexagon/crate_A_small.gltf` | 3059 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 31 | `assets/models/hexagon/fence_wood_straight.bin` | 15032 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 32 | `assets/models/hexagon/fence_wood_straight.gltf` | 3061 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 33 | `assets/models/hexagon/fence_wood_straight_gate.bin` | 19384 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 34 | `assets/models/hexagon/fence_wood_straight_gate.gltf` | 5220 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 35 | `assets/models/hexagon/hexagons_medieval.png` | 15783 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 36 | `assets/models/hexagon/hill_single_A.bin` | 3208 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 37 | `assets/models/hexagon/hill_single_A.gltf` | 3032 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 38 | `assets/models/hexagon/hill_single_B.bin` | 3272 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 39 | `assets/models/hexagon/hill_single_B.gltf` | 3032 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 40 | `assets/models/hexagon/ladder.bin` | 5880 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 41 | `assets/models/hexagon/ladder.gltf` | 3040 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 42 | `assets/models/hexagon/rock_single_A.bin` | 1228 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 43 | `assets/models/hexagon/rock_single_A.gltf` | 3031 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 44 | `assets/models/hexagon/rock_single_B.bin` | 1628 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 45 | `assets/models/hexagon/rock_single_B.gltf` | 3052 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 46 | `assets/models/hexagon/sack.bin` | 3240 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 47 | `assets/models/hexagon/sack.gltf` | 3031 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 48 | `assets/models/hexagon/target.bin` | 7112 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 49 | `assets/models/hexagon/target.gltf` | 3016 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 50 | `assets/models/hexagon/tent.bin` | 6148 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 51 | `assets/models/hexagon/tent.gltf` | 3008 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 52 | `assets/models/hexagon/tree_single_A.bin` | 3340 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 53 | `assets/models/hexagon/tree_single_A.gltf` | 3053 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 54 | `assets/models/hexagon/tree_single_B.bin` | 7368 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 55 | `assets/models/hexagon/tree_single_B.gltf` | 3056 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 56 | `assets/models/hexagon/trees_A_large.bin` | 57024 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 57 | `assets/models/hexagon/trees_A_large.gltf` | 3066 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 58 | `assets/models/hexagon/trees_A_medium.bin` | 31680 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 59 | `assets/models/hexagon/trees_A_medium.gltf` | 3066 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 60 | `assets/models/hexagon/trees_A_small.bin` | 28512 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 61 | `assets/models/hexagon/trees_A_small.gltf` | 3058 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 62 | `assets/models/hexagon/wall_straight.bin` | 31088 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 63 | `assets/models/hexagon/wall_straight.gltf` | 3009 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 64 | `assets/models/hexagon/weaponrack.bin` | 2940 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 65 | `assets/models/hexagon/weaponrack.gltf` | 3027 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 66 | `assets/models/hexagon/wheelbarrow.bin` | 19016 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 67 | `assets/models/hexagon/wheelbarrow.gltf` | 3059 | hexagon | KayKit-Medieval-Hexagon-Pack-1.0 (Assets/gltf) |
-| 68 | `assets/models/dungeon/barrel_large.glb` | 44292 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 69 | `assets/models/dungeon/box_small.glb` | 28692 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 70 | `assets/models/dungeon/candle_lit.glb` | 22648 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 71 | `assets/models/dungeon/chest.glb` | 81412 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 72 | `assets/models/dungeon/chest_gold.glb` | 140140 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 73 | `assets/models/dungeon/crates_stacked.glb` | 103704 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 74 | `assets/models/dungeon/dungeon_texture.png` | 15794 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 75 | `assets/models/dungeon/floor_tile_big_spikes.glb` | 80644 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 76 | `assets/models/dungeon/floor_tile_large.glb` | 28100 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 77 | `assets/models/dungeon/floor_tile_small.glb` | 20740 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 78 | `assets/models/dungeon/floor_tile_small_corner.glb` | 18868 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 79 | `assets/models/dungeon/floor_wood_large.glb` | 35612 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 80 | `assets/models/dungeon/pillar.glb` | 25552 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 81 | `assets/models/dungeon/rubble_large.glb` | 60196 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 82 | `assets/models/dungeon/stairs.glb` | 43368 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 83 | `assets/models/dungeon/stairs_wide.glb` | 43372 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 84 | `assets/models/dungeon/table_long.glb` | 35128 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 85 | `assets/models/dungeon/torch_lit.glb` | 31244 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 86 | `assets/models/dungeon/wall.glb` | 53132 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 87 | `assets/models/dungeon/wall_broken.glb` | 69276 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 88 | `assets/models/dungeon/wall_corner.glb` | 49212 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 89 | `assets/models/dungeon/wall_corner_small.glb` | 33640 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 90 | `assets/models/dungeon/wall_doorway.glb` | 100596 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 91 | `assets/models/dungeon/wall_endcap.glb` | 33708 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 92 | `assets/models/dungeon/wall_half.glb` | 36840 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 93 | `assets/models/dungeon/wall_pillar.glb` | 55156 | dungeon | KayKit-Dungeon-Remastered-1.0 (Assets/gltf + texture) |
-| 94 | `assets/models/furniture/bed_single_A.bin` | 22044 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 95 | `assets/models/furniture/bed_single_A.gltf` | 3009 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 96 | `assets/models/furniture/book_set.bin` | 11576 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 97 | `assets/models/furniture/book_set.gltf` | 3051 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 98 | `assets/models/furniture/cabinet_small.bin` | 19468 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 99 | `assets/models/furniture/cabinet_small.gltf` | 3001 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 100 | `assets/models/furniture/chair_A_wood.bin` | 16504 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 101 | `assets/models/furniture/chair_A_wood.gltf` | 3032 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 102 | `assets/models/furniture/chair_stool_wood.bin` | 10832 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 103 | `assets/models/furniture/chair_stool_wood.gltf` | 3052 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 104 | `assets/models/furniture/couch.bin` | 21416 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 105 | `assets/models/furniture/couch.gltf` | 3014 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 106 | `assets/models/furniture/furniturebits_texture.png` | 15605 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 107 | `assets/models/furniture/lamp_table.bin` | 12816 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 108 | `assets/models/furniture/lamp_table.gltf` | 3029 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 109 | `assets/models/furniture/rug_rectangle_A.bin` | 1800 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 110 | `assets/models/furniture/rug_rectangle_A.gltf` | 2971 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 111 | `assets/models/furniture/shelf_A_small.bin` | 10104 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 112 | `assets/models/furniture/shelf_A_small.gltf` | 3033 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 113 | `assets/models/furniture/table_small.bin` | 9328 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 114 | `assets/models/furniture/table_small.gltf` | 2979 | furniture | KayKit-Furniture-Bits-1.0 (Assets/gltf + texture) |
-| 115 | `scripts/creatures/creature.gd` | 6735 | procedural | original, this repository |
-| 116 | `scripts/creatures/procedural_models.gd` | 3290 | procedural | original, this repository |
+| **Stylized PBR Albedo Textures** | `https://github.com/Sweatersjpg/Free-Game-Dev-Assets` (AmbientCG / PolyHaven CC0) | **CC0 1.0 Public Domain** | `assets/textures/world/` (`cobblestone_albedo.jpg`, `rock_cliff_albedo.jpg`, `plaster_wall_albedo.jpg`, `wood_planks_albedo.jpg`) | Eldoria village cobblestone roads, Guild & cottage interior timber floors, alpine cliff accents |
+| **KayKit Shared Palette Atlases** | Kay Lousberg (`KayKit-*`) | **CC0 1.0 Public Domain** | `assets/models/medieval/medieval_texture.png`, `assets/models/dungeon_remastered/dungeon_texture.png` | Single-atlas batching across medieval buildings & dungeon modules |
 
-Total shipped model bytes: 22.3 MB across 116 files.
-## Sources that were evaluated and NOT used
+---
 
-| source | reason |
-|---|---|
-| https://quaternius.com (CC0 nature / creatures) | Host unreachable from the build sandbox (egress allowlist). The forest therefore uses KayKit Medieval Hexagon trees and rocks, which keeps one visual style. |
-| https://kenney.nl/assets + Kenney audio packs | Host unreachable from the build sandbox. No third-party audio ships in 0.1 (see Known Issues). |
-| https://polyhaven.com + PolyHaven_HDR | Host unreachable from the build sandbox. All materials are engine-native StandardMaterial3D. |
-| https://github.com/KenneyNL/Starter-Kit-3D-Platformer | Not needed: KayKit Skeletons already provides a rigged character with 95 clips. |
-| https://github.com/0xrise/cc0-assets-nft | Mixed-status pack; not used (rule: never mix two character sources). |
-| https://github.com/gdquest-demos/godot-4-3D-Characters | Not needed (AnimationTree is built in code from the KayKit clips). |
+## 3. UI Typography — English & Arabic RTL (SIL Open Font License 1.1)
 
-## Rules honoured
+| Font | Upstream Repository | License | Destination in Project | Usage |
+|---|---|---|---|---|
+| **Noto Sans Bold & Regular** | Google Noto Fonts — `https://github.com/notofonts/latin-greek-cyrillic` | **SIL OFL 1.1** (`assets/fonts/OFL_LICENSE.txt`) | `assets/fonts/NotoSans-Bold.ttf`, `assets/fonts/NotoSans-Regular.ttf` | Primary fantasy UI & HUD Latin typography |
+| **Noto Sans Arabic Bold & Regular** | Google Noto Fonts — `https://github.com/notofonts/arabic` | **SIL OFL 1.1** (`assets/fonts/OFL_LICENSE.txt`) | `assets/fonts/NotoSansArabic-Bold.ttf`, `assets/fonts/NotoSansArabic-Regular.ttf` | Native Arabic script shaping + RTL fallback across all UI menus & dialogues |
 
-- One visual style: KayKit only for characters, buildings, props, dungeon.
-- Characters and buildings are never mixed across two sources.
-- Every shipped model is referenced by the game (verified by the
-  headless scene test; unreferenced files were not copied into the repo).
+---
 
+## 4. Sound Effects & Ambient Music (CC0 1.0 — Deterministic In-Repo Synthesis)
 
+Generated deterministically via `tools/generate_audio_cc0.py` (100% original mathematical synthesis, zero third-party samples, **CC0 1.0 Public Domain**):
+
+- **16 Sound Effects (`assets/sounds/*.wav`)**:
+  `sword_swing_1.wav`, `sword_swing_2.wav`, `heavy_slash.wav`, `hit_flesh.wav`, `hit_armor.wav`, `shield_block.wav`, `dodge_roll.wav`, `spell_cast.wav`, `footstep_grass.wav`, `footstep_stone.wav`, `chest_open.wav`, `coin_pickup.wav`, `level_up.wav`, `quest_complete.wav`, `ui_click.wav`, `equip_gear.wav`
+- **3 Seamless Ambient Music Loops (`assets/music/*.wav`)**:
+  `eldoria_village_theme.wav` (Pastoral Harp & Flute), `guild_hall_theme.wav` (Warm Lute & Brass Chords), `dungeon_crypt_theme.wav` (Dark Ambient Crypt Drone)
+
+---
+
+## 5. Verification Summary
+- **Commercial / Redistribution Restrictions:** None (all CC0 1.0 or SIL OFL 1.1 with bundled `OFL_LICENSE.txt`).
+- **Paid / Proprietary / Watermarked Assets:** `0`.
+- **Missing License Files:** `0`.

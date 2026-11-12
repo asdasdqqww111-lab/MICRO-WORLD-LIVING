@@ -1,57 +1,63 @@
 class_name JournalScreen
 extends MenuScreen
+## Quest & Contract Journal with Main / Side / Guild / Completed filters.
 
-var _selected: String = ""
+var _filter: String = "all"
 
 func _ready() -> void:
-	configure("Quest Journal")
+	configure("Quest Journal", "journal")
 	super._ready()
 
 func refresh() -> void:
 	clear_content()
-	var active := GameManager.quest_log.tracked_quests()
-	var completed := GameManager.quest_log.completed_quests()
-	if active.is_empty() and completed.is_empty():
-		content.add_child(UIFactory.label("No quests yet. Talk to the villagers.", 18, UIFactory.TEXT_DIM))
-		return
-	if not active.is_empty():
-		content.add_child(UIFactory.label("Active", 19, UIFactory.GOLD))
-		for quest_id: String in active:
-			content.add_child(_quest_row(quest_id, false))
-	if not completed.is_empty():
-		content.add_child(UIFactory.hsep())
-		content.add_child(UIFactory.label("Completed", 19, UIFactory.TEXT_DIM))
-		for quest_id: String in completed:
-			content.add_child(_quest_row(quest_id, true))
+	var tabs := HBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 8)
+	content.add_child(tabs)
+	for pair: Array in [["all", "All Active"], ["main", "Main Story"], ["guild", "Guild Contracts"], ["done", "Completed"]]:
+		var k := String(pair[0])
+		var b := UIFactory.button(String(pair[1]), 38)
+		b.toggle_mode = true
+		b.button_pressed = (_filter == k)
+		b.pressed.connect(func() -> void:
+			_filter = k
+			refresh())
+		tabs.add_child(b)
 
-func _quest_row(quest_id: String, is_completed: bool) -> Control:
-	var quest := QuestDB.get_quest(quest_id)
-	if quest == null:
-		return UIFactory.label(quest_id, 16)
+	content.add_child(UIFactory.hsep())
+
+	var list: Array = GameManager.quest_log.completed_quests() if _filter == "done" else GameManager.quest_log.tracked_quests()
+	var shown := 0
+	for quest_id: String in list:
+		var q := QuestDB.get_quest(quest_id)
+		if q == null:
+			continue
+		if _filter == "main" and not q.is_main_quest:
+			continue
+		if _filter == "guild" and not q.is_guild_contract:
+			continue
+		shown += 1
+		content.add_child(_quest_card(q, _filter == "done"))
+
+	if shown == 0:
+		content.add_child(UIFactory.label("No matching quests yet — speak with Elder Theron, Villagers, or the Adventurers Guild!", 16, UIFactory.TEXT_DIM))
+
+func _quest_card(quest: QuestData, is_completed: bool) -> Control:
+	var card := UIFactory.card_panel(UIFactory.ACCENT if is_completed else UIFactory.GOLD)
 	var row := VBoxContainer.new()
 	row.add_theme_constant_override("separation", 4)
-	var button := UIFactory.button(quest.title, 46)
-	button.pressed.connect(func() -> void:
-		_selected = quest_id if _selected != quest_id else ""
-		refresh())
-	row.add_child(button)
-	if _selected == quest_id:
-		row.add_child(UIFactory.wrapped_label(quest.description, 16, UIFactory.TEXT_DIM))
-		for i: int in quest.objectives.size():
-			var objective: Dictionary = quest.objectives[i]
-			var progress := GameManager.quest_log.objective_progress(quest_id, i)
-			var required := int(objective.get("required", 1))
-			var done := progress >= required
-			row.add_child(UIFactory.label("%s  %d/%d" % [String(objective.get("label", "")), progress, required],
-				16, UIFactory.ACCENT if done else UIFactory.TEXT))
-		row.add_child(UIFactory.label("Reward: %d XP, %d gold" % [quest.reward_xp, quest.reward_gold],
-			15, UIFactory.GOLD))
-		for item: Dictionary in quest.reward_items:
-			var data := ItemDB.get_item(String(item.get("id", "")))
-			row.add_child(UIFactory.label("   + %s x%d" % [data.display_name if data != null else "?",
-				int(item.get("count", 1))], 15, UIFactory.TEXT_DIM))
-		if is_completed:
-			row.add_child(UIFactory.label("Completed", 15, UIFactory.ACCENT))
-		elif GameManager.quest_log.can_turn_in(quest_id):
-			row.add_child(UIFactory.label("Ready to turn in", 15, UIFactory.ACCENT))
-	return row
+	card.add_child(row)
+
+	var tag := "[MAIN] " if quest.is_main_quest else ("[GUILD] " if quest.is_guild_contract else "[SIDE] ")
+	row.add_child(UIFactory.label(tag + quest.title, 18, UIFactory.GOLD))
+	row.add_child(UIFactory.wrapped_label(quest.description, 14, UIFactory.TEXT_DIM))
+
+	for i: int in quest.objectives.size():
+		var obj: Dictionary = quest.objectives[i]
+		var prog := GameManager.quest_log.objective_progress(quest.id, i)
+		var req := int(obj.get("required", 1))
+		var done := is_completed or prog >= req
+		row.add_child(UIFactory.label("  %s %s (%d/%d)" % ["✔" if done else "○", String(obj.get("label", "Objective")), prog, req],
+			15, UIFactory.ACCENT if done else UIFactory.TEXT))
+
+	row.add_child(UIFactory.label("Rewards: %d XP · %d Gold · +%d Guild Rep" % [quest.reward_xp, quest.reward_gold, quest.reward_reputation], 14, UIFactory.GOLD))
+	return card

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "main_dread_crypt"
+title = "Shadow Beneath Eldoria"
+description = "Grandmaster Aldric warns that Malakor, the Dread Crypt Lord, has awakened beneath the eastern dungeon. Descend into the Sunken Crypt and end his reign."
+giver_npc = "guild_master"
+turn_in_npc = "guild_master"
+objectives = [{"type": "visit", "target": "dungeon", "required": 1, "label": "Descend into the Sunken Crypt"}, {"type": "kill", "target": "crypt_boss", "required": 1, "label": "Defeat Malakor, Dread Crypt Lord"}]
+reward_xp = 220
+reward_gold = 120
+reward_items = [{"id": "guild_aegis", "count": 1}]
+is_main_quest = true
+reward_reputation = 150
+story_flag_on_complete = "malakor_slain"

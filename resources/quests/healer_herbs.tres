@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "healer_herbs"
+title = "Remedies of the Woodland"
+description = "Sister Sera at the Chapel needs 3 Redcap Herbs from the western forest edge to tend wounded patrols."
+giver_npc = "healer"
+turn_in_npc = "healer"
+objectives = [{"type": "collect", "target": "herb_redcap", "required": 3, "label": "Redcap Herbs gathered"}]
+reward_xp = 60
+reward_gold = 30
+reward_items = [{"id": "health_potion", "count": 2}]
+reward_reputation = 25
