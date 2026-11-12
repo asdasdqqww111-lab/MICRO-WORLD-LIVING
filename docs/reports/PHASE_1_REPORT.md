@@ -95,5 +95,5 @@
 
 ما أُثبت آليًا في هذه المرحلة: اللاعب يظهر ويستقر على الأرض، AnimationTree يحل مقاطع KayKit، الجويستيك يحرّك 3.09 م، الكاميرا تدور وتقرّب.
 
-Commit: `ba7749f` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
+Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
 سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.

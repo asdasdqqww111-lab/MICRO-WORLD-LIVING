@@ -80,5 +80,5 @@
 
 ما أُثبت آليًا في هذه المرحلة: بناء المحرك من المصدر، استيراد 206 ملفًا، `--quit` = 0، تحميل كل قواعد البيانات، إنشاء `.godot/` نظيف.
 
-Commit: `ba7749f` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
+Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
 سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.

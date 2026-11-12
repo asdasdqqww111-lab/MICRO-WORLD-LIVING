@@ -83,5 +83,5 @@ Quaternius محجوب الشبكة، لذلك مخلوقات "Goblin/Wolf/Slime"
 
 ما أُثبت آليًا في هذه المرحلة: `multimesh instancing is real (5 batches, 0 broken)` — 30+60+40 شجرة/صخرة + 19 أرضية + 30 جدارًا؛ 3 قوالب مخلوقات؛ مهمتان.
 
-Commit: `ba7749f` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
+Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
 سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.

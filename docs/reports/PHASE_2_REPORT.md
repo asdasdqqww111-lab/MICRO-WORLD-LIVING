@@ -79,5 +79,5 @@ damage = max(1, raw × variance × (1.6 if crit else 1.0))
 
 ما أُثبت آليًا في هذه المرحلة: الضربة تستهلك ستامينا، الهيكل يستقبل 46→33.7 ضررًا، يصبح عدائيًا، 3 قتلات تُكمل الهدف، الـ loot يُلتقط فعليًا في المخزن.
 
-Commit: `ba7749f` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
+Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
 سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.

@@ -76,5 +76,5 @@
 
 ما أُثبت آليًا في هذه المرحلة: 10 دورات حفظ/تحميل متتالية، رفض الحفظ التالف، رفض schema أحدث، هجرة v1→v3. لا APK (بيئي).
 
-Commit: `ba7749f` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
+Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
 سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.
