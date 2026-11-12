@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CreatureData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/creature_data.gd" id="1_creaturedata"]
+
+[resource]
+script = ExtResource("1_creaturedata")
+id = "skeleton_forest"
+display_name = "Skeleton"
+model_path = "res://assets/models/characters/Skeleton_Minion.glb"
+max_health = 46.0
+damage = 8.0
+move_speed = 2.9
+attack_range = 1.9
+attack_cooldown = 1.5
+aggro_radius = 13.0
+leash_radius = 26.0
+xp_reward = 24
+gold_reward = 4
+hostile = true
+body_scale = 1.0
+loot = [{"id": "bone", "chance": 0.9, "min": 1, "max": 2}, {"id": "iron_ore", "chance": 0.25, "min": 1, "max": 1}]

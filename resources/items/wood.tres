@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "wood"
+display_name = "Wood"
+description = "Split logs from the forest edge."
+category = 0
+max_stack = 30
+value = 3
+attack_bonus = 0.0
+defense_bonus = 0.0
+heal_amount = 0.0
+icon_color = Color(0.45, 0.31, 0.18, 1)
+equip_slot = "none"

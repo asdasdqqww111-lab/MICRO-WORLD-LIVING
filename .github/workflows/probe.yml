@@ -1,0 +1,84 @@
+name: Perf + Visual Probe
+
+# Fast feedback loop (no APK build): renders the real game with a software
+# rasteriser, measures draw calls/triangles, captures screenshots, and commits
+# the evidence back to the branch so it can be reviewed from the repo.
+
+on:
+  push:
+    branches: ["arena/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    name: Measure and capture
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot 4.3 stable
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
+          sudo mv /tmp/godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Headless acceptance tests
+        run: godot --headless --path . tests/test_runner.tscn
+
+      - name: Renderer + probes (GLES3 over Mesa)
+        continue-on-error: true
+        run: |
+          set +e
+          DIAG=docs/reports/ci_env.log
+          mkdir -p docs/reports docs/screenshots
+          {
+            echo "date: $(date -u)"
+            echo "godot: $(command -v godot) - $(godot --version 2>&1 | head -1)"
+            echo "xvfb-run before apt: $(command -v xvfb-run)"
+          } > "$DIAG" 2>&1
+          sudo apt-get update -qq >> "$DIAG" 2>&1; echo "apt update exit=$?" >> "$DIAG"
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1; echo "apt install exit=$?" >> "$DIAG"
+          echo "xvfb-run after apt: $(command -v xvfb-run)" >> "$DIAG"
+          tail -5 "$DIAG"
+
+          echo "=== glxinfo ===" > docs/reports/ci_renderer.log
+          xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B >> docs/reports/ci_renderer.log 2>&1
+          echo "=== perf probe ===" >> docs/reports/ci_renderer.log
+          timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
+            godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+            tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
+          echo "perf exit=$?" >> docs/reports/ci_renderer.log
+          echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
+          timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
+            godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+            tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
+          echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
+          tail -20 docs/reports/ci_screenshot_gl.log
+          tail -25 docs/reports/ci_perf_probe.log
+          ls -lh docs/screenshots
+          exit 0
+
+      - name: Commit evidence back to the branch
+        if: always()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A docs/reports docs/screenshots 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no changes to commit"
+          else
+            git commit -m "ci(probe): measured perf + screenshots [skip ci]"
+            git push
+          fi

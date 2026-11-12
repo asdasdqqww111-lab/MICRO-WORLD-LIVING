@@ -1,0 +1,20 @@
+start: renderer=gl_compatibility adapter=llvmpipe (LLVM 21.1.8, 256 bits)
+scene ready: player=true ui=true
+01_village_overview -> res://docs/screenshots/01_village_overview.png (ok)
+captured 01_village_overview
+02_village_street -> res://docs/screenshots/02_village_street.png (ok)
+captured 02_village_street
+03_mountains -> res://docs/screenshots/03_mountains.png (ok)
+captured 03_mountains
+04_sky_clouds -> res://docs/screenshots/04_sky_clouds.png (ok)
+captured 04_sky_clouds
+05_forest_floor -> res://docs/screenshots/05_forest_floor.png (ok)
+captured 05_forest_floor
+06_house_interior -> res://docs/screenshots/06_house_interior.png (ok)
+captured 06_house_interior
+07_dungeon -> res://docs/screenshots/07_dungeon.png (ok)
+captured 07_dungeon
+08_gameplay_hud -> res://docs/screenshots/08_gameplay_hud.png (ok)
+captured 08_gameplay_hud
+09_main_menu -> res://docs/screenshots/09_main_menu.png (ok)
+done

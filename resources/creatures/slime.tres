@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CreatureData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/creature_data.gd" id="1_creaturedata"]
+
+[resource]
+script = ExtResource("1_creaturedata")
+id = "slime"
+display_name = "Green Slime"
+model_path = ""
+max_health = 28.0
+damage = 5.0
+move_speed = 2.2
+attack_range = 1.6
+attack_cooldown = 1.4
+aggro_radius = 10.0
+leash_radius = 26.0
+xp_reward = 14
+gold_reward = 2
+hostile = true
+defense = 2.0
+body_scale = 1.0
+visual_type = "slime"
+loot = [{"id": "slime_gel", "chance": 0.85, "min": 1, "max": 2}]

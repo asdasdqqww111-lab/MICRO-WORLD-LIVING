@@ -1,0 +1,87 @@
+MICRO WORLD: LIVING — performance probe
+engine: 4.3-stable (official)
+rendering method: gl_compatibility
+video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
+driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
+run at: 2026-11-12T21:06:39
+
+budget: draw calls < 200 (hard cap 300) · triangles < 150k · fps >= 30
+
+Phase 1 · village spawn (player + camera + ground)
+  draw calls (max): 183  [OK]
+  triangles (max):  171463  [OVER]
+  objects:          250
+  static memory:    67.5 MB
+  fps (min, this driver): 2.0
+  creatures in world: 10
+Phase 2 · village + 3 skeletons
+  draw calls (max): 237  [OVER]
+  triangles (max):  193697  [OVER]
+  objects:          304
+  static memory:    69.1 MB
+  fps (min, this driver): 2.0
+Phase 3 · forest (MultiMesh trees)
+  draw calls (max): 158  [OK]
+  triangles (max):  156754  [OVER]
+  objects:          224
+  static memory:    69.1 MB
+  fps (min, this driver): 2.0
+Phase 3 · house interior
+  draw calls (max): 108  [OK]
+  triangles (max):  26880  [OK]
+  objects:          198
+  static memory:    69.3 MB
+  fps (min, this driver): 5.0
+Phase 5 · dungeon
+  draw calls (max): 84  [OK]
+  triangles (max):  71444  [OK]
+  objects:          150
+  static memory:    69.3 MB
+  fps (min, this driver): 3.0
+
+--- running structural audit ---
+SCENE AUDIT (renderer independent)
+  nodes total:          599
+  MeshInstance3D:       205
+  MultiMeshInstance3D:  5 (batches) / 179 instances
+  GPUParticles3D:       1
+  omni lights:          4
+  shadow casting dir:   1
+--- structural audit done ---
+
+--- running offenders ---
+
+TOP TRIANGLE CONSUMERS (whole world)
+    25920 tris |  1 surf | World/ForestLargeTrees [x30]
+    14820 tris |  1 surf | World/DungeonWalls [x30]
+     7200 tris |  1 surf | World/Terrain/TerrainMesh
+     3572 tris |  1 surf | World/DungeonFloors [x19]
+     3125 tris |  1 surf | World/@StaticBody3D@9/Market/building_market_green
+     3000 tris |  1 surf | World/ForestSmallTrees [x60]
+     2992 tris |  1 surf | World/@StaticBody3D@11/Tavern/building_tavern_green
+     2410 tris |  1 surf | World/@StaticBody3D@7/Blacksmith/building_blacksmith_green
+     1768 tris |  1 surf | Model/Rig/Skeleton3D/Skeleton_Minion_Body
+     1768 tris |  1 surf | Model/Rig/Skeleton3D/Skeleton_Minion_Body
+     1768 tris |  1 surf | Model/Rig/Skeleton3D/Skeleton_Minion_Body
+     1768 tris |  1 surf | Model/Rig/Skeleton3D/Skeleton_Minion_Body
+     1768 tris |  1 surf | Model/Rig/Skeleton3D/Skeleton_Minion_Body
+     1768 tris |  1 surf | Model/Rig/Skeleton3D/Skeleton_Minion_Body
+
+TOP SURFACE (draw call) CONSUMERS
+   1 surf |     212 tris | World/@Node3D@27/fence_wood_straight2/fence_wood_straight
+   1 surf |     212 tris | World/@Node3D@28/fence_wood_straight2/fence_wood_straight
+   1 surf |     196 tris | World/@Node3D@61/book_set2/book_set
+   1 surf |     168 tris | World/@StaticBody3D@55/HouseTable/table_small
+   1 surf |     156 tris | World/@Node3D@21/target2/target
+   1 surf |     136 tris | World/@StaticBody3D@97/DungeonPillar/pillar
+   1 surf |     136 tris | World/@StaticBody3D@99/pillar2/pillar
+   1 surf |     132 tris | World/@Node3D@17/crate_A_big2/crate_A_big
+   1 surf |     132 tris | World/@Node3D@18/crate_A_small2/crate_A_small
+   1 surf |     132 tris | Model/Rig/Skeleton3D/Skeleton_Warrior_Eyes
+   1 surf |     132 tris | Model/Rig/Skeleton3D/Skeleton_Warrior_Eyes
+   1 surf |     132 tris | Model/Rig/Skeleton3D/Skeleton_Warrior_Eyes
+
+SHADOW / LOD: casters=150  shadow_off=55  with_visibility_range=41
+--- offenders done ---
+
+STATUS: COMPLETE
