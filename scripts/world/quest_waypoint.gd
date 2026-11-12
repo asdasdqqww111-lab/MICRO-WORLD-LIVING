@@ -36,29 +36,15 @@ func _build_meshes() -> void:
 	gold_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	gold_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 
-	var top_mesh := CylinderMesh.new()
-	top_mesh.top_radius = 0.01
-	top_mesh.bottom_radius = 0.28
-	top_mesh.height = 0.42
-	top_mesh.radial_segments = 4
+	var top_mesh := BoxMesh.new()
+	top_mesh.size = Vector3(0.38, 0.38, 0.38)
 	_diamond_top = MeshInstance3D.new()
 	_diamond_top.mesh = top_mesh
-	_diamond_top.position = Vector3(0.0, 2.95, 0.0)
+	_diamond_top.position = Vector3(0.0, 2.75, 0.0)
+	_diamond_top.rotation_degrees = Vector3(45.0, 0.0, 45.0)
 	_diamond_top.material_override = gold_mat
 	_diamond_top.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_diamond_top)
-
-	var bot_mesh := CylinderMesh.new()
-	bot_mesh.top_radius = 0.28
-	bot_mesh.bottom_radius = 0.01
-	bot_mesh.height = 0.48
-	bot_mesh.radial_segments = 4
-	_diamond_bot = MeshInstance3D.new()
-	_diamond_bot.mesh = bot_mesh
-	_diamond_bot.position = Vector3(0.0, 2.50, 0.0)
-	_diamond_bot.material_override = gold_mat
-	_diamond_bot.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(_diamond_bot)
 
 	var ring_mesh := TorusMesh.new()
 	ring_mesh.inner_radius = 0.52
@@ -99,10 +85,8 @@ func _process(delta: float) -> void:
 		return
 	global_position = target_position
 	var bob := sin(_time * 3.2) * 0.16
-	_diamond_top.position.y = 2.95 + bob
-	_diamond_bot.position.y = 2.50 + bob
+	_diamond_top.position.y = 2.75 + bob
 	_diamond_top.rotation.y = _time * 1.9
-	_diamond_bot.rotation.y = _time * 1.9
 	_ring.rotation.y = -_time * 1.2
 	if _label != null:
 		var m_unit := "م" if Localization.is_arabic() else "m"

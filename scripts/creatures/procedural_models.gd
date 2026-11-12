@@ -44,6 +44,8 @@ static func _part_mesh(parent: Node3D, mesh: Mesh, pos: Vector3, mat: Material, 
 	mi.material_override = mat
 	mi.position = pos
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.visibility_range_end = 42.0
+	mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	parent.add_child(mi)
 	return mi
 

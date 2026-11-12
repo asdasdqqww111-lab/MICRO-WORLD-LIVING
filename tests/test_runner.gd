@@ -536,7 +536,7 @@ func _test_game_scene() -> void:
 	# Verify 3D Quest Waypoint resolves active quest coordinates
 	GameManager.start_quest("main_guild_call")
 	if world.quest_waypoint != null:
-		world.quest_waypoint._refresh_target()
+		world.quest_waypoint.refresh_target()
 		_check(world.quest_waypoint.has_waypoint, "QuestWaypoint3D resolves active quest target beacon")
 
 	# Quest: kill three skeletons then hand in to the farmer.
