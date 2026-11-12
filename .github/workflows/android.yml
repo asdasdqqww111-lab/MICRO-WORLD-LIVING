@@ -10,6 +10,9 @@ on:
     paths-ignore: ["docs/**", "**.md"]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   apk:
     name: Export debug APK
@@ -103,6 +106,67 @@ jobs:
           assert "assets/_cl_" in " ".join(names) or any(n.startswith("assets/") for n in names), "no game data in APK"
           print("APK looks well formed")
           PY
+
+      - name: Prepare release notes
+        run: |
+          set -euo pipefail
+          APK=build/android/micro_world_living.apk
+          SHA=$(sha256sum "$APK" | cut -d" " -f1)
+          SIZE=$(du -h "$APK" | cut -f1)
+          PASSED=$(grep -m1 "checks passed:" docs/reports/headless_test_results.txt | tr -dc "0-9")
+          FAILED=$(grep -m1 "checks failed:" docs/reports/headless_test_results.txt | tr -dc "0-9")
+          {
+            echo "## MICRO WORLD: LIVING — v0.1 (vertical slice, debug build)"
+            echo ""
+            echo "**التثبيت / Install**"
+            echo ""
+            echo "1. نزّل ملف APK من قسم Assets في هذه الصفحة."
+            echo "2. على الهاتف: الإعدادات ← التطبيقات ← تثبيت تطبيقات غير معروفة ← اسمح للمتصفح/مدير الملفات."
+            echo "3. افتح الملف واضغط Install. (توقيع debug، وليس نشرًا نهائيًا.)"
+            echo ""
+            echo "**جهاز مطلوب:** Android 5.0+ (arm64-v8a أو armeabi-v7a)، متوافق مع OpenGL ES 3.0."
+            echo ""
+            echo "**بيانات البناء**"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| الحجم | $SIZE |"
+            echo "| SHA-256 | \`$SHA\` |"
+            echo "| فحوص headless | $PASSED نجحت / $FAILED فشلت |"
+            echo "| المحرك | Godot 4.3 stable — Compatibility (GLES3) |"
+            echo "| الحزمة | com.microworldliving.game |"
+            echo "| المعماريات | arm64-v8a + armeabi-v7a |"
+            echo "| التوقيع | debug keystore (مؤقت للاختبار) |"
+            echo "| commit | \`${GITHUB_SHA}\` |"
+            echo ""
+            echo "**ما هو غير مُتحقَّق:** لم يُشغَّل هذا الملف على هاتف حقيقي بعد (لا جهاز في بيئة البناء)."
+            echo "الأداء (FPS / draw calls) غير مقيس. عند التجربة افتح طبقة الأداء بـ F3،"
+            echo "وسيُكتب \`user://perf_log.txt\` كل 5 ثوانٍ — أرسله لنعبّئ تقرير الأداء."
+            echo ""
+            echo "**التحكم:** عصا افتراضية يسار · سحب الكاميرا يمين · ATK / JUMP / USE / RUN / BAG / LOG / STAT."
+            echo ""
+            echo "راجع \`docs/reports/TEST_RUN_LOG.md\` و \`docs/KNOWN_ISSUES.md\` في المستودع."
+          } > RELEASE_NOTES.md
+          cat RELEASE_NOTES.md
+
+      - name: Publish APK to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="v0.1-debug"
+          APK=build/android/micro_world_living.apk
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK" --clobber
+            gh release edit "$TAG" --notes-file RELEASE_NOTES.md
+          else
+            gh release create "$TAG" "$APK" \
+              --title "MICRO WORLD: LIVING — v0.1 debug APK" \
+              --notes-file RELEASE_NOTES.md \
+              --prerelease
+          fi
+          echo "Release URL: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
+          echo "Direct APK:  https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/micro_world_living.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
