@@ -25,11 +25,12 @@
 | بند | القيمة |
 |---|---|
 | الحجم | 58,386,088 بايت (≈55.7 ميبي) |
-| SHA-256 | `8338b095e1fc48faa3e25699f76bd1ee73d71a434b2c484a287c65148566d3de` |
+| SHA-256 | `71e43eb6a8850f6c38c77b424e3335a00cce1f4f42b2c7b497ef488d472b538e` (بناء `996712c`) |
 | الحزمة | `com.microworldliving.game` — نسخة 0.1 (versionCode 1) |
 | minSdk / targetSdk / compileSdk | 21 (Android 5.0) / 34 / 34 |
 | المعماريات | `arm64-v8a` + `armeabi-v7a` (`libgodot_android.so`, `libc++_shared.so`) |
 | التوقيع | v1 JAR ✅ · v2 ✅ · v3 ✅ — شهادة `CN=Android Debug, O=Android, C=US` |
+| أول تشغيل على الهاتف | Graphics = **Low** تلقائيًا (MSAA off، 3D scale 0.75) |
 | فحوص headless داخل CI | 113 نجحت / 0 فشلت |
 | زمن الـ workflow | ~60 ثانية |
 
