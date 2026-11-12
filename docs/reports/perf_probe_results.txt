@@ -1,0 +1,50 @@
+MICRO WORLD: LIVING — performance probe
+engine: 4.3-stable (official)
+rendering method: gl_compatibility
+video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
+driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
+run at: 2026-11-12T19:49:00
+
+budget: draw calls < 200 (hard cap 300) · triangles < 150k · fps >= 30
+
+Phase 1 · village spawn (player + camera + ground)
+  draw calls (max): 204  [OVER]
+  triangles (max):  172803  [OVER]
+  objects:          271
+  static memory:    64.4 MB
+  fps (min, this driver): 3.0
+  creatures in world: 10
+Phase 2 · village + 3 skeletons
+  draw calls (max): 258  [OVER]
+  triangles (max):  195213  [OVER]
+  objects:          325
+  static memory:    65.9 MB
+  fps (min, this driver): 3.0
+Phase 3 · forest (MultiMesh trees)
+  draw calls (max): 157  [OK]
+  triangles (max):  141775  [OK]
+  objects:          223
+  static memory:    66.0 MB
+  fps (min, this driver): 3.0
+Phase 3 · house interior
+  draw calls (max): 124  [OK]
+  triangles (max):  30748  [OK]
+  objects:          214
+  static memory:    66.1 MB
+  fps (min, this driver): 5.0
+Phase 5 · dungeon
+  draw calls (max): 86  [OK]
+  triangles (max):  71984  [OK]
+  objects:          152
+  static memory:    66.1 MB
+  fps (min, this driver): 4.0
+
+SCENE AUDIT (renderer independent)
+  nodes total:          585
+  MeshInstance3D:       193
+  MultiMeshInstance3D:  5 (batches) / 179 instances
+  GPUParticles3D:       1
+  omni lights:          4
+  shadow casting dir:   1
+  => worst-case draw call bound (1 per MeshInstance3D surface,
+     1 per MultiMesh batch): 198 + surfaces
