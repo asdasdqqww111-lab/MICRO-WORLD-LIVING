@@ -71,7 +71,7 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 80.0
+	sun.directional_shadow_max_distance = 52.0
 	sun.shadow_bias = 0.04
 	sun.light_energy = 1.05
 	sun.light_color = Color(1.0, 0.96, 0.88)
@@ -98,6 +98,42 @@ func _build_world() -> void:
 	forest_spawns = WorldBuilder.build_forest(self)
 	spawn_point = landmarks.get("spawn", spawn_point) as Vector3
 	_build_zone_doors()
+	_optimize_static_props()
+
+## Measured problem: 189 of 193 meshes were casting shadows, which roughly
+## doubles draw calls (shadow pass). Small props (< 2.5 m) contribute detail but
+## almost no meaningful shadow, so they are excluded from the shadow pass and
+## given a visibility range instead. Big shapes (buildings, trees, rocks) keep
+## their shadows so the world still reads as lit.
+func _optimize_static_props() -> void:
+	var stack: Array[Node] = [self]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		for child: Node in node.get_children():
+			stack.append(child)
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		if mi.is_in_group("player") or mi.is_in_group("creature"):
+			continue
+		if _is_animated_branch(mi):
+			continue
+		var aabb := mi.get_aabb()
+		var size := aabb.size.length()
+		if size < 3.2:
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if size < 2.2:
+			mi.visibility_range_end = 70.0
+			mi.visibility_range_end_margin = 10.0
+			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+
+func _is_animated_branch(node: Node) -> bool:
+	var current := node
+	while current != null and current != self:
+		if current is Skeleton3D or current is AnimationPlayer or current is AnimationTree:
+			return true
+		current = current.get_parent()
+	return false
 
 func _build_zone_doors() -> void:
 	# Village <-> house
