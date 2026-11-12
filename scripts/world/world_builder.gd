@@ -88,7 +88,36 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 	node.rotation = Vector3.ZERO
 	node.scale = Vector3.ONE * model_scale
 	holder.add_child(node)
+	# Several KayKit models are authored off-centre (e.g. fence_wood_straight
+	# spans x -1.05..-0.95), so rotating them swings the mesh away from its
+	# placement point. Centre them horizontally on their pivot. Y is untouched
+	# on purpose: dungeon walls/floors rely on their authored vertical offsets.
+	var bounds := _model_bounds(node)
+	if bounds.size != Vector3.ZERO:
+		var centre := bounds.get_center()
+		node.position.x -= centre.x * model_scale
+		node.position.z -= centre.z * model_scale
 	return node
+
+## Combined local AABB of every MeshInstance3D under a node.
+static func _model_bounds(root: Node) -> AABB:
+	var bounds := AABB()
+	var first := true
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		for child: Node in node.get_children():
+			stack.append(child)
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		var box := mi.get_aabb()
+		if first:
+			bounds = box
+			first = false
+		else:
+			bounds = bounds.merge(box)
+	return bounds
 
 static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array,
 		node_name: String, cast_shadow: bool = true) -> MultiMeshInstance3D:
@@ -170,8 +199,8 @@ static func build_village(parent: Node3D) -> Dictionary:
 			float(entry["rot"]), float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
 
 	# Central well + plaza props.
-	place_model(parent, hex + "building_well_green.gltf", Vector3(0.0, 0.0, 2.0), 0.0, 4.2,
-		Vector3(2.8, 3.4, 3.2), "Well")
+	place_model(parent, hex + "building_well_green.gltf", Vector3(0.0, 0.0, 2.0), 0.0, 2.4,
+		Vector3(1.6, 2.0, 1.8), "Well")
 	var prop_scale := AssetLibrary.SCALE_PROP
 	var props: Array = [
 		{"model": "barrel.gltf", "pos": Vector3(-15.0, 0.0, 6.5)},

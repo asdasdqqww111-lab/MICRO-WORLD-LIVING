@@ -38,8 +38,8 @@ func _build_environment() -> void:
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
 	# Semi-realistic stylized sky: deeper zenith, soft horizon haze, warm sun.
-	sky_material.sky_top_color = Color(0.22, 0.42, 0.76)
-	sky_material.sky_horizon_color = Color(0.66, 0.77, 0.88)
+	sky_material.sky_top_color = Color(0.16, 0.34, 0.68)
+	sky_material.sky_horizon_color = Color(0.55, 0.68, 0.82)
 	sky_material.sky_curve = 0.12
 	sky_material.ground_horizon_color = Color(0.42, 0.46, 0.44)
 	sky_material.ground_bottom_color = Color(0.2, 0.22, 0.21)
@@ -51,17 +51,17 @@ func _build_environment() -> void:
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	environment.ambient_light_sky_contribution = 1.0
-	environment.ambient_light_energy = 0.9
+	environment.ambient_light_energy = 0.42
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	environment.tonemap_exposure = 1.05
+	environment.tonemap_exposure = 0.82
 	# Gentle grade so the world is not washed-out; keeps mobile cost at zero.
 	environment.adjustment_enabled = true
-	environment.adjustment_contrast = 1.05
-	environment.adjustment_saturation = 1.08
+	environment.adjustment_contrast = 1.12
+	environment.adjustment_saturation = 0.95
 	environment.adjustment_brightness = 1.0
 	environment.fog_enabled = true
-	environment.fog_density = 0.0045
-	environment.fog_light_color = Color(0.62, 0.7, 0.8)
+	environment.fog_density = 0.0032
+	environment.fog_light_color = Color(0.56, 0.64, 0.75)
 	environment.fog_sky_affect = 0.3
 	environment.fog_aerial_perspective = 0.35
 	world_environment.environment = environment
@@ -71,10 +71,10 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 44.0
+	sun.directional_shadow_max_distance = 62.0
 	sun.shadow_bias = 0.04
-	sun.light_energy = 1.05
-	sun.light_color = Color(1.0, 0.96, 0.88)
+	sun.light_energy = 1.35
+	sun.light_color = Color(1.0, 0.94, 0.84)
 	add_child(sun)
 
 	moon = DirectionalLight3D.new()

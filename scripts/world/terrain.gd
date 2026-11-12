@@ -20,12 +20,12 @@ const MAX_HILL := 7.5
 const MAX_RIDGE := 24.0
 const FOREST_WEST_X := -18.0
 
-const GRASS := Color(0.33, 0.45, 0.24)
-const GRASS_DRY := Color(0.45, 0.47, 0.28)
-const DIRT := Color(0.34, 0.27, 0.19)
-const ROCK := Color(0.36, 0.35, 0.33)
-const ROCK_LIGHT := Color(0.46, 0.45, 0.42)
-const SNOW := Color(0.86, 0.88, 0.9)
+const GRASS := Color(0.19, 0.30, 0.12)
+const GRASS_DRY := Color(0.30, 0.33, 0.16)
+const DIRT := Color(0.26, 0.19, 0.13)
+const ROCK := Color(0.27, 0.25, 0.23)
+const ROCK_LIGHT := Color(0.38, 0.36, 0.33)
+const SNOW := Color(0.78, 0.81, 0.85)
 
 static var _noise: FastNoiseLite
 static var _detail: FastNoiseLite
@@ -77,7 +77,7 @@ static func color_at(x: float, z: float, height: float) -> Color:
 	if height < 1.2:
 		color = color.lerp(DIRT, clampf(1.0 - height / 1.2, 0.0, 1.0) * 0.35)
 	color = color.lerp(ROCK.lerp(ROCK_LIGHT, 0.5), smoothstep(0.35, 0.75, slope))
-	color = color.lerp(SNOW, smoothstep(15.0, 21.0, height) * 0.85)
+	color = color.lerp(SNOW, smoothstep(18.5, 23.0, height) * 0.8)
 	return color
 
 ## Builds the terrain mesh + a static trimesh collider. Returns the body.
