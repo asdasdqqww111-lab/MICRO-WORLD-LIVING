@@ -1,0 +1,147 @@
+MICRO WORLD: LIVING — headless test results
+engine: 4.3-stable (custom_build) stable
+rendering method: gl_compatibility
+run at: 2026-11-12T17:49:09
+checks passed: 113
+checks failed: 0
+
+renderer metrics (headless dummy driver — device run required for the real numbers):
+  fps: 145.0
+  draw calls: 0
+  triangles: 0
+  nodes: 571
+
+checks:
+
+== Data resources ==
+PASS  ItemDB loads >= 14 items (got 14)
+PASS  QuestDB loads 2 quests (got 2)
+PASS  SkillDB loads 3 skills (got 3)
+PASS  CreatureDB loads 4 creatures (got 4)
+PASS  every item resource has id/name/stack and a valid equip slot
+PASS  core items exist (rusty_sword, health_potion, ancient_relic)
+PASS  model exists for creature 'skeleton_dungeon'
+PASS  model exists for creature 'skeleton_forest'
+PASS  quest 'skeleton_menace' present
+PASS  quest has 1 objective
+
+== Progression ==
+PASS  level 1 needs 60 xp (got 60)
+PASS  60 xp levels up to 2
+PASS  leftover xp is carried correctly (got 0)
+PASS  xp is capped at max level 20 (got 20)
+PASS  level 5 raises max health
+
+== Inventory ==
+PASS  adding 40 bones fits
+PASS  bone count is 40 (got 40)
+PASS  40 bones use 2 stacks of 30 (got 2)
+PASS  removing 39 bones works
+PASS  one bone left
+PASS  unknown items are rejected
+PASS  equip rusty_sword
+PASS  weapon slot holds the sword
+PASS  equipped item leaves the bags
+PASS  equip iron_sword over rusty_sword
+PASS  old weapon returns to the bags
+PASS  attack bonus is applied from gear
+PASS  unequip weapon
+PASS  20 full stacks fill the inventory
+PASS  no room means leftover
+PASS  inventory serialises consumables
+PASS  inventory serialises equipment
+
+== Combat maths ==
+PASS  damage scales with attack
+PASS  damage never drops below 1
+PASS  crit can be disabled
+
+== World clock + persistence flags ==
+PASS  clock rolls over into day 2
+PASS  hour is 01:00 after rollover (got 1)
+PASS  01:00 counts as night
+PASS  dead creatures are tracked
+PASS  world state round-trips
+
+== Market ==
+PASS  potion has a price
+PASS  same day = same price
+PASS  sell price is below buy price
+PASS  prices change across days (6 distinct)
+PASS  blacksmith has stock
+
+== NPC schedule ==
+PASS  08:00 is work time
+PASS  06:00 starts work
+PASS  18:00 is rest
+PASS  21:00 is rest
+PASS  22:00 is sleep
+PASS  03:00 is sleep
+
+== Quest flow ==
+PASS  quest starts unstarted
+PASS  quest can be started
+PASS  quest is active
+PASS  3 kills make the quest ready to hand in
+PASS  quest turns in
+PASS  quest is completed
+PASS  reward xp is applied
+PASS  reward gold is applied (+20)
+PASS  reward items are applied (+2 potions)
+PASS  a quest cannot be turned in twice
+
+== Save files ==
+PASS  save writes to disk
+PASS  save file exists
+PASS  save file carries schema_version 3
+PASS  save loads
+PASS  gold restored (107)
+PASS  quest state restored
+PASS  v1 save migrates and loads
+PASS  migrated save keeps gold
+PASS  migrated save keeps level
+PASS  corrupt save is refused
+PASS  corrupt save reports a reason
+PASS  newer schema version is refused
+
+== Game scene (world + player + UI) ==
+PASS  game.tscn loads
+PASS  world root created
+PASS  player created
+PASS  ui root created
+PASS  HUD and touch controls built
+PASS  village landmarks built
+PASS  farmer NPC exists
+PASS  guard NPC exists
+PASS  blacksmith NPC exists
+PASS  creatures spawned (7)
+PASS  multimesh instancing is real (5 batches, 0 broken)
+PASS  player character model instantiated
+PASS  animation states resolved from the KayKit clips
+PASS  player lands on the ground
+PASS  player stands at ground height (y=0.00)
+PASS  joystick input moves the player (3.09m)
+PASS  camera yaw responds to drag
+PASS  camera zoom changes distance
+PASS  a forest skeleton exists
+PASS  player can swing with stamina
+PASS  skeleton takes damage (46.0 -> 33.7)
+PASS  skeleton aggroes when hit
+PASS  killing 3 skeletons completes the objective
+PASS  farmer offers dialog actions
+PASS  farmer accepts the quest turn-in
+PASS  turn-in reports the reward
+PASS  loot drop spawned
+PASS  loot is collected into the inventory (got 2)
+PASS  house door exists
+PASS  door moves the player into the house zone
+PASS  player is inside the house
+PASS  scene state saves
+PASS  dead creatures recorded (3)
+PASS  creature count measured before teardown (7)
+PASS  scene state reloads
+PASS  dead creatures stay dead after reload (4 alive vs 7 before)
+PASS  player position restored (0.6m off)
+PASS  quest completion survives reload
+PASS  inventory survives reload
+PASS  save/load survives 10 rounds

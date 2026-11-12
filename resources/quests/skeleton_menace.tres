@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "skeleton_menace"
+title = "The Skeleton Menace"
+description = "Skeletons crawl out of the western forest every night and take our sheep. Put three of them down and come back in one piece."
+giver_npc = "farmer"
+turn_in_npc = "farmer"
+objectives = [{"type": "kill", "target": "skeleton_forest", "required": 3, "label": "Skeletons slain"}]
+reward_xp = 70
+reward_gold = 20
+reward_items = [{"id": "health_potion", "count": 2}]

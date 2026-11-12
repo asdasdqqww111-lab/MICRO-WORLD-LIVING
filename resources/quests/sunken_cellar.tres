@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "sunken_cellar"
+title = "The Sunken Cellar"
+description = "The old cellar east of the village broke open. Something below is still moving, and it took the guard's relic. Clear the crypt and bring the relic back."
+giver_npc = "guard"
+turn_in_npc = "guard"
+objectives = [{"type": "kill", "target": "skeleton_dungeon", "required": 2, "label": "Crypt skeletons destroyed"}, {"type": "collect", "target": "ancient_relic", "required": 1, "label": "Ancient relic recovered"}]
+reward_xp = 140
+reward_gold = 40
+reward_items = [{"id": "iron_sword", "count": 1}]

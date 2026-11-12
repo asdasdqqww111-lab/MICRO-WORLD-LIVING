@@ -1,0 +1,58 @@
+; Micro World: Living — vertical slice
+; Godot 4.3+ / GDScript (typed) / Compatibility (GLES3) renderer
+config_version=5
+
+[application]
+
+config/name="Micro World: Living"
+config/description="Third-person low-poly living-world RPG slice. Android first, offline first."
+run/main_scene="res://scenes/main_menu/main_menu.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.09, 0.11, 0.14, 1)
+config/version="0.1"
+
+[autoload]
+
+EventBus="*res://scripts/core/event_bus.gd"
+SettingsManager="*res://scripts/core/settings_manager.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
+SceneManager="*res://scripts/core/scene_manager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
+window/vsync/vsync_mode=1
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[physics]
+
+common/physics_ticks_per_second=60
+3d/default_gravity=22.0
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_3d=1
+environment/defaults/default_clear_color=Color(0.52, 0.69, 0.85, 1)
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=1
+
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="player"
+3d_physics/layer_3="enemy"
+3d_physics/layer_4="interactable"
+3d_physics/layer_5="npc"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "leather_armor"
+display_name = "Leather Armor"
+description = "Boiled leather plates. Light and quiet."
+category = 3
+max_stack = 1
+value = 25
+attack_bonus = 0.0
+defense_bonus = 3.0
+heal_amount = 0.0
+icon_color = Color(0.55, 0.38, 0.24, 1)
+equip_slot = "armor"

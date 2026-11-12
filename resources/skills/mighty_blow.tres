@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_skilldata"]
+
+[resource]
+script = ExtResource("1_skilldata")
+id = "mighty_blow"
+title = "Mighty Blow"
+description = "+2 attack per rank. Swing harder."
+effect = 0
+per_rank = 2.0
+max_rank = 3
+point_cost = 1

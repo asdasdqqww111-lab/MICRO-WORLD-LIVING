@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_skilldata"]
+
+[resource]
+script = ExtResource("1_skilldata")
+id = "swift_feet"
+title = "Swift Feet"
+description = "+5% movement speed per rank."
+effect = 2
+per_rank = 0.05
+max_rank = 3
+point_cost = 1

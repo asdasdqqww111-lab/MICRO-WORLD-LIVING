@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "iron_sword"
+display_name = "Iron Sword"
+description = "Forged by the village blacksmith. Holds an edge."
+category = 2
+max_stack = 1
+value = 45
+attack_bonus = 9.0
+defense_bonus = 0.0
+heal_amount = 0.0
+icon_color = Color(0.72, 0.76, 0.82, 1)
+equip_slot = "weapon"
