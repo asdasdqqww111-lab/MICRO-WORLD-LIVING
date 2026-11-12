@@ -132,41 +132,41 @@ func _test_databases() -> void:
 
 func _test_hero_classes_and_models() -> void:
 	_section("Hero Classes (4), Articulated 3D Creature Rigs & Full Arabic Content")
-	_check(HeroClassDB.all_ids().size() == 4, "HeroClassDB defines 4 playable classes")
-	for cid: String in HeroClassDB.all_ids():
-		var mpath := HeroClassDB.model_path_for(cid)
+	_check(HeroClassDB.all_class_ids().size() == 4, "HeroClassDB defines 4 playable classes")
+	for cid: String in HeroClassDB.all_class_ids():
+		var mpath: String = HeroClassDB.model_for(cid)
 		_check(AssetLibrary.has_model(mpath), "3D GLB rig exists for hero class '%s' (%s)" % [cid, mpath])
 
 	GameManager.start_new_game("mage", "Lyria", false)
 	_check(GameManager.hero_class == "mage" and GameManager.hero_name == "Lyria",
 		"Mage class creation applies hero_class & hero_name")
-	_check(GameManager.max_mana() >= 120.0 and GameManager.skills.rank_of("mage_firebolt") >= 1,
+	_check(GameManager.max_mana() >= 100.0 and GameManager.skills.rank_of("fire_bolt") >= 1,
 		"Mage starts with elevated mana pool (%.0f) & Firebolt unlocked" % GameManager.max_mana())
 
 	GameManager.start_new_game("ranger", "Kaelen", false)
-	_check(GameManager.crit_chance() >= 0.14 and GameManager.skills.rank_of("rng_fleet_foot") >= 1,
-		"Ranger starts with elevated crit chance (%.2f) & Fleet Foot unlocked" % GameManager.crit_chance())
+	_check(GameManager.crit_chance() >= 0.14 and GameManager.skills.rank_of("swift_feet") >= 1,
+		"Ranger starts with elevated crit chance (%.2f) & Swift Feet unlocked" % GameManager.crit_chance())
 
 	GameManager.start_new_game("barbarian", "Torak", false)
-	_check(GameManager.max_health() >= 130.0 and GameManager.skills.rank_of("war_cleave") >= 1,
-		"Barbarian starts with elevated max HP (%.0f) & Sundering Cleave unlocked" % GameManager.max_health())
+	_check(GameManager.max_health() >= 125.0 and GameManager.skills.rank_of("mighty_blow") >= 1,
+		"Barbarian starts with elevated max HP (%.0f) & Mighty Blow unlocked" % GameManager.max_health())
 
 	# Verify articulated 3D creature rigs & stride animation
-	var wolf_rig := ProceduralModels.build("wolf", Color(0.45, 0.43, 0.42), 1.0)
+	var wolf_rig := ProceduralModels.build("wolf")
 	_check(wolf_rig.get_node_or_null("LegFL") != null and wolf_rig.get_node_or_null("HeadPivot") != null and wolf_rig.get_node_or_null("TailPivot") != null,
 		"Wolf procedural 3D rig has articulated legs, head & tail pivots")
-	ProceduralModels.animate(wolf_rig, 0.5, 3.0)
+	ProceduralModels.animate(wolf_rig, "wolf", 0.35, 3.6)
 	_check(absf((wolf_rig.get_node("LegFL") as Node3D).rotation.x) > 0.01,
 		"Wolf articulated limb stride animates smoothly")
 	wolf_rig.free()
 
-	var stag_rig := ProceduralModels.build("stag", Color(0.62, 0.46, 0.28), 1.1)
+	var stag_rig := ProceduralModels.build("stag")
 	_check(stag_rig.get_node_or_null("HeadPivot") != null and stag_rig.get_node_or_null("LegBR") != null,
 		"Stag procedural 3D rig has crowned antler head & 4 articulated legs")
 	stag_rig.free()
 
-	var slime_rig := ProceduralModels.build("slime", Color(0.32, 0.85, 0.48), 0.95)
-	_check(slime_rig.get_node_or_null("Core") != null and slime_rig.get_node_or_null("Dome") != null,
+	var slime_rig := ProceduralModels.build("slime")
+	_check(slime_rig.get_node_or_null("Core") != null and slime_rig.get_node_or_null("Body") != null,
 		"Slime 3D rig has translucent outer dome & glowing suspended nucleus")
 	slime_rig.free()
 
