@@ -1,24 +1,2 @@
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
-SCRIPT ERROR: Parse Error: Static function "all_ids()" not found in base "HeroClassDB".
-          at: GDScript::reload (res://tests/test_runner.gd:135)
-SCRIPT ERROR: Parse Error: Static function "all_ids()" not found in base "HeroClassDB".
-          at: GDScript::reload (res://tests/test_runner.gd:136)
-SCRIPT ERROR: Parse Error: Static function "model_path_for()" not found in base "HeroClassDB".
-          at: GDScript::reload (res://tests/test_runner.gd:137)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mpath" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://tests/test_runner.gd:137)
-SCRIPT ERROR: Parse Error: Too many arguments for "build()" call. Expected at most 1 but received 3.
-          at: GDScript::reload (res://tests/test_runner.gd:155)
-SCRIPT ERROR: Parse Error: Too few arguments for "animate()" call. Expected at least 4 but received 3.
-          at: GDScript::reload (res://tests/test_runner.gd:158)
-SCRIPT ERROR: Parse Error: Cannot pass a value of type "float" as "String".
-          at: GDScript::reload (res://tests/test_runner.gd:158)
-SCRIPT ERROR: Parse Error: Invalid argument for "animate()" function: argument 2 should be "String" but is "float".
-          at: GDScript::reload (res://tests/test_runner.gd:158)
-SCRIPT ERROR: Parse Error: Too many arguments for "build()" call. Expected at most 1 but received 3.
-          at: GDScript::reload (res://tests/test_runner.gd:163)
-SCRIPT ERROR: Parse Error: Too many arguments for "build()" call. Expected at most 1 but received 3.
-          at: GDScript::reload (res://tests/test_runner.gd:168)
-ERROR: Failed to load script "res://tests/test_runner.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:2936)

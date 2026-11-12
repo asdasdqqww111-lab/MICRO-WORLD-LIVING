@@ -1,15 +1,15 @@
-MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.0)
+MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.1 — Phase 1 Complete)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-12T22:48:04
-checks passed: 142
+run at: 2026-11-12T23:32:40
+checks passed: 145
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 136.0
+  fps: 0.0
   draw calls: 0
   triangles: 0
-  nodes: 2116
+  nodes: 0
 
 checks:
 
@@ -31,6 +31,26 @@ PASS  model exists for creature 'wraith_elite'
 PASS  quest 'skeleton_menace' present
 PASS  main quest 'main_guild_call' present
 PASS  guild contract 'contract_forest_cull' present
+
+== Hero Classes (4), Articulated 3D Creature Rigs & Full Arabic Content ==
+PASS  HeroClassDB defines 4 playable classes
+PASS  3D GLB rig exists for hero class 'knight' (res://assets/characters/player/Knight.glb)
+PASS  3D GLB rig exists for hero class 'mage' (res://assets/characters/npcs/Mage.glb)
+PASS  3D GLB rig exists for hero class 'ranger' (res://assets/characters/npcs/Rogue_Hooded.glb)
+PASS  3D GLB rig exists for hero class 'barbarian' (res://assets/characters/npcs/Barbarian.glb)
+PASS  Mage class creation applies hero_class & hero_name
+PASS  Mage starts with elevated mana pool (105) & Firebolt unlocked
+PASS  Ranger starts with elevated crit chance (0.17) & Swift Feet unlocked
+PASS  Barbarian starts with elevated max HP (130) & Mighty Blow unlocked
+PASS  Wolf procedural 3D rig has articulated legs, head & tail pivots
+PASS  Wolf articulated limb stride animates smoothly
+PASS  Stag procedural 3D rig has crowned antler head & 4 articulated legs
+PASS  Slime 3D rig has translucent outer dome & glowing suspended nucleus
+PASS  all 27 items have distinct Arabic names & descriptions
+PASS  all 11 quests & guild contracts have distinct Arabic titles & objectives
+PASS  all 24 skills have Arabic titles & descriptions
+PASS  all 11 creatures & bosses have Arabic names
+PASS  Eldoria Story Prologue has 3 localized narrative chapters
 
 == Progression & 24-Node Skill Tree ==
 PASS  level 1 needs 60 xp (got 60)
@@ -156,25 +176,10 @@ PASS  joystick input moves the player (3.38m)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 PASS  UI screens open and refresh without error
+PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
+PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
+PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton takes damage (46.0 -> 34.0)
 PASS  skeleton aggroes when hit
-PASS  killing 3 skeletons completes the objective
-PASS  farmer accepts the quest turn-in
-PASS  turn-in reports the reward
-PASS  loot drop spawned
-PASS  loot is collected into the inventory (got 2)
-PASS  Adventurers Guild door exists
-PASS  door moves player into Adventurers Guild Hall
-PASS  house door exists
-PASS  door moves player into house zone
-PASS  Malakor the Bone Warden boss exists in Sunken Crypt
-PASS  scene state saves
-PASS  dead creatures recorded (3)
-PASS  scene state reloads
-PASS  dead creatures stay dead after reload (15 alive vs 18 before)
-PASS  player position restored (0.6m off)
-PASS  quest completion survives reload
-PASS  inventory survives reload
-PASS  save/load survives 10 rounds

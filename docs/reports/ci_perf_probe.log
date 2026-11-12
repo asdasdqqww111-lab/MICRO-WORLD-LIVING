@@ -22,58 +22,58 @@ engine: 4.3-stable (official)
 rendering method: gl_compatibility
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-12T22:48:14
+run at: 2026-11-12T23:32:59
 
 budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  draw calls (max): 268  [WARN]
-  triangles (max):  175600  [OK]
-  objects:          382
-  static memory:    124.4 MB
-  fps (min, this driver): 1.0
+  draw calls (max): 280  [WARN]
+  triangles (max):  176290  [OK]
+  objects:          396
+  static memory:    124.0 MB
+  fps (min, this driver): 2.0
   creatures in world: 21
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  draw calls (max): 332  [WARN]
-  triangles (max):  216552  [OVER]
-  objects:          445
-  static memory:    126.8 MB
-  fps (min, this driver): 1.0
+  draw calls (max): 344  [WARN]
+  triangles (max):  217242  [OVER]
+  objects:          459
+  static memory:    126.4 MB
+  fps (min, this driver): 2.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  draw calls (max): 123  [OK]
-  triangles (max):  30971  [OK]
-  objects:          236
-  static memory:    126.8 MB
-  fps (min, this driver): 5.0
-Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 152  [OK]
-  triangles (max):  60991  [OK]
-  objects:          265
-  static memory:    126.8 MB
-  fps (min, this driver): 7.0
-Zone 5 · Adventurers Guild Grand Hall Interior
-  draw calls (max): 196  [OK]
-  triangles (max):  53365  [OK]
-  objects:          294
-  static memory:    126.9 MB
+  draw calls (max): 129  [OK]
+  triangles (max):  60105  [OK]
+  objects:          244
+  static memory:    126.4 MB
   fps (min, this driver): 6.0
-Zone 6 · Hero Cottage Interior
-  draw calls (max): 97  [OK]
-  triangles (max):  15326  [OK]
-  objects:          214
-  static memory:    126.9 MB
+Zone 4 · River, Stone Bridge & Crystal Lake
+  draw calls (max): 160  [OK]
+  triangles (max):  90344  [OK]
+  objects:          275
+  static memory:    126.4 MB
   fps (min, this driver): 11.0
+Zone 5 · Adventurers Guild Grand Hall Interior
+  draw calls (max): 200  [OK]
+  triangles (max):  53697  [OK]
+  objects:          300
+  static memory:    126.5 MB
+  fps (min, this driver): 9.0
+Zone 6 · Hero Cottage Interior
+  draw calls (max): 101  [OK]
+  triangles (max):  15658  [OK]
+  objects:          220
+  static memory:    126.6 MB
+  fps (min, this driver): 14.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  draw calls (max): 328  [WARN]
-  triangles (max):  211814  [OVER]
+  draw calls (max): 326  [WARN]
+  triangles (max):  206448  [OVER]
   objects:          513
-  static memory:    127.3 MB
-  fps (min, this driver): 1.0
+  static memory:    127.0 MB
+  fps (min, this driver): 5.0
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          1828
-  MeshInstance3D:       636
+  nodes total:          1922
+  MeshInstance3D:       685
   MultiMeshInstance3D:  12 (batches) / 399 instances
   GPUParticles3D:       1
   omni lights:          21
@@ -98,7 +98,7 @@ TOP TRIANGLE CONSUMERS (whole world)
      2964 tris |  2 surf | World/OverworldZone/MeadowFlowers [x39]
      2700 tris |  1 surf | World/OverworldZone/ForestBushes [x45]
 
-SHADOW / LOD: casters=66  shadow_off=570  with_visibility_range=531
+SHADOW / LOD: casters=66  shadow_off=619  with_visibility_range=576
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)

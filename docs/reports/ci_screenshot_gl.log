@@ -22,6 +22,8 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [shot] 02_village_square -> res://docs/screenshots/02_village_square.png (ok)
 [shot] 03_guild_exterior -> res://docs/screenshots/03_guild_exterior.png (ok)
 [shot] 04_guild_interior -> res://docs/screenshots/04_guild_interior.png (ok)
+ERROR: Condition "p_pitch_scale <= 0.0" is true.
+   at: set_pitch_scale (scene/audio/audio_stream_player_internal.cpp:301)
 [shot] 05_forest_exploration -> res://docs/screenshots/05_forest_exploration.png (ok)
 [shot] 06_river_lake_bridge -> res://docs/screenshots/06_river_lake_bridge.png (ok)
 [shot] 07_mountains_sunset -> res://docs/screenshots/07_mountains_sunset.png (ok)
@@ -33,5 +35,5 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [shot] all 12 screenshots captured successfully
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 1 resources still in use at exit (run with --verbose for details).
+ERROR: 2 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:604)
