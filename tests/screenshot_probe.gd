@@ -27,7 +27,7 @@ const WORLD_SHOTS := [
 	{"name": "05_forest_exploration", "zone": "village", "time": 10.0,
 		"pos": Vector3(-52.0, 1.5, -12.0), "yaw": 125.0, "pitch": -14.0, "dist": 10.5, "hud": false},
 	{"name": "06_river_lake_bridge", "zone": "village", "time": 14.5,
-		"pos": Vector3(38.5, 0.8, 12.5), "yaw": -55.0, "pitch": -16.0, "dist": 12.0, "hud": false},
+		"pos": Vector3(44.0, 1.0, 6.5), "yaw": 95.0, "pitch": -16.0, "dist": 9.0, "hud": false},
 	{"name": "07_mountains_sunset", "zone": "village", "time": 17.7,
 		"pos": Vector3(-2.0, 1.2, 46.0), "yaw": 0.0, "pitch": -12.0, "dist": 16.0, "hud": false},
 	{"name": "12_sunken_crypt_dungeon", "zone": "dungeon", "time": 12.0,

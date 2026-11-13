@@ -100,8 +100,19 @@ func _build() -> void:
 			add_child(model_root)
 
 	_build_aura_and_label()
+	_apply_lod_recursive(self, 42.0)
 	EventBus.language_changed.connect(func(_l: String) -> void: _refresh_hp_label())
 	_wander_target = home
+
+func _apply_lod_recursive(node: Node, max_dist: float) -> void:
+	if node is GeometryInstance3D:
+		var gi := node as GeometryInstance3D
+		if gi.visibility_range_end <= 0.0:
+			gi.visibility_range_end = max_dist
+			gi.visibility_range_end_margin = 3.0
+		gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for c: Node in node.get_children():
+		_apply_lod_recursive(c, max_dist)
 
 func _build_aura_and_label() -> void:
 	_hp_label = Label3D.new()
