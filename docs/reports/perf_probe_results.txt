@@ -3,59 +3,59 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-13T16:39:16
+run at: 2026-11-13T16:49:13
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
   draw calls (max): 404  [FAIL]
-  triangles (max):  205677  [OVER]
+  triangles (max):  175703  [OK]
   objects:          406
-  static memory:    203.4 MB
+  static memory:    203.2 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
   draw calls (max): 289  [WARN]
-  triangles (max):  221305  [OVER]
+  triangles (max):  191331  [OVER]
   objects:          291
-  static memory:    211.6 MB
+  static memory:    211.3 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  draw calls (max): 275  [WARN]
-  triangles (max):  97030  [OK]
-  objects:          275
-  static memory:    211.6 MB
-  fps (min, this driver): 1.0
+  draw calls (max): 254  [WARN]
+  triangles (max):  57156  [OK]
+  objects:          254
+  static memory:    211.3 MB
+  fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 290  [WARN]
-  triangles (max):  168152  [OK]
-  objects:          290
-  static memory:    211.7 MB
+  draw calls (max): 292  [WARN]
+  triangles (max):  154736  [OK]
+  objects:          292
+  static memory:    211.4 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   draw calls (max): 294  [WARN]
-  triangles (max):  51699  [OK]
+  triangles (max):  44979  [OK]
   objects:          303
-  static memory:    211.9 MB
+  static memory:    211.6 MB
   fps (min, this driver): 2.0
 Zone 6 · Hero Cottage Interior
   draw calls (max): 288  [WARN]
-  triangles (max):  19158  [OK]
+  triangles (max):  12438  [OK]
   objects:          288
-  static memory:    212.2 MB
-  fps (min, this driver): 3.0
+  static memory:    211.9 MB
+  fps (min, this driver): 4.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   draw calls (max): 314  [WARN]
-  triangles (max):  80004  [OK]
+  triangles (max):  73284  [OK]
   objects:          317
-  static memory:    212.6 MB
-  fps (min, this driver): 2.0
+  static memory:    212.3 MB
+  fps (min, this driver): 1.0
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2021
+  nodes total:          1999
   MeshInstance3D:       590
-  MultiMeshInstance3D:  17 (batches) / 2738 instances
+  MultiMeshInstance3D:  17 (batches) / 2705 instances
   GPUParticles3D:       2
   omni lights:          19
   shadow casting dir:   1
@@ -64,18 +64,18 @@ SCENE AUDIT (renderer independent)
 --- running offenders ---
 
 TOP TRIANGLE CONSUMERS (whole world)
-    18792 tris |  2 surf | World/OverworldZone/StylizedPines [x12]
     18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
-    16320 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x34]
-    15400 tris |  1 surf | World/OverworldZone/ForestOaks [x14]
     14688 tris |  3 surf | World/OverworldZone/MeadowFlowers [x36]
-    14112 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
-    11520 tris |  1 surf | World/OverworldZone/FarmWheat [x16]
-     9324 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x2331]
+    14094 tris |  2 surf | World/OverworldZone/StylizedPines [x9]
+    10368 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
+    10080 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x21]
+     9900 tris |  1 surf | World/OverworldZone/ForestOaks [x9]
+     9312 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x2328]
+     7714 tris |  1 surf | World/OverworldZone/ForestBushes [x29]
      6268 tris |  3 surf | World/OverworldZone/LakesideBirches [x4]
      5659 tris |  1 surf | World/OverworldZone/AdventurersGuildExteriorBody/AdventurersGuildExterior
-     5586 tris |  1 surf | World/OverworldZone/ForestBushes [x21]
      5460 tris |  1 surf | World/OverworldZone/ValleyWildflowers [x130]
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
 
