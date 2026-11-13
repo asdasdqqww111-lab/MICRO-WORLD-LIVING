@@ -87,15 +87,42 @@ func _init() -> void:
 						worst = maxf(worst, maxf(absf(pos.x) + size.x * 0.5, absf(pos.z) + size.z * 0.5))
 	check(band_ok, "all building AABBs stay off the border roads (worst overflow=%.2f)" % worst)
 
+	# 5b) Regression: per-district AABB vs 8 m road strips (ROAD_HALF=4).
+	# Roads occupy the 4 m strip on each side of every chunk border; the 12 m
+	# buildable band inside the centered 40 m chunk guarantees a >= 4 m clearance
+	# from the road edge. This check is stricter than #5: it verifies per-district
+	# worst-case clearance and reports the margin, so any future district builder
+	# change that violates the contract fails here first.
+	var road_margin_ok := true
+	var min_margin: float = 999.0
+	var road_half: float = 4.0
+	for c2 in stream.chunks.keys():
+		var node2: Node3D = stream.chunks[c2]
+		var content2: Node3D = node2.get_node_or_null("Content")
+		if content2 == null:
+			continue
+		for child2 in content2.get_children():
+			if child2 is StaticBody3D:
+				var col2 := child2.get_node_or_null("CollisionShape3D") as CollisionShape3D
+				if col2 != null and col2.shape is BoxShape3D:
+					var bsize: Vector3 = (col2.shape as BoxShape3D).size
+					var bpos: Vector3 = child2.position
+					var margin_x: float = (stream.BUILDABLE_HALF + road_half) - (absf(bpos.x) + bsize.x * 0.5)
+					var margin_z: float = (stream.BUILDABLE_HALF + road_half) - (absf(bpos.z) + bsize.z * 0.5)
+					min_margin = minf(min_margin, minf(margin_x, margin_z))
+					if margin_x < road_half or margin_z < road_half:
+						road_margin_ok = false
+	check(road_margin_ok, "building AABBs keep >= %.0f m clearance from road strips (min margin=%.2f m)" % [road_half, min_margin])
+
 	# 6) Residential alley separation: two diagonal houses per residential chunk.
 	var alley_ok := true
 	var min_gap: float = 999.0
 	for c in stream.chunks.keys():
 		if stream.district_for_chunk(c.x, c.y) != 0:
 			continue
-		var content2 := stream.chunks[c].get_node("Content")
+		var content2b := stream.chunks[c].get_node("Content")
 		var centers: Array[Vector3] = []
-		for child in content2.get_children():
+		for child in content2b.get_children():
 			if child is StaticBody3D:
 				centers.append(child.position)
 		if centers.size() < 2:
@@ -112,17 +139,17 @@ func _init() -> void:
 		var parts: Array[String] = []
 		var keys := stream_a.chunks.keys()
 		keys.sort_custom(func(a, b): return str(a) < str(b))
-		for c2 in keys:
-			var node2: Node3D = stream_a.chunks[c2]
-			var content2b := node2.get_node_or_null("Content")
+		for c2b in keys:
+			var node2b: Node3D = stream_a.chunks[c2b]
+			var content2c := node2b.get_node_or_null("Content")
 			var counts := {}
-			if content2b != null:
-				for child2 in content2b.get_children():
-					var key := child2.get_class()
-					if child2 is StaticBody3D:
+			if content2c != null:
+				for child2b in content2c.get_children():
+					var key := child2b.get_class()
+					if child2b is StaticBody3D:
 						key = "Building"
 					counts[key] = int(counts.get(key, 0)) + 1
-			parts.append("%s:%s" % [c2, str(counts)])
+			parts.append("%s:%s" % [c2b, str(counts)])
 		return "|".join(parts)
 	var layout_a: String = layout_of.call(stream)
 	var stream_b: Node3D = CityStream.new()
