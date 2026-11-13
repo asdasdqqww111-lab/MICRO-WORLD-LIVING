@@ -19,9 +19,9 @@ const LOG_PATH := "res://docs/reports/screenshot_probe_log.txt"
 
 const WORLD_SHOTS := [
 	{"name": "00_reference_stylized_hud", "zone": "village", "time": 17.017,
-		"pos": Vector3(-0.3, 0.2, 6.5), "yaw": 0.0, "pitch": -5.5, "dist": 4.0, "hud": true},
+		"pos": Vector3(0.35, 0.2, 11.4), "yaw": 2.0, "pitch": -5.0, "dist": 4.0, "hud": true},
 	{"name": "02_village_square", "zone": "village", "time": 17.017,
-		"pos": Vector3(-0.3, 0.2, 6.5), "yaw": 0.0, "pitch": -5.5, "dist": 4.0, "hud": false},
+		"pos": Vector3(0.35, 0.2, 11.4), "yaw": 2.0, "pitch": -5.0, "dist": 4.0, "hud": false},
 	{"name": "03_guild_exterior", "zone": "village", "time": 16.5,
 		"pos": Vector3(1.5, 0.6, -8.5), "yaw": 0.0, "pitch": -8.0, "dist": 9.5, "hud": false},
 	{"name": "04_guild_interior", "zone": "guild", "time": 11.0,

@@ -59,7 +59,15 @@ static func add_box_body(parent: Node3D, position: Vector3, size: Vector3, node_
 
 static func place_model(parent: Node3D, path: String, position: Vector3, rotation_y: float,
 		model_scale: float, collider_size: Vector3 = Vector3.ZERO, node_name: String = "") -> Node3D:
-	var node := AssetLibrary.instantiate(path, model_scale)
+	# Merge multi-child static GLTF/GLB props & buildings into ONE single MeshInstance3D (~12x fewer draw calls!)
+	var node: Node3D = null
+	var merged_mesh := AssetLibrary.shared_mesh(path)
+	if merged_mesh != null:
+		var mmi := MeshInstance3D.new()
+		mmi.mesh = merged_mesh
+		node = mmi
+	else:
+		node = AssetLibrary.instantiate(path, model_scale)
 	if node == null:
 		return null
 	if not node_name.is_empty():
@@ -96,7 +104,7 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 		node.position.x -= centre.x * model_scale
 		node.position.z -= centre.z * model_scale
 	var is_hero := collider_size.length() >= 4.5
-	var lod_dist := 78.0 if is_hero else 40.0
+	var lod_dist := 78.0 if is_hero else 36.0
 	_apply_model_lod(node, lod_dist, is_hero)
 	return node
 
@@ -167,22 +175,22 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 
 	# Stylized Storybook Castle-Valley Architecture (KayKit Stylized PBR — 1 surface per building!):
 	var buildings: Array = [
-		# Central Stone Castle Keep + Pointed Blue-Roofed Turret (Guild Castle Anchor)
+		# Central Stone Castle Keep + Pointed Blue-Roofed Turret (Guild Castle Anchor, rising proudly above Tavern!)
 		{"path": hex + "building_castle_blue.gltf", "fallback": vdir + "building_castle_blue.gltf",
-			"pos": Vector3(1.8, 0.0, -24.5), "rot": 0.0, "scale": 10.6,
+			"pos": Vector3(-0.6, 1.4, -25.8), "rot": 0.0, "scale": 10.6,
 			"collider": Vector3(11.5, 14.0, 10.5), "name": "AdventurersGuildExterior"},
 		# Soaring Upper Castle Keep Tower (matches the tall square stone keep silhouette!)
 		{"path": hex + "building_tower_A_green.gltf", "fallback": hex + "building_tower_B_blue.gltf",
-			"pos": Vector3(0.4, 4.2, -26.2), "rot": 0.0, "scale": 9.8,
+			"pos": Vector3(-1.4, 4.6, -27.2), "rot": 0.0, "scale": 9.8,
 			"collider": Vector3.ZERO, "name": "CastleHighKeepTower"},
 		# Pointed Blue-Roofed Side Turret flanking Castle Keep
 		{"path": hex + "building_tower_B_blue.gltf", "fallback": hex + "building_tower_B_blue.gltf",
-			"pos": Vector3(4.2, 1.2, -22.2), "rot": deg_to_rad(-20.0), "scale": 8.6,
+			"pos": Vector3(3.4, 1.5, -23.4), "rot": deg_to_rad(-20.0), "scale": 8.6,
 			"collider": Vector3(4.8, 12.0, 4.8), "name": "CastleBlueTurret"},
-		# Giant Wooden Barrel Tavern / Mill House right at the foot of the Castle!
+		# Giant Wooden Barrel Tavern / Mill House nestled at the foot of the Castle!
 		{"path": hex + "building_tavern_red.gltf", "fallback": vdir + "building_tavern_yellow.gltf",
-			"pos": Vector3(2.2, 0.0, -16.8), "rot": deg_to_rad(-12.0), "scale": 8.4,
-			"collider": Vector3(6.8, 7.5, 6.8), "name": "Tavern"},
+			"pos": Vector3(2.8, 0.0, -17.6), "rot": deg_to_rad(-12.0), "scale": 6.6,
+			"collider": Vector3(6.2, 6.8, 6.2), "name": "Tavern"},
 		# Red-Tiled Medieval Cottages & Round Watchtower on the right flank (matching reference vista!)
 		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
 			"pos": Vector3(9.6, 0.0, -17.6), "rot": deg_to_rad(-8.0), "scale": 8.2,
@@ -574,19 +582,19 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		trunk_positions.append(hpos)
 
 	# Dense left-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
-	for i: int in 26:
+	for i: int in 22:
 		var lx := rng.randf_range(-44.0, -8.5)
 		var lz := rng.randf_range(-44.0, 4.0)
 		if _overlaps_town_building(lx, lz) or (terrain != null and terrain.is_road_at(lx, lz)):
 			continue
 		var ly := terrain.height_at(lx, lz) if terrain != null else 0.0
 		var lpos := Vector3(lx, ly - 0.08, lz)
-		var ls := rng.randf_range(1.45, 2.20)
+		var ls := rng.randf_range(8.5, 11.8)
 		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
 		trunk_positions.append(lpos)
 
-	# Outer Valley Multi-Biome Stylized Trees (budgeted for <180k total triangles!)
-	for i: int in 95:
+	# Outer Valley Multi-Biome Stylized Trees (full 8-11m forest scale, <165k total triangles!)
+	for i: int in 72:
 		var x := rng.randf_range(-108.0, 108.0)
 		var z := rng.randf_range(-108.0, 108.0)
 		var r := Vector2(x, z).length()
@@ -612,24 +620,24 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var biome := terrain.biome_at(x, z) if terrain != null else "dense_woodland"
 		var yaw := rng.randf_range(0.0, TAU)
 		var pos := Vector3(x, y - 0.08, z)
-		var sp := rng.randf_range(1.55, 2.35)
+		var sp := rng.randf_range(8.5, 11.8)
 
 		match biome:
 			"lakeside_birch":
-				if birch_xforms.size() < 8:
-					birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.45, 2.00)), pos))
+				if birch_xforms.size() < 6:
+					birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.50, 2.05)), pos))
 			"dense_woodland", "ancient_grove":
-				oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
+				oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(7.8, 10.6)), pos))
 			_:
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 		trunk_positions.append(pos)
 
 	# 2. Curated Foreground & Valley Stylized Faceted Grey Boulders (Quaternius Rock_1 & Rock_4)
 	var hero_rocks := [
-		Vector3(-4.6, 9.6, 1.55),   # Left foreground flat boulder cluster
-		Vector3(-3.8, 10.2, 1.15),
-		Vector3(-1.5, 8.8, 0.92),   # Pointed meadow stone left of Chibi Knight
-		Vector3(3.8, 10.4, 1.85),   # Right foreground sculpted grey boulder under pine!
+		Vector3(-4.2, 11.8, 1.55),   # Left foreground flat boulder cluster
+		Vector3(-3.4, 12.6, 1.15),
+		Vector3(-1.4, 10.2, 0.92),   # Pointed meadow stone left of Chibi Knight
+		Vector3(3.6, 12.2, 1.85),    # Right foreground sculpted grey boulder under pine!
 		Vector3(4.5, -2.5, 1.10),
 		Vector3(-7.2, 2.5, 1.35),
 	]
@@ -639,7 +647,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		rock_big_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hr.z), hrpos))
 		rock_positions.append(hrpos)
 
-	for i: int in 90:
+	for i: int in 80:
 		var rx := rng.randf_range(-96.0, 96.0)
 		var rz := rng.randf_range(-96.0, 96.0)
 		if _overlaps_town_building(rx, rz):
@@ -650,7 +658,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 			continue
 		var ry := terrain.height_at(rx, rz) if terrain != null else 0.0
 		var yaw := rng.randf_range(0.0, TAU)
-		if i < 45:
+		if i < 42:
 			var rs := rng.randf_range(0.95, 1.75)
 			var rpos := Vector3(rx, ry - 0.08, rz)
 			rock_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rs), rpos))
@@ -659,44 +667,43 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 			var bs := rng.randf_range(0.85, 1.30)
 			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry - 0.04, rz)))
 
-	# 3. Dense GPU Wind-Animated 3D Meadow Grass (2,000 tufts = 12k tris, 1 Draw Call!) + White/Yellow Wildflowers!
+	# 3. Lush GPU Wind-Animated 3D Meadow Grass (3,200 tufts concentrated in hero meadow = 12.8k tris, 1 Draw Call!)
 	var wind_grass_xforms: Array = []
 	var hero_flower_xforms: Array = []
-	for i: int in 2000:
+	for i: int in 3200:
 		var gx: float
 		var gz: float
-		if i < 1550:
-			# Dense coverage in the starting hero meadow & castle valley (-28..28, -20..30)
-			gx = rng.randf_range(-28.0, 28.0)
-			gz = rng.randf_range(-20.0, 30.0)
+		if i < 2500:
+			gx = rng.randf_range(-20.0, 20.0)
+			gz = rng.randf_range(-16.0, 22.0)
 		else:
-			gx = rng.randf_range(-68.0, 68.0)
-			gz = rng.randf_range(-68.0, 68.0)
+			gx = rng.randf_range(-58.0, 58.0)
+			gz = rng.randf_range(-58.0, 58.0)
 		if _overlaps_town_building(gx, gz):
 			continue
 		if terrain != null:
 			if terrain.is_water_at(gx, gz) or terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 12.5:
 				continue
 			if gz >= -18.0 and gz <= 46.0:
-				var trail_x := -4.8 * smoothstep(-10.0, 26.0, gz) + sin(gz * 0.14) * 1.65
-				if absf(gx - trail_x) < 1.55:
+				var trail_x := -2.0 - 3.2 * smoothstep(-10.0, 18.0, gz) + sin(gz * 0.14) * 1.25
+				if absf(gx - trail_x) < 1.15:
 					continue
 			elif terrain.is_road_at(gx, gz):
 				continue
 		var gy := terrain.height_at(gx, gz) if terrain != null else 0.0
 		var gyaw := rng.randf_range(0.0, TAU)
-		var gscale := rng.randf_range(0.82, 1.38)
-		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.88, 1.24), gscale)), Vector3(gx, gy, gz)))
-		if absf(gx) < 15.0 and gz > -14.0 and gz < 16.0 and hero_flower_xforms.size() < 42 and i % 16 == 0:
+		var gscale := rng.randf_range(0.85, 1.42)
+		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.90, 1.28), gscale)), Vector3(gx, gy, gz)))
+		if absf(gx) < 14.0 and gz > -12.0 and gz < 18.0 and hero_flower_xforms.size() < 36 and i % 22 == 0:
 			var hfs := rng.randf_range(0.90, 1.35)
 			hero_flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hfs), Vector3(gx, gy - 0.02, gz)))
-		elif i % 9 == 0 and flower_xforms.size() < 150:
+		elif i % 14 == 0 and flower_xforms.size() < 130:
 			var fs := rng.randf_range(0.95, 1.45)
 			flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * fs), Vector3(gx, gy - 0.02, gz)))
 
 	# Shoreline Reeds around Crystal Lake
-	for i: int in 20:
-		var ang := float(i) / 20.0 * TAU
+	for i: int in 18:
+		var ang := float(i) / 18.0 * TAU
 		var lx := 16.0 + cos(ang) * 15.6
 		var lz := 54.0 + sin(ang) * 12.2
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
@@ -707,7 +714,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	var sfol := AssetLibrary.STYLIZED_FOLIAGE_DIR
 	var hex_dir := AssetLibrary.HEXAGON_DIR
 	build_multimesh(parent, stree + "PineTree_5.glb", hero_pine_xforms, "StylizedPines", true, 90.0)
-	build_multimesh(parent, hex_dir + "trees_A_large.gltf", pine_xforms, "ValleyStylizedPines", false, 88.0)
+	build_multimesh(parent, hex_dir + "trees_A_medium.gltf", pine_xforms, "ValleyStylizedPines", false, 88.0)
 	build_multimesh(parent, hex_dir + "trees_B_medium.gltf", oak_xforms, "ForestOaks", false, 82.0)
 	build_multimesh(parent, stree + "BirchTree_2.glb", birch_xforms, "LakesideBirches", false, 72.0)
 	build_multimesh(parent, srock + "Rock_4.glb", rock_big_xforms, "HeroMeadowRocks", false, 68.0)

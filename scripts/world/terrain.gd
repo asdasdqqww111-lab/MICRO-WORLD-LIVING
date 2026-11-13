@@ -242,10 +242,10 @@ func _splat_weights_for(wx: float, wz: float, h: float, slope: float) -> Color:
 	if h < WATER_LEVEL + 0.35:
 		dirt_w = 1.0 - smoothstep(WATER_LEVEL - 0.15, WATER_LEVEL + 0.35, h)
 
-	# Smoothly feathered country dirt trails
+	# Smoothly feathered country dirt trail curving gently left of the hero meadow!
 	if wz >= -18.0 and wz <= 48.0:
-		var trail_x := -4.8 * smoothstep(-10.0, 26.0, wz) + sin(wz * 0.14) * 1.65
-		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.15, 3.35, absf(wx - trail_x)))
+		var trail_x := -2.0 - 3.2 * smoothstep(-10.0, 18.0, wz) + sin(wz * 0.14) * 1.25
+		dirt_w = maxf(dirt_w, 1.0 - smoothstep(0.75, 2.25, absf(wx - trail_x)))
 	var bridge_z := -4.0 * clampf(wx / 36.0, 0.0, 1.0)
 	if wx >= -2.0 and wx <= 60.0:
 		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.2, 3.2, absf(wz - bridge_z)))

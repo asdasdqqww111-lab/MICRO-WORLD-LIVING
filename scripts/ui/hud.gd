@@ -67,8 +67,7 @@ func _glass_box(bg: Color, rim: Color, radius: int = 10, pad: int = 9) -> StyleB
 	sb.set_border_width_all(1)
 	sb.set_corner_radius_all(radius)
 	sb.set_content_margin_all(pad)
-	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.28)
-	sb.shadow_size = 6
+	sb.shadow_size = 0
 	return sb
 
 func _build_vitals() -> void:

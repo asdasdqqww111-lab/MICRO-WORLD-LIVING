@@ -453,10 +453,10 @@ static func terrain_splat_shader_material() -> Material:
 	sm.shader = sh
 	var ga := get_realistic_tex("grass_albedo.jpg")
 	var gn := get_realistic_tex("grass_normal.jpg")
-	var da := get_realistic_tex("cobble_albedo.jpg")
-	var dn := get_realistic_tex("cobble_normal.jpg")
-	var ra := get_realistic_tex("stone_wall_albedo.jpg")
-	var rn := get_realistic_tex("stone_wall_normal.jpg")
+	var da := get_realistic_tex("plaster_albedo.jpg")
+	var dn := get_realistic_tex("plaster_normal.jpg")
+	var ra := get_realistic_tex("plaster_albedo.jpg")
+	var rn := get_realistic_tex("plaster_normal.jpg")
 	if ga != null:
 		sm.set_shader_parameter("grass_albedo", ga)
 	if gn != null:

@@ -49,8 +49,7 @@ func _make_bronze_circle_style(radius: int, bg_col: Color, border_col: Color, bo
 	sb.border_color = border_col
 	sb.set_border_width_all(border_w)
 	sb.set_corner_radius_all(radius)
-	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
-	sb.shadow_size = 4
+	sb.shadow_size = 0
 	return sb
 
 func _build() -> void:
