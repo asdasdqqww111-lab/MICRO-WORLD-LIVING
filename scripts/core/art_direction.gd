@@ -194,30 +194,30 @@ static func water_shader_material() -> Material:
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_disabled, specular_schlick_ggx;
 
-uniform vec4 deep_color : source_color = vec4(0.09, 0.34, 0.48, 0.84);
-uniform vec4 shallow_color : source_color = vec4(0.20, 0.54, 0.66, 0.76);
+uniform vec4 deep_color : source_color = vec4(0.05, 0.21, 0.34, 0.86);
+uniform vec4 shallow_color : source_color = vec4(0.09, 0.33, 0.45, 0.78);
 
 float wave_h(vec2 p, float t) {
-	return sin(p.x * 1.35 + t * 1.6) * cos(p.y * 1.15 - t * 1.2) * 0.5
-		+ sin((p.x + p.y) * 2.4 - t * 2.1) * 0.25;
+	return sin(p.x * 1.45 + t * 1.6) * cos(p.y * 1.25 - t * 1.2) * 0.5
+		+ sin((p.x + p.y) * 2.6 - t * 2.1) * 0.25;
 }
 
 void fragment() {
-	vec2 wp = UV * 48.0;
+	vec2 wp = UV * 56.0;
 	float e = 0.08;
 	float h0 = wave_h(wp, TIME);
 	float hx = wave_h(wp + vec2(e, 0.0), TIME);
 	float hy = wave_h(wp + vec2(0.0, e), TIME);
-	vec3 n = normalize(vec3((h0 - hx) * 0.55, (h0 - hy) * 0.55, 1.0));
+	vec3 n = normalize(vec3((h0 - hx) * 0.65, (h0 - hy) * 0.65, 1.0));
 	NORMAL_MAP = n * 0.5 + 0.5;
-	float fresnel = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);
+	float fresnel = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.4);
 	vec3 col = mix(deep_color.rgb, shallow_color.rgb, clamp(h0 * 0.5 + 0.5, 0.0, 1.0));
-	col = mix(col, vec3(0.72, 0.86, 0.96), fresnel * 0.42);
+	col = mix(col, vec3(0.46, 0.66, 0.80), fresnel * 0.28);
 	ALBEDO = col;
-	ROUGHNESS = 0.09;
-	METALLIC = 0.14;
-	SPECULAR = 0.75;
-	ALPHA = mix(deep_color.a, 0.92, fresnel * 0.5);
+	ROUGHNESS = 0.12;
+	METALLIC = 0.10;
+	SPECULAR = 0.65;
+	ALPHA = mix(deep_color.a, 0.90, fresnel * 0.4);
 }
 """
 	var sm := ShaderMaterial.new()

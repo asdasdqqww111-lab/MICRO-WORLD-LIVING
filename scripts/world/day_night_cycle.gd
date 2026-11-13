@@ -100,6 +100,7 @@ func apply_now() -> void:
 			sky_shader_material.set_shader_parameter("sky_horizon", Vector3(horizon.r, horizon.g, horizon.b))
 			sky_shader_material.set_shader_parameter("night_factor", night_factor)
 			sky_shader_material.set_shader_parameter("rain_factor", _weather_darkness)
+			sky_shader_material.set_shader_parameter("sky_time", float(Time.get_ticks_msec()) * 0.001)
 			var cb := Color(0.99, 0.98, 0.96).lerp(Color(1.0, 0.74, 0.52), golden_hour * 0.65)
 			sky_shader_material.set_shader_parameter("cloud_bright", Vector3(cb.r, cb.g, cb.b))
 		elif sky_material != null:

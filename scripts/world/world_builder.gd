@@ -538,10 +538,10 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 			flower_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * fs), Vector3(rx, ry, rz)))
 
 	# Natural Non-Grid 3D Grass Scatter across Meadows, Village Fringe & Woodland Clearings (1 Draw Call!)
-	for i: int in 220:
-		var gx := rng.randf_range(-88.0, 88.0)
-		var gz := rng.randf_range(-88.0, 88.0)
-		if Vector2(gx, gz).length() < 11.5:
+	for i: int in 140:
+		var gx := rng.randf_range(-82.0, 82.0)
+		var gz := rng.randf_range(-82.0, 82.0)
+		if Vector2(gx, gz).length() < 14.5:
 			continue
 		if terrain != null:
 			if terrain.is_road_at(gx, gz) or terrain.is_water_at(gx, gz):
@@ -550,7 +550,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 				continue
 		var gy := terrain.height_at(gx, gz) if terrain != null else 0.0
 		var gyaw := rng.randf_range(0.0, TAU)
-		var gscale := rng.randf_range(1.05, 1.85)
+		var gscale := rng.randf_range(1.05, 1.75)
 		grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3.ONE * gscale), Vector3(gx, gy - 0.02, gz)))
 
 	# Shoreline Reeds around Crystal Lake
@@ -561,15 +561,15 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
 		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
 
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/tree_large.gltf", oak_xforms, "ForestOaks", true, 92.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_house/tree_large.gltf", dense_xforms, "ForestCanopyTrees", true, 88.0)
-	build_multimesh(parent, "res://assets/models/hexagon/trees_A_large.gltf", pine_xforms, "HighlandPines", false, 112.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/tree.gltf", birch_xforms, "LakesideBirches", true, 86.0)
-	build_multimesh(parent, "res://assets/models/hexagon/rock_single_A.gltf", rock_xforms, "WorldRocks", true, 84.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/bush_large.gltf", bush_xforms, "ForestBushes", false, 58.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/flower_A.gltf", flower_xforms, "MeadowFlowers", false, 48.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/grass_A.gltf", grass_xforms, "MeadowGrass", false, 40.0)
-	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 64.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/tree_large.gltf", oak_xforms, "ForestOaks", true, 78.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_house/tree_large.gltf", dense_xforms, "ForestCanopyTrees", true, 74.0)
+	build_multimesh(parent, "res://assets/models/hexagon/trees_A_large.gltf", pine_xforms, "HighlandPines", false, 106.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/tree.gltf", birch_xforms, "LakesideBirches", true, 76.0)
+	build_multimesh(parent, "res://assets/models/hexagon/rock_single_A.gltf", rock_xforms, "WorldRocks", true, 76.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/bush_large.gltf", bush_xforms, "ForestBushes", false, 52.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/flower_A.gltf", flower_xforms, "MeadowFlowers", false, 42.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/grass_A.gltf", grass_xforms, "MeadowGrass", false, 34.0)
+	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 60.0)
 
 	# Batched StaticBody3D for tree trunks AND large rock boulders within playable elevation
 	var trunk_body := StaticBody3D.new()

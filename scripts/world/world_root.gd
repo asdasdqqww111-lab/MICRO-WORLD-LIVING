@@ -58,6 +58,8 @@ func _build_environment() -> void:
 	environment = Environment.new()
 	environment.background_mode = Environment.BG_SKY
 	var sky := Sky.new()
+	sky.radiance_size = Sky.RADIANCE_SIZE_64
+	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
 	if DisplayServer.get_name() == "headless":
 		var sky_material := ProceduralSkyMaterial.new()
 		sky_material.sky_top_color = Color(0.18, 0.40, 0.74)
@@ -67,13 +69,13 @@ func _build_environment() -> void:
 		sky.sky_material = DynamicSkyShader.create_material()
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	environment.ambient_light_sky_contribution = 0.88
-	environment.ambient_light_energy = 0.52
+	environment.ambient_light_sky_contribution = 0.86
+	environment.ambient_light_energy = 0.46
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	environment.tonemap_exposure = 0.94
+	environment.tonemap_exposure = 0.88
 	environment.adjustment_enabled = true
-	environment.adjustment_contrast = 1.12
-	environment.adjustment_saturation = 1.04
+	environment.adjustment_contrast = 1.11
+	environment.adjustment_saturation = 1.03
 	environment.fog_enabled = true
 	environment.fog_density = 0.0032
 	environment.fog_light_color = Color(0.62, 0.74, 0.86)
@@ -86,11 +88,11 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 75.0
+	sun.directional_shadow_max_distance = 72.0
 	sun.shadow_bias = 0.025
 	sun.shadow_normal_bias = 1.2
 	sun.shadow_blur = 1.45
-	sun.light_energy = 1.32
+	sun.light_energy = 1.20
 	sun.light_color = Color(1.0, 0.95, 0.86)
 	add_child(sun)
 
