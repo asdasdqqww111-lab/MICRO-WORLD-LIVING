@@ -218,5 +218,3 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)

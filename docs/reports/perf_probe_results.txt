@@ -3,7 +3,7 @@ engine: 4.3-stable (official)
 rendering method: gl_compatibility
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-13T13:48:11
+run at: 2026-11-13T14:03:25
 
 budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30
 
@@ -16,20 +16,20 @@ Zone 1 · Eldoria Village Square & Guild Exterior
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
   draw calls (max): 315  [WARN]
-  triangles (max):  479338  [OVER]
+  triangles (max):  477898  [OVER]
   objects:          488
   static memory:    201.5 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  draw calls (max): 154  [OK]
-  triangles (max):  261398  [OVER]
-  objects:          285
+  draw calls (max): 148  [OK]
+  triangles (max):  260174  [OVER]
+  objects:          279
   static memory:    201.6 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 202  [OK]
-  triangles (max):  316135  [OVER]
-  objects:          359
+  draw calls (max): 211  [OK]
+  triangles (max):  319579  [OVER]
+  objects:          368
   static memory:    201.6 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
@@ -37,19 +37,19 @@ Zone 5 · Adventurers Guild Grand Hall Interior
   triangles (max):  77021  [OK]
   objects:          293
   static memory:    201.7 MB
-  fps (min, this driver): 3.0
+  fps (min, this driver): 6.0
 Zone 6 · Hero Cottage Interior
   draw calls (max): 94  [OK]
   triangles (max):  20870  [OK]
   objects:          221
   static memory:    201.7 MB
-  fps (min, this driver): 7.0
+  fps (min, this driver): 12.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   draw calls (max): 163  [OK]
   triangles (max):  84892  [OK]
   objects:          285
   static memory:    202.2 MB
-  fps (min, this driver): 3.0
+  fps (min, this driver): 5.0
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
