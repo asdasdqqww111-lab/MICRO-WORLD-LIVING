@@ -228,7 +228,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -238,67 +238,9 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -312,7 +254,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -322,11 +264,9 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -340,9 +280,61 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -392,31 +384,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -442,7 +410,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -466,7 +434,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -490,351 +458,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -860,7 +484,375 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -876,17 +868,7 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -902,23 +884,17 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -934,19 +910,19 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -966,15 +942,17 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -996,15 +974,45 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -1030,7 +1038,7 @@ engine: 4.3-stable (official)
 rendering method: gl_compatibility
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-13T01:22:45
+run at: 2026-11-13T01:36:40
 
 budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30
 
@@ -1042,9 +1050,9 @@ Zone 1 · Eldoria Village Square & Guild Exterior
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  draw calls (max): 363  [FAIL]
-  triangles (max):  409931  [OVER]
-  objects:          536
+  draw calls (max): 333  [WARN]
+  triangles (max):  386855  [OVER]
+  objects:          506
   static memory:    206.2 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
@@ -1054,9 +1062,9 @@ Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
   static memory:    206.2 MB
   fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 247  [OK]
-  triangles (max):  340840  [OVER]
-  objects:          404
+  draw calls (max): 229  [OK]
+  triangles (max):  328462  [OVER]
+  objects:          386
   static memory:    206.3 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
@@ -1070,7 +1078,7 @@ Zone 6 · Hero Cottage Interior
   triangles (max):  17118  [OK]
   objects:          223
   static memory:    206.4 MB
-  fps (min, this driver): 11.0
+  fps (min, this driver): 9.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   draw calls (max): 165  [OK]
   triangles (max):  81140  [OK]
@@ -1106,11 +1114,9 @@ TOP TRIANGLE CONSUMERS (whole world)
      6965 tris |  1 surf | World/OverworldZone/CityNobleManors [x5]
      6784 tris |  1 surf | World/OverworldZone/CityStreetLanternPosts [x16]
 
-SHADOW / LOD: casters=69  shadow_off=781  with_visibility_range=773
+SHADOW / LOD: casters=54  shadow_off=796  with_visibility_range=800
 --- offenders done ---
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)
