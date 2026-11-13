@@ -20,6 +20,12 @@ var state: String = "idle"
 
 var _attack_cooldown: float = 0.0
 var _dead: bool = false
+var dead: bool:
+	get:
+		return _dead
+var passive: bool:
+	get:
+		return data != null and not data.hostile
 var _wander_target: Vector3 = Vector3.ZERO
 var _wander_timer: float = 0.0
 var _flee_timer: float = 0.0

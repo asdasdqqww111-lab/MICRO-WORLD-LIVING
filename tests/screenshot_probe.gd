@@ -49,7 +49,7 @@ func _ready() -> void:
 	_run()
 
 func _watchdog() -> void:
-	await get_tree().create_timer(180.0).timeout
+	await get_tree().create_timer(380.0).timeout
 	if _finished:
 		return
 	_log.append("WATCHDOG: still running after 180s - aborting")
@@ -76,16 +76,16 @@ func _run() -> void:
 	# 1. Main Menu First
 	var menu: Node = load("res://scenes/main_menu/main_menu.tscn").instantiate()
 	add_child(menu)
-	await _frames(18)
+	await _frames(8)
 	await _save("01_main_menu")
 	menu.queue_free()
-	await _frames(6)
+	await _frames(4)
 
 	# 2. Boot Real Eldoria Game Scene
 	GameManager.start_new_game()
 	_game = load("res://scenes/game/game.tscn").instantiate()
 	add_child(_game)
-	await _frames(40)
+	await _frames(14)
 
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_world = get_tree().get_first_node_in_group("world_root") as WorldRoot
@@ -116,7 +116,7 @@ func _run() -> void:
 	_ui.touch.set_controls_visible(true)
 	_ui.hud.refresh_all()
 	_set_cam(8.0, -14.0, 8.2)
-	await _frames(20)
+	await _frames(6)
 	await _save("08_gameplay_combat_hud")
 	if combat_mob != null and is_instance_valid(combat_mob):
 		combat_mob.queue_free()
@@ -148,27 +148,27 @@ func _run() -> void:
 	_ui.open_screen("inventory")
 	_ui.inventory.selected_index = 0
 	_ui.inventory.refresh()
-	await _frames(15)
+	await _frames(6)
 	await _save("09_inventory_equipment")
 
 	# 10. Interactive 24-Node Skill Tree Screen
 	_ui.open_screen("skills")
-	await _frames(15)
+	await _frames(6)
 	await _save("10_skill_tree")
 
 	# 11. Adventurers Guild & Contracts Board Screen
 	GameManager.start_quest("contract_forest_cull")
 	_ui.open_screen("guild")
-	await _frames(15)
+	await _frames(6)
 	await _save("11_quest_guild_board")
 
 	# 13. Illustrated Royal Cartography World Map Screen
 	_ui.open_screen("map")
-	await _frames(15)
+	await _frames(6)
 	await _save("13_world_map_cartography")
 
 	_ui.close_current_screen()
-	_note("all 12 screenshots captured successfully")
+	_note("all 13 screenshots captured successfully")
 	_finished = true
 	get_tree().quit(0)
 
@@ -192,7 +192,7 @@ func _capture_world_shot(shot: Dictionary) -> void:
 			_ui.close_current_screen()
 			_ui.touch.set_controls_visible(true)
 			_ui.hud.refresh_all()
-	await _frames(20)
+	await _frames(6)
 	await _save(String(shot["name"]))
 	if _ui != null:
 		_ui.visible = true

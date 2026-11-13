@@ -73,7 +73,9 @@ func setup(model_path: String, model_scale: float = 1.0) -> bool:
 	model.name = "Model"
 	add_child(model)
 	_skeleton = _find_skeleton(model)
+	_merge_skinned_submeshes(model)
 	_index_meshes_and_shadows(model)
+	_hide_default_accessory_submeshes()
 	_apply_chibi_hero_shader_if_kaykit(model_path)
 	_setup_hand_sockets()
 	anim_player = _find_animation_player(model)
@@ -82,10 +84,66 @@ func setup(model_path: String, model_scale: float = 1.0) -> bool:
 	play("idle")
 	return true
 
+## Collapse multi-part skinned body submeshes (Body, Head, Arms, Legs) sharing the same Skeleton3D
+## into ONE single-surface skinned MeshInstance3D (~6x fewer skinned draw calls per character!).
+func _merge_skinned_submeshes(root: Node) -> void:
+	if _skeleton == null:
+		return
+	var skinned: Array[MeshInstance3D] = []
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		for c: Node in n.get_children():
+			stack.append(c)
+		if n is MeshInstance3D:
+			var mi := n as MeshInstance3D
+			if mi.skin != null and mi.mesh != null and mi.visible:
+				skinned.append(mi)
+	if skinned.size() <= 1:
+		return
+	var primary := skinned[0]
+	var base_mat: Material = primary.get_surface_override_material(0)
+	if base_mat == null and primary.mesh.get_surface_count() > 0:
+		base_mat = primary.mesh.surface_get_material(0)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var appended := 0
+	for mi: MeshInstance3D in skinned:
+		for s: int in mi.mesh.get_surface_count():
+			st.append_from(mi.mesh, s, Transform3D.IDENTITY)
+			appended += 1
+	if appended == 0:
+		return
+	var combined := st.commit()
+	if base_mat != null and combined.get_surface_count() > 0:
+		combined.surface_set_material(0, base_mat)
+	primary.name = "CombinedBodySkin"
+	primary.mesh = combined
+	for i in range(1, skinned.size()):
+		var extra := skinned[i]
+		if extra.get_parent() != null:
+			extra.get_parent().remove_child(extra)
+		extra.free()
+
+## Hide non-skinned optional KayKit equipment/props by default until explicitly enabled.
+func _hide_default_accessory_submeshes() -> void:
+	var gear_tokens := [
+		"sword", "shield", "helmet", "cape", "axe", "dagger", "crossbow",
+		"bow", "wand", "staff", "spellbook", "mug", "hood", "hat", "quiver",
+	]
+	for mesh_name: String in _submeshes.keys():
+		var mi := _submeshes[mesh_name] as MeshInstance3D
+		if mi == null or mi.skin != null:
+			continue
+		var low := mesh_name.to_lower()
+		for tok: String in gear_tokens:
+			if low.contains(tok):
+				mi.visible = false
+				break
+
 func _apply_chibi_hero_shader_if_kaykit(model_path: String) -> void:
 	if not model_path.contains("Knight.glb"):
 		return
-	# Hide full-face helmet, cape & built-in weapons by default so sculpted brown hair & X-strap steel armor show cleanly
 	for hidden_part: String in ["Knight_Helmet", "Knight_Cape", "1H_Sword_Offhand", "Badge_Shield", "Rectangle_Shield", "Round_Shield", "Spike_Shield", "1H_Sword", "2H_Sword"]:
 		if _submeshes.has(hidden_part):
 			(_submeshes[hidden_part] as MeshInstance3D).visible = false
@@ -181,9 +239,10 @@ func _index_meshes_and_shadows(root: Node) -> void:
 
 ## Toggle built-in submeshes OR attach realistic hand gear for NPCs.
 func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void:
+	var matched_builtin := false
 	for mesh_name: String in _submeshes.keys():
 		var mi := _submeshes[mesh_name] as MeshInstance3D
-		if mi == null:
+		if mi == null or mi.skin != null:
 			continue
 		var low := mesh_name.to_lower()
 		for h: Variant in hidden_substrings:
@@ -192,7 +251,8 @@ func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void
 		for v: Variant in visible_substrings:
 			if low.contains(String(v).to_lower()):
 				mi.visible = true
-	if _weapon_socket != null and _equipped_weapon_node == null:
+				matched_builtin = true
+	if not matched_builtin and _weapon_socket != null and _equipped_weapon_node == null:
 		for v: Variant in visible_substrings:
 			var vs := String(v).to_lower()
 			if vs.contains("sword") or vs.contains("axe"):

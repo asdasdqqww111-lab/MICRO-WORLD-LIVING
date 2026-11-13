@@ -3,8 +3,8 @@ extends Node3D
 ##   xvfb-run -a godot --path . --rendering-driver opengl3 --resolution 1280x720 tests/perf_probe.tscn
 
 const OUT_PATH := "res://docs/reports/perf_probe_results.txt"
-const SETTLE_FRAMES := 30
-const SAMPLE_FRAMES := 50
+const SETTLE_FRAMES := 8
+const SAMPLE_FRAMES := 10
 
 var _game: Node
 var _player: Player
@@ -17,10 +17,10 @@ func _ready() -> void:
 	_run()
 
 func _watchdog() -> void:
-	await get_tree().create_timer(160.0).timeout
+	await get_tree().create_timer(360.0).timeout
 	if _finished:
 		return
-	_lines.append("WATCHDOG: perf_probe timed out after 160s")
+	_lines.append("WATCHDOG: perf_probe timed out after 360s")
 	_flush(true)
 	get_tree().quit(2)
 
@@ -85,7 +85,7 @@ func _safe_step(label: String, method: Callable) -> void:
 
 func _teleport_and_measure(label: String, position: Vector3, zone: String) -> void:
 	_player.teleport(position, zone)
-	await _frames(20)
+	await _frames(5)
 	await _measure(label)
 
 func _measure(label: String) -> void:

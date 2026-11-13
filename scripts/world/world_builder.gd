@@ -552,6 +552,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	var rock_positions: Array[Vector3] = []
 
 	# 1. Curated Hero Stylized Layered Pine Trees framing the Castle-Meadow Vista (matching reference!)
+	var hero_pine_xforms: Array = []
 	var hero_pines := [
 		Vector3(6.2, 7.4, 2.55),     # Large pine framing right foreground!
 		Vector3(4.9, -11.8, 1.85),   # Pine between barrel tavern & red cottages
@@ -569,26 +570,23 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	for hp: Vector3 in hero_pines:
 		var hy := terrain.height_at(hp.x, hp.y) if terrain != null else 0.0
 		var hpos := Vector3(hp.x, hy - 0.08, hp.y)
-		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * hp.z), hpos))
+		hero_pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * hp.z), hpos))
 		trunk_positions.append(hpos)
 
-	# Dense左-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
-	for i: int in 42:
+	# Dense left-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
+	for i: int in 26:
 		var lx := rng.randf_range(-44.0, -8.5)
 		var lz := rng.randf_range(-44.0, 4.0)
 		if _overlaps_town_building(lx, lz) or (terrain != null and terrain.is_road_at(lx, lz)):
 			continue
 		var ly := terrain.height_at(lx, lz) if terrain != null else 0.0
 		var lpos := Vector3(lx, ly - 0.08, lz)
-		var ls := rng.randf_range(1.45, 2.25)
-		if i % 2 == 0:
-			pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
-		else:
-			oak_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
+		var ls := rng.randf_range(1.45, 2.20)
+		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
 		trunk_positions.append(lpos)
 
-	# Outer Valley Multi-Biome Stylized Trees
-	for i: int in 280:
+	# Outer Valley Multi-Biome Stylized Trees (budgeted for <180k total triangles!)
+	for i: int in 95:
 		var x := rng.randf_range(-108.0, 108.0)
 		var z := rng.randf_range(-108.0, 108.0)
 		var r := Vector2(x, z).length()
@@ -614,16 +612,14 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var biome := terrain.biome_at(x, z) if terrain != null else "dense_woodland"
 		var yaw := rng.randf_range(0.0, TAU)
 		var pos := Vector3(x, y - 0.08, z)
-		var sp := rng.randf_range(1.55, 2.45)
+		var sp := rng.randf_range(1.55, 2.35)
 
 		match biome:
 			"lakeside_birch":
-				birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.45, 2.05)), pos))
+				if birch_xforms.size() < 8:
+					birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.45, 2.00)), pos))
 			"dense_woodland", "ancient_grove":
-				if rng.randf() < 0.65:
-					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
-				else:
-					dense_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.35, 1.95)), pos))
+				oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 			_:
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 		trunk_positions.append(pos)
@@ -643,9 +639,9 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		rock_big_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hr.z), hrpos))
 		rock_positions.append(hrpos)
 
-	for i: int in 140:
-		var rx := rng.randf_range(-100.0, 100.0)
-		var rz := rng.randf_range(-100.0, 100.0)
+	for i: int in 90:
+		var rx := rng.randf_range(-96.0, 96.0)
+		var rz := rng.randf_range(-96.0, 96.0)
 		if _overlaps_town_building(rx, rz):
 			continue
 		if Vector2(rx, rz + 14.0).length() < 9.0:
@@ -654,33 +650,33 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 			continue
 		var ry := terrain.height_at(rx, rz) if terrain != null else 0.0
 		var yaw := rng.randf_range(0.0, TAU)
-		if i < 55:
+		if i < 45:
 			var rs := rng.randf_range(0.95, 1.75)
 			var rpos := Vector3(rx, ry - 0.08, rz)
 			rock_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rs), rpos))
 			rock_positions.append(rpos)
 		else:
-			var bs := rng.randf_range(0.85, 1.35)
+			var bs := rng.randf_range(0.85, 1.30)
 			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry - 0.04, rz)))
 
-	# 3. Dense GPU Wind-Animated 3D Meadow Grass (2,800 tufts in 1 MultiMesh = 1 Draw Call!) + White/Yellow Wildflowers!
+	# 3. Dense GPU Wind-Animated 3D Meadow Grass (2,000 tufts = 12k tris, 1 Draw Call!) + White/Yellow Wildflowers!
 	var wind_grass_xforms: Array = []
-	for i: int in 2800:
+	var hero_flower_xforms: Array = []
+	for i: int in 2000:
 		var gx: float
 		var gz: float
-		if i < 2100:
-			# Dense coverage in the starting hero meadow & castle valley (-32..32, -20..36)
-			gx = rng.randf_range(-30.0, 30.0)
-			gz = rng.randf_range(-20.0, 34.0)
+		if i < 1550:
+			# Dense coverage in the starting hero meadow & castle valley (-28..28, -20..30)
+			gx = rng.randf_range(-28.0, 28.0)
+			gz = rng.randf_range(-20.0, 30.0)
 		else:
-			gx = rng.randf_range(-72.0, 72.0)
-			gz = rng.randf_range(-72.0, 72.0)
+			gx = rng.randf_range(-68.0, 68.0)
+			gz = rng.randf_range(-68.0, 68.0)
 		if _overlaps_town_building(gx, gz):
 			continue
 		if terrain != null:
 			if terrain.is_water_at(gx, gz) or terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 12.5:
 				continue
-			# Leave the center of the winding brown dirt trail bare so grass hugs its edges!
 			if gz >= -18.0 and gz <= 46.0:
 				var trail_x := -4.8 * smoothstep(-10.0, 26.0, gz) + sin(gz * 0.14) * 1.65
 				if absf(gx - trail_x) < 1.55:
@@ -691,13 +687,16 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var gyaw := rng.randf_range(0.0, TAU)
 		var gscale := rng.randf_range(0.82, 1.38)
 		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.88, 1.24), gscale)), Vector3(gx, gy, gz)))
-		if i % 5 == 0 and flower_xforms.size() < 520:
-			var fs := rng.randf_range(0.85, 1.35)
+		if absf(gx) < 15.0 and gz > -14.0 and gz < 16.0 and hero_flower_xforms.size() < 42 and i % 16 == 0:
+			var hfs := rng.randf_range(0.90, 1.35)
+			hero_flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hfs), Vector3(gx, gy - 0.02, gz)))
+		elif i % 9 == 0 and flower_xforms.size() < 150:
+			var fs := rng.randf_range(0.95, 1.45)
 			flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * fs), Vector3(gx, gy - 0.02, gz)))
 
 	# Shoreline Reeds around Crystal Lake
-	for i: int in 28:
-		var ang := float(i) / 28.0 * TAU
+	for i: int in 20:
+		var ang := float(i) / 20.0 * TAU
 		var lx := 16.0 + cos(ang) * 15.6
 		var lz := 54.0 + sin(ang) * 12.2
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
@@ -706,14 +705,16 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	var stree := AssetLibrary.STYLIZED_TREES_DIR
 	var srock := AssetLibrary.STYLIZED_ROCKS_DIR
 	var sfol := AssetLibrary.STYLIZED_FOLIAGE_DIR
-	build_multimesh(parent, stree + "PineTree_1.glb", pine_xforms, "StylizedPines", true, 96.0)
-	build_multimesh(parent, stree + "PineTree_2.glb", oak_xforms, "ForestOaks", true, 86.0)
-	build_multimesh(parent, stree + "CommonTree_1.glb", dense_xforms, "ForestCanopyTrees", false, 76.0)
-	build_multimesh(parent, stree + "BirchTree_1.glb", birch_xforms, "LakesideBirches", false, 72.0)
+	var hex_dir := AssetLibrary.HEXAGON_DIR
+	build_multimesh(parent, stree + "PineTree_5.glb", hero_pine_xforms, "StylizedPines", true, 90.0)
+	build_multimesh(parent, hex_dir + "trees_A_large.gltf", pine_xforms, "ValleyStylizedPines", false, 88.0)
+	build_multimesh(parent, hex_dir + "trees_B_medium.gltf", oak_xforms, "ForestOaks", false, 82.0)
+	build_multimesh(parent, stree + "BirchTree_2.glb", birch_xforms, "LakesideBirches", false, 72.0)
 	build_multimesh(parent, srock + "Rock_4.glb", rock_big_xforms, "HeroMeadowRocks", false, 68.0)
 	build_multimesh(parent, srock + "Rock_1.glb", rock_xforms, "WorldRocks", false, 64.0)
-	build_multimesh(parent, sfol + "Bush_1.glb", bush_xforms, "ForestBushes", false, 48.0)
-	build_multimesh(parent, sfol + "Flowers.glb", flower_xforms, "MeadowFlowers", false, 40.0)
+	build_multimesh(parent, sfol + "Bush_2.glb", bush_xforms, "ForestBushes", false, 44.0)
+	build_multimesh(parent, sfol + "Flowers.glb", hero_flower_xforms, "MeadowFlowers", false, 38.0)
+	build_multimesh(parent, sfol + "Flower_2.glb", flower_xforms, "ValleyWildflowers", false, 42.0)
 	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 60.0)
 
 	# Build the 1-draw-call GPU Wind Grass MultiMeshInstance3D!

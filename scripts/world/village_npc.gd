@@ -71,7 +71,7 @@ func _build_visual() -> void:
 		visual.configure_gear(visible_gear, hidden_gear)
 		visual.play("idle")
 	add_child(ArtDirection.make_contact_ao(0.52, 0.34))
-	_apply_lod_recursive(visual, 34.0)
+	_apply_lod_recursive(visual, 24.0)
 
 func _apply_lod_recursive(node: Node, dist: float) -> void:
 	if node is GeometryInstance3D:
@@ -87,6 +87,7 @@ func _build_labels() -> void:
 	_nameplate.font_size = 20
 	_nameplate.outline_size = 6
 	_nameplate.modulate = Color(0.96, 0.92, 0.80)
+	_nameplate.visibility_range_end = 18.0
 	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_nameplate.position = Vector3(0.0, 2.22 * model_scale, 0.0)
 	_nameplate.visibility_range_end = 26.0
