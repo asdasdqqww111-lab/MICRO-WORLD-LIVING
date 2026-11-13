@@ -406,7 +406,7 @@ func _draw_map() -> void:
 		var p3 := player.global_position if player.zone == "village" else Vector3.ZERO
 		var pp := _world_to_map(p3.x, p3.z, rect)
 		if rect.has_point(pp):
-			var yaw := player._facing_yaw if "_facing_yaw" in player else 0.0
+			var yaw: float = player.rotation.y + PI
 			var fwd := Vector2(sin(yaw), cos(yaw)).normalized()
 			var side := Vector2(fwd.y, -fwd.x)
 			_canvas.draw_circle(pp, 8.5, Color(0.20, 0.95, 0.55, 0.24))

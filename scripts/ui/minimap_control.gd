@@ -140,7 +140,7 @@ func _draw() -> void:
 		draw_colored_polygon(diamond, Color(1.0, 0.88, 0.24))
 
 	# Player Directional Chevron at Center
-	var yaw := player._facing_yaw if "_facing_yaw" in player else 0.0
+	var yaw: float = player.rotation.y + PI
 	var fwd := Vector2(sin(yaw), cos(yaw)).normalized()
 	var side := Vector2(fwd.y, -fwd.x)
 	var tri := PackedVector2Array([

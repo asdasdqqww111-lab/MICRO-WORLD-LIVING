@@ -107,8 +107,8 @@ func _test_databases() -> void:
 	SkillDB.reload()
 	CreatureDB.reload()
 	_check(ItemDB.count() >= 25, "ItemDB loads >= 25 items (got %d)" % ItemDB.count())
-	_check(QuestDB.count() >= 10, "QuestDB loads >= 10 quests & contracts (got %d)" % QuestDB.count())
-	_check(SkillDB.count() == 24, "SkillDB loads 24 skill tree nodes across 4 branches (got %d)" % SkillDB.count())
+	_check(QuestDB.count() >= 24, "QuestDB loads >= 24 quests & contracts (got %d)" % QuestDB.count())
+	_check(SkillDB.count() >= 36, "SkillDB loads >= 36 skill tree nodes across 4 branches (got %d)" % SkillDB.count())
 	_check(CreatureDB.count() >= 10, "CreatureDB loads >= 10 creature archetypes (got %d)" % CreatureDB.count())
 	var valid := true
 	var valid_slots := ["none", "weapon", "armor", "helmet", "shield", "accessory"]
@@ -217,18 +217,18 @@ func _test_progression_and_skill_tree() -> void:
 
 	var tree := SkillTree.new()
 	_check(SkillDB.count() >= 36, "Expanded 5-Tier Skill Tree has %d >= 36 interconnected nodes" % SkillDB.count())
-	tree.add_points(12)
+	tree.add_points(16)
 	_check(not tree.can_upgrade("heavy_cleave", 5), "tier-1 skill locked before prerequisite")
-	_check(tree.upgrade("mighty_blow", 5), "tier-0 warrior skill unlocks")
+	_check(tree.upgrade("mighty_blow", 5) and tree.upgrade("iron_skin", 5), "tier-0 warrior skills unlock")
 	_check(tree.can_upgrade("heavy_cleave", 5), "tier-1 warrior skill unlocks after mighty_blow")
-	_check(tree.upgrade("heavy_cleave", 5), "heavy_cleave unlocked")
-	_check(tree.upgrade("lethal_precision", 10), "tier-2 lethal_precision unlocked")
-	_check(tree.upgrade("berserker_rage", 12), "tier-3 berserker_rage unlocked")
-	_check(tree.upgrade("sovereign_juggernaut", 15), "tier-4 capstone sovereign_juggernaut unlocked")
-	_check(tree.combo_finisher_mult() > 1.0 and tree.lifesteal_fraction() > 0.0, "tier-4 capstone grants combo finisher & lifesteal bonuses")
-	_check(tree.points == 7 and tree.total_spent_points() == 5, "skill points tracked accurately")
+	_check(tree.upgrade("heavy_cleave", 5) and tree.upgrade("shield_mastery", 5), "tier-1 warrior skills unlocked")
+	_check(tree.upgrade("lethal_precision", 10) and tree.upgrade("combo_finisher", 10), "tier-2 warrior skills unlocked")
+	_check(tree.upgrade("berserker_rage", 12) and tree.upgrade("blood_thirst", 12), "tier-3 warrior skills unlocked")
+	_check(tree.upgrade("sovereign_vanguard", 15), "tier-4 capstone sovereign_vanguard unlocked")
+	_check(tree.combo_finisher_bonus() > 0.0 and tree.lifesteal_ratio() > 0.0, "tier-4 capstone grants combo finisher & lifesteal bonuses")
+	_check(tree.points == 3 and tree.total_spent_points() == 13, "skill points tracked accurately")
 	var refunded := tree.reset_all()
-	_check(refunded == 5 and tree.points == 12 and tree.ranks.is_empty(), "skill tree reset refunds all spent points")
+	_check(refunded == 13 and tree.points == 16 and tree.ranks.is_empty(), "skill tree reset refunds all spent points")
 
 # --- guild & crafting --------------------------------------------------------
 
