@@ -210,7 +210,7 @@ func _load_floor(floor_num: int, player: Node) -> void:
 	var master_uid := _uid_for(floor_num, "master", 0)
 	var master_spawn: Vector3 = anchors["master_anchor"]
 	# spawn_creature refuses to spawn dead uids — persistence is automatic.
-	world.spawn_creature(master["data"], master_uid, master_spawn, floor_container)
+	world.spawn_creature_data(master["data"], master_uid, master_spawn, floor_container)
 	_floor_uids.append(master_uid)
 
 	# --- Move player to the floor spawn --------------------------------------
@@ -255,7 +255,7 @@ func _spawn_scaled(base: CreatureData, uid: String, pos: Vector3, hp: float, dmg
 	data.damage = dmg
 	data.is_boss = false
 	data.is_elite = false
-	world.spawn_creature(data, uid, pos, floor_container)
+	world.spawn_creature_data(data, uid, pos, floor_container)
 	_floor_uids.append(uid)
 
 func _clear_floor() -> void:
