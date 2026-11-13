@@ -149,7 +149,7 @@ jobs:
             echo "2. على الهاتف: الإعدادات ← التطبيقات ← تثبيت تطبيقات غير معروفة ← اسمح للمتصفح/مدير الملفات."
             echo "3. افتح ملف الـ APK واضغط **تثبيت / Install**."
             echo ""
-            echo "**جهاز مطلوب:** Android 5.0+ (\`arm64-v8a\` أو \`armeabi-v7a\`) متوافق مع OpenGL ES 3.0."
+            echo "**جهاز مطلوب:** Android (\`arm64-v8a\` أو \`armeabi-v7a\`) مع دعم Vulkan Mobile."
             echo ""
             echo "**أبرز محتوى إصدار Eldoria v1.0**"
             echo "- قرية إلدوريا الحية (18 شخصية NPC بجدول يومي + طاحونة + سوق + حداد + كنيسة + قلعة نقابة المغامرين)."
@@ -165,13 +165,13 @@ jobs:
             echo "| الحجم | $SIZE |"
             echo "| SHA-256 | \`$SHA\` |"
             echo "| فحوص القبول الآلية | $PASSED نجحت / $FAILED فشلت |"
-            echo "| المحرك | Godot 4.3 stable — Compatibility (GLES3) |"
+            echo "| المحرك | Godot 4.3 stable — Vulkan Mobile |"
             echo "| الحزمة | com.microworldliving.game |"
             echo "| المعماريات | arm64-v8a + armeabi-v7a |"
             echo "| التوقيع | debug keystore (للاختبار المباشر) |"
             echo "| commit | \`${GITHUB_SHA}\` |"
             echo ""
-            echo "## قياس الأداء الفعلي على GLES3"
+            echo "## قياسات سابقة على عارض برمجي (ليست قياس أداء الهاتف)"
             echo ""
             echo "\`\`\`"
             sed -n '1,45p' docs/reports/perf_probe_results.txt 2>/dev/null || echo "(no measurements)"
@@ -191,20 +191,13 @@ jobs:
         run: |
           set -euo pipefail
           APK=build/android/micro_world_living.apk
-          for TAG in v3.0-debug v2.0-debug v1.1-debug v1.0-debug; do
-            if gh release view "$TAG" >/dev/null 2>&1; then
-              gh release upload "$TAG" "$APK" --clobber
-              gh release edit "$TAG" \
-                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v3.0 (Royal Capital City, Realism, 36-Node Skill Tree, 24 Quests & 100% Arabic) APK" \
-                --notes-file RELEASE_NOTES.md
-            else
-              gh release create "$TAG" "$APK" \
-                --target "${{ github.sha }}" \
-                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v3.0 (Royal Capital City, Realism, 36-Node Skill Tree, 24 Quests & 100% Arabic) APK" \
-                --notes-file RELEASE_NOTES.md \
-                --prerelease
-            fi
-          done
+          # Unique immutable release per run: never replace older APKs or their tags.
+          TAG="performance-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          gh release create "$TAG" "$APK" \
+            --target "${GITHUB_SHA}" \
+            --title "MICRO WORLD: LIVING — Performance update (Android debug APK)" \
+            --notes-file RELEASE_NOTES.md \
+            --prerelease
 
       - name: Upload APK verification log
         if: always()
