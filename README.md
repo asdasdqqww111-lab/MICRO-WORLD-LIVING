@@ -1,19 +1,19 @@
-# MICRO WORLD: LIVING — Chronicles of Eldoria (v1.1 · Phase 1 Complete)
+# MICRO WORLD: LIVING — Chronicles of Eldoria (v2.0 · Ultra Immersion & Systems Overhaul)
 
 A complete **offline 3D Medieval Fantasy Action-RPG** built with **Godot 4.3 (`gl_compatibility` / GLES3)** for Android phones, tablets, and desktop — using **100% permissively licensed (`CC0 1.0` & `SIL OFL 1.1`) 3D & font assets**.
 
 ---
 
-## Direct Android APK Download (v1.1)
+## Direct Android APK Download (v2.0)
 
-- **One-Tap APK Download (`v1.1-debug`):**
-  `https://github.com/asdasdqqww111-lab/MICRO-WORLD-LIVING/releases/download/v1.1-debug/micro_world_living.apk`
+- **One-Tap APK Download (`v2.0-debug`):**
+  `https://github.com/asdasdqqww111-lab/MICRO-WORLD-LIVING/releases/download/v2.0-debug/micro_world_living.apk`
 - **GitHub Release Page:**
-  `https://github.com/asdasdqqww111-lab/MICRO-WORLD-LIVING/releases/tag/v1.1-debug`
+  `https://github.com/asdasdqqww111-lab/MICRO-WORLD-LIVING/releases/tag/v2.0-debug`
 
 ---
 
-## Key Features (Eldoria v1.1 — Phase 1 Expansion)
+## Key Features (Eldoria v2.0 — Ultra Immersion, PBR & Systems Architecture)
 
 ### 1. Four Playable Hero Classes & Character Creation (`HeroClassDB` + `ClassSelectScreen`)
 - **Knight (`Knight.glb`)** — Balanced shield-bearing vanguard (`Iron Sword + Oak Shield + Leather Armor`, starts with **Iron Vanguard**).
