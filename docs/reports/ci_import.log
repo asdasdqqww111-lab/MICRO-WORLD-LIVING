@@ -2,42 +2,6 @@ Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 WARNING: Ignoring face with non-finite normal in LOD generation.
      at: generate_lods (scene/resources/3d/importer_mesh.cpp:521)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:93)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:102)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:109)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:118)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:93)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:102)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:109)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:118)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/world/weather_system.gd:-1)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/world/world_root.gd:-1)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/core/game.gd:-1)
-ERROR: Failed to load script "res://scripts/core/game.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:2936)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:93)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:102)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:109)
-SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
-          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:118)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://tests/screenshot_probe.gd:-1)
-ERROR: Failed to load script "res://tests/screenshot_probe.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:2936)
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 [VerifyStylizedImport] Imported 35 / 35 stylized PBR assets & shaders (failed=0)
