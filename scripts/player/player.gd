@@ -8,8 +8,8 @@ extends CharacterBody3D
 
 signal zone_changed(zone_id: String)
 
-const MODEL_PATH := "res://assets/characters/player/Knight.glb"
-const FALLBACK_MODEL_PATH := "res://assets/models/characters/Skeleton_Warrior.glb"
+const MODEL_PATH := "res://assets_realistic/models/characters/knight_hero.glb"
+const FALLBACK_MODEL_PATH := "res://assets/characters/player/Knight.glb"
 const MODEL_YAW_OFFSET := PI
 const MODEL_SCALE := 1.0
 

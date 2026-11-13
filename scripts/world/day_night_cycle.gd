@@ -16,6 +16,7 @@ var clouds: CloudLayer
 var environment: Environment
 var sky_material: ProceduralSkyMaterial
 var sky_shader_material: ShaderMaterial
+var panorama_sky_material: PanoramaSkyMaterial
 
 var _last_minute: int = -1
 var _last_hour: int = -1
@@ -31,6 +32,7 @@ func setup(sun_light: DirectionalLight3D, env: Environment, moon_light: Directio
 	if env != null and env.sky != null:
 		sky_material = env.sky.sky_material as ProceduralSkyMaterial
 		sky_shader_material = env.sky.sky_material as ShaderMaterial
+		panorama_sky_material = env.sky.sky_material as PanoramaSkyMaterial
 	apply_now()
 
 func set_time_scale_multiplier(value: float) -> void:
@@ -95,7 +97,9 @@ func apply_now() -> void:
 		if _weather_darkness > 0.0:
 			top = top.lerp(rain_grey, _weather_darkness * 0.68)
 			horizon = horizon.lerp(rain_grey, _weather_darkness * 0.68)
-		if sky_shader_material != null:
+		if panorama_sky_material != null:
+			panorama_sky_material.energy_multiplier = lerpf(0.16, 0.96, daylight) * (1.0 - golden_hour * 0.14) * weather_factor
+		elif sky_shader_material != null:
 			sky_shader_material.set_shader_parameter("sky_top", Vector3(top.r, top.g, top.b))
 			sky_shader_material.set_shader_parameter("sky_horizon", Vector3(horizon.r, horizon.g, horizon.b))
 			sky_shader_material.set_shader_parameter("night_factor", night_factor)

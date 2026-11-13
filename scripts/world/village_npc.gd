@@ -62,7 +62,7 @@ func _build_visual() -> void:
 	visual.name = "Visual"
 	visual.rotation.y = PI
 	add_child(visual)
-	var fallback_human := "res://assets/characters/npcs/Barbarian.glb"
+	var fallback_human := "res://assets_realistic/models/characters/npc_citizen.glb"
 	var chosen := model_path if (not model_path.is_empty() and AssetLibrary.has_model(model_path)) else fallback_human
 	if not visual.setup(chosen, model_scale):
 		var fb := ProceduralModels.build("slime")

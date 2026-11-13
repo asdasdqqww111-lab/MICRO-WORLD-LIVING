@@ -53,48 +53,86 @@ func _ready() -> void:
 		AudioManager.play_music_for_zone("village")
 
 func _build_environment() -> void:
-	world_environment = WorldEnvironment.new()
-	world_environment.name = "WorldEnvironment"
-	environment = Environment.new()
-	environment.background_mode = Environment.BG_SKY
-	var sky := Sky.new()
-	sky.radiance_size = Sky.RADIANCE_SIZE_64
-	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
-	if DisplayServer.get_name() == "headless":
-		var sky_material := ProceduralSkyMaterial.new()
-		sky_material.sky_top_color = Color(0.18, 0.40, 0.74)
-		sky_material.sky_horizon_color = Color(0.62, 0.76, 0.88)
-		sky.sky_material = sky_material
+	# Reuse scene-level WorldEnvironment / DirectionalLight3D from game.tscn if present,
+	# or construct identically when WorldRoot is instantiated standalone.
+	var p := get_parent()
+	if p != null and p.has_node("WorldEnvironment"):
+		world_environment = p.get_node("WorldEnvironment") as WorldEnvironment
 	else:
-		sky.sky_material = DynamicSkyShader.create_material()
-	environment.sky = sky
-	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	environment.ambient_light_sky_contribution = 0.86
-	environment.ambient_light_energy = 0.46
-	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	environment.tonemap_exposure = 0.88
-	environment.adjustment_enabled = true
-	environment.adjustment_contrast = 1.11
-	environment.adjustment_saturation = 1.03
-	environment.fog_enabled = true
-	environment.fog_density = 0.0032
-	environment.fog_light_color = Color(0.62, 0.74, 0.86)
-	environment.fog_sky_affect = 0.32
-	environment.fog_aerial_perspective = 0.46
-	world_environment.environment = environment
-	add_child(world_environment)
+		world_environment = WorldEnvironment.new()
+		world_environment.name = "WorldEnvironment"
+		add_child(world_environment)
 
-	sun = DirectionalLight3D.new()
-	sun.name = "Sun"
+	environment = world_environment.environment if world_environment.environment != null else Environment.new()
+	environment.background_mode = Environment.BG_SKY
+	var sky := environment.sky if environment.sky != null else Sky.new()
+	sky.radiance_size = Sky.RADIANCE_SIZE_128
+	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
+	var hdri_path := "res://assets_realistic/hdri/eldoria_cinematic_1k.hdr"
+	var pano := sky.sky_material as PanoramaSkyMaterial
+	if pano == null:
+		pano = PanoramaSkyMaterial.new()
+	if pano.panorama == null and ResourceLoader.exists(hdri_path):
+		pano.panorama = ResourceLoader.load(hdri_path) as Texture2D
+	pano.energy_multiplier = 0.96
+	sky.sky_material = pano
+	environment.sky = sky
+
+	# Cinematic AAA Mobile Lighting: HDRI Sky Ambient + ACES Tonemap + Subtle Glow + Depth Fog + Low-Cost SSAO
+	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	environment.ambient_light_sky_contribution = 0.88
+	environment.ambient_light_energy = 0.56
+	environment.tonemap_mode = Environment.TONE_MAPPER_ACES
+	environment.tonemap_exposure = 0.96
+	environment.tonemap_white = 6.0
+
+	environment.glow_enabled = true
+	environment.glow_intensity = 0.42
+	environment.glow_strength = 0.86
+	environment.glow_bloom = 0.08
+	environment.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
+	environment.glow_hdr_threshold = 1.05
+
+	environment.fog_enabled = true
+	environment.fog_mode = Environment.FOG_MODE_DEPTH
+	environment.fog_light_color = Color(0.72, 0.78, 0.88)
+	environment.fog_sun_scatter = 0.28
+	environment.fog_density = 0.0028
+	environment.fog_aerial_perspective = 0.48
+	environment.fog_sky_affect = 0.22
+	environment.fog_depth_curve = 1.35
+	environment.fog_depth_begin = 28.0
+	environment.fog_depth_end = 135.0
+
+	environment.ssao_enabled = true
+	environment.ssao_radius = 1.15
+	environment.ssao_intensity = 1.30
+	environment.ssao_power = 1.5
+	environment.ssao_detail = 0.25
+	RenderingServer.environment_set_ssao_quality(
+		RenderingServer.ENV_SSAO_QUALITY_VERY_LOW, true, 0.5, 1, 25.0, 45.0
+	)
+
+	environment.adjustment_enabled = true
+	environment.adjustment_contrast = 1.06
+	environment.adjustment_saturation = 1.04
+	world_environment.environment = environment
+
+	if p != null and p.has_node("DirectionalLight3D"):
+		sun = p.get_node("DirectionalLight3D") as DirectionalLight3D
+	else:
+		sun = DirectionalLight3D.new()
+		sun.name = "Sun"
+		add_child(sun)
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 72.0
-	sun.shadow_bias = 0.025
-	sun.shadow_normal_bias = 1.2
-	sun.shadow_blur = 1.45
-	sun.light_energy = 1.20
+	sun.directional_shadow_max_distance = 50.0
+	sun.shadow_bias = 0.03
+	sun.shadow_normal_bias = 1.25
+	sun.shadow_blur = 1.85
+	sun.light_energy = 1.18
 	sun.light_color = Color(1.0, 0.95, 0.86)
-	add_child(sun)
+	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_LOW)
 
 	moon = DirectionalLight3D.new()
 	moon.name = "Moon"
@@ -103,8 +141,10 @@ func _build_environment() -> void:
 	moon.light_color = Color(0.62, 0.72, 1.0)
 	add_child(moon)
 
+	# HDRI Panorama provides photographic clouds at 0 draw calls; keep CloudLayer hidden for API compatibility
 	clouds = CloudLayer.new()
 	clouds.name = "CloudLayer"
+	clouds.visible = false
 	add_child(clouds)
 
 func _build_world() -> void:
@@ -148,7 +188,7 @@ func _apply_zone_visibility(zone_id: String) -> void:
 	if overworld_root != null:
 		overworld_root.visible = in_overworld
 	if clouds != null:
-		clouds.visible = in_overworld
+		clouds.visible = false
 	if sun != null:
 		sun.visible = in_overworld
 		sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
@@ -172,7 +212,7 @@ func _apply_zone_visibility(zone_id: String) -> void:
 		else:
 			environment.background_mode = Environment.BG_SKY
 			environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-			environment.ambient_light_energy = 0.48
+			environment.ambient_light_energy = 0.56
 			environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	if house_root != null:
 		house_root.visible = (zone_id == "house")
@@ -326,7 +366,7 @@ func _apply_graphics() -> void:
 	var quality := SettingsManager.shadow_quality()
 	var in_overworld := overworld_root == null or overworld_root.visible
 	sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
-	sun.directional_shadow_max_distance = 36.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 46.0
+	sun.directional_shadow_max_distance = 35.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 50.0
 	RenderingServer.directional_soft_shadow_filter_set_quality(quality)
 	if world_environment != null and world_environment.environment != null:
 		world_environment.environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
@@ -434,13 +474,12 @@ func _pos_on_terrain(x: float, z: float) -> Vector3:
 	return Vector3(x, y + 0.35, z)
 
 func _spawn_npcs() -> void:
-	var npc_dir := AssetLibrary.NPC_DIR
-	var player_dir := AssetLibrary.PLAYER_DIR
+	var rchar := AssetLibrary.REALISTIC_CHARACTERS_DIR
 
-	# --- 12 LIVING VILLAGE NPCS (All 12 Required Roles from Section 15.1!) ---
+	# --- 12 LIVING VILLAGE NPCS (Realistic Human-Proportioned Animated Cast!) ---
 	# 1. Blacksmith (Grim — preserved id "blacksmith")
 	var smith := _make_npc(overworld_root, "blacksmith", "Grim", "blacksmith", "Master Blacksmith",
-		npc_dir + "Barbarian.glb",
+		rchar + "npc_smith.glb",
 		{"work": landmarks["blacksmith_pos"], "rest": Vector3(-11.0, 0.0, -14.0), "sleep": landmarks["blacksmith_sleep"]},
 		["My anvil rings from dawn till dusk. Bring highland ore or use my forge!",
 		 "A good shield and tempered blade will save your life in the Sunken Crypt."],
@@ -450,7 +489,7 @@ func _spawn_npcs() -> void:
 
 	# 2. Farmer (Mira — preserved id "farmer")
 	var farmer := _make_npc(overworld_root, "farmer", "Mira", "farmer", "Windmill Farmer",
-		npc_dir + "Rogue.glb",
+		rchar + "npc_farmer.glb",
 		{"work": landmarks["farmer_pos"], "rest": landmarks["farmer_rest"], "sleep": landmarks["farmer_sleep"]},
 		["Skeletons crept out of the western woods again last night!",
 		 "Our golden wheat feeds all of Eldoria — help us keep the roads safe."],
@@ -459,7 +498,7 @@ func _spawn_npcs() -> void:
 
 	# 3. East Gate Guard (Osk — preserved id "guard")
 	var guard := _make_npc(overworld_root, "guard", "Osk", "guard", "Captain of the Watch",
-		player_dir + "Knight.glb",
+		rchar + "knight_hero.glb",
 		{"work": landmarks["guard_pos"], "rest": Vector3(20.0, 0.0, 6.0), "sleep": landmarks["guard_sleep"]},
 		["Beyond the stone bridge lies the Sunken Crypt and the Ancient Ruins.",
 		 "My patrol lost an Ancient Relic down in those vaults — recover it if you dare."],
@@ -469,7 +508,7 @@ func _spawn_npcs() -> void:
 
 	# 4. Village Elder (Elder Theron — Main Quest giver!)
 	_make_npc(overworld_root, "elder", "Elder Theron", "elder", "Village Elder",
-		npc_dir + "Mage.glb",
+		rchar + "npc_king.glb",
 		{"work": Vector3(0.0, 0.0, -3.2), "rest": Vector3(-8.0, 0.0, -15.0), "sleep": Vector3(15.0, 0.0, -6.5)},
 		["Welcome to Eldoria, young traveler. Dark tremors stir beneath the eastern hills.",
 		 "Visit the Grand Adventurers Guild to the north and register your name."],
@@ -477,7 +516,7 @@ func _spawn_npcs() -> void:
 
 	# 5. Merchant (Tariq — Market Trader)
 	var merch := _make_npc(overworld_root, "merchant", "Tariq", "merchant", "Caravan Merchant",
-		npc_dir + "Rogue.glb",
+		rchar + "npc_farmer.glb",
 		{"work": Vector3(10.5, 0.0, 7.8), "rest": Vector3(-10.0, 0.0, -15.5), "sleep": Vector3(16.5, 0.0, -8.5)},
 		["Finest potions, elixirs, and trail rations in the valley! Guild members earn a discount.",
 		 "Prices shift slightly with each passing day's caravan."],
@@ -486,7 +525,7 @@ func _spawn_npcs() -> void:
 
 	# 6. Chapel Healer (Sister Sera)
 	var healer := _make_npc(overworld_root, "healer", "Sister Sera", "healer", "Chapel Healer",
-		npc_dir + "Mage.glb",
+		rchar + "hero_mage.glb",
 		{"work": Vector3(13.5, 0.0, -15.5), "rest": Vector3(6.0, 0.0, -4.0), "sleep": Vector3(16.0, 0.0, -18.5)},
 		["Step into the Chapel's warmth if you are wounded or drained of Mana.",
 		 "Redcap mushrooms and Moonpetals make potent restorative draughts."],
@@ -495,7 +534,7 @@ func _spawn_npcs() -> void:
 
 	# 7. Innkeeper (Marta — Hearthstone Tavern)
 	var inn := _make_npc(overworld_root, "innkeeper", "Marta", "innkeeper", "Hearthstone Innkeeper",
-		npc_dir + "Barbarian.glb",
+		rchar + "npc_citizen.glb",
 		{"work": Vector3(-12.5, 0.0, -16.0), "rest": Vector3(-11.0, 0.0, -14.5), "sleep": Vector3(-15.5, 0.0, -19.5)},
 		["Warm stew, foaming cider, and a soft featherbed for ten gold coins!",
 		 "Hunters say a spectral Wraith haunts the Eastern Ruins past the bridge."],
@@ -504,7 +543,7 @@ func _spawn_npcs() -> void:
 
 	# 8. South Gate Guard (Varek — Night & Day Patrol)
 	var sguard := _make_npc(overworld_root, "south_guard", "Varek", "guard", "South Gate Sentinel",
-		player_dir + "Knight.glb",
+		rchar + "npc_guard.glb",
 		{"work": Vector3(-2.5, 0.0, 26.5), "rest": Vector3(2.5, 0.0, 25.5), "sleep": Vector3(22.0, 0.0, 14.0)},
 		["South Gate stands secure! Watch for Highland Stags by Crystal Lake.",
 		 "Every third night, undead raiders test our perimeter — stay ready."],
@@ -514,7 +553,7 @@ func _spawn_npcs() -> void:
 
 	# 9. Woodland Ranger / Hunter (Rowan)
 	var ranger := _make_npc(overworld_root, "hunter", "Rowan", "hunter", "Woodland Ranger",
-		AssetLibrary.CHARACTER_DIR + "Rogue_Hooded.glb",
+		rchar + "hero_ranger.glb",
 		{"work": Vector3(-24.5, 0.0, 3.5), "rest": Vector3(-12.0, 0.0, -14.0), "sleep": Vector3(-24.0, 0.0, -3.0)},
 		["Keep your eyes peeled in the western timber. Bramble Stalkers move in pairs.",
 		 "Southwest of the woods lies a hidden Sacred Grove blessed with Moonpetals."],
@@ -523,7 +562,7 @@ func _spawn_npcs() -> void:
 
 	# 10. Forge Apprentice (Toma)
 	_make_npc(overworld_root, "apprentice", "Toma", "apprentice", "Smith's Apprentice",
-		npc_dir + "Rogue.glb",
+		rchar + "npc_smith.glb",
 		{"work": Vector3(-13.2, 0.0, 8.8), "rest": Vector3(-2.5, 0.0, 3.5), "sleep": Vector3(-18.5, 0.0, 9.5)},
 		["Master Grim lets me tend the bellows! Two Iron Ore and Wood smelt an Iron Ingot.",
 		 "Someday I'll forge a Mythic Sunblade worthy of Rank S heroes."],
@@ -531,7 +570,7 @@ func _spawn_npcs() -> void:
 
 	# 11. Village Child (Pip — playful square runner, scaled 0.74x!)
 	var child := _make_npc(overworld_root, "child", "Pip", "child", "Village Youth",
-		npc_dir + "Rogue.glb",
+		rchar + "npc_scout.glb",
 		{"work": Vector3(3.5, 0.0, 3.5), "rest": Vector3(-13.0, 0.0, -6.0), "sleep": Vector3(-16.0, 0.0, -7.0)},
 		["Whoa, real knight armor! Are you going to join the Adventurers Guild?",
 		 "I saw glowing blue flowers down by Crystal Lake!"],
@@ -541,7 +580,7 @@ func _spawn_npcs() -> void:
 
 	# 12. Wayfaring Traveler (Vane — near East Stone Bridge!)
 	_make_npc(overworld_root, "traveler", "Vane", "traveler", "Wayfaring Scholar",
-		npc_dir + "Mage.glb",
+		rchar + "hero_mage.glb",
 		{"work": Vector3(33.5, 0.0, -3.2), "rest": Vector3(-9.5, 0.0, -15.0), "sleep": Vector3(-14.5, 0.0, -18.5)},
 		["Look how clear the Eldoria River runs beneath this stone arch bridge!",
 		 "Shadowfang Bats near the northern cave forced my caravan to turn back."],
@@ -550,7 +589,7 @@ func _spawn_npcs() -> void:
 	# --- 6 NEW ROYAL CAPITAL CITY NPCS (Expanding Eldoria to 24 Living Citizens!) ---
 	# 13b. Royal Citadel Commander (Commander Vaelen — Northwest Citadel Keep!)
 	var cmd := _make_npc(overworld_root, "citadel_commander", "Commander Vaelen", "guard", "Royal Citadel Commander",
-		player_dir + "Knight.glb",
+		rchar + "knight_hero.glb",
 		{"work": Vector3(-23.0, 0.0, -17.5), "rest": Vector3(-19.5, 0.0, -15.0), "sleep": Vector3(-26.0, 0.0, -21.0)},
 		["The Sovereign Citadel stands watch over every gate of Royal Eldoria.",
 		 "Clear the Western Monster Camp and the Granite Golems to earn the Crown's favor!"],
@@ -559,7 +598,7 @@ func _spawn_npcs() -> void:
 
 	# 14b. Royal Master Alchemist (Zenia — Arcane Conservatory!)
 	var alch := _make_npc(overworld_root, "alchemist_master", "Master Zenia", "healer", "Royal Alchemist",
-		npc_dir + "Mage.glb",
+		rchar + "hero_mage.glb",
 		{"work": Vector3(24.0, 0.0, -13.0), "rest": Vector3(18.0, 0.0, -11.0), "sleep": Vector3(27.0, 0.0, -15.0)},
 		["Slime Gel and Moonpetals distill into the purest Arcane Elixirs in the realm.",
 		 "Bring me specimens from Crystal Lake and I will reward your scholarship handsomely!"],
@@ -568,7 +607,7 @@ func _spawn_npcs() -> void:
 
 	# 15b. Royal Bazaar Jeweler & Merchant (Nader — East Trade Exchange!)
 	var jeweler := _make_npc(overworld_root, "bazaar_jeweler", "Nader", "merchant", "Royal Bazaar Jeweler",
-		npc_dir + "Rogue.glb",
+		rchar + "npc_farmer.glb",
 		{"work": Vector3(20.0, 0.0, 2.5), "rest": Vector3(13.5, 0.0, 6.0), "sleep": Vector3(22.5, 0.0, 4.0)},
 		["Welcome to the East Trade Exchange! Fine rings, ingots, and relics pass through my counter.",
 		 "Bring Wolf Pelts or Iron Ingots if you wish to fulfill royal trade commissions!"],
@@ -577,7 +616,7 @@ func _spawn_npcs() -> void:
 
 	# 16b. Garrison Archery Captain (Captain Selene — South-East Archery Range!)
 	var arch_cap := _make_npc(overworld_root, "archery_captain", "Captain Selene", "hunter", "Garrison Archery Captain",
-		AssetLibrary.CHARACTER_DIR + "Rogue_Hooded.glb",
+		rchar + "npc_scout.glb",
 		{"work": Vector3(16.0, 0.0, 20.5), "rest": Vector3(19.0, 0.0, 16.0), "sleep": Vector3(23.0, 0.0, 15.0)},
 		["Steady breath, keen eyes! Our garrison rangers patrol from Crystal Lake to the Alpine Rim.",
 		 "Hunt the grey wolves stalking the northern timberline and report back to me."],
@@ -586,7 +625,7 @@ func _spawn_npcs() -> void:
 
 	# 17b. North Mountain Gate Sentinel (Sentinel Rakan — North Gatehouse!)
 	var ng := _make_npc(overworld_root, "north_sentinel", "Rakan", "guard", "North Gate Sentinel",
-		player_dir + "Knight.glb",
+		rchar + "npc_guard.glb",
 		{"work": Vector3(-2.6, 0.0, -33.5), "rest": Vector3(2.6, 0.0, -32.5), "sleep": Vector3(22.0, 0.0, 14.0)},
 		["Beyond the North Gate rise the Pine Highlands and Shadowfang Cave.",
 		 "Keep your blade drawn if you venture toward the snow peaks!"],
@@ -595,17 +634,17 @@ func _spawn_npcs() -> void:
 
 	# 18b. West Woodland Gate Warden (Warden Layan — West Gatehouse!)
 	var wg := _make_npc(overworld_root, "west_warden", "Layan", "guard", "West Gate Warden",
-		AssetLibrary.CHARACTER_DIR + "Rogue_Hooded.glb",
+		rchar + "npc_scout.glb",
 		{"work": Vector3(-33.5, 0.0, 4.2), "rest": Vector3(-31.5, 0.0, -0.5), "sleep": Vector3(-28.0, 0.0, 10.0)},
 		["The West Gate opens onto the Whispering Woods and Sacred Grove.",
 		 "Watch for Bramble Stalkers and forest undead beyond the stone ramparts!"],
 		["dagger", "crossbow"])
 	wg.always_awake = true
 
-	# --- 6 ADVENTURERS GUILD INTERIOR NPCS (All 6 Roles from Section 13.2!) ---
+	# --- 6 ADVENTURERS GUILD INTERIOR NPCS (Realistic Cast!) ---
 	# 13. Guild Receptionist (Elena — Registration, Promotions F->S & Contracts!)
 	var recep := _make_npc(guild_root, "guild_receptionist", "Elena", "guild", "Guild Receptionist",
-		npc_dir + "Mage.glb",
+		rchar + "npc_citizen.glb",
 		{"work": guild_interior["receptionist_pos"], "rest": guild_interior["receptionist_pos"], "sleep": guild_interior["receptionist_pos"]},
 		["Every completed contract raises your Guild Reputation toward Ranks E, D, C, B, A, and S!",
 		 "Check the Quest Board beside me anytime for fresh bounties."],
@@ -615,7 +654,7 @@ func _spawn_npcs() -> void:
 
 	# 14. Guild Master (Grandmaster Aldric — Main Storyline!)
 	var gmaster := _make_npc(guild_root, "guild_master", "Grandmaster Aldric", "guild", "Guild Master",
-		player_dir + "Knight.glb",
+		rchar + "npc_king.glb",
 		{"work": guild_interior["master_pos"], "rest": guild_interior["master_pos"], "sleep": guild_interior["master_pos"]},
 		["I founded this hall after the First Crypt War. Now Malakor stirs once more.",
 		 "Prove your mettle, sharpen your skills, and bring peace to Eldoria."],
@@ -625,7 +664,7 @@ func _spawn_npcs() -> void:
 
 	# 15. Guild Quartermaster (Bram — Guild Armory Shop!)
 	var qm := _make_npc(guild_root, "quartermaster", "Bram", "quartermaster", "Guild Quartermaster",
-		npc_dir + "Barbarian.glb",
+		rchar + "npc_smith.glb",
 		{"work": guild_interior["quartermaster_pos"], "rest": guild_interior["quartermaster_pos"], "sleep": guild_interior["quartermaster_pos"]},
 		["Shields, greatswords, signet rings, and mana elixirs — stocked exclusively for Guild members!",
 		 "Higher Guild Ranks unlock steeper discounts across Eldoria."],
@@ -636,7 +675,7 @@ func _spawn_npcs() -> void:
 
 	# 16. Combat & Skill Trainer (Master Kael)
 	var trainer := _make_npc(guild_root, "combat_trainer", "Master Kael", "trainer", "Combat & Skill Master",
-		player_dir + "Knight.glb",
+		rchar + "knight_hero.glb",
 		{"work": guild_interior["trainer_pos"], "rest": guild_interior["trainer_pos"], "sleep": guild_interior["trainer_pos"]},
 		["Four paths await every hero: Warrior, Mage, Ranger, and Survival.",
 		 "Time your Dodge Roll through red boss telegraphs, or raise your Shield to absorb blows!"],
@@ -646,7 +685,7 @@ func _spawn_npcs() -> void:
 
 	# 17. Veteran Adventurer (Lyra — Rank B Ranger)
 	var vet := _make_npc(guild_root, "veteran_lyra", "Lyra", "adventurer", "Rank B Veteran",
-		AssetLibrary.CHARACTER_DIR + "Rogue_Hooded.glb",
+		rchar + "npc_scout.glb",
 		{"work": guild_interior["veteran_pos"], "rest": guild_interior["veteran_pos"], "sleep": guild_interior["veteran_pos"]},
 		["Tip from a Rank B scout: Ice Magic slows heavy foes cold in their tracks.",
 		 "And don't miss the hidden east wall chamber inside the Sunken Crypt!"],
@@ -655,7 +694,7 @@ func _spawn_npcs() -> void:
 
 	# 18. Rookie Recruit (Finn — Rank F Novice)
 	var rec := _make_npc(guild_root, "recruit_finn", "Finn", "adventurer", "Rank F Recruit",
-		npc_dir + "Rogue.glb",
+		rchar + "hero_ranger.glb",
 		{"work": guild_interior["recruit_pos"], "rest": guild_interior["recruit_pos"], "sleep": guild_interior["recruit_pos"]},
 		["I just earned my Rank F badge today! Starting with Moonpetal gathering by Crystal Lake.",
 		 "Maybe once I forge an Iron Sword I'll tackle the Bramble Stalker contract!"],

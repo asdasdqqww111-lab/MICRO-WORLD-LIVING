@@ -62,7 +62,9 @@ jobs:
           cat ~/.config/godot/editor_settings-4.3.tres
 
       - name: Import project
-        run: godot --headless --path . --import
+        run: |
+          godot --headless --path . --import
+          godot --headless --path . --script res://tools/verify_realistic_import.gd
 
       - name: Headless acceptance tests
         run: timeout 180 godot --headless --path . tests/test_runner.tscn

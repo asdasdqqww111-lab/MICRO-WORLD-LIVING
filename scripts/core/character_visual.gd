@@ -1,50 +1,51 @@
 class_name CharacterVisual
 extends Node3D
-## Animated character wrapper supporting KayKit Human Adventures (Knight, Mage,
-## Rogue, Barbarian) + Skeleton rigs, 18-state AnimationNodeStateMachine, and
-## dynamic 3D weapon/shield/helmet equipment toggling.
+## Realistic Human-Proportioned Animated Character Controller.
+## Supports Realistic Medieval Knight (HumanArmature), Quaternius Realistic RPG Cast
+## (CharacterArmature — 24 clips), and Skeleton Monster rigs, plus real 3D BoneAttachment3D
+## weapon & shield sockets with PBR metallic/normal materials.
 
 const CLIP_ALIASES := {
-	"idle": ["Idle", "Idle_B", "2H_Melee_Idle", "Unarmed_Idle", "idle", "movement", "clip"],
-	"idle_combat": ["Idle_Combat", "2H_Melee_Idle", "Idle", "holding-right"],
-	"walk": ["Walking_A", "Walking_B", "Walking_C", "Walking_D_Skeletons", "walk", "movement", "clip"],
-	"walk_back": ["Walking_Backwards", "Walking_A", "walk"],
-	"run": ["Running_A", "Running_B", "Running_C", "sprint", "movement", "clip"],
-	"sprint": ["Running_B", "Running_A", "sprint", "movement", "clip"],
-	"strafe_left": ["Running_Strafe_Left", "Walking_A"],
-	"strafe_right": ["Running_Strafe_Right", "Walking_B"],
-	"jump": ["Jump_Start", "Jump_Full_Short", "jump"],
-	"fall": ["Jump_Idle", "Jump_Full_Long", "fall"],
-	"land": ["Jump_Land"],
-	"dodge": ["Dodge_Forward", "Jump_Full_Short"],
-	"dodge_back": ["Dodge_Backward", "Dodge_Forward"],
-	"dodge_left": ["Dodge_Left", "Dodge_Forward"],
-	"dodge_right": ["Dodge_Right", "Dodge_Forward"],
-	"block": ["Blocking", "Block", "2H_Melee_Idle"],
-	"block_hit": ["Block_Hit", "Block_Attack", "Block"],
-	"attack_1": ["1H_Melee_Attack_Slice_Diagonal", "attack-melee-right", "Unarmed_Melee_Attack_Punch_A"],
-	"attack_2": ["1H_Melee_Attack_Slice_Horizontal", "1H_Melee_Attack_Stab", "attack-melee-left"],
-	"attack_3": ["1H_Melee_Attack_Jump_Chop", "1H_Melee_Attack_Chop", "2H_Melee_Attack_Chop"],
-	"attack_dual_1": ["Dualwield_Melee_Attack_Slice", "1H_Melee_Attack_Slice_Diagonal"],
-	"attack_dual_2": ["Dualwield_Melee_Attack_Stab", "Dualwield_Melee_Attack_Chop"],
-	"attack_2h_1": ["2H_Melee_Attack_Slice", "1H_Melee_Attack_Slice_Diagonal"],
-	"attack_2h_2": ["2H_Melee_Attack_Chop", "1H_Melee_Attack_Chop"],
-	"attack_ranged": ["1H_Ranged_Shoot", "2H_Ranged_Shoot", "Throw"],
-	"attack_heavy": ["2H_Melee_Attack_Spin", "2H_Melee_Attack_Chop", "1H_Melee_Attack_Jump_Chop", "1H_Melee_Attack_Chop"],
-	"cast": ["Spellcast_Shoot", "Spellcast_Raise", "Spellcast_Long", "Interact"],
-	"cast_summon": ["Spellcast_Summon", "Spellcast_Raise", "Spellcast_Long"],
-	"hit": ["Hit_A", "Hit_B", "Block_Hit"],
-	"death": ["Death_A", "Death_B", "Death_C_Skeletons", "die"],
-	"interact": ["Interact", "PickUp", "Use_Item", "interact-right"],
-	"pickup": ["PickUp", "Interact"],
-	"use_item": ["Use_Item", "Interact"],
-	"sit": ["Sit_Chair_Idle", "Sit_Floor_Idle", "sit"],
-	"lie": ["Lie_Idle"],
-	"cheer": ["Cheer", "emote-yes"],
-	"taunt": ["Taunt", "Taunt_Longer", "Cheer"],
-	"spawn": ["Skeletons_Awaken_Floor", "Spawn_Ground", "Idle"],
-	"work_hammer": ["1H_Melee_Attack_Chop", "Interact"],
-	"work_pray": ["Spellcast_Long", "Spellcasting", "Idle"],
+	"idle": ["HumanArmature|Idle_swordRight", "HumanArmature|Idle", "Idle_Sword", "Idle_Neutral", "Idle", "Idle_B", "2H_Melee_Idle", "Unarmed_Idle", "idle", "movement", "clip"],
+	"idle_combat": ["HumanArmature|Idle_swordRight", "Idle_Sword", "Idle_Combat", "2H_Melee_Idle", "Idle", "holding-right"],
+	"walk": ["HumanArmature|Walking", "Walk", "Walking_A", "Walking_B", "Walking_C", "Walking_D_Skeletons", "walk", "movement", "clip"],
+	"walk_back": ["Run_Back", "Walking_Backwards", "HumanArmature|Walking", "Walk", "Walking_A", "walk"],
+	"run": ["HumanArmature|Run_swordRight", "HumanArmature|Run", "Run", "Running_A", "Running_B", "Running_C", "sprint", "movement", "clip"],
+	"sprint": ["HumanArmature|Run", "Run", "Running_B", "Running_A", "sprint", "movement", "clip"],
+	"strafe_left": ["Run_Left", "Running_Strafe_Left", "HumanArmature|Walking", "Walk", "Walking_A"],
+	"strafe_right": ["Run_Right", "Running_Strafe_Right", "HumanArmature|Walking", "Walk", "Walking_B"],
+	"jump": ["HumanArmature|Jump", "Jump_Start", "Jump_Full_Short", "Roll", "jump"],
+	"fall": ["HumanArmature|Jump", "Jump_Idle", "Jump_Full_Long", "Idle", "fall"],
+	"land": ["Jump_Land", "HumanArmature|Idle_swordRight", "Idle"],
+	"dodge": ["HumanArmature|Roll_sword", "HumanArmature|Roll", "Roll", "Dodge_Forward", "Jump_Full_Short"],
+	"dodge_back": ["HumanArmature|Roll", "Roll", "Dodge_Backward", "Dodge_Forward"],
+	"dodge_left": ["HumanArmature|Roll", "Roll", "Dodge_Left", "Dodge_Forward"],
+	"dodge_right": ["HumanArmature|Roll", "Roll", "Dodge_Right", "Dodge_Forward"],
+	"block": ["HumanArmature|Idle_swordLeft", "Idle_Sword", "Blocking", "Block", "2H_Melee_Idle"],
+	"block_hit": ["HitRecieve", "Block_Hit", "Block_Attack", "Block", "HumanArmature|Idle_swordLeft"],
+	"attack_1": ["HumanArmature|Run_swordAttack", "Sword_Slash", "1H_Melee_Attack_Slice_Diagonal", "Punch_Right", "attack-melee-right"],
+	"attack_2": ["Sword_Slash", "Punch_Left", "HumanArmature|Run_swordAttack", "1H_Melee_Attack_Slice_Horizontal", "1H_Melee_Attack_Stab"],
+	"attack_3": ["HumanArmature|swordAttackJump", "Kick_Right", "Sword_Slash", "1H_Melee_Attack_Jump_Chop", "1H_Melee_Attack_Chop"],
+	"attack_dual_1": ["Sword_Slash", "Dualwield_Melee_Attack_Slice", "HumanArmature|Run_swordAttack", "1H_Melee_Attack_Slice_Diagonal"],
+	"attack_dual_2": ["Punch_Left", "Dualwield_Melee_Attack_Stab", "Sword_Slash"],
+	"attack_2h_1": ["HumanArmature|swordAttackJump", "Sword_Slash", "2H_Melee_Attack_Slice", "1H_Melee_Attack_Slice_Diagonal"],
+	"attack_2h_2": ["HumanArmature|Run_swordAttack", "Kick_Left", "2H_Melee_Attack_Chop", "1H_Melee_Attack_Chop"],
+	"attack_ranged": ["Gun_Shoot", "Run_Shoot", "1H_Ranged_Shoot", "2H_Ranged_Shoot", "Sword_Slash"],
+	"attack_heavy": ["HumanArmature|swordAttackJump", "Kick_Right", "Sword_Slash", "2H_Melee_Attack_Spin", "2H_Melee_Attack_Chop"],
+	"cast": ["Wave", "Interact", "Spellcast_Shoot", "Spellcast_Raise", "Spellcast_Long", "HumanArmature|Run_swordAttack"],
+	"cast_summon": ["Wave", "Spellcast_Summon", "Spellcast_Raise", "Interact"],
+	"hit": ["HitRecieve", "HitRecieve_2", "Hit_A", "Hit_B", "HumanArmature|Idle_swordLeft"],
+	"death": ["HumanArmature|Death", "Death", "Death_A", "Death_B", "Death_C_Skeletons", "die"],
+	"interact": ["Interact", "Wave", "PickUp", "Use_Item", "HumanArmature|Idle", "interact-right"],
+	"pickup": ["Interact", "PickUp", "HumanArmature|Idle"],
+	"use_item": ["Interact", "Use_Item", "Wave"],
+	"sit": ["Idle_Neutral", "Sit_Chair_Idle", "Sit_Floor_Idle", "HumanArmature|Idle", "sit"],
+	"lie": ["Death", "Lie_Idle", "HumanArmature|Death"],
+	"cheer": ["Wave", "Cheer", "HumanArmature|Jump", "emote-yes"],
+	"taunt": ["Wave", "Taunt", "Taunt_Longer", "Cheer"],
+	"spawn": ["Skeletons_Awaken_Floor", "Spawn_Ground", "Idle", "HumanArmature|Idle"],
+	"work_hammer": ["Sword_Slash", "Punch_Right", "1H_Melee_Attack_Chop", "Interact"],
+	"work_pray": ["Wave", "Interact", "Spellcast_Long", "Idle"],
 }
 
 var model: Node3D
@@ -54,16 +55,26 @@ var playback: AnimationNodeStateMachinePlayback
 var available_states: Dictionary = {}
 var current_state: String = ""
 var _submeshes: Dictionary = {}
+var _skeleton: Skeleton3D
+var _weapon_socket: BoneAttachment3D
+var _shield_socket: BoneAttachment3D
+var _equipped_weapon_node: Node3D
+var _equipped_shield_node: Node3D
+var _model_path: String = ""
 
 func setup(model_path: String, model_scale: float = 1.0) -> bool:
-	var inst := AssetLibrary.instantiate(model_path, model_scale)
+	_model_path = model_path
+	var norm_scale := model_scale * AssetLibrary.character_base_scale(model_path)
+	var inst := AssetLibrary.instantiate(model_path, norm_scale)
 	if inst == null:
 		push_warning("CharacterVisual: missing model %s" % model_path)
 		return false
 	model = inst
 	model.name = "Model"
 	add_child(model)
+	_skeleton = _find_skeleton(model)
 	_index_meshes_and_shadows(model)
+	_setup_hand_sockets()
 	anim_player = _find_animation_player(model)
 	if anim_player != null:
 		_build_state_machine()
@@ -73,6 +84,7 @@ func setup(model_path: String, model_scale: float = 1.0) -> bool:
 func attach_existing(model_root: Node3D) -> void:
 	model = model_root
 	add_child(model)
+	_skeleton = _find_skeleton(model)
 	_index_meshes_and_shadows(model)
 	anim_player = _find_animation_player(model)
 	if anim_player != null:
@@ -88,17 +100,72 @@ func _find_animation_player(root: Node) -> AnimationPlayer:
 			return found
 	return null
 
+func _find_skeleton(root: Node) -> Skeleton3D:
+	if root is Skeleton3D:
+		return root as Skeleton3D
+	for child: Node in root.get_children():
+		var found := _find_skeleton(child)
+		if found != null:
+			return found
+	return null
+
+func _setup_hand_sockets() -> void:
+	if _skeleton == null:
+		return
+	var r_bone := _find_bone_name(["Palm.R", "Wrist.R", "Hand.R", "handslot.r"])
+	if not r_bone.is_empty():
+		_weapon_socket = BoneAttachment3D.new()
+		_weapon_socket.name = "WeaponSocket"
+		_weapon_socket.bone_name = r_bone
+		_skeleton.add_child(_weapon_socket)
+	var l_bone := _find_bone_name(["Palm.L", "Wrist.L", "Hand.L", "handslot.l"])
+	if not l_bone.is_empty():
+		_shield_socket = BoneAttachment3D.new()
+		_shield_socket.name = "ShieldSocket"
+		_shield_socket.bone_name = l_bone
+		_skeleton.add_child(_shield_socket)
+
+func _find_bone_name(candidates: Array) -> String:
+	if _skeleton == null:
+		return ""
+	for c: String in candidates:
+		if _skeleton.find_bone(c) >= 0:
+			return c
+	return ""
+
+func _skeleton_world_scale() -> float:
+	if _skeleton == null or model == null:
+		return 1.0
+	var s := model.scale.x
+	var p: Node = _skeleton
+	while p != null and p != model:
+		if p is Node3D:
+			s *= maxf(0.001, absf((p as Node3D).scale.x))
+		p = p.get_parent()
+	return maxf(0.01, s)
+
+func _attach_socket_model(socket: BoneAttachment3D, path: String, desired_meters: float, raw_meters: float, rot_deg: Vector3) -> Node3D:
+	if socket == null or not AssetLibrary.has_model(path):
+		return null
+	var local_s := desired_meters / maxf(0.01, raw_meters * _skeleton_world_scale())
+	var n := AssetLibrary.instantiate(path, local_s)
+	if n == null:
+		return null
+	n.rotation_degrees = rot_deg
+	for child: Node in n.find_children("*", "GeometryInstance3D", true, false):
+		(child as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	socket.add_child(n)
+	return n
+
 func _index_meshes_and_shadows(root: Node) -> void:
 	if root is MeshInstance3D:
 		var mi := root as MeshInstance3D
 		_submeshes[String(mi.name)] = mi
-		# Only primary torso/limb silhouettes need shadow casting on mobile
-		var sz := mi.get_aabb().size.length()
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if sz >= 0.75 else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	for child: Node in root.get_children():
 		_index_meshes_and_shadows(child)
 
-## Toggle built-in KayKit gear submeshes (e.g. Knight_Helmet, 1H_Sword, Rectangle_Shield).
+## Toggle built-in submeshes OR attach realistic hand gear for NPCs.
 func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void:
 	for mesh_name: String in _submeshes.keys():
 		var mi := _submeshes[mesh_name] as MeshInstance3D
@@ -111,82 +178,52 @@ func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void
 		for v: Variant in visible_substrings:
 			if low.contains(String(v).to_lower()):
 				mi.visible = true
+	if _weapon_socket != null and _equipped_weapon_node == null:
+		for v: Variant in visible_substrings:
+			var vs := String(v).to_lower()
+			if vs.contains("sword") or vs.contains("axe"):
+				_equipped_weapon_node = _attach_socket_model(_weapon_socket,
+					AssetLibrary.REALISTIC_WEAPONS_DIR + "knight_longsword.glb", 1.05, 4.35, Vector3(90.0, 0.0, 0.0))
+				break
+			elif vs.contains("crossbow") or vs.contains("bow"):
+				_equipped_weapon_node = _attach_socket_model(_weapon_socket,
+					AssetLibrary.REALISTIC_WEAPONS_DIR + "war_bow.glb", 1.10, 5.44, Vector3(0.0, 90.0, 0.0))
+				break
 
-## Dynamically updates Hero 3D equipment meshes across all 4 playable KayKit rigs!
+## Dynamically updates Hero 3D realistic weapons & shields on BoneAttachment3D sockets.
 func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> void:
-	if inventory == null or _submeshes.is_empty():
+	if inventory == null:
 		return
 	var cls := hero_class if not hero_class.is_empty() else (GameManager.hero_class if GameManager != null else "knight")
 	var weapon_id := inventory.equipped("weapon")
 	var shield_id := inventory.equipped("shield")
-	var helmet_id := inventory.equipped("helmet")
-	var armor_id := inventory.equipped("armor")
 
-	for k: String in _submeshes.keys():
-		var low := k.to_lower()
-		var mi := _submeshes[k] as MeshInstance3D
-		if mi == null:
-			continue
-		if cls == "mage":
-			if k == "2H_Staff":
-				mi.visible = not weapon_id.is_empty()
-			elif k == "1H_Wand" or k == "Spellbook":
-				mi.visible = false
-			elif k == "Spellbook_open":
-				mi.visible = not shield_id.is_empty() or not inventory.equipped("accessory").is_empty()
-			elif k == "Mage_Hat":
-				mi.visible = true
-			elif k == "Mage_Cape":
-				mi.visible = true
-			continue
-		if cls == "ranger":
-			if k == "Knife":
-				mi.visible = not weapon_id.is_empty()
-			elif k == "Knife_Offhand":
-				mi.visible = not weapon_id.is_empty() and shield_id.is_empty()
-			elif k == "1H_Crossbow":
-				mi.visible = not shield_id.is_empty()
-			elif k == "2H_Crossbow" or k == "Throwable":
-				mi.visible = false
-			elif k == "Rogue_Cape":
-				mi.visible = true
-			continue
-		if cls == "barbarian":
-			if k == "2H_Axe":
-				mi.visible = (weapon_id == "steel_greatsword")
-			elif k == "1H_Axe":
-				mi.visible = not weapon_id.is_empty() and weapon_id != "steel_greatsword"
-			elif k == "1H_Axe_Offhand":
-				mi.visible = not weapon_id.is_empty() and shield_id.is_empty() and weapon_id != "steel_greatsword"
-			elif k == "Barbarian_Round_Shield":
-				mi.visible = not shield_id.is_empty()
-			elif k == "Mug":
-				mi.visible = false
-			elif k == "Barbarian_Hat":
-				mi.visible = not helmet_id.is_empty()
-			elif k == "Barbarian_Cape":
-				mi.visible = true
-			continue
-		# Default Knight rig
-		if low.contains("offhand"):
-			mi.visible = false
-		elif low == "1h_sword":
-			mi.visible = not weapon_id.is_empty() and weapon_id != "steel_greatsword"
-		elif low == "2h_sword":
-			mi.visible = (weapon_id == "steel_greatsword")
-		elif low.contains("shield"):
-			if k == "Round_Shield":
-				mi.visible = (shield_id == "oak_shield")
-			elif k == "Spike_Shield":
-				mi.visible = (shield_id == "iron_shield")
-			elif k == "Badge_Shield":
-				mi.visible = (shield_id == "guild_aegis")
-			else:
-				mi.visible = (not shield_id.is_empty() and shield_id != "oak_shield" and shield_id != "iron_shield" and shield_id != "guild_aegis")
-		elif low.contains("helmet"):
-			mi.visible = not helmet_id.is_empty()
-		elif low.contains("cape"):
-			mi.visible = not armor_id.is_empty()
+	if _equipped_weapon_node != null and is_instance_valid(_equipped_weapon_node):
+		_equipped_weapon_node.queue_free()
+		_equipped_weapon_node = null
+	if _equipped_shield_node != null and is_instance_valid(_equipped_shield_node):
+		_equipped_shield_node.queue_free()
+		_equipped_shield_node = null
+
+	if not weapon_id.is_empty() and _weapon_socket != null:
+		var w_path := AssetLibrary.REALISTIC_WEAPONS_DIR + "knight_longsword.glb"
+		var w_desired := 1.12
+		var w_raw := 4.35
+		var w_rot := Vector3(85.0, 0.0, 0.0)
+		if weapon_id == "steel_greatsword" or weapon_id == "eldoria_mythic_blade" or cls == "barbarian":
+			w_path = AssetLibrary.REALISTIC_WEAPONS_DIR + "claymore_greatsword.glb"
+			w_desired = 1.38
+			w_raw = 6.59
+		elif cls == "ranger" and weapon_id.contains("bow"):
+			w_path = AssetLibrary.REALISTIC_WEAPONS_DIR + "war_bow.glb"
+			w_desired = 1.15
+			w_raw = 5.44
+			w_rot = Vector3(0.0, 90.0, 0.0)
+		_equipped_weapon_node = _attach_socket_model(_weapon_socket, w_path, w_desired, w_raw, w_rot)
+
+	if not shield_id.is_empty() and _shield_socket != null and cls != "mage":
+		_equipped_shield_node = _attach_socket_model(_shield_socket,
+			AssetLibrary.REALISTIC_WEAPONS_DIR + "heater_shield.glb", 0.78, 2.56, Vector3(0.0, 90.0, 0.0))
 
 func _resolve_clip(aliases: Array) -> String:
 	if anim_player == null:
@@ -293,4 +330,4 @@ func _tint_recursive(node: Node, color: Color) -> void:
 		_tint_recursive(child, color)
 
 func head_position() -> Vector3:
-	return global_position + Vector3.UP * 1.85
+	return global_position + Vector3.UP * 1.88

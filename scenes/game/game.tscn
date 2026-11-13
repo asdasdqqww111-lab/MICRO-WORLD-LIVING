@@ -1,6 +1,65 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game.gd" id="1_game"]
+[ext_resource type="Texture2D" path="res://assets_realistic/hdri/eldoria_cinematic_1k.hdr" id="2_hdri"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hdr"]
+panorama = ExtResource("2_hdri")
+energy_multiplier = 0.96
+
+[sub_resource type="Sky" id="Sky_cinematic"]
+sky_material = SubResource("PanoramaSkyMaterial_hdr")
+process_mode = 3
+radiance_size = 1
+
+[sub_resource type="Environment" id="Environment_cinematic"]
+background_mode = 2
+sky = SubResource("Sky_cinematic")
+ambient_light_source = 3
+ambient_light_color = Color(0.76, 0.74, 0.68, 1)
+ambient_light_sky_contribution = 0.88
+ambient_light_energy = 0.56
+tonemap_mode = 3
+tonemap_exposure = 0.96
+tonemap_white = 6.0
+ssao_enabled = true
+ssao_radius = 1.15
+ssao_intensity = 1.3
+ssao_power = 1.5
+ssao_detail = 0.25
+glow_enabled = true
+glow_intensity = 0.42
+glow_strength = 0.86
+glow_bloom = 0.08
+glow_blend_mode = 1
+glow_hdr_threshold = 1.05
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.72, 0.78, 0.88, 1)
+fog_sun_scatter = 0.28
+fog_density = 0.0028
+fog_aerial_perspective = 0.48
+fog_sky_affect = 0.22
+fog_depth_curve = 1.35
+fog_depth_begin = 28.0
+fog_depth_end = 135.0
+adjustment_enabled = true
+adjustment_contrast = 1.06
+adjustment_saturation = 1.04
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_game")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cinematic")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.788011, -0.433013, 0.437608, 0, 0.710799, 0.703395, -0.615661, -0.554283, 0.559958, 0, 18, 0)
+light_color = Color(1, 0.95, 0.86, 1)
+light_energy = 1.18
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.25
+shadow_blur = 1.85
+directional_shadow_mode = 1
+directional_shadow_max_distance = 50.0

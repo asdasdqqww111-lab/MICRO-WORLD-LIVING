@@ -1,8 +1,18 @@
 class_name AssetLibrary
 extends RefCounted
-## Central model loader, PackedScene cache, and PBR material harmonizer.
-## Preserves all original constants & static methods while harmonizing
-## multi-pack assets into Eldoria's unified semi-realistic stylized palette.
+## Central model loader, PackedScene cache, MultiMesh surface baker, and PBR material harmonizer.
+## Integrates res://assets_realistic/ (Realistic Medieval Architecture, Human-Proportioned Rigs,
+## Textured Botanical Trees, PBR Normal/Roughness Textures & Cinematic HDRI Skies).
+
+const REALISTIC_DIR := "res://assets_realistic/"
+const REALISTIC_MODELS_DIR := "res://assets_realistic/models/"
+const REALISTIC_BUILDINGS_DIR := "res://assets_realistic/models/buildings/"
+const REALISTIC_CHARACTERS_DIR := "res://assets_realistic/models/characters/"
+const REALISTIC_TREES_DIR := "res://assets_realistic/models/trees/"
+const REALISTIC_NATURE_DIR := "res://assets_realistic/models/nature/"
+const REALISTIC_WEAPONS_DIR := "res://assets_realistic/models/weapons/"
+const REALISTIC_TEXTURES_DIR := "res://assets_realistic/textures/"
+const REALISTIC_HDRI_DIR := "res://assets_realistic/hdri/"
 
 const CHARACTER_DIR := "res://assets/models/characters/"
 const PLAYER_DIR := "res://assets/characters/player/"
@@ -40,6 +50,12 @@ static func get_scene(path: String) -> PackedScene:
 static func has_model(path: String) -> bool:
 	return ResourceLoader.exists(path)
 
+## Returns normalized meter-height scale for character rigs (e.g. knight_hero.glb is 5.6m raw -> 0.34 = 1.90m).
+static func character_base_scale(path: String) -> float:
+	if path.ends_with("knight_hero.glb"):
+		return 0.34
+	return 1.0
+
 static func instantiate(path: String, model_scale: float = 1.0) -> Node3D:
 	var scene := get_scene(path)
 	if scene == null:
@@ -50,7 +66,7 @@ static func instantiate(path: String, model_scale: float = 1.0) -> Node3D:
 		return null
 	if not is_equal_approx(model_scale, 1.0):
 		node.scale = Vector3.ONE * model_scale
-	ArtDirection.harmonize_node(node)
+	ArtDirection.harmonize_node(node, path.get_file().get_basename())
 	return node
 
 static func instantiate_gltf(path: String, scale_factor: float = 1.0) -> Node3D:
@@ -66,15 +82,18 @@ static func instantiate_gltfs(candidates: Array, scale_factor: float = 1.0) -> N
 	return null
 
 static func first_mesh_instance(root: Node) -> MeshInstance3D:
-	if root is MeshInstance3D and (root as MeshInstance3D).mesh != null:
-		return root as MeshInstance3D
+	if root is MeshInstance3D:
+		var mi := root as MeshInstance3D
+		var low := String(mi.name).to_lower()
+		if mi.mesh != null and not low.contains("collider") and not low.contains("outline"):
+			return mi
 	for child: Node in root.get_children():
 		var found := first_mesh_instance(child)
 		if found != null:
 			return found
 	return null
 
-## Extracts a harmonized single-draw-call Mesh suitable for MultiMeshInstance3D.
+## Extracts a unified, transform-baked, PBR-harmonized ArrayMesh suitable for 60 FPS MultiMeshInstance3D.
 static func first_mesh(path: String, category_hint: String = "") -> Mesh:
 	var key := path + "|" + category_hint
 	if _mesh_cache.has(key):
@@ -82,22 +101,58 @@ static func first_mesh(path: String, category_hint: String = "") -> Mesh:
 	var scene := get_scene(path)
 	if scene == null:
 		return null
-	var node := scene.instantiate()
-	if node == null:
+	var root := scene.instantiate() as Node3D
+	if root == null:
 		return null
-	var mi := first_mesh_instance(node)
-	var out_mesh: Mesh = null
-	if mi != null and mi.mesh != null:
-		out_mesh = mi.mesh.duplicate(true) as Mesh
-		for s: int in out_mesh.get_surface_count():
-			var mat := out_mesh.surface_get_material(s)
-			if mat == null:
-				mat = mi.get_surface_override_material(s)
-			var hint := category_hint if not category_hint.is_empty() else path + "_" + String(mi.name) + "_s" + str(s)
-			var hmat := ArtDirection.harmonize_material(mat, hint)
-			if hmat != null:
-				out_mesh.surface_set_material(s, hmat)
-	node.free()
+
+	var merged := ArrayMesh.new()
+	var stack: Array = [[root, Transform3D.IDENTITY]]
+	while not stack.is_empty():
+		var item: Array = stack.pop_back()
+		var n: Node = item[0]
+		var xf: Transform3D = item[1]
+		var cur_xf := xf
+		if n != root and n is Node3D:
+			cur_xf = xf * (n as Node3D).transform
+		for c: Node in n.get_children():
+			stack.append([c, cur_xf])
+		if n is MeshInstance3D:
+			var mi := n as MeshInstance3D
+			var low_n := String(mi.name).to_lower()
+			if mi.mesh == null or low_n.contains("collider") or low_n.contains("outline"):
+				continue
+			var src_mesh := mi.mesh
+			var is_identity := cur_xf.is_equal_approx(Transform3D.IDENTITY)
+			var normal_basis := cur_xf.basis.inverse().transposed()
+			for s: int in src_mesh.get_surface_count():
+				var orig_mat := src_mesh.surface_get_material(s)
+				if orig_mat == null:
+					orig_mat = mi.get_surface_override_material(s)
+				var mat_name := orig_mat.resource_name.to_lower() if orig_mat != null else ""
+				if mat_name.contains("blackoutline") or mat_name.contains("collider"):
+					continue
+				var arrays := src_mesh.surface_get_arrays(s)
+				if arrays.is_empty() or arrays[Mesh.ARRAY_VERTEX] == null:
+					continue
+				if not is_identity:
+					arrays = arrays.duplicate(true)
+					var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+					for vi: int in verts.size():
+						verts[vi] = cur_xf * verts[vi]
+					arrays[Mesh.ARRAY_VERTEX] = verts
+					if arrays[Mesh.ARRAY_NORMAL] != null:
+						var norms: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+						for ni: int in norms.size():
+							norms[ni] = (normal_basis * norms[ni]).normalized()
+						arrays[Mesh.ARRAY_NORMAL] = norms
+				merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+				var hint := category_hint if not category_hint.is_empty() else path.get_file().get_basename()
+				var hmat := ArtDirection.harmonize_material(orig_mat, hint)
+				if hmat != null:
+					merged.surface_set_material(merged.get_surface_count() - 1, hmat)
+
+	root.free()
+	var out_mesh: Mesh = merged if merged.get_surface_count() > 0 else null
 	_mesh_cache[key] = out_mesh
 	return out_mesh
 

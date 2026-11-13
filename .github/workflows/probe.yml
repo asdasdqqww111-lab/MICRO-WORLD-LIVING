@@ -40,6 +40,7 @@ jobs:
         run: |
           mkdir -p docs/reports
           godot --headless --path . --import 2>&1 | tee docs/reports/ci_import.log
+          godot --headless --path . --script res://tools/verify_realistic_import.gd 2>&1 | tee -a docs/reports/ci_import.log
 
       - name: Headless acceptance tests
         run: |

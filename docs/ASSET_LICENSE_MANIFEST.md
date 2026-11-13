@@ -55,7 +55,20 @@ Generated deterministically via `tools/generate_audio_cc0.py` (100% original mat
 
 ---
 
-## 5. Verification Summary
+## 5. Cinematic Realistic 3D Assets, PBR Maps & HDRI Skies (`assets_realistic/` — CC0 1.0 Public Domain)
+
+Curated via `ToxSam/open-source-3D-assets` and `teamgravitydev/gamedev-free-resources` open-source CC0 indexes:
+
+| Asset Pack / Category | Source Repository & Author | License | Project Paths |
+|---|---|---|---|
+| **Realistic Medieval Architecture, Stone Ramparts, Ruins & PBR Maps** | Quaternius / J-Ponzo (`J-Ponzo/gltf-medieval-village-megakit`, `trebeljahr/quaternius-showcase`) | **CC0 1.0 Public Domain** | `assets_realistic/models/buildings/*.glb`, `assets_realistic/textures/{stone_wall,cobble,plaster,wood,roof_tiles}_*.jpg` |
+| **Realistic Rigged Heroes, Living NPCs & Medieval Weaponry** | Quaternius / LuanDucate (`LuanDucate/Ducz.CharacterCreator`) | **CC0 1.0 Public Domain** | `assets_realistic/models/characters/*.glb` (`knight_hero`, `hero_mage`, `hero_ranger`, `npc_*`), `assets_realistic/models/weapons/*.glb` |
+| **Realistic Forest Oaks, Birches, Boulders & Undergrowth** | Polygonal Mind / ToxSam & Quaternius (`ToxSam/cc0-models-Polygonal-Mind`, `trebeljahr/quaternius-showcase`) | **CC0 1.0 Public Domain** | `assets_realistic/models/trees/*.glb`, `assets_realistic/models/nature/*.glb` |
+| **1K Equirectangular HDRI Skies & Water/Terrain PBR Maps** | Poly Haven / Three.js CC0 (`mrdoob/three.js`) | **CC0 1.0 Public Domain** | `assets_realistic/hdri/{eldoria_cinematic_1k,eldoria_daylight_1k}.hdr`, `assets_realistic/textures/{grass_*,water_normal_*,armor_metal_normal}.jpg` |
+
+---
+
+## 6. Verification Summary
 - **Commercial / Redistribution Restrictions:** None (all CC0 1.0 or SIL OFL 1.1 with bundled `OFL_LICENSE.txt`).
 - **Paid / Proprietary / Watermarked Assets:** `0`.
 - **Missing License Files:** `0`.

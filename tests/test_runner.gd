@@ -542,12 +542,31 @@ func _test_game_scene() -> void:
 	_check(right_btns.size() == 9 and min_btn_gap >= 44.0,
 		"Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=%.1fpx)" % min_btn_gap)
 
-	# Verify v2.0 Assets, PBR Maps, VFXManager, Anti-Clipping Physics, FSM & QuestManager
+	# Verify v2.0 + Cinematic Realistic AAA Upgrade (Phases 1-3: Realistic Assets, PBR Normal+Roughness, ACES+Glow+DepthFog+SSAO+HDRI+50m Soft Shadows)
 	_check(ResourceLoader.exists("res://assets/ui/fonts/Cairo-Variable.ttf"), "Cairo variable font bundled & active")
-	_check(AssetLibrary.has_model("res://assets/environments/tinytreats_house/house.gltf") and AssetLibrary.has_model("res://assets/environments/tinytreats_park/fountain.gltf"),
-		"Tiny Treats CC0 Homely House & Pretty Park Fountain models loaded")
+	_check(AssetLibrary.has_model("res://assets_realistic/models/characters/knight_hero.glb")
+		and AssetLibrary.has_model("res://assets_realistic/models/buildings/citadel_keep.glb")
+		and AssetLibrary.has_model("res://assets_realistic/models/trees/realistic_oak_01.glb"),
+		"Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded")
+	var stone_pbr := ArtDirection.pbr_surface_material("stone_wall")
+	_check(stone_pbr != null and stone_pbr.normal_enabled and stone_pbr.normal_texture != null and stone_pbr.roughness_texture != null,
+		"Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled")
 	_check(ArtDirection.terrain_normal_texture() != null and ArtDirection.terrain_roughness_texture() != null,
-		"Procedural PBR terrain Normal Map & Roughness Map generated")
+		"Phase 2: Terrain PBR Normal Map & Roughness Map active")
+	_check(player.model_path.begins_with("res://assets_realistic/models/characters/"),
+		"Phase 2: Player character uses realistic 3D model (%s)" % player.model_path)
+	var env_res: Environment = world.environment
+	var sky_pano: PanoramaSkyMaterial = env_res.sky.sky_material as PanoramaSkyMaterial if (env_res != null and env_res.sky != null) else null
+	_check(env_res != null
+		and env_res.tonemap_mode == Environment.TONE_MAPPER_ACES
+		and env_res.glow_enabled
+		and env_res.fog_mode == Environment.FOG_MODE_DEPTH
+		and env_res.ssao_enabled,
+		"Phase 3: WorldEnvironment configured with ACES Tonemap, subtle Glow, Depth Fog & mobile SSAO")
+	_check(sky_pano != null and sky_pano.panorama != null,
+		"Phase 3: HDRI PanoramaSkyMaterial bound in Sky for ambient lighting")
+	_check(world.sun != null and world.sun.shadow_enabled and is_equal_approx(world.sun.directional_shadow_max_distance, 50.0) and world.sun.shadow_blur > 1.0,
+		"Phase 3: DirectionalLight3D configured with Soft Shadows & 50m shadow max distance")
 	_check(game.get("vfx") != null and (game.get("vfx") as Node).get_node_or_null("FootstepDust") != null,
 		"VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active")
 	_check(player.collision_layer == CollisionLayers.PLAYER and player.collision_mask == CollisionLayers.MASK_PLAYER_SOLID and player.safe_margin >= 0.04,

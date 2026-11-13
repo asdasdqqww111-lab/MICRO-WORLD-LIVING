@@ -210,13 +210,16 @@ func _build() -> void:
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
 	mat.albedo_texture = ArtDirection.terrain_detail_texture()
-	if DisplayServer.get_name() != "headless":
+	var nrm_tex := ArtDirection.terrain_normal_texture()
+	var rgh_tex := ArtDirection.terrain_roughness_texture()
+	if nrm_tex != null:
 		mat.normal_enabled = true
-		mat.normal_texture = ArtDirection.terrain_normal_texture()
-		mat.normal_scale = 0.88
-		mat.roughness_texture = ArtDirection.terrain_roughness_texture()
+		mat.normal_texture = nrm_tex
+		mat.normal_scale = 0.92
+	if rgh_tex != null:
+		mat.roughness_texture = rgh_tex
 	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
-	mat.roughness = 0.90
+	mat.roughness = 0.88
 	mat.metallic = 0.0
 	mi.material_override = mat
 	add_child(mi)
