@@ -2,6 +2,16 @@ Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 WARNING: Ignoring face with non-finite normal in LOD generation.
      at: generate_lods (scene/resources/3d/importer_mesh.cpp:521)
+SCRIPT ERROR: Parse Error: Static function "shared_mesh()" not found in base "AssetLibrary".
+          at: GDScript::reload (res://scripts/world/world_builder.gd:64)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "merged_mesh" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/world/world_builder.gd:64)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/world_root.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/core/game.gd:-1)
+ERROR: Failed to load script "res://scripts/core/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:2936)
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 [VerifyStylizedImport] Imported 35 / 35 stylized PBR assets & shaders (failed=0)

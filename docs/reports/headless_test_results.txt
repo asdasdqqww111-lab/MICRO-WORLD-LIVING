@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: mobile
-run at: 2026-11-13T16:20:03
-checks passed: 190
-checks failed: 0
+run at: 2026-11-13T16:36:57
+checks passed: 160
+checks failed: 7
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 32.0
+  fps: 0.0
   draw calls: 0
   triangles: 0
-  nodes: 2505
+  nodes: 0
 
 checks:
 
@@ -172,11 +172,11 @@ PASS  world root created
 PASS  player created
 PASS  ui root created
 PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
-PASS  Eldoria landmarks built (20)
-PASS  village NPCs exist
-PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
-PASS  wildlife, monsters & crypt boss spawned (23)
-PASS  MultiMesh biome instancing is real (17 batches, 0 broken)
+FAIL  Eldoria landmarks built (0)
+FAIL  village NPCs exist
+FAIL  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
+FAIL  wildlife, monsters & crypt boss spawned (17)
+FAIL  MultiMesh biome instancing is real (0 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
 PASS  player lands on the ground
@@ -202,29 +202,15 @@ PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
 PASS  Player anti-clipping physics & CollisionLayers configured
 PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
 PASS  3D QuestWaypoint beacon exists in WorldRoot
-PASS  a forest skeleton exists
-PASS  Target Lock acquires nearest hostile creature
-PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.6)
-PASS  skeleton aggroes when hit
+FAIL  a forest skeleton exists
 PASS  QuestWaypoint3D resolves active quest target beacon
-PASS  killing 3 skeletons completes the objective
-PASS  farmer accepts the quest turn-in
-PASS  turn-in reports the reward
-PASS  loot drop spawned
-PASS  loot is collected into the inventory (got 2)
-PASS  Adventurers Guild door exists
-PASS  door moves player into Adventurers Guild Hall
-PASS  house door exists
-PASS  door moves player into house zone
-PASS  Malakor the Bone Warden boss exists in Sunken Crypt
-PASS  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
-PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
-PASS  scene state saves
-PASS  dead creatures recorded (3)
-PASS  scene state reloads
-PASS  dead creatures stay dead after reload (20 alive vs 23 before)
-PASS  player position restored (0.6m off)
-PASS  quest completion survives reload
-PASS  inventory survives reload
-PASS  save/load survives 10 rounds
+FAIL  killing 3 skeletons completes the objective
+
+FAILURES:
+  - Eldoria landmarks built (0)
+  - village NPCs exist
+  - Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
+  - wildlife, monsters & crypt boss spawned (17)
+  - MultiMesh biome instancing is real (0 batches, 0 broken)
+  - a forest skeleton exists
+  - killing 3 skeletons completes the objective
