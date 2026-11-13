@@ -223,7 +223,7 @@ func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> voi
 
 	if not shield_id.is_empty() and _shield_socket != null and cls != "mage":
 		_equipped_shield_node = _attach_socket_model(_shield_socket,
-			AssetLibrary.REALISTIC_WEAPONS_DIR + "heater_shield.glb", 0.78, 2.56, Vector3(90.0, 0.0, 0.0))
+			AssetLibrary.REALISTIC_WEAPONS_DIR + "heater_shield.glb", 0.72, 2.56, Vector3(0.0, 0.0, 180.0))
 
 func _resolve_clip(aliases: Array) -> String:
 	if anim_player == null:
