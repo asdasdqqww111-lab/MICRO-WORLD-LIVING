@@ -61,7 +61,7 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 		model_scale: float, collider_size: Vector3 = Vector3.ZERO, node_name: String = "") -> Node3D:
 	# Merge multi-child static GLTF/GLB props & buildings into ONE single MeshInstance3D (~12x fewer draw calls!)
 	var node: Node3D = null
-	var merged_mesh := AssetLibrary.shared_mesh(path)
+	var merged_mesh: Mesh = AssetLibrary.first_mesh(path)
 	if merged_mesh != null:
 		var mmi := MeshInstance3D.new()
 		mmi.mesh = merged_mesh
