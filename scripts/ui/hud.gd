@@ -17,6 +17,7 @@ var guild_label: Label
 var clock_label: Label
 var gold_label: Label
 var weather_label: Label
+var district_label: Label
 var _top_left_stack: VBoxContainer
 var minimap: MinimapControl
 var quest_panel: PanelContainer
@@ -265,6 +266,24 @@ func _build_top_right() -> void:
 	weather_label = UIFactory.label("الطقس: صحو", 12, Color(0.88, 0.90, 0.86))
 	weather_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pbox.add_child(weather_label)
+
+	var city_pill := PanelContainer.new()
+	city_pill.name = "RoyalCityDistrictPanel"
+	city_pill.custom_minimum_size = Vector2(142, 0)
+	city_pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	city_pill.add_theme_stylebox_override("panel", _glass_box(
+		Color(0.16, 0.11, 0.22, 0.82), Color(0.82, 0.60, 0.94, 0.56), 8, 7))
+	wrap.add_child(city_pill)
+	var city_box := VBoxContainer.new()
+	city_box.add_theme_constant_override("separation", 1)
+	city_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	city_pill.add_child(city_box)
+	var city_title := UIFactory.label("✦ مدينة إلدوريا", 13, UIFactory.GOLD)
+	city_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	city_box.add_child(city_title)
+	district_label = UIFactory.label("الحي الملكي · الطريق الرئيسي", 11, Color(0.84, 0.78, 0.96))
+	district_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	city_box.add_child(district_label)
 
 func _build_quest_tracker() -> void:
 	quest_panel = UIFactory.panel(0.82)

@@ -1,7 +1,7 @@
 class_name WorldBuilder
 extends RefCounted
 ## Procedural & curated assembly of the 240x240m Eldoria Starting Region:
-##   - Eldoria Village (Square, Guild Castle Hall, Tavern, Chapel, Market,
+##   - Eldoria Royal City (Citadel, guild, market, residential, civic and artisan wards,
 ##     Blacksmith Forge, Residential Cottages, Windmill Farm, Guarded Gates)
 ##   - 6 MultiMesh Biome Forest & Flora Zones + Eldoria River, Bridge & Crystal Lake
 ##   - Outer Landmarks: Ancient Ruins, Shadowfang Cave, Monster Camp, Sacred Grove
@@ -164,7 +164,7 @@ static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array
 
 # --- 1. Eldoria Village & Outer Landmarks ------------------------------------
 
-static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary:
+static func build_city(parent: Node3D, terrain: Terrain = null) -> Dictionary:
 	var hex := AssetLibrary.HEXAGON_DIR
 	var vdir := AssetLibrary.HEXAGON_DIR
 	var vprop := AssetLibrary.HEXAGON_DIR
@@ -237,6 +237,9 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		var chosen := String(entry["path"]) if AssetLibrary.has_model(String(entry["path"])) else String(entry["fallback"])
 		place_model(parent, chosen, entry["pos"] as Vector3, float(entry["rot"]),
 			float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
+
+	# Preserve every legacy anchor above for quests/NPC IDs, then build the larger city around it.
+	_build_city_expansion(parent, terrain)
 
 	# Left-Hillside Ancient Stone Arch Ruin silhouetted against the pine hills & snowy mountains!
 	var arch_hill_y := terrain.height_at(-19.0, -47.0) if terrain != null else 3.2
@@ -356,6 +359,80 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		"guard_pos": Vector3(31.5, 0.0, -2.5),
 		"guard_sleep": Vector3(25.0, 0.0, 12.0),
 	}
+
+# Compatibility entry point for old save data, tests and external callers.
+static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary:
+	return build_city(parent, terrain)
+
+static func _build_city_expansion(parent: Node3D, terrain: Terrain) -> void:
+	var hex := AssetLibrary.HEXAGON_DIR
+	var park := "res://assets/environments/tinytreats_park/"
+	var house_paths := [
+		hex + "building_home_A_green.gltf", hex + "building_home_B_blue.gltf",
+		hex + "building_home_A_red.gltf", hex + "building_home_B_yellow.gltf"]
+	var districts := [
+		{"name": "ResidentialWardWest", "center": Vector2(-36.0, -4.0)},
+		{"name": "ResidentialWardSouth", "center": Vector2(-22.0, 37.0)},
+		{"name": "MarketWard", "center": Vector2(29.0, 25.0)},
+		{"name": "AcademyWard", "center": Vector2(30.0, -30.0)},
+		{"name": "ArtisanWard", "center": Vector2(-36.0, 29.0)}]
+	var building_index := 0
+	for district: Dictionary in districts:
+		var center: Vector2 = district["center"]
+		for row: int in 2:
+			for col: int in 3:
+				var p := center + Vector2((float(col) - 1.0) * 7.4, (float(row) - 0.5) * 7.1)
+				var on_boulevard := absf(p.x) < 3.0 or absf(p.y) < 3.0 or absf(p.x - p.y) < 2.5 or absf(p.x + p.y) < 2.5
+				if Vector2(p.x, p.y).length() > 53.0 or on_boulevard:
+					continue
+				var y := terrain.height_at(p.x, p.y) if terrain != null else 0.0
+				var path: String = house_paths[building_index % house_paths.size()]
+				place_model(parent, path, Vector3(p.x, y, p.y), deg_to_rad(float((building_index % 4) * 18)),
+					7.25, Vector3.ZERO, String(district["name"]) + "House" + str(building_index))
+				building_index += 1
+
+	# Signature public buildings define the Academy, Bazaar and Artisan districts.
+	var civic := [
+		{"path": hex + "building_church_green.gltf", "pos": Vector3(31.0, 0.0, -30.0), "name": "AcademySanctum"},
+		{"path": hex + "building_stage_C.gltf", "pos": Vector3(32.0, 0.0, 25.0), "name": "MoonlightStage"},
+		{"path": hex + "building_blacksmith_green.gltf", "pos": Vector3(-36.0, 0.0, 29.0), "name": "ArtisanForge"},
+		{"path": hex + "building_market_blue.gltf", "pos": Vector3(29.0, 0.0, 38.0), "name": "GrandBazaar"}]
+	for entry: Dictionary in civic:
+		var p: Vector3 = entry["pos"]
+		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
+		place_model(parent, String(entry["path"]), Vector3(p.x, y, p.z), 0.0, 7.8, Vector3.ZERO, String(entry["name"]))
+
+	# Four open gates and a light polygonal wall ring make the city read as one protected capital.
+	var wall_path := hex + "wall_straight.gltf"
+	var gate_path := hex + "wall_straight_gate.gltf"
+	var gate_points := [Vector3(0.0, 0.0, -60.0), Vector3(60.0, 0.0, 0.0), Vector3(0.0, 0.0, 60.0), Vector3(-60.0, 0.0, 0.0)]
+	for i: int in 4:
+		var gate_pos: Vector3 = gate_points[i]
+		var gate_y := terrain.height_at(gate_pos.x, gate_pos.z) if terrain != null else 0.0
+		place_model(parent, gate_path, Vector3(gate_pos.x, gate_y, gate_pos.z), deg_to_rad(float(i * 90)), 7.6, Vector3.ZERO, "RoyalGate" + str(i))
+	for i: int in 12:
+		var angle := deg_to_rad(float(i) * 30.0 + 15.0)
+		var p := Vector3(cos(angle) * 60.0, 0.0, sin(angle) * 60.0)
+		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
+		place_model(parent, wall_path, Vector3(p.x, y, p.z), angle + PI * 0.5, 6.8, Vector3.ZERO, "RoyalWall" + str(i))
+		if i % 3 == 1:
+			place_model(parent, hex + "building_tower_A_green.gltf", Vector3(p.x, y, p.z), angle, 6.4, Vector3(4.0, 9.0, 4.0), "RoyalWatchtower" + str(i))
+
+	# MultiMesh furniture gives the new districts visual life without one node per prop.
+	var lantern_xforms: Array = []
+	var bench_xforms: Array = []
+	for i: int in 24:
+		var angle := deg_to_rad(float(i) * 15.0)
+		var p := Vector3(cos(angle) * 31.0, 0.0, sin(angle) * 31.0)
+		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
+		lantern_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.78), Vector3(p.x, y, p.z)))
+		if i % 3 == 0:
+			bench_xforms.append(Transform3D(Basis(Vector3.UP, angle).scaled(Vector3.ONE * 0.9), Vector3(p.x, y, p.z)))
+	build_multimesh(parent, park + "street_lantern.gltf", lantern_xforms, "RoyalCityLanterns", false, 72.0)
+	build_multimesh(parent, park + "bench.gltf", bench_xforms, "RoyalCityBenches", false, 58.0)
+	for p: Vector3 in [Vector3(0.0, 0.0, 2.0), Vector3(29.0, 0.0, 25.0), Vector3(-35.0, 0.0, 27.0)]:
+		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
+		place_model(parent, park + "fountain.gltf", Vector3(p.x, y, p.z), 0.0, 1.8, Vector3.ZERO, "DistrictFountain")
 
 static func _build_street_lantern_light_only(parent: Node3D, pos: Vector3) -> void:
 	var light := OmniLight3D.new()

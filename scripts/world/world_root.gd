@@ -172,7 +172,7 @@ func _build_world() -> void:
 	add_child(dungeon_root)
 
 	terrain = Terrain.build(overworld_root, WorldBuilder.GROUND_SIZE)
-	landmarks = WorldBuilder.build_village(overworld_root, terrain)
+	landmarks = WorldBuilder.build_city(overworld_root, terrain)
 	forest_spawns = WorldBuilder.build_forest(overworld_root, terrain)
 	_spawn_resource_nodes()
 
@@ -186,12 +186,12 @@ func _build_world() -> void:
 func _on_zone_entered(zone_id: String) -> void:
 	_apply_zone_visibility(zone_id)
 	if AudioManager != null:
-		AudioManager.play_music_for_zone(zone_id)
+		AudioManager.play_music_for_zone("city" if zone_id == "city" else zone_id)
 	if zone_id != "dungeon":
 		EventBus.boss_health_changed.emit("", 0.0, 100.0, 1, false)
 
 func _apply_zone_visibility(zone_id: String) -> void:
-	var in_overworld := (zone_id == "" or zone_id == "village")
+	var in_overworld := (zone_id == "" or zone_id == "village" or zone_id == "city")
 	if overworld_root != null:
 		overworld_root.visible = in_overworld
 	if clouds != null:
@@ -287,7 +287,7 @@ func _is_animated_branch(node: Node) -> bool:
 	return false
 
 func _build_zone_doors() -> void:
-	# 1. Village <-> Player Cottage
+	# 1. Royal City <-> Player Cottage (village remains a compatibility zone alias)
 	var house_door := ZoneDoor.new()
 	house_door.name = "HouseDoor"
 	house_door.setup(interior.get("spawn", Vector3.ZERO) as Vector3, "house", "Enter Your Cottage")
@@ -382,7 +382,7 @@ func _apply_graphics() -> void:
 	var quality := SettingsManager.shadow_quality()
 	var in_overworld := overworld_root == null or overworld_root.visible
 	sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
-	sun.directional_shadow_max_distance = 40.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 60.0
+	sun.directional_shadow_max_distance = 34.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 45.0
 	sun.shadow_blur = 2.0
 	RenderingServer.directional_soft_shadow_filter_set_quality(quality)
 	if world_environment != null and world_environment.environment != null:

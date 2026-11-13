@@ -2,15 +2,18 @@ class_name Terrain
 extends StaticBody3D
 ## Seeded procedural multi-biome terrain for the Eldoria Valley (240m x 240m).
 ## Features:
-##   - Level village plateau + cobbled/dirt road network
+##   - Level Royal City plateau + boulevard/district road network
 ##   - Carved Eldoria River channel + southern Crystal Lake basin
 ##   - Rolling meadows, western/southern forests, eastern rocky crags
 ##   - Full 360-degree alpine perimeter ring (no flat horizon cutoff)
 ##   - Smooth slope-and-altitude vertex splat blending across 9 surface tones
 
 const WATER_LEVEL := -0.35
-const VILLAGE_RADIUS := 38.0
-const VILLAGE_BLEND := 49.0
+const CITY_RADIUS := 58.0
+const CITY_BLEND := 68.0
+## Compatibility aliases retained for quest/save data and older callers.
+const VILLAGE_RADIUS := CITY_RADIUS
+const VILLAGE_BLEND := CITY_BLEND
 
 @export var size: float = 240.0
 @export var subdivisions: int = 72
@@ -74,6 +77,17 @@ func is_water_at(x: float, z: float) -> bool:
 	return height_at(x, z) < WATER_LEVEL - 0.08
 
 func is_road_at(x: float, z: float) -> bool:
+	# Royal City boulevards: radial avenues plus a ring road make every district legible.
+	if Vector2(x, z).length() < 56.0:
+		if absf(x) < 2.8 or absf(z) < 2.8:
+			return true
+		if absf(x - z) < 2.2 or absf(x + z) < 2.2:
+			return true
+		var city_radius := Vector2(x, z).length()
+		if city_radius > 23.0 and city_radius < 27.0:
+			return true
+		if city_radius < 11.0:
+			return true
 	# Winding country dirt trail across the Southern Meadow toward the Blue-Turret Castle
 	if z >= -18.0 and z <= 48.0:
 		var trail_x := -4.8 * smoothstep(-10.0, 26.0, z) + sin(z * 0.14) * 1.65
@@ -94,7 +108,7 @@ func is_road_at(x: float, z: float) -> bool:
 func height_at(x: float, z: float) -> float:
 	_setup_noise()
 	var radial := Vector2(x, z).length()
-	var village_mask := smoothstep(VILLAGE_RADIUS, VILLAGE_BLEND, radial)
+	var village_mask := smoothstep(CITY_RADIUS, CITY_BLEND, radial)
 
 	var base := (_noise.get_noise_2d(x, z) * 0.5 + 0.5) * 6.8
 	var detail := _detail_noise.get_noise_2d(x, z) * 0.85
@@ -136,7 +150,7 @@ func height_at(x: float, z: float) -> float:
 		h = lerpf(h, -2.15, lake_t)
 
 	# Ensure the entire Walled Royal City plateau stays level and dry
-	if radial <= VILLAGE_RADIUS:
+	if radial <= CITY_RADIUS:
 		h = 0.0
 	return h
 
@@ -151,8 +165,8 @@ func biome_at(x: float, z: float) -> String:
 	if h < WATER_LEVEL:
 		return "water"
 	var r := Vector2(x, z).length()
-	if r < VILLAGE_RADIUS + 2.0:
-		return "village"
+	if r < CITY_RADIUS + 2.0:
+		return "city"
 	if h >= 13.5:
 		return "alpine"
 	if x > 44.0 and z < 8.0:

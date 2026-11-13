@@ -577,8 +577,8 @@ func _test_game_scene() -> void:
 		"Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO")
 	_check(sky_pano != null and sky_pano.panorama != null,
 		"Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial")
-	_check(world.sun != null and world.sun.shadow_enabled and is_equal_approx(world.sun.directional_shadow_max_distance, 60.0) and is_equal_approx(world.sun.shadow_blur, 2.0),
-		"Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 60m max distance")
+	_check(world.sun != null and world.sun.shadow_enabled and is_equal_approx(world.sun.directional_shadow_max_distance, 45.0) and is_equal_approx(world.sun.shadow_blur, 2.0),
+		"Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 45m max distance")
 	_check(ui.hud != null and ui.hud.find_child("TopCenterActionDock", true, false) != null and ui.touch.find_child("QuickSlotsBar", true, false) != null,
 		"Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built")
 	_check(game.get("vfx") != null and (game.get("vfx") as Node).get_node_or_null("FootstepDust") != null,
