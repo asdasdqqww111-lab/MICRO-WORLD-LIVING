@@ -17,6 +17,18 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 
 [shot] start: renderer=mobile adapter=llvmpipe (LLVM 21.1.8, 256 bits)
 [shot] 01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)
+SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+          at: GDScript::reload (res://scripts/world/tower_db.gd:208)
+SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+          at: GDScript::reload (res://scripts/world/tower_db.gd:208)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/tower_floor_builder.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/tower_manager.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/core/game.gd:-1)
+ERROR: Failed to load script "res://scripts/core/game.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:2936)
 WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
      at: set_radiance_size (servers/rendering/renderer_rd/environment/sky.cpp:620)
 WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
@@ -28,11 +40,7 @@ WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will 
 [shot] 05_forest_exploration -> res://docs/screenshots/05_forest_exploration.png (ok)
 [shot] 06_river_lake_bridge -> res://docs/screenshots/06_river_lake_bridge.png (ok)
 [shot] 07_mountains_sunset -> res://docs/screenshots/07_mountains_sunset.png (ok)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 [shot] 12_sunken_crypt_dungeon -> res://docs/screenshots/12_sunken_crypt_dungeon.png (ok)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 [shot] 08_gameplay_combat_hud -> res://docs/screenshots/08_gameplay_combat_hud.png (ok)
 [shot] 09_inventory_equipment -> res://docs/screenshots/09_inventory_equipment.png (ok)
 WARNING: Target object freed before starting, aborting Tweener.
@@ -43,3 +51,5 @@ WARNING: Target object freed before starting, aborting Tweener.
 [shot] all 13 screenshots captured successfully
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:604)

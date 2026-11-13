@@ -237,6 +237,18 @@ PASS  corrupt save reports a reason
 ERROR: SaveManager: save version 99 is newer than supported 3
    at: push_error (core/variant/variant_utility.cpp:1092)
 PASS  newer schema version is refused
+SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+          at: GDScript::reload (res://scripts/world/tower_db.gd:208)
+SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+          at: GDScript::reload (res://scripts/world/tower_db.gd:208)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/tower_floor_builder.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/tower_manager.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/core/game.gd:-1)
+ERROR: Failed to load script "res://scripts/core/game.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:2936)
 WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ rendering backend.
      at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:574)
 PASS  game.tscn loads
@@ -351,7 +363,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.2)
+PASS  skeleton takes damage (46.0 -> 32.7)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -370,6 +382,16 @@ PASS  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
 PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
@@ -1731,10 +1753,16 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  save/load survives 10 rounds
 
 === 190 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 4 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)

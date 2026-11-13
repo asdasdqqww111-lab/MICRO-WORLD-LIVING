@@ -3,68 +3,68 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-13T16:56:58
+run at: 2026-11-13T23:26:06
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  3D draw calls:    44  [OK]
-  total draw calls: 404  [FAIL]
-  triangles (max):  166965  [OK]
-  objects:          406
-  static memory:    203.2 MB
+  3D draw calls:    51  [OK]
+  total draw calls: 448  [FAIL]
+  triangles (max):  182654  [OVER]
+  objects:          452
+  static memory:    205.9 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    47  [OK]
-  total draw calls: 289  [OK]
-  triangles (max):  182593  [OVER]
-  objects:          291
-  static memory:    211.2 MB
+  3D draw calls:    55  [OK]
+  total draw calls: 334  [WARN]
+  triangles (max):  200474  [OVER]
+  objects:          338
+  static memory:    214.4 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    33  [OK]
-  total draw calls: 275  [OK]
-  triangles (max):  77016  [OK]
-  objects:          275
-  static memory:    211.2 MB
-  fps (min, this driver): 1.0
+  3D draw calls:    43  [OK]
+  total draw calls: 321  [WARN]
+  triangles (max):  93447  [OK]
+  objects:          321
+  static memory:    214.2 MB
+  fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  3D draw calls:    50  [OK]
-  total draw calls: 292  [OK]
-  triangles (max):  152078  [OK]
-  objects:          292
-  static memory:    211.3 MB
+  3D draw calls:    62  [OK]
+  total draw calls: 340  [WARN]
+  triangles (max):  175453  [OK]
+  objects:          343
+  static memory:    214.3 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   3D draw calls:    52  [OK]
-  total draw calls: 294  [OK]
-  triangles (max):  44979  [OK]
-  objects:          303
-  static memory:    211.6 MB
-  fps (min, this driver): 2.0
+  total draw calls: 330  [WARN]
+  triangles (max):  45371  [OK]
+  objects:          339
+  static memory:    214.5 MB
+  fps (min, this driver): 3.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    17  [OK]
-  total draw calls: 288  [OK]
-  triangles (max):  12438  [OK]
-  objects:          288
-  static memory:    211.9 MB
-  fps (min, this driver): 3.0
+  total draw calls: 324  [WARN]
+  triangles (max):  12830  [OK]
+  objects:          324
+  static memory:    214.9 MB
+  fps (min, this driver): 4.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    45  [OK]
-  total draw calls: 313  [WARN]
-  triangles (max):  74368  [OK]
-  objects:          313
-  static memory:    212.3 MB
-  fps (min, this driver): 1.0
+  total draw calls: 349  [WARN]
+  triangles (max):  74804  [OK]
+  objects:          349
+  static memory:    215.5 MB
+  fps (min, this driver): 2.0
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          1976
-  MeshInstance3D:       578
-  MultiMeshInstance3D:  19 (batches) / 2724 instances
+  nodes total:          2094
+  MeshInstance3D:       634
+  MultiMeshInstance3D:  21 (batches) / 2801 instances
   GPUParticles3D:       2
-  omni lights:          19
+  omni lights:          20
   shadow casting dir:   1
 --- structural audit done ---
 
@@ -73,20 +73,20 @@ SCENE AUDIT (renderer independent)
 TOP TRIANGLE CONSUMERS (whole world)
     18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
     12528 tris |  2 surf | World/OverworldZone/StylizedPines [x8]
-    11520 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x24]
-    11000 tris |  1 surf | World/OverworldZone/ForestOaks [x10]
-    10368 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
-     9476 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x2369]
+    10176 tris |  1 surf | World/OverworldZone/RoyalCityLanterns [x24]
+    10080 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x21]
+     9692 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x2423]
+     8800 tris |  1 surf | World/OverworldZone/ForestOaks [x8]
      7448 tris |  1 surf | World/OverworldZone/ForestBushes [x28]
      7344 tris |  3 surf | World/OverworldZone/MeadowFlowers [x18]
+     7200 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
      6268 tris |  3 surf | World/OverworldZone/LakesideBirches [x4]
      5659 tris |  1 surf | World/OverworldZone/AdventurersGuildExteriorBody/AdventurersGuildExterior
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
-     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
 
-SHADOW / LOD: casters=32  shadow_off=546  with_visibility_range=543
+SHADOW / LOD: casters=37  shadow_off=597  with_visibility_range=594
 --- offenders done ---
 
 STATUS: COMPLETE
