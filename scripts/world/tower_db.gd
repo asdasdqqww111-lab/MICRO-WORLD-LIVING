@@ -58,8 +58,7 @@ const REGIONS := {
 	"sky_isles": {
 		"en": "Floating Sky Isles", "ar": "جزر السماء العائمة",
 		"palette": [Color(0.50, 0.60, 0.80), Color(0.30, 0.38, 0.60)],
-		"" === "" ? Color(0.9, 0.95, 1.0) : Color(0.9, 0.95, 1.0),
-		"mob": "cave_bat",
+		"accent": Color(0.90, 0.95, 1.0), "mob": "cave_bat",
 		"mob_count": 5, "floor": 8,
 	},
 	"demon_realms": {
@@ -95,7 +94,7 @@ const FLOOR_MASTER_EN := [
 	"Sunstroke Wraith Ra", "Dust Archon Set", "Gilded Mummy Onkh", "Desert Titan Geb", "Buried Sovereign Nei",
 	"Cloud Serpent Ryu", "Wind Djinn Siro", "Sky Corsair Vela", "Storm Herald Kaze", "Thunder Roc Zeph",
 	"Zephyr Archon Nota", "Cumulon Lord Nimbus", "Starfall Revenant Astra", "Aether Titan Kael", "Sky Sovereign Ur",
-	"Pactbreakers Fiend Zorg", "Bloodwing Duchess Lil", "Hellforge Smith Gor", "Nightmare Steed Vhal", "Sin Lord Bel",
+	"Pactbreaker Fiend Zorg", "Bloodwing Duchess Lil", "Hellforge Smith Gor", "Nightmare Steed Vhal", "Sin Lord Bel",
 	"Voidweaver Nyx", "Doomsayer Malz", "Chaos Archon Koth", "Infernal Titan Bael", "Demon Sovereign Ark",
 	"Seraph Blade Auri", "Archjudge Thal", "Halo Warden Mic", "Radiant Twin Sol", "Eclipse Saint Umbra",
 	"Choir of Ruin Cano", "Zenith Revenant Pol", "Astral Marshal Vor", "Apocalypse Titan Ktulu",
@@ -107,7 +106,7 @@ const FLOOR_MASTER_AR := [
 	"زاما خبير السرداب", "تول مُقطِّع الرمال", "فكس غول الآثار", "مارن دوق الرماد", "كل أرخص الأطلال",
 	"أوم مستبد البلور", "مايلا جناح الشظية", "زيث الجيود العميق", "كال شبح المنشور", "رو نابض اللمعان",
 	"فيل أرخص الكوارتز", "إبن دوق الشظايا", "سيف مُطارد الأنوار", "تاما ظل الشفق", "أوز سياح الكهوف",
-	"فين مبعوث الخضرة", "غرد فك الأشواك","ماير سيد النسغ", "آيريس حارسة الإزهار", "أوكو العملاق الجذوري",
+	"فين مبعوث الخضرة", "غرد فك الأشواك", "ماير سيد النسغ", "آيريس حارسة الإزهار", "أوكو العملاق الجذوري",
 	"فاني منادي الأبواغ", "ليس شبح الأدغال", "دريل مستبد الكروم", "مكس مغير البتلات", "سيل سيادة الغابة",
 	"براند مارشال الصهارة", "كارج فك الجمر", "دروس غول الرماد", "إيلم ناسج الحمم", "روسك كابتن المولود من الرماد",
 	"ثود شبح الورشة", "زارا جنية اللهب", "فارك دوق السبج", "أوند تيتان الحمم البركانية", "ماج سيادة البركان",
@@ -276,6 +275,5 @@ static func validate() -> Dictionary:
 			errors.append("Region '%s' palette malformed" % key)
 		var m := String(r.get("mob", ""))
 		if CreatureDB.get_creature(m) == null:
-			chest := false
 			errors.append("Region '%s' mob '%s' missing from CreatureDB" % [key, m])
 	return {"valid": errors.is_empty(), "errors": errors}
