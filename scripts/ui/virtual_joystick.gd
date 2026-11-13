@@ -1,4 +1,4 @@
-class_name VirtualJoystick
+class_name MobileVirtualJoystick
 extends Control
 ## Transparent Dual-Ring Mobile RPG Joystick with 4 directional chevrons.
 

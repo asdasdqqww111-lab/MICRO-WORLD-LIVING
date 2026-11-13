@@ -38,6 +38,9 @@ var perf_label: Label
 var _player: Player
 var _perf_timer: float = 0.0
 var _perf_log_timer: float = 0.0
+var _target_refresh_timer: float = 0.0
+var _waypoint_refresh_timer: float = 0.0
+var _cached_waypoint: QuestWaypoint3D
 
 func setup(player: Player) -> void:
 	_player = player
@@ -58,6 +61,7 @@ func _ready() -> void:
 	_build_damage_flash()
 	_build_perf_overlay()
 	_connect_signals()
+	_cached_waypoint = get_tree().get_first_node_in_group("quest_waypoint") as QuestWaypoint3D
 	refresh_all()
 
 func _glass_box(bg: Color, rim: Color, radius: int = 10, pad: int = 9) -> StyleBoxFlat:
@@ -519,12 +523,19 @@ func _on_settings_changed() -> void:
 		perf_label.visible = SettingsManager.show_performance_overlay
 
 func _process(delta: float) -> void:
-	if _player != null and _player.locked_target != null:
-		_refresh_target_card()
-	elif target_panel != null and target_panel.visible:
-		target_panel.visible = false
-	if waypoint_label != null and is_instance_valid(waypoint_label) and _player != null and get_tree() != null:
-		var wp := get_tree().get_first_node_in_group("quest_waypoint") as QuestWaypoint3D
+	_target_refresh_timer += delta
+	_waypoint_refresh_timer += delta
+	if _target_refresh_timer >= 0.12:
+		_target_refresh_timer = 0.0
+		if _player != null and _player.locked_target != null:
+			_refresh_target_card()
+		elif target_panel != null and target_panel.visible:
+			target_panel.visible = false
+	if _waypoint_refresh_timer >= 0.20 and waypoint_label != null and is_instance_valid(waypoint_label) and _player != null:
+		_waypoint_refresh_timer = 0.0
+		if not is_instance_valid(_cached_waypoint):
+			_cached_waypoint = get_tree().get_first_node_in_group("quest_waypoint") as QuestWaypoint3D
+		var wp := _cached_waypoint
 		if wp != null and wp.has_waypoint:
 			var dist := int(round(_player.global_position.distance_to(wp.target_position)))
 			waypoint_label.visible = true

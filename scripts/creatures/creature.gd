@@ -41,6 +41,7 @@ var _boss_phase: int = 1
 var _boss_nova_timer: float = 5.5
 var _boss_casting_nova: float = 0.0
 var _boss_telegraph: MeshInstance3D
+var _player_cache: Player
 
 func _ready() -> void:
 	add_to_group("creature")
@@ -49,6 +50,7 @@ func _ready() -> void:
 	collision_mask = 1
 	if data == null:
 		data = CreatureDB.get_creature("skeleton_forest")
+	_player_cache = get_tree().get_first_node_in_group("player") as Player
 	_build()
 
 func setup(creature_data: CreatureData, creature_uid: String, home_position: Vector3) -> void:
@@ -266,7 +268,10 @@ func _tick_boss_phase(delta: float, player: Player, distance: float) -> void:
 			anim.play("cast", true)
 
 func _find_player() -> Player:
-	return get_tree().get_first_node_in_group("player") as Player
+	if _player_cache != null and is_instance_valid(_player_cache):
+		return _player_cache
+	_player_cache = get_tree().get_first_node_in_group("player") as Player
+	return _player_cache
 
 func _move_towards(target: Vector3, speed: float) -> float:
 	var to_target := target - global_position
@@ -333,7 +338,7 @@ func _try_attack(player: Player) -> void:
 	var vfx := get_tree().get_first_node_in_group("vfx_manager")
 	if vfx != null and vfx.has_method("spawn_slash_arc") and (data.is_boss or data.id.begins_with("skeleton")):
 		vfx.call("spawn_slash_arc", global_position + Vector3(0.0, 1.05, 0.0), rotation.y + PI,
-			Color(1.0, 0.28, 0.24, 0.85), 1.65 if data.is_boss else 1.25, -18.0)
+			-18.0, 1.65 if data.is_boss else 1.25, Color(1.0, 0.28, 0.24, 0.85))
 	if AudioManager != null:
 		AudioManager.play_sfx("monster_attack", -3.0, randf_range(0.9, 1.1))
 	var dmg := data.damage * (1.18 if _boss_phase == 2 else 1.0)

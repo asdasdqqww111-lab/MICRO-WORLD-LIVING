@@ -83,7 +83,8 @@ func apply_now() -> void:
 		moon.light_energy = night_factor * 0.32 * weather_factor
 
 	if environment != null:
-		environment.ambient_light_energy = lerpf(0.28, 0.66, daylight) * weather_factor
+		# Keep a readable minimum at night so shadowed geometry never crushes to black.
+		environment.ambient_light_energy = lerpf(0.42, 0.66, daylight) * lerpf(1.0, weather_factor, 0.55)
 		environment.ambient_light_color = Color(0.24, 0.32, 0.48).lerp(Color(0.74, 0.80, 0.88), daylight)
 		var fog_day := Color(0.6, 0.75, 0.9).lerp(Color(0.84, 0.70, 0.60), late_dusk * 0.50)
 		var fog_night := Color(0.10, 0.14, 0.22)

@@ -95,7 +95,9 @@ func _draw() -> void:
 	var c := size * 0.5
 	var half_w := minf(inner.size.x, inner.size.y) * 0.5
 
-	var p := get_tree().get_first_node_in_group("player") as Player
+	var p := player
+	if p == null or not is_instance_valid(p):
+		p = get_tree().get_first_node_in_group("player") as Player
 	if p != null and p.zone == "village" and _valley_tex != null:
 		var ppos := p.global_position
 		var u0 := clampf((ppos.x - MAP_RANGE + WORLD_EXTENT) / (2.0 * WORLD_EXTENT), 0.0, 0.85)

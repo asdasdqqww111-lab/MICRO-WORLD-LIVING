@@ -37,8 +37,11 @@ func _build() -> void:
 	spring_arm = SpringArm3D.new()
 	spring_arm.name = "SpringArm3D"
 	spring_arm.spring_length = distance
-	spring_arm.margin = 0.35
+	spring_arm.margin = 0.20
 	spring_arm.collision_mask = 1
+	var camera_shape := SphereShape3D.new()
+	camera_shape.radius = 0.22
+	spring_arm.shape = camera_shape
 	var rid := _find_owner_rid()
 	if rid.is_valid():
 		spring_arm.add_excluded_object(rid)
@@ -47,7 +50,7 @@ func _build() -> void:
 	camera = Camera3D.new()
 	camera.name = "Camera3D"
 	camera.fov = 55.0
-	camera.near = 0.08
+	camera.near = 0.12
 	camera.far = SettingsManager.view_distance() * 2.2
 	camera.current = true
 	spring_arm.add_child(camera)

@@ -122,11 +122,11 @@ func view_distance() -> float:
 func vegetation_density_multiplier() -> float:
 	match graphics_preset:
 		GraphicsPreset.LOW:
-			return 0.65
+			return 0.45
 		GraphicsPreset.MEDIUM:
-			return 0.85
+			return 0.70
 		_:
-			return 1.0
+			return 0.90
 
 func is_desktop() -> bool:
 	return OS.has_feature("pc")

@@ -9,7 +9,7 @@ signal look_dragged(relative: Vector2)
 signal zoom_requested(factor: float)
 signal menu_action(action_name: String)
 
-var joystick: VirtualJoystick
+var joystick: MobileVirtualJoystick
 var drag_area: CameraDragArea
 var sprint_button: Button
 var block_button: Button
@@ -17,6 +17,8 @@ var attack_button: Button
 var _sprint_label: Label
 var _attack_label: Label
 var _quick_slots: Array[PanelContainer] = []
+var _combat_specs: Array[Dictionary] = []
+var _built := false
 
 var _move: Vector2 = Vector2.ZERO
 var _pressed: Dictionary = {}
@@ -68,7 +70,7 @@ func _build() -> void:
 	drag_area.dragged.connect(func(relative: Vector2) -> void: look_dragged.emit(relative))
 	drag_area.pinched.connect(func(factor: float) -> void: zoom_requested.emit(factor))
 
-	joystick = VirtualJoystick.new()
+	joystick = MobileVirtualJoystick.new()
 	joystick.name = "Joystick"
 	joystick.anchor_left = 0.0
 	joystick.anchor_top = 1.0
@@ -79,7 +81,9 @@ func _build() -> void:
 	joystick.offset_right = 198
 	joystick.offset_bottom = -20
 	add_child(joystick)
-	joystick.moved.connect(func(vector: Vector2) -> void: _move = vector)
+	# Compatibility guard for stale imported class metadata from older builds.
+	if joystick.has_signal("moved"):
+		joystick.moved.connect(func(vector: Vector2) -> void: _move = vector)
 
 	# Pill-shaped "ركض" (Sprint) Button with circular running badge on left
 	sprint_button = Button.new()
@@ -168,6 +172,8 @@ func _build() -> void:
 	block_button = _place_rpg_button("block", "swords", 56.0, 311.0, 54.0, false)
 	block_button.button_down.connect(func() -> void: _blocking = true)
 	block_button.button_up.connect(func() -> void: _blocking = false)
+	_built = true
+	_layout_responsive()
 
 func _place_rpg_button(action: String, icon_kind: String, right_margin: float, bottom_margin: float,
 		btn_size: float, is_main_attack: bool) -> Button:
@@ -219,7 +225,37 @@ func _place_rpg_button(action: String, icon_kind: String, right_margin: float, b
 	b.button_up.connect(func() -> void:
 		b.modulate = Color(1, 1, 1, 1.0))
 	add_child(b)
+	_combat_specs.append({"button": b, "right": right_margin, "bottom": bottom_margin, "size": btn_size})
 	return b
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED and _built:
+		_layout_responsive()
+
+func _layout_responsive() -> void:
+	if size.x <= 1.0 or size.y <= 1.0:
+		return
+	var fit := clampf(minf(size.x / 900.0, size.y / 600.0), 0.78, 1.0)
+	fit *= clampf(SettingsManager.touch_scale, 0.85, 1.18)
+	for spec: Dictionary in _combat_specs:
+		var b := spec["button"] as Button
+		var s := float(spec["size"]) * fit
+		var r := float(spec["right"]) * fit + maxf(10.0, size.x * 0.014)
+		var bot := float(spec["bottom"]) * fit + maxf(10.0, size.y * 0.014)
+		b.offset_left = -(r + s)
+		b.offset_top = -(bot + s)
+		b.offset_right = -r
+		b.offset_bottom = -bot
+	if joystick != null:
+		var joy_size := clampf(minf(size.x * 0.24, size.y * 0.30), 172.0, 218.0)
+		joystick.offset_left = maxf(12.0, size.x * 0.025)
+		joystick.offset_top = -(joy_size + maxf(16.0, size.y * 0.035))
+		joystick.offset_right = joystick.offset_left + joy_size
+		joystick.offset_bottom = -maxf(16.0, size.y * 0.035)
+
+func _process(_delta: float) -> void:
+	if joystick != null and not joystick.has_signal("moved"):
+		_move = joystick.vector()
 
 func get_move_vector() -> Vector2:
 	return _move

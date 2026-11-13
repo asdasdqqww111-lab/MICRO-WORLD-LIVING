@@ -68,6 +68,7 @@ var _footstep_timer: float = 0.0
 var _was_on_floor: bool = true
 var _nearest: Interactable = null
 var _spawn_position := Vector3(0.0, 1.2, 16.0)
+var _interactable_scan_timer: float = 0.0
 
 func _ready() -> void:
 	add_to_group("player")
@@ -261,7 +262,10 @@ func _physics_process(delta: float) -> void:
 	_enforce_anti_clip_safety()
 	_update_target_lock(delta)
 	_update_vitals_regen(delta)
-	_update_interactable()
+	_interactable_scan_timer -= delta
+	if _interactable_scan_timer <= 0.0:
+		_interactable_scan_timer = 0.12
+		_update_interactable()
 	state_machine.evaluate(delta, dead, _dodge_timer, _attack_timer, _spell_timer, is_blocking, is_on_floor(), sprinting, planar)
 	_update_animation(sprinting, planar)
 
