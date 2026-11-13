@@ -125,7 +125,7 @@ func _build_environment() -> void:
 		sun.name = "Sun"
 		add_child(sun)
 	sun.shadow_enabled = true
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 	sun.directional_shadow_max_distance = 50.0
 	sun.shadow_bias = 0.03
 	sun.shadow_normal_bias = 1.25
@@ -227,6 +227,12 @@ func _optimize_static_props() -> void:
 		var node: Node = stack.pop_back()
 		for child: Node in node.get_children():
 			stack.append(child)
+		if node is MultiMeshInstance3D:
+			var mmi := node as MultiMeshInstance3D
+			var mname := String(mmi.name)
+			if mname != "ForestOaks":
+				mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			continue
 		var mi := node as MeshInstance3D
 		if mi == null or mi.mesh == null:
 			continue
@@ -234,7 +240,7 @@ func _optimize_static_props() -> void:
 			continue
 		if _is_animated_branch(mi):
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			mi.visibility_range_end = 36.0
+			mi.visibility_range_end = 26.0
 			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 			continue
 		if mi.name == "TerrainMesh" or mi.name == "RiverMesh" or mi.name == "LakeMesh":
@@ -242,10 +248,13 @@ func _optimize_static_props() -> void:
 			continue
 		var aabb := mi.get_aabb()
 		var sz := aabb.size.length() * mi.global_transform.basis.get_scale().x
-		if sz < 7.0:
+		if sz < 13.5:
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		if sz < 5.5:
-			mi.visibility_range_end = 42.0
+			mi.visibility_range_end = 36.0
+			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		elif sz < 22.0:
+			mi.visibility_range_end = 58.0
 			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 
 func _is_player_branch(node: Node) -> bool:

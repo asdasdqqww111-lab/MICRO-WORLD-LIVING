@@ -259,7 +259,7 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		var sc := float(ts["s"])
 		th_xforms.append(Transform3D(Basis(Vector3.UP, tr).scaled(Vector3.ONE * sc), tp))
 		add_box_body(parent, tp, Vector3(6.4, 6.8, 6.8), "TownhouseCol")
-	build_multimesh(parent, rbuild + "house_1.glb", th_xforms, "CityTownhouses", true, 88.0)
+	build_multimesh(parent, rbuild + "house_4.glb", th_xforms, "CityTownhouses", false, 72.0)
 
 	var manor_spots := [
 		{"pos": Vector3(-8.2, 0.0, -28.0), "rot": 180.0},
@@ -274,7 +274,7 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		var mr := deg_to_rad(float(ms["rot"]))
 		manor_xforms.append(Transform3D(Basis(Vector3.UP, mr).scaled(Vector3.ONE * 2.30), mp))
 		add_box_body(parent, mp, Vector3(6.6, 7.6, 6.6), "ManorCol")
-	build_multimesh(parent, rbuild + "house_2.glb", manor_xforms, "CityNobleManors", true, 90.0)
+	build_multimesh(parent, rbuild + "house_3.glb", manor_xforms, "CityNobleManors", false, 74.0)
 
 	# Fortified Royal City Perimeter Stone Ramparts (r = 37.2m) + 4 Monumental Cardinal Gatehouses + 8 Bastion Watchtowers!
 	var gate_defs := [
@@ -621,11 +621,11 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 
 		match biome:
 			"pine_highlands", "alpine":
-				var sp := rng.randf_range(2.35, 3.45)
+				var sp := rng.randf_range(0.68, 0.96)
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 				trunk_positions.append(pos)
 			"lakeside_birch":
-				var sb := rng.randf_range(1.75, 2.45)
+				var sb := rng.randf_range(1.75, 2.35)
 				birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sb), pos))
 				trunk_positions.append(pos)
 			"dense_woodland", "ancient_grove":
@@ -638,7 +638,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 				trunk_positions.append(pos)
 			"rocky_hills":
 				if rng.randf() < 0.35:
-					var srp := rng.randf_range(2.15, 3.10)
+					var srp := rng.randf_range(0.62, 0.88)
 					pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * srp), pos))
 					trunk_positions.append(pos)
 			_:
@@ -701,12 +701,12 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 
 	var rtree := AssetLibrary.REALISTIC_TREES_DIR
 	var rnat := AssetLibrary.REALISTIC_NATURE_DIR
-	build_multimesh(parent, rtree + "realistic_oak_01.glb", oak_xforms, "ForestOaks", true, 78.0)
-	build_multimesh(parent, rtree + "realistic_oak_02.glb", dense_xforms, "ForestCanopyTrees", true, 74.0)
-	build_multimesh(parent, rtree + "medieval_tree_01.glb", pine_xforms, "HighlandPines", false, 106.0)
-	build_multimesh(parent, rtree + "birch_tree_01.glb", birch_xforms, "LakesideBirches", true, 76.0)
-	build_multimesh(parent, rnat + "realistic_rock_01.glb", rock_xforms, "WorldRocks", true, 76.0)
-	build_multimesh(parent, rnat + "realistic_bush_01.glb", bush_xforms, "ForestBushes", false, 52.0)
+	build_multimesh(parent, rtree + "realistic_oak_01.glb", oak_xforms, "ForestOaks", true, 74.0)
+	build_multimesh(parent, rtree + "realistic_oak_02.glb", dense_xforms, "ForestCanopyTrees", false, 68.0)
+	build_multimesh(parent, rtree + "realistic_canopy_03.glb", pine_xforms, "HighlandPines", false, 92.0)
+	build_multimesh(parent, rtree + "birch_tree_01.glb", birch_xforms, "LakesideBirches", false, 68.0)
+	build_multimesh(parent, rnat + "realistic_rock_01.glb", rock_xforms, "WorldRocks", false, 64.0)
+	build_multimesh(parent, rnat + "realistic_bush_01.glb", bush_xforms, "ForestBushes", false, 48.0)
 	build_multimesh(parent, "res://assets/environments/tinytreats_park/flower_A.gltf", flower_xforms, "MeadowFlowers", false, 42.0)
 	build_multimesh(parent, "res://assets/environments/tinytreats_park/grass_A.gltf", grass_xforms, "MeadowGrass", false, 34.0)
 	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 60.0)

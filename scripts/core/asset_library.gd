@@ -4,6 +4,7 @@ extends RefCounted
 ## Integrates res://assets_realistic/ (Realistic Medieval Architecture, Human-Proportioned Rigs,
 ## Textured Botanical Trees, PBR Normal/Roughness Textures & Cinematic HDRI Skies).
 
+const REALISTIC_ROOT := "res://assets_realistic/"
 const REALISTIC_DIR := "res://assets_realistic/"
 const REALISTIC_MODELS_DIR := "res://assets_realistic/models/"
 const REALISTIC_BUILDINGS_DIR := "res://assets_realistic/models/buildings/"
@@ -18,6 +19,7 @@ const CHARACTER_DIR := "res://assets/models/characters/"
 const PLAYER_DIR := "res://assets/characters/player/"
 const NPC_DIR := "res://assets/characters/npcs/"
 const GEAR_DIR := "res://assets/characters/gear/"
+const HEX_DIR := "res://assets/models/hexagon/"
 const HEXAGON_DIR := "res://assets/models/hexagon/"
 const DUNGEON_DIR := "res://assets/models/dungeon/"
 const FURNITURE_DIR := "res://assets/models/furniture/"
@@ -25,6 +27,17 @@ const NATURE_TREES_DIR := "res://assets/nature/trees/"
 const NATURE_ROCKS_DIR := "res://assets/nature/rocks/"
 const NATURE_BUSHES_DIR := "res://assets/nature/bushes/"
 const NATURE_PROPS_DIR := "res://assets/nature/props/"
+const MONSTER_DIR := "res://assets/creatures/monsters/"
+const ELITE_DIR := "res://assets/creatures/elites/"
+const BOSS_DIR := "res://assets/creatures/bosses/"
+const WILDLIFE_DIR := "res://assets/creatures/wildlife/"
+const VILLAGE_ENV_DIR := "res://assets/environments/villages/"
+const FOREST_ENV_DIR := "res://assets/environments/forests/"
+const MOUNTAIN_ENV_DIR := "res://assets/environments/mountains/"
+const RIVER_ENV_DIR := "res://assets/environments/rivers/"
+const DUNGEON_ENV_DIR := "res://assets/environments/dungeons/"
+const WEAPON_DIR := "res://assets/weapons/"
+const ARMOR_DIR := "res://assets/armor/"
 
 const SCALE_BUILDING := 8.5
 const SCALE_PROP := 4.0
@@ -47,16 +60,19 @@ static func get_scene(path: String) -> PackedScene:
 	_cache[path] = scene
 	return scene
 
+static func load_scene(path: String) -> PackedScene:
+	return get_scene(path)
+
 static func has_model(path: String) -> bool:
 	return ResourceLoader.exists(path)
 
-## Returns normalized meter-height scale for character rigs (e.g. knight_hero.glb is 5.6m raw -> 0.34 = 1.90m).
+## Returns normalized meter-height scale for character rigs (~1.86m realistic adult human height).
 static func character_base_scale(path: String) -> float:
-	if path.ends_with("knight_hero.glb"):
-		return 0.34
+	if path.begins_with(REALISTIC_CHARACTERS_DIR):
+		return 1.0
 	return 1.0
 
-static func instantiate(path: String, model_scale: float = 1.0) -> Node3D:
+static func instantiate(path: String, model_scale: float = 1.0, harmonize_variant: String = "") -> Node3D:
 	var scene := get_scene(path)
 	if scene == null:
 		push_warning("AssetLibrary: cannot load %s" % path)
@@ -66,7 +82,8 @@ static func instantiate(path: String, model_scale: float = 1.0) -> Node3D:
 		return null
 	if not is_equal_approx(model_scale, 1.0):
 		node.scale = Vector3.ONE * model_scale
-	ArtDirection.harmonize_node(node, path.get_file().get_basename())
+	var variant := harmonize_variant if not harmonize_variant.is_empty() else path.get_file().get_basename()
+	ArtDirection.harmonize_node(node, variant)
 	return node
 
 static func instantiate_gltf(path: String, scale_factor: float = 1.0) -> Node3D:
@@ -94,6 +111,7 @@ static func first_mesh_instance(root: Node) -> MeshInstance3D:
 	return null
 
 ## Extracts a unified, transform-baked, PBR-harmonized ArrayMesh suitable for 60 FPS MultiMeshInstance3D.
+## Merges surfaces sharing the same resolved PBR Material so MultiMeshes require minimal GLES3 draw calls!
 static func first_mesh(path: String, category_hint: String = "") -> Mesh:
 	var key := path + "|" + category_hint
 	if _mesh_cache.has(key):
@@ -105,12 +123,17 @@ static func first_mesh(path: String, category_hint: String = "") -> Mesh:
 	if root == null:
 		return null
 
-	var merged := ArrayMesh.new()
+	var hint := category_hint if not category_hint.is_empty() else path.get_file().get_basename()
+	var mat_order: Array[Material] = []
+	var st_by_mat: Dictionary = {}
 	var stack: Array = [[root, Transform3D.IDENTITY]]
 	while not stack.is_empty():
 		var item: Array = stack.pop_back()
 		var n: Node = item[0]
 		var xf: Transform3D = item[1]
+		var low_n := String(n.name).to_lower()
+		if low_n.contains("collider") or low_n.contains("collision") or low_n.contains("outline"):
+			continue
 		var cur_xf := xf
 		if n != root and n is Node3D:
 			cur_xf = xf * (n as Node3D).transform
@@ -118,38 +141,31 @@ static func first_mesh(path: String, category_hint: String = "") -> Mesh:
 			stack.append([c, cur_xf])
 		if n is MeshInstance3D:
 			var mi := n as MeshInstance3D
-			var low_n := String(mi.name).to_lower()
-			if mi.mesh == null or low_n.contains("collider") or low_n.contains("outline"):
+			if mi.mesh == null:
 				continue
 			var src_mesh := mi.mesh
-			var is_identity := cur_xf.is_equal_approx(Transform3D.IDENTITY)
-			var normal_basis := cur_xf.basis.inverse().transposed()
 			for s: int in src_mesh.get_surface_count():
 				var orig_mat := src_mesh.surface_get_material(s)
 				if orig_mat == null:
 					orig_mat = mi.get_surface_override_material(s)
 				var mat_name := orig_mat.resource_name.to_lower() if orig_mat != null else ""
-				if mat_name.contains("blackoutline") or mat_name.contains("collider"):
+				if mat_name.contains("blackoutline") or mat_name.contains("outline") or mat_name.contains("collider"):
 					continue
-				var arrays := src_mesh.surface_get_arrays(s)
-				if arrays.is_empty() or arrays[Mesh.ARRAY_VERTEX] == null:
-					continue
-				if not is_identity:
-					arrays = arrays.duplicate(true)
-					var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-					for vi: int in verts.size():
-						verts[vi] = cur_xf * verts[vi]
-					arrays[Mesh.ARRAY_VERTEX] = verts
-					if arrays[Mesh.ARRAY_NORMAL] != null:
-						var norms: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-						for ni: int in norms.size():
-							norms[ni] = (normal_basis * norms[ni]).normalized()
-						arrays[Mesh.ARRAY_NORMAL] = norms
-				merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-				var hint := category_hint if not category_hint.is_empty() else path.get_file().get_basename()
-				var hmat := ArtDirection.harmonize_material(orig_mat, hint)
-				if hmat != null:
-					merged.surface_set_material(merged.get_surface_count() - 1, hmat)
+				var hmat: Material = ArtDirection.harmonize_material(orig_mat, hint)
+				if not st_by_mat.has(hmat):
+					var st := SurfaceTool.new()
+					st.begin(Mesh.PRIMITIVE_TRIANGLES)
+					st_by_mat[hmat] = st
+					mat_order.append(hmat)
+				(st_by_mat[hmat] as SurfaceTool).append_from(src_mesh, s, cur_xf)
+
+	var merged := ArrayMesh.new()
+	for idx in mat_order.size():
+		var mat: Material = mat_order[idx]
+		var st: SurfaceTool = st_by_mat[mat]
+		merged = st.commit(merged)
+		if mat != null:
+			merged.surface_set_material(idx, mat)
 
 	root.free()
 	var out_mesh: Mesh = merged if merged.get_surface_count() > 0 else null

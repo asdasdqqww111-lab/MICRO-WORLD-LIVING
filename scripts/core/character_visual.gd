@@ -183,11 +183,11 @@ func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void
 			var vs := String(v).to_lower()
 			if vs.contains("sword") or vs.contains("axe"):
 				_equipped_weapon_node = _attach_socket_model(_weapon_socket,
-					AssetLibrary.REALISTIC_WEAPONS_DIR + "knight_longsword.glb", 1.05, 4.35, Vector3(90.0, 0.0, 0.0))
+					AssetLibrary.REALISTIC_WEAPONS_DIR + "knight_longsword.glb", 1.05, 4.35, Vector3(0.0, 0.0, 90.0))
 				break
 			elif vs.contains("crossbow") or vs.contains("bow"):
 				_equipped_weapon_node = _attach_socket_model(_weapon_socket,
-					AssetLibrary.REALISTIC_WEAPONS_DIR + "war_bow.glb", 1.10, 5.44, Vector3(0.0, 90.0, 0.0))
+					AssetLibrary.REALISTIC_WEAPONS_DIR + "war_bow.glb", 1.10, 5.44, Vector3(0.0, 0.0, 90.0))
 				break
 
 ## Dynamically updates Hero 3D realistic weapons & shields on BoneAttachment3D sockets.
@@ -209,7 +209,7 @@ func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> voi
 		var w_path := AssetLibrary.REALISTIC_WEAPONS_DIR + "knight_longsword.glb"
 		var w_desired := 1.12
 		var w_raw := 4.35
-		var w_rot := Vector3(85.0, 0.0, 0.0)
+		var w_rot := Vector3(0.0, 0.0, 90.0)
 		if weapon_id == "steel_greatsword" or weapon_id == "eldoria_mythic_blade" or cls == "barbarian":
 			w_path = AssetLibrary.REALISTIC_WEAPONS_DIR + "claymore_greatsword.glb"
 			w_desired = 1.38
@@ -218,12 +218,12 @@ func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> voi
 			w_path = AssetLibrary.REALISTIC_WEAPONS_DIR + "war_bow.glb"
 			w_desired = 1.15
 			w_raw = 5.44
-			w_rot = Vector3(0.0, 90.0, 0.0)
+			w_rot = Vector3(0.0, 0.0, 90.0)
 		_equipped_weapon_node = _attach_socket_model(_weapon_socket, w_path, w_desired, w_raw, w_rot)
 
 	if not shield_id.is_empty() and _shield_socket != null and cls != "mage":
 		_equipped_shield_node = _attach_socket_model(_shield_socket,
-			AssetLibrary.REALISTIC_WEAPONS_DIR + "heater_shield.glb", 0.78, 2.56, Vector3(0.0, 90.0, 0.0))
+			AssetLibrary.REALISTIC_WEAPONS_DIR + "heater_shield.glb", 0.78, 2.56, Vector3(90.0, 0.0, 0.0))
 
 func _resolve_clip(aliases: Array) -> String:
 	if anim_player == null:
