@@ -254,6 +254,8 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  world root created
 PASS  player created
 PASS  ui root created
@@ -297,21 +299,19 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  joystick input moves the player (3.38m)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 PASS  UI screens open and refresh without error
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
@@ -331,16 +331,16 @@ PASS  Target Lock acquires nearest hostile creature
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 28.9)
+PASS  skeleton takes damage (46.0 -> 33.8)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  killing 3 skeletons completes the objective
 PASS  farmer accepts the quest turn-in
 PASS  turn-in reports the reward
+SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
+          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  loot drop spawned
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)

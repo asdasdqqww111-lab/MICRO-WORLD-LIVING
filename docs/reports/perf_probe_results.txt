@@ -3,61 +3,61 @@ engine: 4.3-stable (official)
 rendering method: gl_compatibility
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-13T01:08:20
+run at: 2026-11-13T01:22:45
 
 budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  draw calls (max): 322  [WARN]
-  triangles (max):  368951  [OVER]
-  objects:          495
+  draw calls (max): 293  [WARN]
+  triangles (max):  365413  [OVER]
+  objects:          466
   static memory:    198.1 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  draw calls (max): 387  [FAIL]
-  triangles (max):  409623  [OVER]
-  objects:          560
-  static memory:    206.3 MB
+  draw calls (max): 363  [FAIL]
+  triangles (max):  409931  [OVER]
+  objects:          536
+  static memory:    206.2 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  draw calls (max): 203  [OK]
-  triangles (max):  280248  [OVER]
-  objects:          334
-  static memory:    206.3 MB
+  draw calls (max): 193  [OK]
+  triangles (max):  278752  [OVER]
+  objects:          324
+  static memory:    206.2 MB
   fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 266  [WARN]
-  triangles (max):  350400  [OVER]
-  objects:          423
+  draw calls (max): 247  [OK]
+  triangles (max):  340840  [OVER]
+  objects:          404
   static memory:    206.3 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   draw calls (max): 214  [OK]
   triangles (max):  55279  [OK]
   objects:          315
-  static memory:    206.4 MB
-  fps (min, this driver): 8.0
+  static memory:    206.3 MB
+  fps (min, this driver): 6.0
 Zone 6 · Hero Cottage Interior
   draw calls (max): 96  [OK]
   triangles (max):  17118  [OK]
   objects:          223
-  static memory:    206.5 MB
+  static memory:    206.4 MB
   fps (min, this driver): 11.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   draw calls (max): 165  [OK]
   triangles (max):  81140  [OK]
   objects:          287
-  static memory:    206.9 MB
-  fps (min, this driver): 5.0
+  static memory:    206.8 MB
+  fps (min, this driver): 4.0
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2409
-  MeshInstance3D:       852
+  nodes total:          2399
+  MeshInstance3D:       850
   MultiMeshInstance3D:  20 (batches) / 535 instances
   GPUParticles3D:       1
-  omni lights:          23
+  omni lights:          19
   shadow casting dir:   1
 --- structural audit done ---
 
@@ -79,7 +79,7 @@ TOP TRIANGLE CONSUMERS (whole world)
      6965 tris |  1 surf | World/OverworldZone/CityNobleManors [x5]
      6784 tris |  1 surf | World/OverworldZone/CityStreetLanternPosts [x16]
 
-SHADOW / LOD: casters=78  shadow_off=774  with_visibility_range=731
+SHADOW / LOD: casters=69  shadow_off=781  with_visibility_range=773
 --- offenders done ---
 
 STATUS: COMPLETE

@@ -113,6 +113,8 @@ SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Nod
           at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
           at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
 [shot] 12_sunken_crypt_dungeon -> res://docs/screenshots/12_sunken_crypt_dungeon.png (ok)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
@@ -169,43 +171,43 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 [shot] 10_skill_tree -> res://docs/screenshots/10_skill_tree.png (ok)
 [shot] 11_quest_guild_board -> res://docs/screenshots/11_quest_guild_board.png (ok)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:382)
+          at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 [shot] 13_world_map_cartography -> res://docs/screenshots/13_world_map_cartography.png (ok)
 [shot] all 12 screenshots captured successfully
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
