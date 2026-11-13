@@ -1,10 +1,11 @@
 class_name Game
 extends Node3D
-## Game scene root: builds world + player + UI and applies pending save state.
+## Game scene root: builds Eldoria World + Knight Player + Fantasy UI and applies save state.
 
 var world: WorldRoot
 var player: Player
 var ui: UIRoot
+var vfx: VFXManager
 
 func _ready() -> void:
 	randomize()
@@ -22,6 +23,10 @@ func _build() -> void:
 	player = Player.new()
 	player.name = "Player"
 	add_child(player)
+
+	vfx = VFXManager.new()
+	vfx.setup(player)
+	add_child(vfx)
 
 	ui = UIRoot.new()
 	ui.name = "UI"
@@ -41,7 +46,9 @@ func _apply_state() -> void:
 			player.global_position = world.player_spawn_point()
 		else:
 			player.apply_save_state(player_state)
+	player.camera_rig.snap_to_parent()
 	player.camera_rig.yaw = player.rotation.y
+	world._apply_zone_visibility(player.zone)
 	ui.hud.refresh_all()
 
 func _connect() -> void:
@@ -54,28 +61,28 @@ func _process(delta: float) -> void:
 		GameManager.play_time += delta
 
 func _intro() -> void:
-	var zone := player.zone
-	match zone:
+	match player.zone:
 		"dungeon":
-			EventBus.notify.emit("The cellar is cold and quiet...")
+			EventBus.notify.emit("Cold ancient air rises from the Sunken Crypt...")
+		"guild":
+			EventBus.notify.emit("Grand Hall of the Eldoria Adventurers Guild")
 		"house":
-			EventBus.notify.emit("Your house. Finally some quiet.")
+			EventBus.notify.emit("Your Eldoria Cottage")
 		_:
 			if GameManager.quest_log.entries.is_empty():
-				EventBus.notify.emit("Talk to Mira the Farmer near the market")
-				EventBus.notify.emit("Move: joystick / WASD   Look: drag   Attack: F / ATK")
+				EventBus.notify.emit(Localization.tr_key("welcome_eldoria"))
 
-func _on_quest_completed(quest_id: String) -> void:
+func _on_quest_completed(_quest_id: String) -> void:
 	if SettingsManager.autosave_enabled:
 		SaveManager.save_game(SaveManager.AUTOSAVE_SLOT)
 
 func _on_level_up(level: int) -> void:
-	EventBus.notify.emit("Level %d — open STAT to spend a skill point" % level)
+	EventBus.notify.emit("Level %d reached — open SKILLS to unlock abilities!" % level)
 	if SettingsManager.autosave_enabled:
 		SaveManager.save_game(SaveManager.AUTOSAVE_SLOT)
 
 func _on_day_started(day: int) -> void:
-	EventBus.notify.emit("Day %d begins" % day)
+	EventBus.notify.emit("Dawn breaks over Eldoria — Day %d" % day)
 	if SettingsManager.autosave_enabled:
 		SaveManager.save_game(SaveManager.AUTOSAVE_SLOT)
 

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CreatureData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/creature_data.gd" id="1_creaturedata"]
+
+[resource]
+script = ExtResource("1_creaturedata")
+id = "meadow_stag"
+display_name = "Highland Stag"
+model_path = ""
+max_health = 32.0
+damage = 3.0
+defense = 1.0
+move_speed = 4.4
+attack_range = 1.5
+attack_cooldown = 2.0
+aggro_radius = 7.0
+leash_radius = 24.0
+xp_reward = 16
+gold_reward = 2
+hostile = false
+flee_when_hurt = true
+body_scale = 1.0
+visual_type = "stag"
+loot = [{"id": "venison", "chance": 0.9, "min": 1, "max": 2}, {"id": "wolf_pelt", "chance": 0.5, "min": 1, "max": 1}]

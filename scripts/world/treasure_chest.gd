@@ -33,9 +33,14 @@ func _build_visual() -> void:
 		add_child(mi)
 		_visual = mi
 
+func prompt_for(_player: Node) -> String:
+	if Localization.is_arabic():
+		return "صندوق فارغ" if opened else "فتح صندوق الكنز"
+	return prompt_text
+
 func interact(_player: Node) -> void:
 	if opened:
-		EventBus.notify.emit("The chest is empty")
+		EventBus.notify.emit("الصندوق فارغ" if Localization.is_arabic() else "The chest is empty")
 		return
 	opened = true
 	prompt_text = "Empty chest"
@@ -43,7 +48,9 @@ func interact(_player: Node) -> void:
 	for entry: Dictionary in loot:
 		GameManager.gain_item(String(entry.get("id", "")), int(entry.get("count", 1)))
 	_tint(Color(0.4, 0.4, 0.42))
-	EventBus.notify.emit("Chest opened")
+	if AudioManager != null:
+		AudioManager.play_sfx("chest_open")
+	EventBus.notify.emit("تم فتح صندوق الكنز!" if Localization.is_arabic() else "Chest opened")
 
 func _tint(color: Color) -> void:
 	if _visual == null:

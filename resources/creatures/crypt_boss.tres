@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CreatureData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/creature_data.gd" id="1_creaturedata"]
+
+[resource]
+script = ExtResource("1_creaturedata")
+id = "crypt_boss"
+display_name = "Malakor, Dread Crypt Lord"
+model_path = "res://assets/models/characters/Skeleton_Mage.glb"
+max_health = 240.0
+damage = 16.5
+defense = 6.0
+move_speed = 3.0
+attack_range = 2.5
+attack_cooldown = 1.5
+aggro_radius = 16.0
+leash_radius = 30.0
+xp_reward = 180
+gold_reward = 75
+hostile = true
+is_elite = true
+is_boss = true
+body_scale = 1.48
+model_y_offset = 0.0
+visual_type = "boss_crypt"
+tint_color = Color(0.95, 0.42, 0.48, 1)
+loot = [{"id": "crypt_heart", "chance": 1.0, "min": 1, "max": 1}, {"id": "crypt_crown", "chance": 1.0, "min": 1, "max": 1}, {"id": "mana_elixir", "chance": 1.0, "min": 2, "max": 2}]

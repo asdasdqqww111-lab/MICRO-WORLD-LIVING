@@ -1,20 +1,26 @@
 name: Perf + Visual Probe
 
-# Fast feedback loop (no APK build): renders the real game with a software
-# rasteriser, measures draw calls/triangles, captures screenshots, and commits
-# the evidence back to the branch so it can be reviewed from the repo.
+# Renders the real Eldoria Edition v1.0 game with Mesa GLES3 software rasteriser,
+# runs the full headless acceptance harness, measures draw calls/triangles across
+# all 7 zones, captures all 12 required verification screenshots, and commits
+# the evidence back to the working branch.
 
 on:
   push:
     branches: ["arena/**"]
+    paths-ignore: ["docs/**", "**.md", ".github/workflows/**"]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
   probe:
-    name: Measure and capture
+    name: Measure and capture (Eldoria v1.0)
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -31,43 +37,57 @@ jobs:
           godot --version
 
       - name: Import project
-        run: godot --headless --path . --import
+        run: |
+          mkdir -p docs/reports
+          godot --headless --path . --import 2>&1 | tee docs/reports/ci_import.log
 
       - name: Headless acceptance tests
-        run: godot --headless --path . tests/test_runner.tscn
+        run: |
+          set -o pipefail
+          mkdir -p docs/reports
+          timeout 180 godot --headless --path . tests/test_runner.tscn 2>&1 | tee docs/reports/ci_headless_stdout.log
 
       - name: Renderer + probes (GLES3 over Mesa)
-        continue-on-error: true
         run: |
-          set +e
+          set -e
           DIAG=docs/reports/ci_env.log
           mkdir -p docs/reports docs/screenshots
+          rm -f docs/screenshots/*.png
           {
             echo "date: $(date -u)"
             echo "godot: $(command -v godot) - $(godot --version 2>&1 | head -1)"
-            echo "xvfb-run before apt: $(command -v xvfb-run)"
           } > "$DIAG" 2>&1
-          sudo apt-get update -qq >> "$DIAG" 2>&1; echo "apt update exit=$?" >> "$DIAG"
-          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1; echo "apt install exit=$?" >> "$DIAG"
-          echo "xvfb-run after apt: $(command -v xvfb-run)" >> "$DIAG"
-          tail -5 "$DIAG"
+          sudo apt-get update -qq >> "$DIAG" 2>&1
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1
 
           echo "=== glxinfo ===" > docs/reports/ci_renderer.log
           xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B >> docs/reports/ci_renderer.log 2>&1
+
           echo "=== perf probe ===" >> docs/reports/ci_renderer.log
           timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 --resolution 1280x720 \
             tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
           echo "perf exit=$?" >> docs/reports/ci_renderer.log
-          echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
+
+          echo "=== screenshot probe (12 views) ===" >> docs/reports/ci_renderer.log
           timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 --resolution 1280x720 \
             tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
           echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
-          tail -20 docs/reports/ci_screenshot_gl.log
-          tail -25 docs/reports/ci_perf_probe.log
+
+          tail -25 docs/reports/ci_screenshot_gl.log
+          tail -30 docs/reports/ci_perf_probe.log
           ls -lh docs/screenshots
-          exit 0
+
+      - name: Upload screenshots and reports artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-screenshots-and-reports
+          path: |
+            docs/screenshots/*.png
+            docs/reports/*
+          if-no-files-found: warn
 
       - name: Commit evidence back to the branch
         if: always()
@@ -79,6 +99,9 @@ jobs:
           if git diff --cached --quiet; then
             echo "no changes to commit"
           else
-            git commit -m "ci(probe): measured perf + screenshots [skip ci]"
-            git push
+            git commit -m "ci(probe): Eldoria v1.0 measured perf + 12 screenshots [skip ci]"
+            for attempt in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              sleep 3
+            done
           fi

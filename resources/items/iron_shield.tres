@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "iron_shield"
+display_name = "Iron Kite Shield"
+description = "Tempered heavy shield capable of turning aside brutal blows."
+category = 7
+rarity = 2
+max_stack = 1
+value = 85
+defense_bonus = 7.5
+icon_color = Color(0.68, 0.72, 0.78, 1)
+equip_slot = "shield"

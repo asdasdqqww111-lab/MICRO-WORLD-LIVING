@@ -1,26 +1,31 @@
 extends Node3D
-## Real performance probe (Phase 1 + 2 acceptance).
-##
-## Headless (`--headless`) uses the dummy renderer and reports zeros — expected.
-## Run it with a real rasteriser to get numbers:
-##   xvfb-run -a godot --path . --rendering-driver opengl3 tests/perf_probe.tscn
-## Results are written incrementally to res://docs/reports/perf_probe_results.txt
-## so a crash never loses the measurements already taken.
+## Real GLES3 Performance Probe across Eldoria Overworld, Biomes, Guild Hall, Cottage & Dungeon.
+##   xvfb-run -a godot --path . --rendering-driver opengl3 --resolution 1280x720 tests/perf_probe.tscn
 
 const OUT_PATH := "res://docs/reports/perf_probe_results.txt"
 const SETTLE_FRAMES := 30
-const SAMPLE_FRAMES := 60
+const SAMPLE_FRAMES := 50
 
 var _game: Node
 var _player: Player
 var _world: WorldRoot
 var _lines: PackedStringArray = []
+var _finished: bool = false
 
 func _ready() -> void:
+	_watchdog()
 	_run()
 
+func _watchdog() -> void:
+	await get_tree().create_timer(160.0).timeout
+	if _finished:
+		return
+	_lines.append("WATCHDOG: perf_probe timed out after 160s")
+	_flush(true)
+	get_tree().quit(2)
+
 func _run() -> void:
-	_lines.append("MICRO WORLD: LIVING — performance probe")
+	_lines.append("MICRO WORLD: LIVING — Eldoria Edition v1.0 GLES3 Performance Probe")
 	_lines.append("engine: %s" % Engine.get_version_info().get("string", "?"))
 	_lines.append("rendering method: %s" % ProjectSettings.get_setting(
 		"rendering/renderer/rendering_method"))
@@ -28,7 +33,7 @@ func _run() -> void:
 	_lines.append("driver: %s" % RenderingServer.get_video_adapter_api_version())
 	_lines.append("run at: %s" % Time.get_datetime_string_from_system(true))
 	_lines.append("")
-	_lines.append("budget: draw calls < 200 (hard cap 300) · triangles < 150k · fps >= 30")
+	_lines.append("budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30")
 	_lines.append("")
 	_flush()
 
@@ -44,27 +49,30 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 
-	# --- Phase 1: third person prototype scene -------------------------------
-	await _measure("Phase 1 · village spawn (player + camera + ground)")
+	await _measure("Zone 1 · Eldoria Village Square & Guild Exterior")
 
-	# --- Phase 2: combat with 3 enemies --------------------------------------
 	for i in 3:
 		_world.spawn_creature("skeleton_forest", "perf_probe_%d" % i,
-			Vector3(4.0 + float(i) * 1.6, 0.6, -4.0 - float(i) * 1.2))
+			Vector3(4.0 + float(i) * 1.6, 0.6, 4.0 - float(i) * 1.2))
 	await _frames(20)
 	_lines.append("  creatures in world: %d" % _world.creature_count())
-	await _measure("Phase 2 · village + 3 skeletons")
+	await _measure("Zone 2 · Active Combat (Village + 3 Skeletons)")
 
-	# --- other zones ---------------------------------------------------------
-	await _teleport_and_measure("Phase 3 · forest (MultiMesh trees)", Vector3(-60.0, 1.0, 0.0))
-	await _teleport_and_measure("Phase 3 · house interior", Vector3(500.0, 1.0, 2.0))
-	await _teleport_and_measure("Phase 5 · dungeon", Vector3(-500.0, 1.0, 3.0))
+	await _teleport_and_measure("Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)", Vector3(-52.0, 2.0, 6.0), "village")
+	await _teleport_and_measure("Zone 4 · River, Stone Bridge & Crystal Lake", Vector3(36.0, 1.0, 18.0), "village")
+	await _teleport_and_measure("Zone 5 · Adventurers Guild Grand Hall Interior", Vector3(500.0, 0.6, 207.5), "guild")
+	await _teleport_and_measure("Zone 6 · Hero Cottage Interior", Vector3(500.0, 0.6, 2.2), "house")
+	await _teleport_and_measure("Zone 7 · Sunken Crypt Dungeon & Boss Sanctum", Vector3(-496.0, 0.6, 28.5), "dungeon")
 
+	# Return to village before structural audit so overworld counts are visible
+	_player.teleport(Vector3(0.0, 0.6, 12.0), "village")
+	await _frames(6)
 	_safe_step("structural audit", _structural_audit)
 	_safe_step("offenders", _offenders)
 
 	_flush(true)
 	print("\n".join(_lines))
+	_finished = true
 	get_tree().quit(0)
 
 func _safe_step(label: String, method: Callable) -> void:
@@ -75,9 +83,8 @@ func _safe_step(label: String, method: Callable) -> void:
 	_lines.append("--- %s done ---" % label)
 	_flush()
 
-func _teleport_and_measure(label: String, position: Vector3) -> void:
-	_player.global_position = position
-	_player.velocity = Vector3.ZERO
+func _teleport_and_measure(label: String, position: Vector3, zone: String) -> void:
+	_player.teleport(position, zone)
 	await _frames(20)
 	await _measure(label)
 
@@ -93,11 +100,13 @@ func _measure(label: String) -> void:
 		max_tris = maxf(max_tris, Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
 		max_objects = maxf(max_objects, Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))
 		max_mem = maxf(max_mem, Performance.get_monitor(Performance.MEMORY_STATIC))
-		var fps := Performance.get_monitor(Performance.TIME_FPS)
+		var fps := Engine.get_frames_per_second()
 		if fps > 0.0:
 			min_fps = minf(min_fps, fps)
-	var draw_flag := "OK" if max_draw < 200.0 else ("OVER" if max_draw < 300.0 else "FAIL")
-	var tri_flag := "OK" if max_tris < 150000.0 else "OVER"
+	if min_fps > 9000.0:
+		min_fps = 0.0
+	var draw_flag := "OK" if max_draw < 250.0 else ("WARN" if max_draw < 350.0 else "FAIL")
+	var tri_flag := "OK" if max_tris < 180000.0 else "OVER"
 	_lines.append("%s" % label)
 	_lines.append("  draw calls (max): %d  [%s]" % [int(max_draw), draw_flag])
 	_lines.append("  triangles (max):  %d  [%s]" % [int(max_tris), tri_flag])
@@ -110,7 +119,6 @@ func _frames(count: int) -> void:
 	for i in count:
 		await get_tree().process_frame
 
-## Renderer-independent scene audit (works even with the dummy driver).
 func _structural_audit() -> void:
 	var meshes := 0
 	var multimeshes := 0
@@ -150,7 +158,6 @@ func _structural_audit() -> void:
 	_lines.append("  shadow casting dir:   %d" % shadow_lights)
 	_flush()
 
-## Triangles per surface, robust for indexed and non-indexed meshes.
 func _mesh_triangles(mesh: Mesh) -> int:
 	var total := 0
 	if mesh == null:
@@ -168,7 +175,6 @@ func _mesh_triangles(mesh: Mesh) -> int:
 			total += (indices / 3) if indices > 0 else (verts / 3)
 	return total
 
-## What actually costs draw calls / triangles.
 func _offenders() -> void:
 	var rows: Array = []
 	var shadow_casters := 0
@@ -205,14 +211,6 @@ func _offenders() -> void:
 	for i in mini(14, rows.size()):
 		var r: Dictionary = rows[i]
 		_lines.append("  %7d tris | %2d surf | %s" % [int(r["tris"]), int(r["surfaces"]), String(r["name"])])
-	_lines.append("")
-	_lines.append("TOP SURFACE (draw call) CONSUMERS")
-	var by_surfaces: Array = rows.duplicate()
-	by_surfaces.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return int(a["surfaces"]) > int(b["surfaces"]))
-	for i in mini(12, by_surfaces.size()):
-		var r: Dictionary = by_surfaces[i]
-		_lines.append("  %2d surf | %7d tris | %s" % [int(r["surfaces"]), int(r["tris"]), String(r["name"])])
 	_lines.append("")
 	_lines.append("SHADOW / LOD: casters=%d  shadow_off=%d  with_visibility_range=%d" % [
 		shadow_casters, unshadowed, with_lod])

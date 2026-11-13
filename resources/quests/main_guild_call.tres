@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "main_guild_call"
+title = "Call of the Adventurers Guild"
+description = "Elder Theron bids you visit the Grand Adventurers Guild Hall at the north end of Eldoria Square and register at the reception desk."
+giver_npc = "elder"
+turn_in_npc = "guild_master"
+objectives = [{"type": "visit", "target": "guild", "required": 1, "label": "Enter the Adventurers Guild Hall"}]
+reward_xp = 55
+reward_gold = 25
+reward_items = [{"id": "mana_elixir", "count": 1}]
+is_main_quest = true
+reward_reputation = 30
+story_flag_on_complete = "guild_inducted"

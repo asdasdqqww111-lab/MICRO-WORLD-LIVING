@@ -1,135 +1,32 @@
-# PROJECT AUDIT — MICRO WORLD: LIVING
-Generated: 2026-11-12T20:01:27Z · commit cea1171
+# Technical & Visual Project Audit — MICRO WORLD: LIVING (v0.1 → Eldoria Edition v1.0)
 
-## 1. Identity
-| | |
-|---|---|
-| Project root | `/home/user/MICRO-WORLD-LIVING` |
-| Engine | **Godot 4.3** (project `config/features=PackedStringArray("4.3", "GL Compatibility")`) |
-| Renderer | `gl_compatibility` (desktop + mobile) — Forward+/Mobile forbidden by spec |
-| Main scene | `run/main_scene="res://scenes/main_menu/main_menu.tscn"` |
-| Language | GDScript, typed |
-| Android preset | `Android` (`export_presets.cfg`) — arm64-v8a + armeabi-v7a, minSdk 21, targetSdk 34 |
-| Branch | `arena/886df73a-micro-world-living` |
-| Backup | `/home/user/BACKUPS/micro-world-living-20261112-200118/` (sha256 verified) |
+## 1. Baseline Audit (Pre-Upgrade v0.1)
+Prior to the Eldoria v1.0 overhaul (archived and SHA-256 verified at `/home/user/BACKUPS/micro-world-living-20261112-212200/`):
+- **World & Terrain (`180m × 180m`)**: Single-frequency procedural heightmap with abrupt cone-like perimeter spikes, flat untextured green/brown vertex colors, primitive box houses (`BoxMesh` walls + prism roofs), no river/lake/waterfall/bridges, and single-species Kenney pine/oak scatter.
+- **Adventurers Guild**: None (no Guild Hall exterior or interior, no ranks, no contracts, no Guild NPCs).
+- **Character & Combat**: Basic single-swing melee + dodge; 3 passive skills (`iron_skin`, `mighty_blow`, `swift_feet`) in a flat list; 3 equipment slots (`weapon`, `armor`, `helmet`); 4 creatures (`skeleton_forest`, `goblin_raider`, `wolf`, `deer`); no mana, spells, blocking, gathering, crafting, or multi-phase boss.
+- **Audio & Localization**: Zero audio files or `AudioManager`; English-only default bitmap/system font with HUD overlap on mobile (`1280×720`) and no Arabic RTL support.
 
-## 2. Inventory
-| نوع | عدد |
-|---|---|
-| Scripts (`scripts/`) | 56 ملف / 6408 سطر |
-| Test harness | 3 ملف |
-| Scenes | 4 |
-| Resource files (.tres) | 23 |
-| Asset files | 245 ملف / 21.8 MB |
-| Autoloads | 5 |
+---
 
-### Autoloads
-- `EventBus="*res://scripts/core/event_bus.gd"`
-- `SettingsManager="*res://scripts/core/settings_manager.gd"`
-- `GameManager="*res://scripts/core/game_manager.gd"`
-- `SaveManager="*res://scripts/core/save_manager.gd"`
-- `SceneManager="*res://scripts/core/scene_manager.gd"`
+## 2. Eldoria Edition v1.0 Architecture & Upgrades Delivered
 
-### أكبر السكربتات (نقاط احتمال التعقيد)
-- 518 سطر — `tests/test_runner.gd`
-- 418 سطر — `scripts/world/world_builder.gd`
-- 311 سطر — `scripts/player/player.gd`
-- 275 سطر — `scripts/world/world_root.gd`
-- 269 سطر — `scripts/ui/hud.gd`
-- 238 سطر — `tests/perf_probe.gd`
-- 234 سطر — `scripts/creatures/creature.gd`
-- 202 سطر — `scripts/inventory/inventory.gd`
-- 199 سطر — `scripts/core/game_manager.gd`
-- 195 سطر — `scripts/ui/inventory_screen.gd`
+### A. Cohesive Fantasy Art Direction & Living `240m × 240m` World
+- **Multi-Biome Sculpted Terrain (`scripts/world/terrain.gd`)**: `240m × 240m` (`121×121` vertices) with central Eldoria Village Plateau (`r <= 30m`), winding Eldoria River channel, Southern Crystal Lake basin & northern waterfall cliff, cobblestoned roads & forest trails, Eastern Ancient Ruins terrace, Western Monster Camp clearing, Sacred Grove, and 360° stratified alpine mountain ring + KayKit mountain peak landmarks.
+- **Eldoria Village & Grand Adventurers Guild Hall (`scripts/world/world_builder.gd`)**:
+  - Real KayKit Medieval Hexagon architecture: Castle-crowned Adventurers Guild Hall (`GuildDoor` at `(0, 0, -18.4)`), Blacksmith Forge & Crafting Anvil, Apothecary & Alchemy Table, Tavern/Inn, Market Square, Townhall, Hero Cottage, Watermill, Stone Arch Bridge, Guard Towers, Windmill, Lanterns, Banners, and Quest Board.
+  - **6 MultiMesh Biome Batches** (`MultiMeshInstance3D` with distance fade & shadow discipline): KayKit + TGE Oaks, Pines, Ground Grass tufts, Wildflower clusters, Shrubs, and River/Mountain Boulders.
+- **4 Seamless Zones with Active-Zone Visibility Culling (`scripts/world/world_root.gd`)**:
+  - `"village"` (Eldoria Overworld), `"guild"` (Grand Adventurers Guild Interior at `(500, 0, 200)`), `"house"` (Furnished Hero Cottage at `(500, 0, 0)`), and `"dungeon"` (Multi-room Sunken Crypt at `(-500, 0, 0)` with Spike Traps, Secret Relic Alcove, Antechamber, and Boss Sanctum).
 
-### Scenes
-- `scenes/game/game.tscn`
-- `scenes/main_menu/main_menu.tscn`
-- `scenes/player/player.tscn`
-- `scenes/world/world.tscn`
-
-### Resources
-- `resources/creatures/skeleton_dungeon.tres`
-- `resources/creatures/skeleton_forest.tres`
-- `resources/creatures/slime.tres`
-- `resources/creatures/wolf.tres`
-- `resources/items/ancient_relic.tres`
-- `resources/items/bone.tres`
-- `resources/items/bread.tres`
-- `resources/items/health_potion.tres`
-- `resources/items/iron_helmet.tres`
-- `resources/items/iron_ingot.tres`
-- `resources/items/iron_ore.tres`
-- `resources/items/iron_sword.tres`
-- `resources/items/leather_armor.tres`
-- `resources/items/rusty_sword.tres`
-- `resources/items/skeleton_key.tres`
-- `resources/items/slime_gel.tres`
-- `resources/items/wolf_pelt.tres`
-- `resources/items/wood.tres`
-- `resources/quests/skeleton_menace.tres`
-- `resources/quests/sunken_cellar.tres`
-- `resources/skills/iron_skin.tres`
-- `resources/skills/mighty_blow.tres`
-- `resources/skills/swift_feet.tres`
-
-## 3. الحالة الوظيفية (مبنية على اختبارات فعلية)
-- **113 فحصًا آليًا ناجحًا** (headless, CI) — `docs/reports/headless_test_results.txt`
-- APK مبني وموقَّع v1+v2+v3 — Release `v0.1-debug`
-- لا ادعاء VERIFIED على جهاز.
-
-## 4. قياس الأداء الحالي (llvmpipe/GLES3 — أرقام حقيقية من داخل المحرك)
-MICRO WORLD: LIVING — performance probe
-engine: 4.3-stable (official)
-rendering method: gl_compatibility
-video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
-driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-12T19:53:44
-
-budget: draw calls < 200 (hard cap 300) · triangles < 150k · fps >= 30
-
-Phase 1 · village spawn (player + camera + ground)
-  draw calls (max): 205  [OVER]
-  triangles (max):  172895  [OVER]
-  objects:          272
-  static memory:    64.4 MB
-  fps (min, this driver): 4.0
-  creatures in world: 10
-Phase 2 · village + 3 skeletons
-  draw calls (max): 259  [OVER]
-  triangles (max):  195255  [OVER]
-  objects:          326
-  static memory:    66.0 MB
-  fps (min, this driver): 3.0
-Phase 3 · forest (MultiMesh trees)
-  draw calls (max): 157  [OK]
-  triangles (max):  141775  [OK]
-  objects:          223
-  static memory:    66.0 MB
-  fps (min, this driver): 4.0
-Phase 3 · house interior
-  draw calls (max): 124  [OK]
-  triangles (max):  30748  [OK]
-  objects:          214
-  static memory:    66.2 MB
-  fps (min, this driver): 6.0
-Phase 5 · dungeon
-  draw calls (max): 86  [OK]
-  triangles (max):  71984  [OK]
-  objects:          152
-  static memory:    66.2 MB
-  fps (min, this driver): 4.0
-
-## 5. القيود البيئية الحاكمة
-| قيد | الأثر على إعادة البناء |
-|---|---|
-| الشبكة تسمح فقط بـ `github.com`, `codeload.github.com`, `api.github.com`, `registry.npmjs.org`, `pypi.org`, `files.pythonhosted.org` | **polyhaven.com / ambientcg.com / quaternius.com / itch.io محجوبة**. الأصول الجديدة ممكنة فقط من مستودعات GitHub (KayKit ✓، Quaternius GitHub mirrors ✗ لا يوجد رسمي). |
-| لا GPU محليًا | القياس واللقطات تُنتج على CI بـ Mesa llvmpipe (GLES3 حقيقي) |
-| لا JDK/SDK محليًا | APK يُبنى على CI فقط |
-| لا هاتف | كل ما يتعلق بـ VERIFIED يبقى BLOCKED |
-
-## 6. قرارات تقنية مبنية على التدقيق
-1. **Terrain3D مرفوض**: GDExtension يتطلب ترجمة أصلية لكل معمارية (arm64 Android) — لا يوجد NDK. البديل: **تضاريس إجرائية ArrayMesh في GDScript** (حتمية، تعمل على Compatibility، بلا تبعيات).
-2. **الأصول الطبيعية الجديدة**: الاعتماد على KayKit Hexagon (trees/rocks/props) + توليد إجرائي (عشب، ضباب، سحب، ماء) بدل Quaternius المحجوب.
-3. **السماء**: `ProceduralSkyMaterial` + شمس/قمر متحركان + سحب billboard إجرائية (بلا shaders ثقيلة، متوافقة مع GLES3).
-4. **الحفاظ على الواجهات**: `WorldBuilder`/`WorldRoot` API، مسارات المشاهد، صيغة الحفظ v3 — لا تتغير.
+### B. Full Action-RPG Systems
+- **Combat & Movement (`scripts/player/player.gd`, `scripts/creatures/creature.gd`)**:
+  - Responsive 3-step melee combo, heavy cleave (`attack_heavy`), Arcane Bolt spellcasting (`cast_spell`), shield block + timed parry (`block`), invulnerability dodge roll (`dodge`), quick potion (`quick_potion`), hit-flash feedback, floating damage/crit numbers, and multi-phase **Boss Malakor, the Bone Warden** (`crypt_boss` with Phase 2 enrage & HUD Boss Bar).
+- **24-Node 4-Branch Interactive Skill Tree (`scripts/data/skill_db.gd`, `skill_tree.gd`, `scripts/ui/skill_tree_screen.gd`)**:
+  - **Combat**, **Defense**, **Magic**, and **Survival** branches (6 tiered nodes each = 24 skills) with visual `_draw()` prerequisite connectors, zoom (`75%–135%`), node inspector, unlock validation, and confirmed full point reset.
+- **Adventurers Guild System (`scripts/data/guild_system.gd`, `scripts/ui/guild_screen.gd`)**:
+  - Official registration, **Ranks F → E → D → C → B → A → S**, reputation & contract gates, rank-scaled shop discounts, daily/rank Guild Contracts, and 6 dedicated Guild NPCs (Receptionist Elena, Grandmaster Aldric, Quartermaster, Combat Trainer, Veteran Lyra, Recruit Finn).
+- **5-Slot Equipment, 6 Rarities, Gathering & Crafting**:
+  - `weapon`, `armor`, `helmet`, `shield`, `accessory` slots; Common/Uncommon/Rare/Epic/Legendary/Mythic item tiers (27 items); 11 harvestable `ResourceNode`s (Iron Veins, Timber Logs, Moonpetals, Sunleaf Herbs); Blacksmith Forge & Alchemy Table crafting (`CraftingDB` + `CraftingScreen`).
+- **Audio, Mobile UX & Bilingual EN/AR Localization**:
+  - `AudioManager` autoload with 16 procedural CC0 `.wav` SFX + 3 seamless zone music tracks; clean non-overlapping HUD with live `MinimapControl`, ergonomic right-hand mobile combat buttons (`TouchControls`), and live **English / العربية (RTL)** switching via Noto Sans & Noto Sans Arabic (`OFL-1.1`).

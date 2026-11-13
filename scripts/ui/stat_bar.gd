@@ -18,6 +18,10 @@ func setup(title: String, color: Color) -> void:
 	add_child(_bar)
 	add_theme_constant_override("separation", 2)
 
+func set_title(title: String) -> void:
+	_title = title
+	set_values(_value, _maximum)
+
 func set_values(current: float, maximum: float) -> void:
 	_value = current
 	_maximum = maxf(0.001, maximum)

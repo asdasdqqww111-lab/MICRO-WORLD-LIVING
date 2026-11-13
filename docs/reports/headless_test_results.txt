@@ -1,50 +1,100 @@
-MICRO WORLD: LIVING — headless test results
+MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-12T21:11:00
-checks passed: 113
+run at: 2026-11-13T00:13:28
+checks passed: 171
 checks failed: 0
 
-renderer metrics (headless dummy driver — device run required for the real numbers):
-  fps: 145.0
+renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
+  fps: 135.0
   draw calls: 0
   triangles: 0
-  nodes: 585
+  nodes: 2294
 
 checks:
 
-== Data resources ==
-PASS  ItemDB loads >= 14 items (got 14)
-PASS  QuestDB loads 2 quests (got 2)
-PASS  SkillDB loads 3 skills (got 3)
-PASS  CreatureDB loads 4 creatures (got 4)
-PASS  every item resource has id/name/stack and a valid equip slot
-PASS  core items exist (rusty_sword, health_potion, ancient_relic)
+== Data resources (Eldoria RPG Databases) ==
+PASS  ItemDB loads >= 25 items (got 27)
+PASS  QuestDB loads >= 10 quests & contracts (got 11)
+PASS  SkillDB loads 24 skill tree nodes across 4 branches (got 24)
+PASS  CreatureDB loads >= 10 creature archetypes (got 11)
+PASS  every item resource has id/name/stack and a valid 5-slot equip_slot
+PASS  core & mythic items exist across weapon/shield/accessory
+PASS  model exists for creature 'cave_bat'
+PASS  model exists for creature 'crypt_boss'
+PASS  model exists for creature 'forest_goblin'
+PASS  model exists for creature 'grove_guardian'
+PASS  model exists for creature 'rock_golem'
 PASS  model exists for creature 'skeleton_dungeon'
 PASS  model exists for creature 'skeleton_forest'
+PASS  model exists for creature 'wraith_elite'
 PASS  quest 'skeleton_menace' present
-PASS  quest has 1 objective
+PASS  main quest 'main_guild_call' present
+PASS  guild contract 'contract_forest_cull' present
 
-== Progression ==
+== Hero Classes (4), Articulated 3D Creature Rigs & Full Arabic Content ==
+PASS  HeroClassDB defines 4 playable classes
+PASS  3D GLB rig exists for hero class 'knight' (res://assets/characters/player/Knight.glb)
+PASS  3D GLB rig exists for hero class 'mage' (res://assets/characters/npcs/Mage.glb)
+PASS  3D GLB rig exists for hero class 'ranger' (res://assets/characters/npcs/Rogue_Hooded.glb)
+PASS  3D GLB rig exists for hero class 'barbarian' (res://assets/characters/npcs/Barbarian.glb)
+PASS  Mage class creation applies hero_class & hero_name
+PASS  Mage starts with elevated mana pool (105) & Firebolt unlocked
+PASS  Ranger starts with elevated crit chance (0.17) & Swift Feet unlocked
+PASS  Barbarian starts with elevated max HP (130) & Mighty Blow unlocked
+PASS  Wolf procedural 3D rig has articulated legs, head & tail pivots
+PASS  Wolf articulated limb stride animates smoothly
+PASS  Stag procedural 3D rig has crowned antler head & 4 articulated legs
+PASS  Slime 3D rig has translucent outer dome & glowing suspended nucleus
+PASS  all 27 items have distinct Arabic names & descriptions
+PASS  all 11 quests & guild contracts have distinct Arabic titles & objectives
+PASS  all 24 skills have Arabic titles & descriptions
+PASS  all 11 creatures & bosses have Arabic names
+PASS  Eldoria Story Prologue has 3 localized narrative chapters
+
+== Progression & 24-Node Skill Tree ==
 PASS  level 1 needs 60 xp (got 60)
 PASS  60 xp levels up to 2
 PASS  leftover xp is carried correctly (got 0)
 PASS  xp is capped at max level 20 (got 20)
-PASS  level 5 raises max health
+PASS  tier-1 skill locked before prerequisite
+PASS  tier-0 warrior skill unlocks
+PASS  tier-1 warrior skill unlocks after mighty_blow
+PASS  heavy_cleave unlocked
+PASS  skill points tracked accurately
+PASS  skill tree reset refunds all spent points
 
-== Inventory ==
+== Adventurers Guild (Ranks F-S) & Crafting ==
+PASS  new hero starts unregistered at Guild
+PASS  hero registers as Rank F adventurer
+PASS  initial Guild rank is F
+PASS  eligible for Rank E promotion
+PASS  promoted to Rank E
+PASS  Guild rank grants merchant discount
+PASS  can craft Iron Sword with materials
+PASS  forging Iron Sword succeeds
+PASS  crafted Iron Sword added to inventory
+
+== Localization (EN / AR RTL) & Audio ==
+PASS  Arabic language mode activates RTL
+PASS  Arabic string table returns localized label
+PASS  English string table restores cleanly
+PASS  AudioManager autoload registered
+
+== Inventory & 5-Slot Equipment ==
 PASS  adding 40 bones fits
 PASS  bone count is 40 (got 40)
 PASS  40 bones use 2 stacks of 30 (got 2)
 PASS  removing 39 bones works
 PASS  one bone left
 PASS  unknown items are rejected
-PASS  equip rusty_sword
-PASS  weapon slot holds the sword
-PASS  equipped item leaves the bags
+PASS  equip rusty_sword in weapon slot
+PASS  equip oak_shield in shield slot
+PASS  equip guild_ring in accessory slot
+PASS  5-slot equipment holds shield + accessory
 PASS  equip iron_sword over rusty_sword
 PASS  old weapon returns to the bags
-PASS  attack bonus is applied from gear
+PASS  gear bonuses stack across slots
 PASS  unequip weapon
 PASS  20 full stacks fill the inventory
 PASS  no room means leftover
@@ -67,8 +117,9 @@ PASS  world state round-trips
 PASS  potion has a price
 PASS  same day = same price
 PASS  sell price is below buy price
-PASS  prices change across days (6 distinct)
+PASS  prices change across days (5 distinct)
 PASS  blacksmith has stock
+PASS  guild quartermaster has stock
 
 == NPC schedule ==
 PASS  08:00 is work time
@@ -90,12 +141,14 @@ PASS  reward gold is applied (+20)
 PASS  reward items are applied (+2 potions)
 PASS  a quest cannot be turned in twice
 
-== Save files ==
+== Save files & Guild/Skill persistence ==
 PASS  save writes to disk
 PASS  save file exists
 PASS  save file carries schema_version 3
 PASS  save loads
-PASS  gold restored (107)
+PASS  gold restored (112)
+PASS  Guild state restored (rep=55)
+PASS  SkillTree unlocked node restored
 PASS  quest state restored
 PASS  v1 save migrates and loads
 PASS  migrated save keeps gold
@@ -104,43 +157,54 @@ PASS  corrupt save is refused
 PASS  corrupt save reports a reason
 PASS  newer schema version is refused
 
-== Game scene (world + player + UI) ==
+== Game scene (Eldoria World + Guild + Player + UI) ==
 PASS  game.tscn loads
 PASS  world root created
 PASS  player created
 PASS  ui root created
-PASS  HUD and touch controls built
-PASS  village landmarks built
-PASS  farmer NPC exists
-PASS  guard NPC exists
-PASS  blacksmith NPC exists
-PASS  creatures spawned (7)
-PASS  multimesh instancing is real (5 batches, 0 broken)
-PASS  player character model instantiated
-PASS  animation states resolved from the KayKit clips
+PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
+PASS  Eldoria landmarks built (20)
+PASS  village NPCs exist
+PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
+PASS  wildlife, monsters & crypt boss spawned (18)
+PASS  MultiMesh biome instancing is real (13 batches, 0 broken)
+PASS  player Knight character model instantiated
+PASS  animation states resolved from KayKit rig clips
 PASS  player lands on the ground
-PASS  player stands at ground height (y=0.00)
-PASS  joystick input moves the player (3.09m)
+PASS  player stands at ground height (y=0.04)
+PASS  joystick input moves the player (3.38m)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
+PASS  UI screens open and refresh without error
+PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
+PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
+PASS  Cairo variable font bundled & active
+PASS  Tiny Treats CC0 Homely House & Pretty Park Fountain models loaded
+PASS  Procedural PBR terrain Normal Map & Roughness Map generated
+PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
+PASS  Player anti-clipping physics & CollisionLayers configured
+PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
+PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
-PASS  player can swing with stamina
-PASS  skeleton takes damage (46.0 -> 33.8)
+PASS  Target Lock acquires nearest hostile creature
+PASS  player can swing melee combo
+PASS  skeleton takes damage (46.0 -> 34.5)
 PASS  skeleton aggroes when hit
+PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
-PASS  farmer offers dialog actions
 PASS  farmer accepts the quest turn-in
 PASS  turn-in reports the reward
 PASS  loot drop spawned
 PASS  loot is collected into the inventory (got 2)
+PASS  Adventurers Guild door exists
+PASS  door moves player into Adventurers Guild Hall
 PASS  house door exists
-PASS  door moves the player into the house zone
-PASS  player is inside the house
+PASS  door moves player into house zone
+PASS  Malakor the Bone Warden boss exists in Sunken Crypt
 PASS  scene state saves
 PASS  dead creatures recorded (3)
-PASS  creature count measured before teardown (7)
 PASS  scene state reloads
-PASS  dead creatures stay dead after reload (4 alive vs 7 before)
+PASS  dead creatures stay dead after reload (15 alive vs 18 before)
 PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload

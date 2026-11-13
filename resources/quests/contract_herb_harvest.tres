@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "contract_herb_harvest"
+title = "[Rank F] Moonpetal Gathering"
+description = "Guild Gathering Contract: Harvest 2 Moonpetal Blooms along Crystal Lake for the Guild Quartermaster."
+giver_npc = "guild_receptionist"
+turn_in_npc = "guild_receptionist"
+objectives = [{"type": "collect", "target": "herb_moonpetal", "required": 2, "label": "Moonpetal Blooms harvested"}]
+reward_xp = 70
+reward_gold = 35
+reward_items = [{"id": "mana_elixir", "count": 1}]
+is_guild_contract = true
+contract_category = "gathering"
+required_guild_rank = "F"
+reward_reputation = 60

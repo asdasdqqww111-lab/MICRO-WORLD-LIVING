@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "smith_ore_supply"
+title = "Iron for the Forge"
+description = "Grim the Smith is running low on highland ore. Mine or gather 3 Iron Ore from the eastern crags and return to his forge."
+giver_npc = "blacksmith"
+turn_in_npc = "blacksmith"
+objectives = [{"type": "collect", "target": "iron_ore", "required": 3, "label": "Iron Ore gathered"}]
+reward_xp = 65
+reward_gold = 35
+reward_items = [{"id": "iron_ingot", "count": 2}]
+reward_reputation = 25
