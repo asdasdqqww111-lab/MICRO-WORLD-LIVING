@@ -2,11 +2,11 @@ extends Node3D
 class_name CityChunkStream
 ## Deterministic six-district city generator with chunk streaming.
 ##
-## - 40x40 m chunks, 2x2-chunk fixed district blocks (6 districts, explicit bounds).
+## - 40x40 m chunks; each district owns one explicit 2x2 chunk block (no overlap).
 ## - Loads chunks within VIEW_CHUNKS of the player, unloads beyond UNLOAD_CHUNKS.
 ## - All placement from a chunk-seeded RNG: same chunk => same city, every run.
-## - Mobile budget: max 4 draw calls per chunk (MultiMesh batches), 1 StaticBody3D
-##   for collisions, BoxOccluder3D per building. No per-frame allocations.
+## - Mobile budget: <= 3 MultiMesh draw calls per chunk, 1 StaticBody3D per
+##   building, BoxOccluder3D per building, shared lamp collision shape.
 
 signal chunk_loaded(chunk: Vector2i, district: int)
 signal chunk_unloaded(chunk: Vector2i)
@@ -15,11 +15,21 @@ const CHUNK_SIZE: float = 40.0
 const VIEW_CHUNKS: int = 2          # load within 2 chunks (80 m) of the player
 const UNLOAD_CHUNKS: int = 3        # unload beyond 3 chunks (120 m)
 const ROAD_HALF: float = 4.0        # roads run along chunk borders (8 m wide)
-const CITY_MIN: int = 2             # district grid bounds (inclusive)
-const CITY_MAX: int = 5
+const CLEAR_ZONE: float = 16.0      # building keep-out: |x|,|z| <= 16 inside a chunk
 const DISTRICT_COUNT: int = 6
 
 enum District { RESIDENTIAL, MARKET, ROYAL, TEMPLE, HARBOR, GARDEN }
+
+# Explicit, non-overlapping 2x2 chunk blocks (top-left chunk of each block).
+# City bounds: chunks 2..7 on both axes = 240 m x 240 m walled city.
+const DISTRICT_BLOCKS := {
+	District.RESIDENTIAL: Vector2i(2, 2),
+	District.MARKET: Vector2i(4, 2),
+	District.ROYAL: Vector2i(2, 4),
+	District.TEMPLE: Vector2i(4, 4),
+	District.HARBOR: Vector2i(2, 6),
+	District.GARDEN: Vector2i(4, 6),
+}
 
 const DISTRICT_NAMES := {
 	District.RESIDENTIAL: "Residential Quarter",
@@ -38,12 +48,11 @@ var _lamp_shape: SphereShape3D
 # ------------------------------------------------------------------ districts
 
 func district_for_chunk(cx: int, cz: int) -> int:
-	# Fixed non-overlapping 2x2 chunk blocks: [2..3]x[2..3] etc.
-	if cx < CITY_MIN or cx > CITY_MAX or cz < CITY_MIN or cz > CITY_MAX:
-		return -1
-	var bx := (cx - CITY_MIN) / 2
-	var bz := (cz - CITY_MIN) / 2
-	return bz * 2 + bx
+	for district in DISTRICT_BLOCKS:
+		var b: Vector2i = DISTRICT_BLOCKS[district]
+		if cx >= b.x and cx <= b.x + 1 and cz >= b.y and cz <= b.y + 1:
+			return district
+	return -1
 
 func district_name(district: int) -> String:
 	return DISTRICT_NAMES.get(district, "Meadowlands")
@@ -171,14 +180,12 @@ func _building(parent: Node3D, pos: Vector3, size: Vector3, wall: Color, roof: C
 	occ.occluder = occ_box
 	occ.position = Vector3(0.0, size.y * 0.5, 0.0)
 	body.add_child(occ)
-	if body.get_node_or_null("Col") == null:
-		var col := CollisionShape3D.new()
-		col.name = "Col"
-		var shape := BoxShape3D.new()
-		shape.size = size
-		col.shape = shape
-		col.position = Vector3(0.0, size.y * 0.5, 0.0)
-		body.add_child(col)
+	var col := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	col.shape = shape
+	col.position = Vector3(0.0, size.y * 0.5, 0.0)
+	body.add_child(col)
 
 func _lamp(parent: Node3D, pos: Vector3, glow: Color) -> void:
 	var root := Node3D.new()
@@ -287,7 +294,7 @@ func _build_temple(node: Node3D, rng: RandomNumberGenerator) -> void:
 		_lamp(node, Vector3(-6 + 12.0 * float(i), 0.0, 6.5), Color(1.0, 0.92, 0.7))
 
 func _build_harbor(node: Node3D, rng: RandomNumberGenerator) -> void:
-	# Warehouses along the west edge + crates and masts near the water line.
+	# Warehouses along the west edge + masts near the water line.
 	for i in 3:
 		_building(node, Vector3(-11.0, 0.0, -12.0 + 12.0 * float(i)),
 			Vector3(6, rng.randf_range(4.0, 6.5), 7),
