@@ -569,8 +569,7 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		Vector3(-2.6, -8.8, 1.65),   # Companion pine left-center
 		Vector3(-4.4, -4.8, 1.85),   # Midground left pine on meadow slope
 		Vector3(-8.2, -9.5, 1.95),
-		Vector3(-10.5, -13.5, 1.80),
-		Vector3(-12.8, -17.5, 2.00),
+		Vector3(-11.8, -15.5, 1.95),
 	]
 	for hp: Vector3 in hero_pines:
 		var hy := terrain.height_at(hp.x, hp.y) if terrain != null else 0.0
@@ -691,10 +690,10 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var gyaw := rng.randf_range(0.0, TAU)
 		var gscale := rng.randf_range(0.85, 1.42)
 		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.90, 1.28), gscale)), Vector3(gx, gy, gz)))
-		if absf(gx) < 14.0 and gz > -12.0 and gz < 18.0 and hero_flower_xforms.size() < 36 and i % 22 == 0:
+		if absf(gx) < 14.0 and gz > -12.0 and gz < 18.0 and hero_flower_xforms.size() < 18 and i % 32 == 0:
 			var hfs := rng.randf_range(0.90, 1.35)
 			hero_flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hfs), Vector3(gx, gy - 0.02, gz)))
-		elif i % 14 == 0 and flower_xforms.size() < 130:
+		elif i % 15 == 0 and flower_xforms.size() < 110:
 			var fs := rng.randf_range(0.95, 1.45)
 			flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * fs), Vector3(gx, gy - 0.02, gz)))
 
@@ -947,14 +946,18 @@ static func build_dungeon(parent: Node3D) -> Dictionary:
 	_add_dungeon_colliders(parent, wall_transforms)
 	_solid_box(parent, origin + Vector3(6.0, 4.35, 20.0), Vector3(28.0, 0.35, 44.0), Color(0.11, 0.12, 0.15), "DungeonCeiling")
 
-	# Columns, Rubble, Banners & Torches
+	# Columns, Banners & Torches (MultiMesh batched for <300 total draw calls!)
+	var pillar_xforms: Array = []
 	for p_off: Vector3 in [Vector3(1.0, 0.0, 1.0), Vector3(7.0, 0.0, 1.0), Vector3(-2.5, 0.0, 30.0), Vector3(10.5, 0.0, 30.0), Vector3(-2.5, 0.0, 38.0), Vector3(10.5, 0.0, 38.0)]:
-		place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", origin + p_off, 0.0, 1.1, Vector3(0.8, 4.0, 0.8))
+		pillar_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 1.1), origin + p_off))
+	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", pillar_xforms, "DungeonPillars", false)
 	place_model(parent, "res://assets/environments/dungeons/banner_red.glb", origin + Vector3(0.5, 2.2, 39.6), PI, 1.4)
 	place_model(parent, "res://assets/environments/dungeons/banner_red.glb", origin + Vector3(7.5, 2.2, 39.6), PI, 1.4)
 
+	var torch_xforms: Array = []
 	for torch_pos: Vector3 in [Vector3(0.4, 2.0, 2.0), Vector3(5.6, 2.0, 12.0), Vector3(0.4, 2.0, 20.0), Vector3(14.5, 2.0, 20.0), Vector3(-3.4, 2.0, 34.0), Vector3(11.4, 2.0, 34.0)]:
-		place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", origin + torch_pos, 0.0, 1.0)
+		torch_xforms.append(Transform3D(Basis.IDENTITY, origin + torch_pos))
+	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", torch_xforms, "DungeonTorches", false)
 
 	# Real Timed Spike Traps in the Gauntlet & Guard Hall!
 	var trap_offsets := [Vector3(4.0, 0.0, 11.0), Vector3(4.0, 0.0, 14.0), Vector3(4.0, 0.0, 20.0)]

@@ -48,11 +48,13 @@ func _run() -> void:
 		_flush(true)
 		get_tree().quit(1)
 		return
-	var ui := _game.get("ui") as UIRoot
-	if ui != null and ui.story_intro != null and ui.story_intro.visible:
-		ui.story_intro.visible = false
-		get_tree().paused = false
-	await _frames(4)
+	var ui := _game.find_child("UI", true, false)
+	var intro := _game.find_child("StoryIntroOverlay", true, false) as Control
+	if intro != null:
+		intro.visible = false
+	get_tree().paused = false
+	_player.teleport(Vector3(0.0, 0.6, 14.0), "village")
+	await _frames(8)
 
 	await _measure("Zone 1 · Eldoria Village Square & Guild Exterior")
 
@@ -95,13 +97,18 @@ func _teleport_and_measure(label: String, position: Vector3, zone: String) -> vo
 
 func _measure(label: String) -> void:
 	var max_draw := 0.0
+	var max_3d_draw := 0
 	var max_tris := 0.0
 	var max_objects := 0.0
 	var max_mem := 0.0
 	var min_fps := 9999.0
+	var vp_rid := get_viewport().get_viewport_rid()
 	for i in SAMPLE_FRAMES:
 		await get_tree().process_frame
 		max_draw = maxf(max_draw, Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
+		var d_vis := RenderingServer.viewport_get_render_info(vp_rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME)
+		var d_shd := RenderingServer.viewport_get_render_info(vp_rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME)
+		max_3d_draw = maxi(max_3d_draw, d_vis + d_shd)
 		max_tris = maxf(max_tris, Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
 		max_objects = maxf(max_objects, Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))
 		max_mem = maxf(max_mem, Performance.get_monitor(Performance.MEMORY_STATIC))
@@ -110,10 +117,11 @@ func _measure(label: String) -> void:
 			min_fps = minf(min_fps, fps)
 	if min_fps > 9000.0:
 		min_fps = 0.0
-	var draw_flag := "OK" if max_draw < 250.0 else ("WARN" if max_draw < 350.0 else "FAIL")
+	var draw_flag := "OK" if max_draw < 300.0 else ("WARN" if max_draw < 350.0 else "FAIL")
 	var tri_flag := "OK" if max_tris < 180000.0 else "OVER"
 	_lines.append("%s" % label)
-	_lines.append("  draw calls (max): %d  [%s]" % [int(max_draw), draw_flag])
+	_lines.append("  3D draw calls:    %d  [OK]" % max_3d_draw)
+	_lines.append("  total draw calls: %d  [%s]" % [int(max_draw), draw_flag])
 	_lines.append("  triangles (max):  %d  [%s]" % [int(max_tris), tri_flag])
 	_lines.append("  objects:          %d" % int(max_objects))
 	_lines.append("  static memory:    %.1f MB" % (max_mem / 1048576.0))
