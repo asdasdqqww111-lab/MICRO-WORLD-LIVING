@@ -6,6 +6,7 @@ var world: WorldRoot
 var player: Player
 var ui: UIRoot
 var vfx: VFXManager
+var tower: TowerManager
 
 func _ready() -> void:
 	randomize()
@@ -19,6 +20,11 @@ func _build() -> void:
 	world = WorldRoot.new()
 	world.name = "World"
 	add_child(world)
+
+	tower = TowerManager.new()
+	tower.name = "CelestialTower"
+	tower.world = world
+	add_child(tower)
 
 	player = Player.new()
 	player.name = "Player"
@@ -46,6 +52,9 @@ func _apply_state() -> void:
 			player.global_position = world.player_spawn_point()
 		else:
 			player.apply_save_state(player_state)
+	# Restore the tower floor when the save says the player was inside.
+	if tower != null and player.zone == "tower":
+		tower.restore_after_load(player)
 	player.camera_rig.snap_to_parent()
 	player.camera_rig.yaw = player.rotation.y
 	world._apply_zone_visibility(player.zone)
@@ -68,6 +77,10 @@ func _intro() -> void:
 			EventBus.notify.emit("Grand Hall of the Eldoria Adventurers Guild")
 		"house":
 			EventBus.notify.emit("Your Eldoria Cottage")
+		"tower":
+			if tower != null and tower.active_floor() > 0:
+				var ar := Localization.is_arabic()
+				EventBus.notify.emit("استأنفت الصعود — الطابق %d" % tower.active_floor() if ar else "The ascent resumes — Floor %d" % tower.active_floor())
 		_:
 			if GameManager.quest_log.entries.is_empty():
 				EventBus.notify.emit(Localization.tr_key("welcome_eldoria"))
