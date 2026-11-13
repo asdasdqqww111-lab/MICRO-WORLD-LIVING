@@ -1,14 +1,2 @@
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
-SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/ui/minimap_control.gd:143)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/ui/hud.gd:-1)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/ui/world_map_screen.gd:409)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/ui/ui_root.gd:-1)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/core/game.gd:-1)
-ERROR: Failed to load script "res://scripts/core/game.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:2936)

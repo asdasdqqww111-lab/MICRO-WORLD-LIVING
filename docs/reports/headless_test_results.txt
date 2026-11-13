@@ -1,22 +1,22 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-13T01:04:30
-checks passed: 176
-checks failed: 3
+run at: 2026-11-13T01:07:57
+checks passed: 182
+checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 142.0
+  fps: 20.0
   draw calls: 0
   triangles: 0
-  nodes: 2363
+  nodes: 2760
 
 checks:
 
 == Data resources (Eldoria RPG Databases) ==
 PASS  ItemDB loads >= 25 items (got 27)
-PASS  QuestDB loads >= 10 quests & contracts (got 24)
-FAIL  SkillDB loads 24 skill tree nodes across 4 branches (got 36)
+PASS  QuestDB loads >= 24 quests & contracts (got 24)
+PASS  SkillDB loads >= 36 skill tree nodes across 4 branches (got 36)
 PASS  CreatureDB loads >= 10 creature archetypes (got 11)
 PASS  every item resource has id/name/stack and a valid 5-slot equip_slot
 PASS  core & mythic items exist across weapon/shield/accessory
@@ -59,12 +59,15 @@ PASS  leftover xp is carried correctly (got 0)
 PASS  xp is capped at max level 20 (got 20)
 PASS  Expanded 5-Tier Skill Tree has 36 >= 36 interconnected nodes
 PASS  tier-1 skill locked before prerequisite
-PASS  tier-0 warrior skill unlocks
+PASS  tier-0 warrior skills unlock
 PASS  tier-1 warrior skill unlocks after mighty_blow
-PASS  heavy_cleave unlocked
-PASS  tier-2 lethal_precision unlocked
-PASS  tier-3 berserker_rage unlocked
-FAIL  tier-4 capstone sovereign_juggernaut unlocked
+PASS  tier-1 warrior skills unlocked
+PASS  tier-2 warrior skills unlocked
+PASS  tier-3 warrior skills unlocked
+PASS  tier-4 capstone sovereign_vanguard unlocked
+PASS  tier-4 capstone grants combo finisher & lifesteal bonuses
+PASS  skill points tracked accurately
+PASS  skill tree reset refunds all spent points
 
 == Adventurers Guild (Ranks F-S) & Crafting ==
 PASS  new hero starts unregistered at Guild
@@ -181,7 +184,7 @@ PASS  player stands at ground height (y=0.04)
 PASS  joystick input moves the player (3.38m)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
-FAIL  UI screens open and refresh without error
+PASS  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
 PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
 PASS  Cairo variable font bundled & active
@@ -194,7 +197,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.8)
+PASS  skeleton takes damage (46.0 -> 28.9)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -217,8 +220,3 @@ PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
 PASS  save/load survives 10 rounds
-
-FAILURES:
-  - SkillDB loads 24 skill tree nodes across 4 branches (got 36)
-  - tier-4 capstone sovereign_juggernaut unlocked
-  - UI screens open and refresh without error
