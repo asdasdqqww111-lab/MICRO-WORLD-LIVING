@@ -1,15 +1,15 @@
-MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.1 — Phase 1 Complete)
+MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-12T23:39:52
-checks passed: 164
+run at: 2026-11-13T00:03:31
+checks passed: 171
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 136.0
+  fps: 139.0
   draw calls: 0
   triangles: 0
-  nodes: 2211
+  nodes: 2296
 
 checks:
 
@@ -167,21 +167,28 @@ PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
 PASS  wildlife, monsters & crypt boss spawned (18)
-PASS  MultiMesh biome instancing is real (12 batches, 0 broken)
+PASS  MultiMesh biome instancing is real (13 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
 PASS  player lands on the ground
-PASS  player stands at ground height (y=0.00)
+PASS  player stands at ground height (y=0.04)
 PASS  joystick input moves the player (3.38m)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 PASS  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
+PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
+PASS  Cairo variable font bundled & active
+PASS  Tiny Treats CC0 Homely House & Pretty Park Fountain models loaded
+PASS  Procedural PBR terrain Normal Map & Roughness Map generated
+PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
+PASS  Player anti-clipping physics & CollisionLayers configured
+PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
 PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.6)
+PASS  skeleton takes damage (46.0 -> 34.9)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
