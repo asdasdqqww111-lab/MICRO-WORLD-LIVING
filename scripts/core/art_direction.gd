@@ -310,25 +310,39 @@ static func _adapt_surface_material(orig: Material, variant: String, surf_idx: i
 	if m_name.contains("path01"):
 		return pbr_material("pbr_fountain_stone", "stone_wall", Color(0.76, 0.74, 0.70), 0.36, 0.85, 0.02, 0.90)
 
-	# 1. Preserve genuine realistic albedo textures (e.g. Medieval MegaKit / KayKit / TinyTreats) and enrich with PBR Normal + Roughness!
+	# 0b. Quaternius Stylized Nature Pack (Flowers, PineTrees, Stylized Faceted Rocks)
+	if v_low.contains("flowers") or v_low.contains("flower_"):
+		if m_name.contains("cyan") or m_name.contains("white"):
+			return stylized_material("stylized_flower_white", Color(0.97, 0.98, 1.0), 0.62, 0.0)
+		if m_name.contains("yellow"):
+			return stylized_material("stylized_flower_yellow", Color(1.0, 0.84, 0.18), 0.62, 0.0)
+		return stylized_material("stylized_flower_stem", Color(0.24, 0.56, 0.20), 0.76, 0.0)
+	if v_low.contains("pinetree"):
+		if m_name.contains("green"):
+			return pbr_material("stylized_pine_needles", "grass", Color(0.24, 0.58, 0.25), 0.45, 0.76, 0.0, 0.35)
+		if m_name.contains("wood"):
+			return pbr_material("stylized_pine_trunk", "wood", Color(0.45, 0.29, 0.17), 0.38, 0.84, 0.0, 0.45)
+	if (v_low.begins_with("rock_") or v_low.contains("/rocks/rock_")) and m_name == "rock":
+		return pbr_material("stylized_faceted_rock", "stone_wall", Color(0.64, 0.66, 0.69), 0.30, 0.84, 0.0, 0.48)
+
+	# 1. Preserve Stylized & PBR Albedo Atlases (KayKit Hexagon, KayKit Adventurers, Medieval Kits)
 	if orig_std != null and orig_std.albedo_texture != null:
 		var tkey := "tex_%s_%d_%d" % [variant, orig_std.albedo_texture.get_rid().get_id(), surf_idx]
 		if _mat_cache.has(tkey):
 			return _mat_cache[tkey] as StandardMaterial3D
 		var dup := orig_std.duplicate() as StandardMaterial3D
 		dup.albedo_color = Color(
-			clampf(orig_std.albedo_color.r, 0.82, 1.0),
-			clampf(orig_std.albedo_color.g, 0.82, 1.0),
-			clampf(orig_std.albedo_color.b, 0.82, 1.0),
+			clampf(orig_std.albedo_color.r, 0.90, 1.0),
+			clampf(orig_std.albedo_color.g, 0.90, 1.0),
+			clampf(orig_std.albedo_color.b, 0.90, 1.0),
 			orig_std.albedo_color.a
 		)
-		dup.roughness = clampf(orig_std.roughness, 0.45, 0.88)
-		if dup.normal_texture == null:
+		var is_palette_atlas := m_name.contains("hexagon") or m_name.contains("_texture") or v_low.contains("knight") or v_low.contains("building_")
+		dup.roughness = 0.66 if is_palette_atlas else clampf(orig_std.roughness, 0.45, 0.86)
+		if not is_palette_atlas and dup.normal_texture == null:
 			var nrm := get_realistic_tex("stone_wall_normal.jpg")
 			if v_low.contains("tree") or v_low.contains("bush") or v_low.contains("forest"):
 				nrm = get_realistic_tex("grass_normal.jpg")
-			elif v_low.contains("knight") or v_low.contains("sword") or v_low.contains("shield"):
-				nrm = get_realistic_tex("armor_metal_normal.jpg")
 			if nrm != null:
 				dup.normal_enabled = true
 				dup.normal_texture = nrm
@@ -425,6 +439,75 @@ static func terrain_normal_texture() -> Texture2D:
 
 static func terrain_roughness_texture() -> Texture2D:
 	return get_realistic_tex("grass_roughness.jpg")
+
+static func terrain_splat_shader_material() -> Material:
+	if DisplayServer.get_name() == "headless":
+		var fallback := StandardMaterial3D.new()
+		fallback.vertex_color_use_as_albedo = true
+		fallback.roughness = 0.88
+		return fallback
+	if _mat_cache.has("terrain_splat_shader"):
+		return _mat_cache["terrain_splat_shader"] as Material
+	var sh := ResourceLoader.load("res://shaders/stylized_terrain_splat.gdshader") as Shader
+	var sm := ShaderMaterial.new()
+	sm.shader = sh
+	var ga := get_realistic_tex("grass_albedo.jpg")
+	var gn := get_realistic_tex("grass_normal.jpg")
+	var da := get_realistic_tex("cobble_albedo.jpg")
+	var dn := get_realistic_tex("cobble_normal.jpg")
+	var ra := get_realistic_tex("stone_wall_albedo.jpg")
+	var rn := get_realistic_tex("stone_wall_normal.jpg")
+	if ga != null:
+		sm.set_shader_parameter("grass_albedo", ga)
+	if gn != null:
+		sm.set_shader_parameter("grass_normal", gn)
+	if da != null:
+		sm.set_shader_parameter("dirt_albedo", da)
+	if dn != null:
+		sm.set_shader_parameter("dirt_normal", dn)
+	if ra != null:
+		sm.set_shader_parameter("rock_albedo", ra)
+	if rn != null:
+		sm.set_shader_parameter("rock_normal", rn)
+	_mat_cache["terrain_splat_shader"] = sm
+	return sm
+
+static func wind_grass_shader_material() -> Material:
+	if DisplayServer.get_name() == "headless":
+		return stylized_material("headless_grass", Color(0.28, 0.64, 0.22), 0.78, 0.0)
+	if _mat_cache.has("wind_grass_shader"):
+		return _mat_cache["wind_grass_shader"] as Material
+	var sh := ResourceLoader.load("res://shaders/stylized_wind_grass.gdshader") as Shader
+	var sm := ShaderMaterial.new()
+	sm.shader = sh
+	_mat_cache["wind_grass_shader"] = sm
+	return sm
+
+static func chibi_knight_rim_material(albedo_tex: Texture2D = null, tint: Color = Color.WHITE) -> Material:
+	var key := "chibi_knight_rim_" + tint.to_html(false)
+	if DisplayServer.get_name() == "headless":
+		var std := StandardMaterial3D.new()
+		std.albedo_color = tint
+		if albedo_tex != null:
+			std.albedo_texture = albedo_tex
+		std.metallic = 0.8
+		std.roughness = 0.3
+		return std
+	if _mat_cache.has(key):
+		return _mat_cache[key] as Material
+	var sh := ResourceLoader.load("res://shaders/chibi_knight_rim.gdshader") as Shader
+	var sm := ShaderMaterial.new()
+	sm.shader = sh
+	var tex := albedo_tex
+	if tex == null and ResourceLoader.exists("res://assets/kaykit_adventurers/knight_texture.png"):
+		tex = ResourceLoader.load("res://assets/kaykit_adventurers/knight_texture.png") as Texture2D
+	if tex != null:
+		sm.set_shader_parameter("albedo_tex", tex)
+	sm.set_shader_parameter("tint_color", Vector3(tint.r, tint.g, tint.b))
+	sm.set_shader_parameter("armor_metallic", 0.8)
+	sm.set_shader_parameter("armor_roughness", 0.3)
+	_mat_cache[key] = sm
+	return sm
 
 static func water_shader_material() -> Material:
 	if DisplayServer.get_name() == "headless":

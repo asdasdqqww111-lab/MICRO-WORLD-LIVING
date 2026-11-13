@@ -8,10 +8,10 @@ extends CharacterBody3D
 
 signal zone_changed(zone_id: String)
 
-const MODEL_PATH := "res://assets_realistic/models/characters/knight_hero.glb"
+const MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
 const FALLBACK_MODEL_PATH := "res://assets/characters/player/Knight.glb"
 const MODEL_YAW_OFFSET := PI
-const MODEL_SCALE := 1.0
+const MODEL_SCALE := 0.76
 
 const WALK_SPEED := 4.6
 const RUN_SPEED := 7.4
@@ -21,9 +21,9 @@ const AIR_ACCELERATION := 6.0
 const TURN_SPEED := 13.0
 const JUMP_VELOCITY := 7.4
 const GRAVITY := 22.0
-const CAPSULE_HEIGHT := 2.0
-const CAPSULE_RADIUS := 0.36
-const EYE_HEIGHT := 1.55
+const CAPSULE_HEIGHT := 1.75
+const CAPSULE_RADIUS := 0.34
+const EYE_HEIGHT := 1.15
 
 const ATTACK_REACH := 2.4
 const HEAVY_REACH := 3.0

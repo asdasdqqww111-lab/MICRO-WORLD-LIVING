@@ -18,10 +18,12 @@ const OUT_DIR := "res://docs/screenshots"
 const LOG_PATH := "res://docs/reports/screenshot_probe_log.txt"
 
 const WORLD_SHOTS := [
-	{"name": "02_village_square", "zone": "village", "time": 9.8,
-		"pos": Vector3(-5.0, 0.6, 15.0), "yaw": -14.0, "pitch": -18.0, "dist": 18.0, "hud": false},
-	{"name": "03_guild_exterior", "zone": "village", "time": 10.2,
-		"pos": Vector3(0.0, 0.6, -12.5), "yaw": 0.0, "pitch": -8.0, "dist": 11.5, "hud": false},
+	{"name": "00_reference_stylized_hud", "zone": "village", "time": 17.017,
+		"pos": Vector3(-0.3, 0.2, 6.5), "yaw": 0.0, "pitch": -5.5, "dist": 4.0, "hud": true},
+	{"name": "02_village_square", "zone": "village", "time": 17.017,
+		"pos": Vector3(-0.3, 0.2, 6.5), "yaw": 0.0, "pitch": -5.5, "dist": 4.0, "hud": false},
+	{"name": "03_guild_exterior", "zone": "village", "time": 16.5,
+		"pos": Vector3(1.5, 0.6, -8.5), "yaw": 0.0, "pitch": -8.0, "dist": 9.5, "hud": false},
 	{"name": "04_guild_interior", "zone": "guild", "time": 11.0,
 		"pos": Vector3(500.0, 0.6, 206.5), "yaw": 0.0, "pitch": -10.0, "dist": 8.2, "hud": false},
 	{"name": "05_forest_exploration", "zone": "village", "time": 10.0,
@@ -180,9 +182,16 @@ func _capture_world_shot(shot: Dictionary) -> void:
 	if zone == "village" and _world != null and _world.terrain != null:
 		pos.y = _world.terrain.height_at(pos.x, pos.z) + 0.15
 	_player.teleport(pos, zone)
+	_player.rotation.y = deg_to_rad(float(shot["yaw"]))
 	_set_cam(float(shot["yaw"]), float(shot["pitch"]), float(shot["dist"]))
 	if _ui != null:
-		_ui.visible = bool(shot["hud"])
+		var show_hud := bool(shot["hud"])
+		_ui.visible = show_hud
+		if show_hud:
+			SettingsManager.language = "ar"
+			_ui.close_current_screen()
+			_ui.touch.set_controls_visible(true)
+			_ui.hud.refresh_all()
 	await _frames(20)
 	await _save(String(shot["name"]))
 	if _ui != null:

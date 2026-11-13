@@ -165,192 +165,80 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	var nprop := "res://assets/environments/villages/"
 	var b := AssetLibrary.SCALE_BUILDING
 
-	# Major Royal City Districts (Upgraded to Realistic Medieval PBR Architecture):
+	# Stylized Storybook Castle-Valley Architecture (KayKit Stylized PBR — 1 surface per building!):
 	var buildings: Array = [
-		# Grand Adventurers Guild Hall (North Plaza Anchor — door preserved at (0, 0, -18.4))
-		{"path": rbuild + "guild_grand_hall.glb", "fallback": vdir + "building_castle_blue.gltf",
-			"pos": Vector3(0.0, 0.0, -24.5), "rot": PI, "scale": 6.4,
-			"collider": Vector3(13.5, 12.0, 11.5), "name": "AdventurersGuildExterior"},
-		# Royal Sovereign Citadel Keep (Northwest Crown Anchor!)
-		{"path": rbuild + "citadel_keep.glb", "fallback": hex + "building_castle_red.gltf",
-			"pos": Vector3(-27.5, 0.0, -24.0), "rot": deg_to_rad(140.0), "scale": 5.6,
-			"collider": Vector3(12.2, 12.0, 11.0), "name": "RoyalCitadelKeep"},
-		# Royal Belfry Clocktower (Flanking Guild Plaza)
-		{"path": rbuild + "bell_tower.glb", "fallback": hex + "building_tower_B_blue.gltf",
-			"pos": Vector3(9.4, 0.0, -26.5), "rot": deg_to_rad(-165.0), "scale": 2.75,
-			"collider": Vector3(5.6, 15.0, 5.6), "name": "RoyalClocktower"},
-		# Hearthstone Tavern & Inn (Northwest Boulevard)
-		{"path": rbuild + "inn.glb", "fallback": vdir + "building_tavern_yellow.gltf",
-			"pos": Vector3(-15.5, 0.0, -20.5), "rot": deg_to_rad(155.0), "scale": 2.35,
-			"collider": Vector3(9.4, 10.5, 10.2), "name": "Tavern"},
-		# Sanctuary Cathedral (Northeast)
-		{"path": rbuild + "cathedral_temple.glb", "fallback": hex + "building_church_blue.gltf",
-			"pos": Vector3(16.5, 0.0, -19.5), "rot": deg_to_rad(-148.0), "scale": 3.05,
-			"collider": Vector3(9.0, 12.0, 10.4), "name": "Chapel"},
-		# Royal Alchemist & Arcane Conservatory (East-Northeast)
-		{"path": rbuild + "house_2.glb", "fallback": hex + "building_castle_green.gltf",
-			"pos": Vector3(28.5, 0.0, -15.5), "rot": deg_to_rad(-120.0), "scale": 2.45,
-			"collider": Vector3(9.6, 10.0, 9.2), "name": "ArcaneConservatory"},
+		# Central Stone Castle Keep + Pointed Blue-Roofed Turret (Guild Castle Anchor)
+		{"path": hex + "building_castle_blue.gltf", "fallback": vdir + "building_castle_blue.gltf",
+			"pos": Vector3(1.8, 0.0, -24.5), "rot": 0.0, "scale": 10.6,
+			"collider": Vector3(11.5, 14.0, 10.5), "name": "AdventurersGuildExterior"},
+		# Soaring Upper Castle Keep Tower (matches the tall square stone keep silhouette!)
+		{"path": hex + "building_tower_A_green.gltf", "fallback": hex + "building_tower_B_blue.gltf",
+			"pos": Vector3(0.4, 4.2, -26.2), "rot": 0.0, "scale": 9.8,
+			"collider": Vector3.ZERO, "name": "CastleHighKeepTower"},
+		# Pointed Blue-Roofed Side Turret flanking Castle Keep
+		{"path": hex + "building_tower_B_blue.gltf", "fallback": hex + "building_tower_B_blue.gltf",
+			"pos": Vector3(4.2, 1.2, -22.2), "rot": deg_to_rad(-20.0), "scale": 8.6,
+			"collider": Vector3(4.8, 12.0, 4.8), "name": "CastleBlueTurret"},
+		# Giant Wooden Barrel Tavern / Mill House right at the foot of the Castle!
+		{"path": hex + "building_tavern_red.gltf", "fallback": vdir + "building_tavern_yellow.gltf",
+			"pos": Vector3(2.2, 0.0, -16.8), "rot": deg_to_rad(-12.0), "scale": 8.4,
+			"collider": Vector3(6.8, 7.5, 6.8), "name": "Tavern"},
+		# Red-Tiled Medieval Cottages & Round Watchtower on the right flank (matching reference vista!)
+		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(9.6, 0.0, -17.6), "rot": deg_to_rad(-8.0), "scale": 8.2,
+			"collider": Vector3(5.8, 6.8, 5.8), "name": "RedCottageEastA"},
+		{"path": hex + "building_home_B_red.gltf", "fallback": hex + "building_home_B_green.gltf",
+			"pos": Vector3(14.6, 0.0, -17.8), "rot": deg_to_rad(-16.0), "scale": 8.2,
+			"collider": Vector3(6.2, 6.8, 6.0), "name": "HouseB"},
+		{"path": hex + "building_tower_B_red.gltf", "fallback": hex + "building_tower_B_blue.gltf",
+			"pos": Vector3(9.8, 0.0, -22.8), "rot": 0.0, "scale": 8.6,
+			"collider": Vector3(4.8, 11.0, 4.8), "name": "EastRedWatchtower"},
+		# Sanctuary Chapel (Northeast)
+		{"path": hex + "building_church_blue.gltf", "fallback": hex + "building_church_green.gltf",
+			"pos": Vector3(22.5, 0.0, -19.5), "rot": deg_to_rad(-148.0), "scale": 8.4,
+			"collider": Vector3(7.6, 10.0, 8.4), "name": "Chapel"},
 		# Player's Cottage (Preserved at (-16, 0, -8) with door at (-16, 0, -2.4))
-		{"path": rbuild + "house_1.glb", "fallback": hex + "building_home_A_green.gltf",
-			"pos": Vector3(-16.0, 0.0, -8.0), "rot": 0.0, "scale": 2.45,
-			"collider": Vector3(7.2, 7.9, 7.6), "name": "HouseA"},
-		# Noble Townhouse East
-		{"path": rbuild + "house_2.glb", "fallback": hex + "building_home_B_green.gltf",
-			"pos": Vector3(17.8, 0.0, -7.5), "rot": deg_to_rad(-35.0), "scale": 2.35,
-			"collider": Vector3(7.0, 7.1, 7.6), "name": "HouseB"},
-		# Noble Townhouse West
-		{"path": rbuild + "house_3.glb", "fallback": hex + "building_home_A_green.gltf",
-			"pos": Vector3(-25.5, 0.0, -4.2), "rot": deg_to_rad(75.0), "scale": 2.95,
-			"collider": Vector3(6.8, 6.9, 7.4), "name": "HouseC"},
-		# Ironforge Royal Blacksmith & Smelter (Southwest)
-		{"path": rbuild + "blacksmith.glb", "fallback": hex + "building_blacksmith_red.gltf",
-			"pos": Vector3(-19.0, 0.0, 11.0), "rot": deg_to_rad(-18.0), "scale": 2.55,
-			"collider": Vector3(11.5, 8.4, 11.0), "name": "Blacksmith"},
-		# Royal Bakery & Red Lion Feast Hall (West-Southwest)
-		{"path": rbuild + "inn.glb", "fallback": hex + "building_tavern_red.gltf",
-			"pos": Vector3(-28.5, 0.0, 11.5), "rot": deg_to_rad(52.0), "scale": 2.20,
-			"collider": Vector3(8.8, 9.6, 9.2), "name": "RoyalBakeryHall"},
-		# Grand Spice & Silk Bazaar (Southeast)
-		{"path": rbuild + "stable.glb", "fallback": hex + "building_market_red.gltf",
-			"pos": Vector3(12.5, 0.0, 9.5), "rot": deg_to_rad(14.0), "scale": 2.30,
-			"collider": Vector3(12.8, 7.2, 9.6), "name": "Market"},
-		# Royal Jeweler & East Trade Exchange (East Boulevard)
-		{"path": rbuild + "gazebo.glb", "fallback": hex + "building_market_blue.gltf",
-			"pos": Vector3(24.5, 0.0, 2.5), "rot": deg_to_rad(-78.0), "scale": 4.6,
-			"collider": Vector3(10.5, 7.0, 8.8), "name": "EastTradeBazaar"},
-		# Royal Guard Barracks & Archery Garrison (South-Southeast)
-		{"path": rbuild + "barracks_fort.glb", "fallback": hex + "building_barracks_blue.gltf",
-			"pos": Vector3(24.5, 0.0, 15.0), "rot": deg_to_rad(-65.0), "scale": 4.7,
-			"collider": Vector3(8.5, 8.2, 8.5), "name": "Barracks"},
-		{"path": rbuild + "barracks_fort.glb", "fallback": hex + "building_archeryrange_blue.gltf",
-			"pos": Vector3(16.0, 0.0, 25.0), "rot": deg_to_rad(160.0), "scale": 4.4,
-			"collider": Vector3(8.6, 6.8, 8.4), "name": "ArcheryGarrison"},
-		# Farming District Windmill & Lumber/Grain Hall (South-Southwest)
-		{"path": rbuild + "mill.glb", "fallback": vdir + "building_windmill_yellow.gltf",
-			"pos": Vector3(-13.5, 0.0, 23.5), "rot": deg_to_rad(25.0), "scale": 2.40,
-			"collider": Vector3(7.4, 12.5, 7.4), "name": "Windmill"},
-		{"path": rbuild + "sawmill.glb", "fallback": hex + "building_lumbermill_green.gltf",
-			"pos": Vector3(-24.5, 0.0, 22.5), "rot": deg_to_rad(38.0), "scale": 2.05,
-			"collider": Vector3(8.2, 7.5, 8.0), "name": "CityGranary"},
+		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(-16.0, 0.0, -8.0), "rot": 0.0, "scale": 8.4,
+			"collider": Vector3(6.8, 7.2, 6.8), "name": "HouseA"},
+		# West Timber Cottage
+		{"path": hex + "building_home_B_red.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(-25.5, 0.0, -4.2), "rot": deg_to_rad(75.0), "scale": 8.2,
+			"collider": Vector3(6.6, 6.9, 6.8), "name": "HouseC"},
+		# Ironforge Blacksmith (Southwest)
+		{"path": hex + "building_blacksmith_red.gltf", "fallback": hex + "building_blacksmith_green.gltf",
+			"pos": Vector3(-19.0, 0.0, 11.0), "rot": deg_to_rad(-18.0), "scale": 8.4,
+			"collider": Vector3(8.5, 7.6, 8.2), "name": "Blacksmith"},
+		# Village Market Stalls (Southeast)
+		{"path": hex + "building_market_red.gltf", "fallback": hex + "building_market_blue.gltf",
+			"pos": Vector3(16.5, 0.0, 8.5), "rot": deg_to_rad(14.0), "scale": 8.2,
+			"collider": Vector3(7.8, 6.8, 7.6), "name": "Market"},
+		# Guard Barracks & Archery Range (East)
+		{"path": hex + "building_barracks_blue.gltf", "fallback": hex + "building_barracks_red.gltf",
+			"pos": Vector3(25.5, 0.0, 14.0), "rot": deg_to_rad(-65.0), "scale": 8.2,
+			"collider": Vector3(7.8, 7.6, 7.8), "name": "Barracks"},
+		# Farming District Windmill & Lumbermill (Southwest)
+		{"path": hex + "building_windmill_yellow.gltf", "fallback": vdir + "building_windmill_green.gltf",
+			"pos": Vector3(-18.5, 0.0, 23.5), "rot": deg_to_rad(25.0), "scale": 8.4,
+			"collider": Vector3(7.0, 11.5, 7.0), "name": "Windmill"},
+		{"path": hex + "building_lumbermill_green.gltf", "fallback": hex + "building_grain.gltf",
+			"pos": Vector3(-27.5, 0.0, 22.5), "rot": deg_to_rad(38.0), "scale": 8.0,
+			"collider": Vector3(7.4, 7.2, 7.4), "name": "CityGranary"},
 	]
 	for entry: Dictionary in buildings:
 		var chosen := String(entry["path"]) if AssetLibrary.has_model(String(entry["path"])) else String(entry["fallback"])
 		place_model(parent, chosen, entry["pos"] as Vector3, float(entry["rot"]),
 			float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
 
-	# Realistic Medieval Market Stalls around Bazaar Plaza
-	place_model(parent, rbuild + "market_stand_1.glb", Vector3(8.8, 0.0, 6.8), deg_to_rad(-25.0), 2.4, Vector3.ZERO, "MarketStallA")
-	place_model(parent, rbuild + "market_stand_2.glb", Vector3(16.2, 0.0, 5.8), deg_to_rad(-115.0), 2.4, Vector3.ZERO, "MarketStallB")
+	# Left-Hillside Ancient Stone Arch Ruin silhouetted against the pine hills & snowy mountains!
+	var arch_hill_y := terrain.height_at(-19.0, -47.0) if terrain != null else 3.2
+	if AssetLibrary.has_model("res://assets/environments/medieval_megakit/Wall_Arch.gltf"):
+		place_model(parent, "res://assets/environments/medieval_megakit/Wall_Arch.gltf",
+			Vector3(-19.0, arch_hill_y - 0.15, -47.0), deg_to_rad(18.0), 2.35, Vector3.ZERO, "HillsideStoneArch")
 
-	# Batched MultiMesh Residential Townhouses & Noble Manors (16 extra city buildings in ONLY 2 Draw Calls!)
-	var townhouse_spots := [
-		{"pos": Vector3(-31.5, 0.0, -12.0), "rot": 68.0, "s": 2.30},
-		{"pos": Vector3(-31.5, 0.0, 20.0), "rot": 45.0, "s": 2.25},
-		{"pos": Vector3(-8.5, 0.0, 30.5), "rot": 172.0, "s": 2.30},
-		{"pos": Vector3(8.5, 0.0, 30.5), "rot": -172.0, "s": 2.30},
-		{"pos": Vector3(30.5, 0.0, -24.5), "rot": -135.0, "s": 2.25},
-		{"pos": Vector3(-19.0, 0.0, -30.5), "rot": 165.0, "s": 2.25},
-	]
-	var th_xforms: Array = []
-	for ts: Dictionary in townhouse_spots:
-		var tp := ts["pos"] as Vector3
-		var tr := deg_to_rad(float(ts["rot"]))
-		var sc := float(ts["s"])
-		th_xforms.append(Transform3D(Basis(Vector3.UP, tr).scaled(Vector3.ONE * sc), tp))
-		add_box_body(parent, tp, Vector3(6.4, 6.8, 6.8), "TownhouseCol")
-	build_multimesh(parent, rbuild + "house_4.glb", th_xforms, "CityTownhouses", false, 72.0)
-
-	var manor_spots := [
-		{"pos": Vector3(-8.2, 0.0, -28.0), "rot": 180.0},
-		{"pos": Vector3(23.5, 0.0, -27.0), "rot": -150.0},
-		{"pos": Vector3(31.0, 0.0, 9.5), "rot": -85.0},
-		{"pos": Vector3(27.5, 0.0, 24.0), "rot": -125.0},
-		{"pos": Vector3(-29.5, 0.0, -1.0), "rot": 90.0},
-	]
-	var manor_xforms: Array = []
-	for ms: Dictionary in manor_spots:
-		var mp := ms["pos"] as Vector3
-		var mr := deg_to_rad(float(ms["rot"]))
-		manor_xforms.append(Transform3D(Basis(Vector3.UP, mr).scaled(Vector3.ONE * 2.30), mp))
-		add_box_body(parent, mp, Vector3(6.6, 7.6, 6.6), "ManorCol")
-	build_multimesh(parent, rbuild + "house_3.glb", manor_xforms, "CityNobleManors", false, 74.0)
-
-	# Fortified Royal City Perimeter Stone Ramparts (r = 37.2m) + 4 Monumental Cardinal Gatehouses + 8 Bastion Watchtowers!
-	var gate_defs := [
-		{"pos": Vector3(0.0, 0.0, 36.8), "rot": 0.0, "name": "SouthGateArch"},
-		{"pos": Vector3(0.0, 0.0, -36.8), "rot": PI, "name": "NorthGateArch"},
-		{"pos": Vector3(36.8, 0.0, -4.0), "rot": deg_to_rad(90.0), "name": "EastGateArch"},
-		{"pos": Vector3(-36.8, 0.0, 2.0), "rot": deg_to_rad(-90.0), "name": "WestGateArch"},
-	]
-	for gd: Dictionary in gate_defs:
-		if AssetLibrary.has_model(rbuild + "city_gate.glb"):
-			place_model(parent, rbuild + "city_gate.glb", gd["pos"] as Vector3, float(gd["rot"]), 5.2,
-				Vector3.ZERO, String(gd["name"]))
-		elif AssetLibrary.has_model(vprop + "wall_straight_gate.gltf"):
-			place_model(parent, vprop + "wall_straight_gate.gltf", gd["pos"] as Vector3, float(gd["rot"]), 5.6,
-				Vector3.ZERO, String(gd["name"]))
-		if AssetLibrary.has_model("res://assets/environments/medieval_megakit/Wall_Arch.gltf"):
-			place_model(parent, "res://assets/environments/medieval_megakit/Wall_Arch.gltf",
-				(gd["pos"] as Vector3), float(gd["rot"]), 1.35)
-
-	var wall_xforms: Array = []
-	var tower_xforms: Array = []
-	var wall_r := 37.2
-	var seg_count := 32
-	for i: int in seg_count:
-		var ang := (float(i) / float(seg_count)) * TAU
-		var wx := cos(ang) * wall_r
-		var wz := sin(ang) * wall_r
-		var wpos := Vector3(wx, 0.0, wz)
-		var near_gate := false
-		for gd: Dictionary in gate_defs:
-			if wpos.distance_to(gd["pos"] as Vector3) < 6.4:
-				near_gate = true
-				break
-		if near_gate:
-			continue
-		var tangent_yaw := -ang + PI * 0.5
-		wall_xforms.append(Transform3D(Basis(Vector3.UP, tangent_yaw).scaled(Vector3(3.8, 11.2, 8.8)), wpos))
-		add_box_body(parent, wpos, Vector3(4.2, 4.8, 4.2), "CityRampartCol_%d" % i)
-		if i % 4 == 2:
-			tower_xforms.append(Transform3D(Basis(Vector3.UP, tangent_yaw).scaled(Vector3(3.3, 11.8, 9.2)), wpos))
-	build_multimesh(parent, rbuild + "city_wall.glb", wall_xforms, "CityStoneRamparts", true, 110.0)
-	build_multimesh(parent, rbuild + "city_tower.glb", tower_xforms, "CityBastionTowers", true, 115.0)
-
-	# Quaternius PBR Brick Plazas & Ornamental Wagons!
-	if AssetLibrary.has_model("res://assets/environments/medieval_megakit/Floor_UnevenBrick.gltf"):
-		var brick_xforms: Array = []
-		for bx: int in range(-2, 3):
-			for bz: int in range(-2, 3):
-				brick_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3(1.9, 1.0, 1.9)), Vector3(float(bx) * 3.6, 0.015, 2.0 + float(bz) * 3.6)))
-		build_multimesh(parent, "res://assets/environments/medieval_megakit/Floor_UnevenBrick.gltf", brick_xforms, "RoyalPlazaBricks", false, 58.0)
-
-	if AssetLibrary.has_model("res://assets/environments/medieval_megakit/Prop_Wagon.gltf"):
-		place_model(parent, "res://assets/environments/medieval_megakit/Prop_Wagon.gltf",
-			Vector3(17.5, 0.0, 6.2), deg_to_rad(32.0), 1.05, Vector3(2.2, 1.8, 3.4), "BazaarWagonA")
-		place_model(parent, "res://assets/environments/medieval_megakit/Prop_Wagon.gltf",
-			Vector3(-9.5, 0.0, 15.0), deg_to_rad(-48.0), 1.05, Vector3(2.2, 1.8, 3.4), "SmithyWagonB")
-
-	if AssetLibrary.has_model("res://assets/environments/crypt_bits/arch_gate.gltf"):
-		place_model(parent, "res://assets/environments/crypt_bits/arch_gate.gltf",
-			Vector3(13.2, 0.0, -12.8), deg_to_rad(-32.0), 1.15, Vector3.ZERO, "CathedralIronArch")
-
-	# Central Royal Square: Realistic Textured Sculpted Stone Fountain + Well + Benches + Obelisk
-	var fountain_path := rnat + "royal_fountain.glb"
-	if AssetLibrary.has_model(fountain_path):
-		place_model(parent, fountain_path, Vector3(0.0, 0.0, 2.0), 0.0, 0.62,
-			Vector3(3.8, 1.9, 3.8), "CentralWell")
-	else:
-		place_model(parent, rbuild + "well.glb", Vector3(0.0, 0.0, 2.0), 0.0, 1.8,
-			Vector3(1.8, 2.1, 1.8), "CentralWell")
-	if AssetLibrary.has_model("res://assets/environments/tinytreats_house/bench_A.gltf"):
-		place_model(parent, "res://assets/environments/tinytreats_house/bench_A.gltf",
-			Vector3(-4.6, 0.0, 2.0), deg_to_rad(90.0), 0.98, Vector3(0.9, 1.0, 1.8), "PlazaBenchW")
-		place_model(parent, "res://assets/environments/tinytreats_house/bench_A.gltf",
-			Vector3(4.6, 0.0, 2.0), deg_to_rad(-90.0), 0.98, Vector3(0.9, 1.0, 1.8), "PlazaBenchE")
-	place_model(parent, "res://assets/environments/dungeons/statue-obelisk.glb", Vector3(0.0, 0.0, -6.2), 0.0, 2.5,
-		Vector3(1.2, 3.2, 1.2), "PlazaObelisk")
+	# Village Well tucked beside the Castle Forecourt (leaving the Southern Meadow vista wide open!)
+	place_model(parent, hex + "building_well_green.gltf", Vector3(-6.5, 0.0, -14.5), 0.0, 7.5,
+		Vector3(2.2, 2.4, 2.2), "CentralWell")
 
 	# Outer Valley Anti-Out-of-Bounds Physics Perimeter Colliders (±116m)
 	add_box_body(parent, Vector3(0.0, -4.0, -116.0), Vector3(240.0, 38.0, 2.0), "NorthValleyWall")
@@ -358,16 +246,12 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	add_box_body(parent, Vector3(-116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "WestValleyWall")
 	add_box_body(parent, Vector3(116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "EastValleyWall")
 
-	# Royal City Evening Street Lanterns (16 posts batched in 1 MultiMesh + warm dusk lights!)
+	# Town Lanterns tucked beside Castle Forecourt, Cottages & Market (keeping meadow vista pure!)
 	var lantern_spots := [
-		Vector3(-4.8, 0.0, -14.5), Vector3(4.8, 0.0, -14.5),
-		Vector3(-5.6, 0.0, 2.0), Vector3(5.6, 0.0, 2.0),
-		Vector3(-3.8, 0.0, 33.5), Vector3(3.8, 0.0, 33.5),
-		Vector3(-3.8, 0.0, -33.5), Vector3(3.8, 0.0, -33.5),
-		Vector3(33.2, 0.0, -7.2), Vector3(33.2, 0.0, -0.8),
-		Vector3(-33.2, 0.0, -1.2), Vector3(-33.2, 0.0, 5.2),
-		Vector3(-14.5, 0.0, 7.5), Vector3(10.5, 0.0, 6.5),
-		Vector3(-22.0, 0.0, -16.5), Vector3(21.5, 0.0, -12.5),
+		Vector3(-4.2, 0.0, -15.5), Vector3(6.8, 0.0, -15.5),
+		Vector3(-12.5, 0.0, -5.0), Vector3(13.5, 0.0, -14.5),
+		Vector3(-14.5, 0.0, 7.5), Vector3(13.5, 0.0, 6.5),
+		Vector3(-22.0, 0.0, -16.5), Vector3(21.5, 0.0, -14.5),
 	]
 	var lantern_xforms: Array = []
 	for lp: Vector3 in lantern_spots:
@@ -378,14 +262,11 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		if i < 6:
 			_build_street_lantern_light_only(parent, lantern_spots[i])
 
-	# Heraldic Royal Banners along Gates, Citadel & Guild Keep (1 MultiMesh!)
+	# Heraldic Royal Banners flanking Castle Keep & Forecourt (1 MultiMesh!)
 	var flag_xforms: Array = []
 	for fp: Vector3 in [
-		Vector3(-4.2, 0.0, -18.2), Vector3(4.2, 0.0, -18.2),
-		Vector3(-23.0, 0.0, -19.0), Vector3(-31.0, 0.0, -19.0),
-		Vector3(-4.4, 0.0, 35.5), Vector3(4.4, 0.0, 35.5),
-		Vector3(-4.4, 0.0, -35.5), Vector3(4.4, 0.0, -35.5),
-		Vector3(35.5, 0.0, -7.8), Vector3(35.5, 0.0, -0.2),
+		Vector3(-2.8, 0.0, -18.5), Vector3(6.4, 0.0, -18.5),
+		Vector3(19.0, 0.0, -16.5), Vector3(-13.0, 0.0, -5.5),
 	]:
 		flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * (AssetLibrary.SCALE_PROP * 1.18)), fp))
 	build_multimesh(parent, vprop + "flag_blue.gltf", flag_xforms, "CityRoyalBanners", false, 68.0)
@@ -396,13 +277,13 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		{"model": hex + "barrel.gltf", "pos": Vector3(-15.0, 0.0, 6.5), "s": prop_scale},
 		{"model": hex + "barrel.gltf", "pos": Vector3(-14.0, 0.0, 5.4), "s": prop_scale},
 		{"model": hex + "crate_A_big.gltf", "pos": Vector3(-12.6, 0.0, 7.2), "s": prop_scale},
-		{"model": hex + "crate_A_small.gltf", "pos": Vector3(11.6, 0.0, 5.2), "s": prop_scale},
-		{"model": hex + "sack.gltf", "pos": Vector3(12.4, 0.0, 6.0), "s": prop_scale},
+		{"model": hex + "crate_A_small.gltf", "pos": Vector3(14.6, 0.0, 5.2), "s": prop_scale},
+		{"model": hex + "sack.gltf", "pos": Vector3(15.4, 0.0, 6.0), "s": prop_scale},
 		{"model": hex + "weaponrack.gltf", "pos": Vector3(-17.4, 0.0, 6.2), "s": prop_scale},
 		{"model": hex + "target.gltf", "pos": Vector3(26.0, 0.0, 10.0), "s": prop_scale},
-		{"model": hex + "tent.gltf", "pos": Vector3(6.5, 0.0, 15.0), "s": prop_scale},
+		{"model": hex + "tent.gltf", "pos": Vector3(20.5, 0.0, 13.0), "s": prop_scale},
 		{"model": hex + "wheelbarrow.gltf", "pos": Vector3(-16.0, 0.0, 17.5), "s": prop_scale},
-		{"model": nprop + "sign.glb", "pos": Vector3(3.2, 0.0, 5.5), "s": 2.2},
+		{"model": nprop + "sign.glb", "pos": Vector3(-12.2, 0.0, -2.5), "s": 2.2},
 	]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 901
@@ -577,6 +458,83 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 
 # --- 2. Multi-Biome GPU-Instanced Forests & Flora ----------------------------
 
+static func _make_stylized_grass_tuft_mesh() -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var angles := [0.0, 0.82, 1.68, 2.48]
+	var offsets := [Vector2(-0.08, -0.05), Vector2(0.09, -0.04), Vector2(-0.04, 0.09), Vector2(0.07, 0.08)]
+	var heights := [0.54, 0.46, 0.58, 0.42]
+	for idx in angles.size():
+		var a: float = angles[idx]
+		var off: Vector2 = offsets[idx]
+		var h: float = heights[idx]
+		var dir := Vector3(cos(a), 0.0, sin(a)) * 0.075
+		var lean := Vector3(-sin(a), 0.0, cos(a)) * 0.085
+		var base := Vector3(off.x, -0.03, off.y)
+		var v0 := base - dir
+		var v1 := base + dir
+		var v2 := base + Vector3(0.0, h, 0.0) + lean
+		var nrm := Vector3(0.0, 1.0, 0.0)
+		st.set_normal(nrm); st.set_uv(Vector2(0.0, 1.0)); st.add_vertex(v0)
+		st.set_normal(nrm); st.set_uv(Vector2(1.0, 1.0)); st.add_vertex(v1)
+		st.set_normal(nrm); st.set_uv(Vector2(0.5, 0.0)); st.add_vertex(v2)
+	var mesh := st.commit()
+	mesh.surface_set_material(0, ArtDirection.wind_grass_shader_material())
+	return mesh
+
+static func _add_golden_meadow_motes(parent: Node3D) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var motes := GPUParticles3D.new()
+	motes.name = "GoldenMeadowMotes"
+	motes.amount = 48
+	motes.lifetime = 5.5
+	motes.preprocess = 2.0
+	motes.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	motes.position = Vector3(0.0, 1.4, 4.0)
+	var pmat := ParticleProcessMaterial.new()
+	pmat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pmat.emission_box_extents = Vector3(18.0, 1.8, 18.0)
+	pmat.direction = Vector3(0.3, 0.4, -0.2)
+	pmat.spread = 180.0
+	pmat.initial_velocity_min = 0.08
+	pmat.initial_velocity_max = 0.24
+	pmat.gravity = Vector3(0.0, 0.02, 0.0)
+	pmat.scale_min = 0.65
+	pmat.scale_max = 1.35
+	motes.process_material = pmat
+	var q := QuadMesh.new()
+	q.size = Vector2(0.065, 0.065)
+	var qmat := StandardMaterial3D.new()
+	qmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	qmat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	qmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	qmat.albedo_color = Color(1.0, 0.90, 0.48, 0.82)
+	q.material = qmat
+	motes.draw_pass_1 = q
+	parent.add_child(motes)
+
+static func _overlaps_town_building(x: float, z: float) -> bool:
+	var footprints := [
+		Vector3(1.8, -24.5, 7.2),
+		Vector3(2.2, -16.8, 5.2),
+		Vector3(9.6, -17.6, 4.8),
+		Vector3(14.6, -17.8, 4.8),
+		Vector3(9.8, -22.8, 4.2),
+		Vector3(22.5, -19.5, 5.8),
+		Vector3(-16.0, -8.0, 5.4),
+		Vector3(-25.5, -4.2, 5.2),
+		Vector3(-19.0, 11.0, 6.2),
+		Vector3(16.5, 8.5, 5.8),
+		Vector3(25.5, 14.0, 5.8),
+		Vector3(-18.5, 23.5, 5.6),
+		Vector3(-27.5, 22.5, 5.6),
+	]
+	for fp: Vector3 in footprints:
+		if Vector2(x - fp.x, z - fp.y).length() < fp.z:
+			return true
+	return false
+
 static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: int = 1337) -> Array:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -586,16 +544,55 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	var pine_xforms: Array = []
 	var birch_xforms: Array = []
 	var rock_xforms: Array = []
+	var rock_big_xforms: Array = []
 	var bush_xforms: Array = []
 	var flower_xforms: Array = []
 	var reed_xforms: Array = []
 	var trunk_positions: Array[Vector3] = []
+	var rock_positions: Array[Vector3] = []
 
-	for i: int in 320:
+	# 1. Curated Hero Stylized Layered Pine Trees framing the Castle-Meadow Vista (matching reference!)
+	var hero_pines := [
+		Vector3(6.2, 7.4, 2.55),     # Large pine framing right foreground!
+		Vector3(4.9, -11.8, 1.85),   # Pine between barrel tavern & red cottages
+		Vector3(2.4, -12.4, 1.55),   # Pine beside barrel tavern
+		Vector3(-1.3, -10.2, 2.10),  # Tall pine directly behind Chibi Knight's head/left!
+		Vector3(-2.6, -8.8, 1.65),   # Companion pine left-center
+		Vector3(-4.4, -4.8, 1.85),   # Midground left pine on meadow slope
+		Vector3(-8.2, -9.5, 1.95),
+		Vector3(-10.5, -13.5, 1.80),
+		Vector3(-12.8, -17.5, 2.00),
+		Vector3(-15.5, -21.5, 1.90),
+		Vector3(-7.4, -18.0, 1.70),
+		Vector3(-11.2, -25.0, 1.85),
+	]
+	for hp: Vector3 in hero_pines:
+		var hy := terrain.height_at(hp.x, hp.y) if terrain != null else 0.0
+		var hpos := Vector3(hp.x, hy - 0.08, hp.y)
+		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * hp.z), hpos))
+		trunk_positions.append(hpos)
+
+	# Dense左-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
+	for i: int in 42:
+		var lx := rng.randf_range(-44.0, -8.5)
+		var lz := rng.randf_range(-44.0, 4.0)
+		if _overlaps_town_building(lx, lz) or (terrain != null and terrain.is_road_at(lx, lz)):
+			continue
+		var ly := terrain.height_at(lx, lz) if terrain != null else 0.0
+		var lpos := Vector3(lx, ly - 0.08, lz)
+		var ls := rng.randf_range(1.45, 2.25)
+		if i % 2 == 0:
+			pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
+		else:
+			oak_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
+		trunk_positions.append(lpos)
+
+	# Outer Valley Multi-Biome Stylized Trees
+	for i: int in 280:
 		var x := rng.randf_range(-108.0, 108.0)
 		var z := rng.randf_range(-108.0, 108.0)
 		var r := Vector2(x, z).length()
-		if r < 41.5:
+		if r < 34.0:
 			continue
 		if terrain != null:
 			if terrain.is_road_at(x, z) or terrain.is_water_at(x, z):
@@ -604,92 +601,99 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 				continue
 			if terrain.slope_at(x, z) > 0.56:
 				continue
-		# Keep clearings around outer landmarks
 		if Vector2(x - 66.0, z + 18.0).length() < 11.0 or Vector2(x - 58.0, z - 22.0).length() < 10.5:
 			continue
 		if Vector2(x + 62.0, z + 24.0).length() < 10.0 or Vector2(x + 56.0, z - 44.0).length() < 8.5:
 			continue
-		if Vector2(x + 14.0, z + 64.0).length() < 9.5:
+		if Vector2(x + 14.0, z + 64.0).length() < 9.5 or Vector2(x + 19.0, z + 47.0).length() < 5.5:
 			continue
 
 		var y := terrain.height_at(x, z) if terrain != null else 0.0
-		if y > 17.5:
+		if y > 17.0:
 			continue
 		var biome := terrain.biome_at(x, z) if terrain != null else "dense_woodland"
 		var yaw := rng.randf_range(0.0, TAU)
-		var pos := Vector3(x, y - 0.06, z)
+		var pos := Vector3(x, y - 0.08, z)
+		var sp := rng.randf_range(1.55, 2.45)
 
 		match biome:
-			"pine_highlands", "alpine":
-				var sp := rng.randf_range(0.68, 0.96)
-				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
-				trunk_positions.append(pos)
 			"lakeside_birch":
-				var sb := rng.randf_range(1.75, 2.35)
-				birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sb), pos))
-				trunk_positions.append(pos)
+				birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.45, 2.05)), pos))
 			"dense_woodland", "ancient_grove":
-				if rng.randf() < 0.52:
-					var sd := rng.randf_range(0.56, 0.82)
-					dense_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sd), pos))
+				if rng.randf() < 0.65:
+					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 				else:
-					var so := rng.randf_range(0.58, 0.86)
-					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * so), pos))
-				trunk_positions.append(pos)
-			"rocky_hills":
-				if rng.randf() < 0.35:
-					var srp := rng.randf_range(0.62, 0.88)
-					pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * srp), pos))
-					trunk_positions.append(pos)
+					dense_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.35, 1.95)), pos))
 			_:
-				if rng.randf() < 0.55:
-					var sm := rng.randf_range(0.54, 0.78)
-					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sm), pos))
-					trunk_positions.append(pos)
+				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
+		trunk_positions.append(pos)
 
-	# Rocks, Undergrowth Bushes, Wildflowers, Lush 3D Grass Clumps & Shoreline Reeds
-	var grass_xforms: Array = []
-	var rock_positions: Array[Vector3] = []
-	for i: int in 160:
-		var rx := rng.randf_range(-104.0, 104.0)
-		var rz := rng.randf_range(-104.0, 104.0)
-		if Vector2(rx, rz).length() < 40.5:
+	# 2. Curated Foreground & Valley Stylized Faceted Grey Boulders (Quaternius Rock_1 & Rock_4)
+	var hero_rocks := [
+		Vector3(-4.6, 9.6, 1.55),   # Left foreground flat boulder cluster
+		Vector3(-3.8, 10.2, 1.15),
+		Vector3(-1.5, 8.8, 0.92),   # Pointed meadow stone left of Chibi Knight
+		Vector3(3.8, 10.4, 1.85),   # Right foreground sculpted grey boulder under pine!
+		Vector3(4.5, -2.5, 1.10),
+		Vector3(-7.2, 2.5, 1.35),
+	]
+	for hr: Vector3 in hero_rocks:
+		var hry := terrain.height_at(hr.x, hr.y) if terrain != null else 0.0
+		var hrpos := Vector3(hr.x, hry - 0.08, hr.y)
+		rock_big_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hr.z), hrpos))
+		rock_positions.append(hrpos)
+
+	for i: int in 140:
+		var rx := rng.randf_range(-100.0, 100.0)
+		var rz := rng.randf_range(-100.0, 100.0)
+		if _overlaps_town_building(rx, rz):
 			continue
-		if terrain != null and (terrain.is_road_at(rx, rz) or terrain.is_water_at(rx, rz)):
+		if Vector2(rx, rz + 14.0).length() < 9.0:
 			continue
-		if terrain != null and terrain.slope_at(rx, rz) > 0.65:
+		if terrain != null and (terrain.is_road_at(rx, rz) or terrain.is_water_at(rx, rz) or terrain.slope_at(rx, rz) > 0.65):
 			continue
 		var ry := terrain.height_at(rx, rz) if terrain != null else 0.0
 		var yaw := rng.randf_range(0.0, TAU)
 		if i < 55:
-			var rs := rng.randf_range(0.62, 1.28)
+			var rs := rng.randf_range(0.95, 1.75)
 			var rpos := Vector3(rx, ry - 0.08, rz)
 			rock_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rs), rpos))
 			rock_positions.append(rpos)
-		elif i < 110:
-			var bs := rng.randf_range(0.75, 1.22)
-			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry, rz)))
 		else:
-			var fs := rng.randf_range(1.35, 2.15)
-			flower_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * fs), Vector3(rx, ry, rz)))
+			var bs := rng.randf_range(0.85, 1.35)
+			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry - 0.04, rz)))
 
-	# Natural Non-Grid 3D Grass Scatter across Meadows, Royal Parks & Woodland Clearings (1 Draw Call!)
-	for i: int in 140:
-		var gx := rng.randf_range(-86.0, 86.0)
-		var gz := rng.randf_range(-86.0, 86.0)
-		if Vector2(gx, gz).length() < 39.5 and Vector2(gx, gz).length() > 14.0:
-			continue
-		if Vector2(gx, gz).length() <= 14.0:
+	# 3. Dense GPU Wind-Animated 3D Meadow Grass (2,800 tufts in 1 MultiMesh = 1 Draw Call!) + White/Yellow Wildflowers!
+	var wind_grass_xforms: Array = []
+	for i: int in 2800:
+		var gx: float
+		var gz: float
+		if i < 2100:
+			# Dense coverage in the starting hero meadow & castle valley (-32..32, -20..36)
+			gx = rng.randf_range(-30.0, 30.0)
+			gz = rng.randf_range(-20.0, 34.0)
+		else:
+			gx = rng.randf_range(-72.0, 72.0)
+			gz = rng.randf_range(-72.0, 72.0)
+		if _overlaps_town_building(gx, gz):
 			continue
 		if terrain != null:
-			if terrain.is_road_at(gx, gz) or terrain.is_water_at(gx, gz):
+			if terrain.is_water_at(gx, gz) or terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 12.5:
 				continue
-			if terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 13.5:
+			# Leave the center of the winding brown dirt trail bare so grass hugs its edges!
+			if gz >= -18.0 and gz <= 46.0:
+				var trail_x := -4.8 * smoothstep(-10.0, 26.0, gz) + sin(gz * 0.14) * 1.65
+				if absf(gx - trail_x) < 1.55:
+					continue
+			elif terrain.is_road_at(gx, gz):
 				continue
 		var gy := terrain.height_at(gx, gz) if terrain != null else 0.0
 		var gyaw := rng.randf_range(0.0, TAU)
-		var gscale := rng.randf_range(1.05, 1.75)
-		grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3.ONE * gscale), Vector3(gx, gy - 0.02, gz)))
+		var gscale := rng.randf_range(0.82, 1.38)
+		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.88, 1.24), gscale)), Vector3(gx, gy, gz)))
+		if i % 5 == 0 and flower_xforms.size() < 520:
+			var fs := rng.randf_range(0.85, 1.35)
+			flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * fs), Vector3(gx, gy - 0.02, gz)))
 
 	# Shoreline Reeds around Crystal Lake
 	for i: int in 28:
@@ -699,17 +703,36 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
 		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
 
-	var rtree := AssetLibrary.REALISTIC_TREES_DIR
-	var rnat := AssetLibrary.REALISTIC_NATURE_DIR
-	build_multimesh(parent, rtree + "realistic_oak_01.glb", oak_xforms, "ForestOaks", true, 74.0)
-	build_multimesh(parent, rtree + "realistic_oak_02.glb", dense_xforms, "ForestCanopyTrees", false, 68.0)
-	build_multimesh(parent, rtree + "realistic_canopy_03.glb", pine_xforms, "HighlandPines", false, 92.0)
-	build_multimesh(parent, rtree + "birch_tree_01.glb", birch_xforms, "LakesideBirches", false, 68.0)
-	build_multimesh(parent, rnat + "realistic_rock_01.glb", rock_xforms, "WorldRocks", false, 64.0)
-	build_multimesh(parent, rnat + "realistic_bush_01.glb", bush_xforms, "ForestBushes", false, 48.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/flower_A.gltf", flower_xforms, "MeadowFlowers", false, 42.0)
-	build_multimesh(parent, "res://assets/environments/tinytreats_park/grass_A.gltf", grass_xforms, "MeadowGrass", false, 34.0)
+	var stree := AssetLibrary.STYLIZED_TREES_DIR
+	var srock := AssetLibrary.STYLIZED_ROCKS_DIR
+	var sfol := AssetLibrary.STYLIZED_FOLIAGE_DIR
+	build_multimesh(parent, stree + "PineTree_1.glb", pine_xforms, "StylizedPines", true, 96.0)
+	build_multimesh(parent, stree + "PineTree_2.glb", oak_xforms, "ForestOaks", true, 86.0)
+	build_multimesh(parent, stree + "CommonTree_1.glb", dense_xforms, "ForestCanopyTrees", false, 76.0)
+	build_multimesh(parent, stree + "BirchTree_1.glb", birch_xforms, "LakesideBirches", false, 72.0)
+	build_multimesh(parent, srock + "Rock_4.glb", rock_big_xforms, "HeroMeadowRocks", false, 68.0)
+	build_multimesh(parent, srock + "Rock_1.glb", rock_xforms, "WorldRocks", false, 64.0)
+	build_multimesh(parent, sfol + "Bush_1.glb", bush_xforms, "ForestBushes", false, 48.0)
+	build_multimesh(parent, sfol + "Flowers.glb", flower_xforms, "MeadowFlowers", false, 40.0)
 	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 60.0)
+
+	# Build the 1-draw-call GPU Wind Grass MultiMeshInstance3D!
+	if not wind_grass_xforms.is_empty():
+		var g_mm := MultiMesh.new()
+		g_mm.transform_format = MultiMesh.TRANSFORM_3D
+		g_mm.mesh = _make_stylized_grass_tuft_mesh()
+		g_mm.instance_count = wind_grass_xforms.size()
+		for gi in wind_grass_xforms.size():
+			g_mm.set_instance_transform(gi, wind_grass_xforms[gi] as Transform3D)
+		var g_inst := MultiMeshInstance3D.new()
+		g_inst.name = "MeadowWindGrass"
+		g_inst.multimesh = g_mm
+		g_inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		g_inst.visibility_range_end = 42.0
+		g_inst.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		parent.add_child(g_inst)
+
+	_add_golden_meadow_motes(parent)
 
 	# Batched StaticBody3D for tree trunks AND large rock boulders within playable elevation
 	var trunk_body := StaticBody3D.new()

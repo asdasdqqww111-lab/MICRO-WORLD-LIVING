@@ -62,29 +62,30 @@ func apply_now() -> void:
 	if sun == null:
 		return
 	var hour := GameManager.world.hour_float()
-	var elevation := sin((hour / 24.0 - 0.25) * TAU) * 82.0
-	var azimuth := -38.0 + cos((hour / 24.0) * TAU) * 18.0
-	sun.rotation_degrees = Vector3(-maxf(6.0, elevation), azimuth, 0.0)
+	# Calibrated so late afternoon (17:01) hits X=-35, Y=-45 warm golden sun (Color(1.0, 0.95, 0.85))
+	var elevation := sin((hour / 24.0 - 0.278) * TAU) * 62.0
+	var azimuth := -45.0 + cos((hour - 17.0) / 24.0 * TAU) * 14.0 - 14.0
+	sun.rotation_degrees = Vector3(-clampf(elevation, 8.0, 68.0), azimuth, 0.0)
 
-	var daylight := clampf(sin((hour / 24.0 - 0.25) * TAU) * 1.55 + 0.18, 0.0, 1.0)
-	var golden_hour := clampf(1.0 - absf(daylight - 0.32) * 3.2, 0.0, 1.0)
-	var night_factor := 1.0 - clampf(daylight * 2.1, 0.0, 1.0)
-	var weather_factor := 1.0 - _weather_darkness * 0.50
+	var daylight := clampf(sin((hour / 24.0 - 0.25) * TAU) * 1.65 + 0.34, 0.0, 1.0)
+	var late_dusk := clampf((hour - 18.2) / 1.4, 0.0, 1.0) if hour >= 18.2 else 0.0
+	var night_factor := 1.0 - clampf(daylight * 2.3, 0.0, 1.0)
+	var weather_factor := 1.0 - _weather_darkness * 0.45
 
-	sun.light_energy = lerpf(0.06, 1.32, daylight) * weather_factor
-	var noon_col := Color(1.0, 0.95, 0.86)
-	var dusk_col := Color(1.0, 0.66, 0.40)
+	sun.light_energy = lerpf(0.08, 1.26, daylight) * weather_factor
+	var afternoon_col := Color(1.0, 0.95, 0.85)
+	var dusk_col := Color(1.0, 0.72, 0.48)
 	var night_col := Color(0.58, 0.68, 0.95)
-	sun.light_color = noon_col.lerp(dusk_col, golden_hour * 0.72).lerp(night_col, night_factor)
+	sun.light_color = afternoon_col.lerp(dusk_col, late_dusk * 0.65).lerp(night_col, night_factor)
 
 	if moon != null:
 		moon.rotation_degrees = Vector3(-42.0, 145.0, 0.0)
 		moon.light_energy = night_factor * 0.32 * weather_factor
 
 	if environment != null:
-		environment.ambient_light_energy = lerpf(0.24, 0.78, daylight) * weather_factor
-		environment.ambient_light_color = Color(0.20, 0.26, 0.40).lerp(Color(0.76, 0.73, 0.66), daylight)
-		var fog_day := Color(0.64, 0.74, 0.84).lerp(Color(0.86, 0.66, 0.52), golden_hour * 0.55)
+		environment.ambient_light_energy = lerpf(0.28, 0.66, daylight) * weather_factor
+		environment.ambient_light_color = Color(0.24, 0.32, 0.48).lerp(Color(0.74, 0.80, 0.88), daylight)
+		var fog_day := Color(0.6, 0.75, 0.9).lerp(Color(0.84, 0.70, 0.60), late_dusk * 0.50)
 		var fog_night := Color(0.10, 0.14, 0.22)
 		environment.fog_light_color = fog_night.lerp(fog_day, daylight)
 		var top_day := Color(0.14, 0.36, 0.74)

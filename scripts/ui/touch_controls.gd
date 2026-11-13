@@ -1,9 +1,9 @@
 class_name TouchControls
 extends Control
-## Mobile-first fantasy action RPG touch controls:
-##   - Left thumb: Smooth Virtual Joystick + Sprint toggle
-##   - Right thumb: Camera drag & pinch-to-zoom + ergonomic arc of combat buttons
-##     (ATK, HVY, MAG, DODGE, BLK, POT, USE, JMP) — all >=54px touch targets!
+## Stylized Mobile RPG Touch Controls matching the Arabic Reference HUD:
+##   - Bottom-Left: Transparent Dual-Ring Joystick + Pill-shaped "ركض" (Sprint) Button
+##   - Bottom-Right: Large Ornate Bronze/Gold "هجوم" Button (crossed swords),
+##     curved arc of 8 bronze/gold RPG buttons (>= 46px clear gap), & 5 Quick-Slot squares.
 
 signal look_dragged(relative: Vector2)
 signal zoom_requested(factor: float)
@@ -14,6 +14,9 @@ var drag_area: CameraDragArea
 var sprint_button: Button
 var block_button: Button
 var attack_button: Button
+var _sprint_label: Label
+var _attack_label: Label
+var _quick_slots: Array[PanelContainer] = []
 
 var _move: Vector2 = Vector2.ZERO
 var _pressed: Dictionary = {}
@@ -35,18 +38,28 @@ func _ready() -> void:
 
 func _refresh_labels() -> void:
 	var ar := Localization.is_arabic()
-	if sprint_button != null:
-		sprint_button.text = "عدو" if ar else "RUN"
-	if attack_button != null:
-		attack_button.text = "⚔\nهجوم" if ar else "⚔\nATK"
+	if _sprint_label != null:
+		_sprint_label.text = "ركض" if ar else "RUN"
+	if _attack_label != null:
+		_attack_label.text = "هجوم" if ar else "ATK"
+
+func _make_bronze_circle_style(radius: int, bg_col: Color, border_col: Color, border_w: int = 2) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_col
+	sb.border_color = border_col
+	sb.set_border_width_all(border_w)
+	sb.set_corner_radius_all(radius)
+	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
+	sb.shadow_size = 4
+	return sb
 
 func _build() -> void:
 	drag_area = CameraDragArea.new()
 	drag_area.name = "CameraDragArea"
-	drag_area.anchor_left = 0.32
-	drag_area.anchor_top = 0.08
+	drag_area.anchor_left = 0.30
+	drag_area.anchor_top = 0.10
 	drag_area.anchor_right = 1.0
-	drag_area.anchor_bottom = 0.94
+	drag_area.anchor_bottom = 0.92
 	drag_area.offset_left = 0
 	drag_area.offset_top = 0
 	drag_area.offset_right = 0
@@ -62,52 +75,111 @@ func _build() -> void:
 	joystick.anchor_top = 1.0
 	joystick.anchor_right = 0.0
 	joystick.anchor_bottom = 1.0
-	joystick.offset_left = 24
-	joystick.offset_top = -224
-	joystick.offset_right = 224
-	joystick.offset_bottom = -24
+	joystick.offset_left = 20
+	joystick.offset_top = -198
+	joystick.offset_right = 198
+	joystick.offset_bottom = -20
 	add_child(joystick)
 	joystick.moved.connect(func(vector: Vector2) -> void: _move = vector)
 
-	# Left-side Circular Glassmorphism Sprint Toggle
-	sprint_button = UIFactory.glass_circle_button("RUN", 56, UIFactory.STAMINA_TEAL)
+	# Pill-shaped "ركض" (Sprint) Button with circular running badge on left
+	sprint_button = Button.new()
 	sprint_button.name = "Btn_sprint"
+	sprint_button.text = ""
+	sprint_button.focus_mode = Control.FOCUS_NONE
 	sprint_button.anchor_left = 0.0
 	sprint_button.anchor_top = 1.0
 	sprint_button.anchor_right = 0.0
 	sprint_button.anchor_bottom = 1.0
-	sprint_button.offset_left = 248
-	sprint_button.offset_top = -94
-	sprint_button.offset_right = 304
-	sprint_button.offset_bottom = -38
-	sprint_button.modulate = Color(1, 1, 1, 0.82)
+	sprint_button.offset_left = 216
+	sprint_button.offset_top = -64
+	sprint_button.offset_right = 324
+	sprint_button.offset_bottom = -24
+	var pill_sb := _make_bronze_circle_style(20, Color(0.10, 0.12, 0.12, 0.76), Color(0.68, 0.62, 0.44, 0.72), 1)
+	var pill_pr := _make_bronze_circle_style(20, Color(0.24, 0.22, 0.14, 0.88), Color(0.96, 0.82, 0.42, 0.95), 2)
+	for st: String in ["normal", "hover", "focus"]:
+		sprint_button.add_theme_stylebox_override(st, pill_sb)
+	sprint_button.add_theme_stylebox_override("pressed", pill_pr)
+
+	var sp_hbox := HBoxContainer.new()
+	sp_hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	sp_hbox.offset_left = 4
+	sp_hbox.offset_right = -10
+	sp_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	sp_hbox.add_theme_constant_override("separation", 6)
+	sp_hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sprint_button.add_child(sp_hbox)
+
+	var badge := PanelContainer.new()
+	badge.custom_minimum_size = Vector2(30, 30)
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.add_theme_stylebox_override("panel", _make_bronze_circle_style(15, Color(0.18, 0.18, 0.16, 0.90), Color(0.76, 0.66, 0.44, 0.82), 1))
+	var badge_center := CenterContainer.new()
+	badge_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_center.add_child(RpgIcon.new().setup("sprint", Vector2(20, 20)))
+	badge.add_child(badge_center)
+	sp_hbox.add_child(badge)
+
+	_sprint_label = UIFactory.label("ركض", 14, Color(0.96, 0.95, 0.90))
+	_sprint_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_sprint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sp_hbox.add_child(_sprint_label)
+
 	sprint_button.button_down.connect(func() -> void:
 		_sprint = not _sprint
-		sprint_button.modulate = Color(1.0, 0.96, 0.68, 1.0) if _sprint else Color(1, 1, 1, 0.82))
+		sprint_button.modulate = Color(1.0, 0.95, 0.72, 1.0) if _sprint else Color(1, 1, 1, 0.92))
 	add_child(sprint_button)
 
-	# Ergonomic "Thumb-Zone" Concentric Circular Glassmorphic Cluster
-	# Mathematically spaced so EVERY pair of right-hand buttons has >= 46px clear gap!
-	attack_button = _place_action_button("attack", "⚔\nATK", 35.0, 35.0, 94.0, UIFactory.DANGER)
-	# Inner Thumb Arc (R = 150px from ATK center)
-	_place_action_button("attack_heavy", "🪓", 200.0, 60.5, 64.0, Color(0.96, 0.58, 0.24))
-	_place_action_button("dodge", "💨", 152.3, 159.7, 64.0, UIFactory.STAMINA_TEAL)
-	_place_action_button("jump", "⬆", 50.0, 200.0, 64.0, Color(0.55, 0.78, 1.0))
-	# Outer Secondary Arc (R = 260px from ATK center)
-	_place_action_button("cast_spell", "✦", 312.0, 75.7, 58.0, UIFactory.MANA_BLUE)
-	_place_action_button("quick_potion", "⚗", 271.1, 194.6, 58.0, UIFactory.ACCENT)
-	_place_action_button("lock_target", "◎", 179.1, 280.4, 58.0, Color(1.0, 0.84, 0.30))
-	_place_action_button("interact", "✋", 419.0, 43.0, 58.0, UIFactory.GOLD)
+	# 5 Quick-Slot Squares along bottom-right edge (matching reference image!)
+	var qs_bar := HBoxContainer.new()
+	qs_bar.name = "QuickSlotsBar"
+	qs_bar.anchor_left = 1.0
+	qs_bar.anchor_top = 1.0
+	qs_bar.anchor_right = 1.0
+	qs_bar.anchor_bottom = 1.0
+	qs_bar.offset_left = -352
+	qs_bar.offset_top = -40
+	qs_bar.offset_right = -162
+	qs_bar.offset_bottom = -8
+	qs_bar.add_theme_constant_override("separation", 6)
+	qs_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(qs_bar)
+	var qs_sb := StyleBoxFlat.new()
+	qs_sb.bg_color = Color(0.08, 0.11, 0.10, 0.56)
+	qs_sb.border_color = Color(0.62, 0.64, 0.52, 0.52)
+	qs_sb.set_border_width_all(1)
+	qs_sb.set_corner_radius_all(5)
+	for qi in 5:
+		var slot := PanelContainer.new()
+		slot.name = "QuickSlot_%d" % qi
+		slot.custom_minimum_size = Vector2(32, 32)
+		slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_theme_stylebox_override("panel", qs_sb)
+		qs_bar.add_child(slot)
+		_quick_slots.append(slot)
 
-	# Hold-to-Block Shield Button (Outer Arc top-right)
-	block_button = _place_action_button("block", "🛡", 57.5, 313.0, 58.0, Color(0.72, 0.78, 0.92))
+	# Bottom-Right Ornate Bronze/Gold Combat Cluster (9 buttons, >= 46px clear gap!)
+	attack_button = _place_rpg_button("attack", "swords", 34.0, 26.0, 92.0, true)
+	# Inner Arc
+	_place_rpg_button("attack_heavy", "bag", 198.0, 58.0, 58.0, false)
+	_place_rpg_button("dodge", "sparkle", 150.0, 158.0, 58.0, false)
+	_place_rpg_button("jump", "stone", 48.0, 198.0, 58.0, false)
+	# Outer Arc
+	_place_rpg_button("cast_spell", "book", 310.0, 72.0, 54.0, false)
+	_place_rpg_button("interact", "burst", 269.0, 192.0, 54.0, false)
+	_place_rpg_button("lock_target", "hand", 177.0, 278.0, 54.0, false)
+	_place_rpg_button("quick_potion", "potion", 418.0, 40.0, 54.0, false)
+
+	block_button = _place_rpg_button("block", "swords", 56.0, 311.0, 54.0, false)
 	block_button.button_down.connect(func() -> void: _blocking = true)
 	block_button.button_up.connect(func() -> void: _blocking = false)
 
-func _place_action_button(action: String, text: String, right_margin: float, bottom_margin: float,
-		btn_size: float, tint: Color) -> Button:
-	var b := UIFactory.glass_circle_button(text, int(btn_size), tint)
+func _place_rpg_button(action: String, icon_kind: String, right_margin: float, bottom_margin: float,
+		btn_size: float, is_main_attack: bool) -> Button:
+	var b := Button.new()
 	b.name = "Btn_" + action
+	b.text = ""
+	b.focus_mode = Control.FOCUS_NONE
 	b.anchor_left = 1.0
 	b.anchor_top = 1.0
 	b.anchor_right = 1.0
@@ -116,14 +188,44 @@ func _place_action_button(action: String, text: String, right_margin: float, bot
 	b.offset_top = -(bottom_margin + btn_size)
 	b.offset_right = -right_margin
 	b.offset_bottom = -bottom_margin
-	b.modulate = Color(1, 1, 1, 0.88)
-	b.add_theme_font_size_override("font_size", 16 if btn_size < 90.0 else 18)
+
+	var rad := int(btn_size * 0.5)
+	var bg := Color(0.16, 0.14, 0.11, 0.84) if is_main_attack else Color(0.14, 0.15, 0.14, 0.78)
+	var rim := Color(0.84, 0.70, 0.38, 0.92) if is_main_attack else Color(0.72, 0.64, 0.42, 0.80)
+	var bw := 3 if is_main_attack else 2
+	var sb_n := _make_bronze_circle_style(rad, bg, rim, bw)
+	var sb_p := _make_bronze_circle_style(rad, Color(0.28, 0.24, 0.16, 0.92), Color(1.0, 0.88, 0.48, 1.0), bw)
+	for st: String in ["normal", "hover", "focus"]:
+		b.add_theme_stylebox_override(st, sb_n)
+	b.add_theme_stylebox_override("pressed", sb_p)
+
+	if is_main_attack:
+		var vbox := VBoxContainer.new()
+		vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_theme_constant_override("separation", 0)
+		vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var ic_wrap := CenterContainer.new()
+		ic_wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ic_wrap.add_child(RpgIcon.new().setup(icon_kind, Vector2(42, 42)))
+		vbox.add_child(ic_wrap)
+		_attack_label = UIFactory.label("هجوم", 14, Color(0.98, 0.95, 0.86))
+		_attack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(_attack_label)
+		b.add_child(vbox)
+	else:
+		var center := CenterContainer.new()
+		center.set_anchors_preset(Control.PRESET_FULL_RECT)
+		center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		center.add_child(RpgIcon.new().setup(icon_kind, Vector2(btn_size * 0.54, btn_size * 0.54)))
+		b.add_child(center)
+
 	b.button_down.connect(func() -> void:
-		b.modulate = Color(1.24, 1.20, 1.08, 1.0)
+		b.modulate = Color(1.20, 1.16, 1.04, 1.0)
 		if action != "block":
 			_pressed[action] = true)
 	b.button_up.connect(func() -> void:
-		b.modulate = Color(1, 1, 1, 0.88))
+		b.modulate = Color(1, 1, 1, 1.0))
 	add_child(b)
 	return b
 
@@ -153,4 +255,4 @@ func reset_state() -> void:
 	_sprint = false
 	_blocking = false
 	if sprint_button != null:
-		sprint_button.modulate = Color(1, 1, 1, 0.78)
+		sprint_button.modulate = Color(1, 1, 1, 0.92)

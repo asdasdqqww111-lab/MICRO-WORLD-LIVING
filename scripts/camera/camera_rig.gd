@@ -6,21 +6,21 @@ extends Node3D
 const MIN_PITCH := -60.0
 const MAX_PITCH := 52.0
 
-@export var distance: float = 5.4
+@export var distance: float = 4.0
 @export var min_distance: float = 2.2
-@export var max_distance: float = 9.0
-@export var height_offset: float = 1.50
+@export var max_distance: float = 8.5
+@export var height_offset: float = 1.15
 @export var follow_smoothing: float = 14.0
 @export var rotation_smoothing: float = 16.0
 
 var yaw: float = 0.0
-var pitch: float = -15.0
+var pitch: float = -5.5
 
 var spring_arm: SpringArm3D
 var camera: Camera3D
-var _target_distance: float = 5.4
+var _target_distance: float = 4.0
 var _smoothed_yaw: float = 0.0
-var _smoothed_pitch: float = -15.0
+var _smoothed_pitch: float = -5.5
 var _body: CollisionObject3D
 
 func _ready() -> void:
@@ -46,7 +46,7 @@ func _build() -> void:
 
 	camera = Camera3D.new()
 	camera.name = "Camera3D"
-	camera.fov = 68.0
+	camera.fov = 55.0
 	camera.near = 0.08
 	camera.far = SettingsManager.view_distance() * 2.2
 	camera.current = true
@@ -115,7 +115,7 @@ func soft_track_target(world_target: Vector3, delta: float) -> void:
 
 func reset() -> void:
 	yaw = 0.0
-	pitch = -15.0
+	pitch = -5.5
 	_target_distance = distance
 
 func flat_forward() -> Vector3:

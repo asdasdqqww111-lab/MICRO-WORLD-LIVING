@@ -40,9 +40,9 @@ func load_settings() -> void:
 	show_touch_controls = bool(cfg.get_value("input", "show_touch_controls", true))
 	touch_scale = clampf(float(cfg.get_value("input", "touch_scale", 1.0)), 0.8, 1.3)
 	autosave_enabled = bool(cfg.get_value("game", "autosave", true))
-	language = String(cfg.get_value("game", "language", "en"))
+	language = String(cfg.get_value("game", "language", "ar"))
 	if language != "en" and language != "ar":
-		language = "en"
+		language = "ar"
 
 func save_settings() -> void:
 	var cfg := ConfigFile.new()
@@ -84,17 +84,18 @@ func _set_bus_volume(bus_name: String, linear: float) -> void:
 	var db := -80.0 if linear <= 0.001 else linear_to_db(clampf(linear, 0.0, 1.6))
 	AudioServer.set_bus_volume_db(idx, db)
 
-## Applies real Android/GLES3 rendering costs across Low / Medium / High presets.
+## Applies Stylized/Chibi PBR Mobile Vulkan rendering settings (4x MSAA + FXAA).
 func apply_graphics() -> void:
 	var viewport := get_viewport()
 	if viewport != null:
+		viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 		match graphics_preset:
 			GraphicsPreset.LOW:
-				viewport.msaa_3d = Viewport.MSAA_DISABLED
-				viewport.scaling_3d_scale = 0.75
-			GraphicsPreset.MEDIUM:
 				viewport.msaa_3d = Viewport.MSAA_2X
-				viewport.scaling_3d_scale = 0.92 if is_mobile() else 1.0
+				viewport.scaling_3d_scale = 0.82
+			GraphicsPreset.MEDIUM:
+				viewport.msaa_3d = Viewport.MSAA_4X
+				viewport.scaling_3d_scale = 0.95 if is_mobile() else 1.0
 			_:
 				viewport.msaa_3d = Viewport.MSAA_4X
 				viewport.scaling_3d_scale = 1.0

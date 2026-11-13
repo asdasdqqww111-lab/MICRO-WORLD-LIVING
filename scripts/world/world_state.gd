@@ -5,7 +5,7 @@ extends RefCounted
 const DAY_SECONDS := 86400.0
 const HOURS_PER_DAY := 24
 
-var time_of_day: float = 8.5 * 3600.0
+var time_of_day: float = 17.0 * 3600.0 + 60.0
 var day: int = 1
 var weather: String = "clear"
 var weather_remaining: float = 240.0

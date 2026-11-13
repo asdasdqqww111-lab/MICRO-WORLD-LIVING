@@ -542,31 +542,45 @@ func _test_game_scene() -> void:
 	_check(right_btns.size() == 9 and min_btn_gap >= 44.0,
 		"Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=%.1fpx)" % min_btn_gap)
 
-	# Verify v2.0 + Cinematic Realistic AAA Upgrade (Phases 1-3: Realistic Assets, PBR Normal+Roughness, ACES+Glow+DepthFog+SSAO+HDRI+50m Soft Shadows)
+	# Verify Polished Stylized/Chibi PBR Mobile Overhaul (Phases 1-5)
+	_check(String(ProjectSettings.get_setting("rendering/renderer/rendering_method")) == "mobile",
+		"Phase 1: Project renderer set to Vulkan Mobile ('mobile')")
 	_check(ResourceLoader.exists("res://assets/ui/fonts/Cairo-Variable.ttf"), "Cairo variable font bundled & active")
-	_check(AssetLibrary.has_model("res://assets_realistic/models/characters/knight_hero.glb")
-		and AssetLibrary.has_model("res://assets_realistic/models/buildings/citadel_keep.glb")
-		and AssetLibrary.has_model("res://assets_realistic/models/trees/realistic_oak_01.glb"),
-		"Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded")
+	_check(AssetLibrary.has_model("res://assets/kaykit_adventurers/Knight.glb")
+		and AssetLibrary.has_model("res://assets/stylized_nature/trees/PineTree_1.glb")
+		and AssetLibrary.has_model("res://assets/stylized_nature/rocks/Rock_1.glb")
+		and AssetLibrary.has_model("res://assets/stylized_nature/foliage/Flowers.glb"),
+		"Step 1 & 2: CC0 Stylized Assets (KayKit Chibi Knight + Quaternius Pine/Rock/Flowers) imported")
 	var stone_pbr: StandardMaterial3D = ArtDirection.pbr_material("test_stone_wall", "stone_wall")
 	_check(stone_pbr != null and stone_pbr.normal_enabled and stone_pbr.normal_texture != null and stone_pbr.roughness_texture != null,
-		"Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled")
-	_check(ArtDirection.terrain_normal_texture() != null and ArtDirection.terrain_roughness_texture() != null,
-		"Phase 2: Terrain PBR Normal Map & Roughness Map active")
-	_check(player.visual != null and player.visual._model_path.begins_with("res://assets_realistic/models/characters/"),
-		"Phase 2: Player character uses realistic 3D model (%s)" % (player.visual._model_path if player.visual != null else ""))
+		"Stylized PBR surface material has Normal Maps & Roughness enabled")
+	_check(ResourceLoader.exists("res://shaders/stylized_terrain_splat.gdshader")
+		and ResourceLoader.exists("res://shaders/stylized_wind_grass.gdshader")
+		and ResourceLoader.exists("res://shaders/chibi_knight_rim.gdshader"),
+		"Phase 2 & 3: Terrain Splatmap, GPU Wind Grass & Chibi Fresnel Rim Shaders present")
+	_check(player.visual != null and player.visual._model_path == "res://assets/kaykit_adventurers/Knight.glb",
+		"Phase 3: Player character uses Stylized Chibi Knight (%s)" % (player.visual._model_path if player.visual != null else ""))
+	_check(player.camera_rig != null and player.camera_rig.camera != null
+		and is_equal_approx(player.camera_rig.camera.fov, 55.0)
+		and is_equal_approx(player.camera_rig.distance, 4.0),
+		"Phase 3: CameraRig configured with FOV=55 and spring_arm=4.0")
 	var env_res: Environment = world.environment
 	var sky_pano: PanoramaSkyMaterial = env_res.sky.sky_material as PanoramaSkyMaterial if (env_res != null and env_res.sky != null) else null
 	_check(env_res != null
 		and env_res.tonemap_mode == Environment.TONE_MAPPER_ACES
+		and is_equal_approx(env_res.tonemap_exposure, 1.1)
 		and env_res.glow_enabled
 		and env_res.fog_mode == Environment.FOG_MODE_DEPTH
+		and is_equal_approx(env_res.fog_depth_begin, 30.0)
+		and is_equal_approx(env_res.fog_depth_end, 150.0)
 		and env_res.ssao_enabled,
-		"Phase 3: WorldEnvironment configured with ACES Tonemap, subtle Glow, Depth Fog & mobile SSAO")
+		"Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO")
 	_check(sky_pano != null and sky_pano.panorama != null,
-		"Phase 3: HDRI PanoramaSkyMaterial bound in Sky for ambient lighting")
-	_check(world.sun != null and world.sun.shadow_enabled and is_equal_approx(world.sun.directional_shadow_max_distance, 50.0) and world.sun.shadow_blur > 1.0,
-		"Phase 3: DirectionalLight3D configured with Soft Shadows & 50m shadow max distance")
+		"Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial")
+	_check(world.sun != null and world.sun.shadow_enabled and is_equal_approx(world.sun.directional_shadow_max_distance, 60.0) and is_equal_approx(world.sun.shadow_blur, 2.0),
+		"Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 60m max distance")
+	_check(ui.hud != null and ui.hud.find_child("TopCenterActionDock", true, false) != null and ui.touch.find_child("QuickSlotsBar", true, false) != null,
+		"Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built")
 	_check(game.get("vfx") != null and (game.get("vfx") as Node).get_node_or_null("FootstepDust") != null,
 		"VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active")
 	_check(player.collision_layer == CollisionLayers.PLAYER and player.collision_mask == CollisionLayers.MASK_PLAYER_SOLID and player.safe_margin >= 0.04,

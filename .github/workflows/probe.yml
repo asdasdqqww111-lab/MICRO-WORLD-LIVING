@@ -40,7 +40,7 @@ jobs:
         run: |
           mkdir -p docs/reports
           godot --headless --path . --import 2>&1 | tee docs/reports/ci_import.log
-          godot --headless --path . --script res://tools/verify_realistic_import.gd 2>&1 | tee -a docs/reports/ci_import.log
+          godot --headless --path . --script res://tools/verify_stylized_import.gd 2>&1 | tee -a docs/reports/ci_import.log
 
       - name: Headless acceptance tests
         run: |
@@ -48,7 +48,7 @@ jobs:
           mkdir -p docs/reports
           timeout 180 godot --headless --path . tests/test_runner.tscn 2>&1 | tee docs/reports/ci_headless_stdout.log
 
-      - name: Renderer + probes (GLES3 over Mesa)
+      - name: Renderer + probes (Vulkan Mobile over Mesa Lavapipe)
         run: |
           set -e
           DIAG=docs/reports/ci_env.log
@@ -59,20 +59,26 @@ jobs:
             echo "godot: $(command -v godot) - $(godot --version 2>&1 | head -1)"
           } > "$DIAG" 2>&1
           sudo apt-get update -qq >> "$DIAG" 2>&1
-          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-vulkan-drivers vulkan-tools mesa-utils >> "$DIAG" 2>&1
 
-          echo "=== glxinfo ===" > docs/reports/ci_renderer.log
-          xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B >> docs/reports/ci_renderer.log 2>&1
+          echo "=== vulkaninfo ===" > docs/reports/ci_renderer.log
+          vulkaninfo --summary >> docs/reports/ci_renderer.log 2>&1 || true
+
+          DRIVER="vulkan"
+          if ! vulkaninfo --summary >/dev/null 2>&1; then
+            DRIVER="opengl3"
+          fi
+          echo "selected_driver=$DRIVER" >> docs/reports/ci_renderer.log
 
           echo "=== perf probe ===" >> docs/reports/ci_renderer.log
           timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-            godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+            godot --path . --rendering-driver "$DRIVER" --resolution 1280x720 \
             tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
           echo "perf exit=$?" >> docs/reports/ci_renderer.log
 
-          echo "=== screenshot probe (12 views) ===" >> docs/reports/ci_renderer.log
+          echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
           timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-            godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+            godot --path . --rendering-driver "$DRIVER" --resolution 1280x720 \
             tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
           echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
 

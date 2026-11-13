@@ -25,7 +25,7 @@ func _watchdog() -> void:
 	get_tree().quit(2)
 
 func _run() -> void:
-	_lines.append("MICRO WORLD: LIVING — Eldoria Edition v1.0 GLES3 Performance Probe")
+	_lines.append("MICRO WORLD: LIVING — Polished Stylized/Chibi PBR Mobile Vulkan Probe")
 	_lines.append("engine: %s" % Engine.get_version_info().get("string", "?"))
 	_lines.append("rendering method: %s" % ProjectSettings.get_setting(
 		"rendering/renderer/rendering_method"))
@@ -33,7 +33,7 @@ func _run() -> void:
 	_lines.append("driver: %s" % RenderingServer.get_video_adapter_api_version())
 	_lines.append("run at: %s" % Time.get_datetime_string_from_system(true))
 	_lines.append("")
-	_lines.append("budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30")
+	_lines.append("budget: draw calls < 300 · triangles < 180k · target 60 FPS")
 	_lines.append("")
 	_flush()
 

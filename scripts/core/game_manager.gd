@@ -74,6 +74,8 @@ func start_new_game(chosen_class: String = "knight", chosen_name: String = "", w
 		if inventory.count_item(eid) > 0:
 			inventory.equip(eid)
 	world = WorldState.new()
+	progression.level = 2
+	progression.xp = 30
 	var start_skill := String(class_def.get("starting_skill", ""))
 	if not start_skill.is_empty():
 		skills.ranks[start_skill] = 1

@@ -1,11 +1,10 @@
 class_name HUD
 extends Control
-## Clean Fantasy RPG Gameplay HUD:
-##   - Top-Left: Hero Level, Guild Rank Badge, Gold, HP / MP / SP / XP bars
-##   - Top-Center: Quick Menu Ribbon + Dynamic Boss Health & Phase Bar
-##   - Top-Right: Live Minimap + Day/Time/Weather Pill
-##   - Active Quest Tracker (compact, collapsible) + Floating Combat Numbers
-##   - Zero debug overlay in normal gameplay (developer-only toggle via F3)
+## Stylized Arabic/EN Fantasy RPG HUD matching Reference Screenshot:
+##   - Top-Left Glassmorphism Stats Panel: Gold Star + "المستوى: 2" + HP / MP / SP / XP bars with icons
+##   - Top-Center Glassmorphism Action Dock: 7 RPG icon+label buttons
+##     (الحقيبة, المهام, المهارات, الحياة, الخريطة, القفل, الدليل)
+##   - Top-Right Square Minimap (with FOV cone) + Info Card ("اليوم الأول | 17:01" / "الطقس: صحو")
 
 signal quick_menu_pressed(screen_name: String)
 
@@ -61,92 +60,149 @@ func _ready() -> void:
 	_connect_signals()
 	refresh_all()
 
+func _glass_box(bg: Color, rim: Color, radius: int = 10, pad: int = 9) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = rim
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(radius)
+	sb.set_content_margin_all(pad)
+	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.28)
+	sb.shadow_size = 6
+	return sb
+
 func _build_vitals() -> void:
 	_top_left_stack = VBoxContainer.new()
 	_top_left_stack.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_top_left_stack.position = Vector2(14, 12)
-	_top_left_stack.add_theme_constant_override("separation", 8)
+	_top_left_stack.position = Vector2(12, 10)
+	_top_left_stack.add_theme_constant_override("separation", 6)
 	_top_left_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_top_left_stack)
 
-	var panel := UIFactory.card_panel(Color(0.86, 0.78, 0.52, 0.38), UIFactory.BG_GLASS_HUD)
-	panel.custom_minimum_size = Vector2(248, 0)
+	var panel := PanelContainer.new()
+	panel.name = "StatsGlassPanel"
+	panel.custom_minimum_size = Vector2(236, 0)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _glass_box(
+		Color(0.09, 0.13, 0.18, 0.72), Color(0.72, 0.74, 0.68, 0.36), 10, 9))
 	_top_left_stack.add_child(panel)
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 4)
+	box.add_theme_constant_override("separation", 5)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(box)
 
+	# Header Row: [Gold Star Icon]  <--->  ["المستوى: 2"]
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 8)
+	header.add_theme_constant_override("separation", 6)
+	header.alignment = BoxContainer.ALIGNMENT_CENTER
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(header)
-	level_label = UIFactory.label("Lv 1", 18, UIFactory.GOLD)
+
+	header.add_child(RpgIcon.new().setup("star_gold", Vector2(22, 22)))
+	level_label = UIFactory.label("المستوى: 2", 16, Color(0.97, 0.96, 0.92))
 	level_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	header.add_child(level_label)
-	guild_label = UIFactory.label("Guild —", 14, Color(0.55, 0.82, 1.0))
-	header.add_child(guild_label)
-	gold_label = UIFactory.label("35g", 16, UIFactory.GOLD)
-	header.add_child(gold_label)
+
+	# Hidden backing labels for guild/gold API compatibility
+	guild_label = UIFactory.label("", 11, Color(0.55, 0.82, 1.0))
+	guild_label.visible = false
+	gold_label = UIFactory.label("", 11, UIFactory.GOLD)
+	gold_label.visible = false
+	box.add_child(guild_label)
+	box.add_child(gold_label)
 
 	health_bar = StatBar.new()
 	box.add_child(health_bar)
-	health_bar.setup("HP", UIFactory.DANGER)
+	health_bar.setup("نقاط الصحة (HP)", Color(0.86, 0.24, 0.26), "heart_red")
 
 	mana_bar = StatBar.new()
 	box.add_child(mana_bar)
-	mana_bar.setup("MP", UIFactory.MANA_BLUE)
+	mana_bar.setup("نقاط الطاقة (MP)", Color(0.18, 0.64, 0.96), "star_blue")
 
 	stamina_bar = StatBar.new()
 	box.add_child(stamina_bar)
-	stamina_bar.setup("SP", UIFactory.STAMINA_TEAL)
+	stamina_bar.setup("نقاط التحمل (SP)", Color(0.18, 0.78, 0.68), "boot_sp")
 
 	xp_bar = StatBar.new()
 	box.add_child(xp_bar)
-	xp_bar.setup("XP", UIFactory.GOLD)
+	xp_bar.setup("نقاط الخبرة (XP)", Color(0.92, 0.76, 0.28), "star_gold")
 
 func _build_top_bar_and_boss() -> void:
-	# Compact Top-Center Quick Menu Ribbon (Bag, Skills, Guild, Quests, Map, Pause)
+	# Top-Center Glassmorphism Action Bar: 7 Illustrated RPG Icon+Label Buttons!
+	var dock := PanelContainer.new()
+	dock.name = "TopCenterActionDock"
+	dock.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	dock.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	dock.position = Vector2(0, 10)
+	dock.add_theme_stylebox_override("panel", _glass_box(
+		Color(0.12, 0.16, 0.22, 0.68), Color(0.76, 0.72, 0.56, 0.44), 12, 5))
+	add_child(dock)
+
 	var ribbon := HBoxContainer.new()
-	ribbon.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	ribbon.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	ribbon.position = Vector2(0, 12)
-	ribbon.add_theme_constant_override("separation", 6)
-	add_child(ribbon)
+	ribbon.add_theme_constant_override("separation", 4)
+	dock.add_child(ribbon)
 
 	var items := [
-		["inventory", "BAG", "حقيبة"],
-		["skills", "SKILLS", "مهارات"],
-		["guild", "GUILD", "نقابة"],
-		["journal", "QUESTS", "مهام"],
-		["map", "MAP", "خريطة"],
-		["character", "HERO", "البطل"],
-		["pause", "II", "II"],
+		["inventory", "bag", "Bag", "الحقيبة"],
+		["journal", "quests", "Quests", "المهام"],
+		["skills", "skills", "Skills", "المهارات"],
+		["crafting", "life", "Life", "الحياة"],
+		["map", "map", "Map", "الخريطة"],
+		["lock", "lock", "Lock", "القفل"],
+		["guild", "guide", "Guide", "الدليل"],
 	]
-	for pair: Array in items:
-		var scr := String(pair[0])
-		var lbl_en := String(pair[1])
-		var lbl_ar := String(pair[2])
-		var lbl := lbl_ar if Localization.is_arabic() else lbl_en
-		var btn := UIFactory.glass_pill_button(lbl, 56 if lbl_en != "II" else 34, 28)
+	var slot_normal := StyleBoxFlat.new()
+	slot_normal.bg_color = Color(0.08, 0.11, 0.16, 0.36)
+	slot_normal.border_color = Color(0.84, 0.72, 0.42, 0.48)
+	slot_normal.set_border_width_all(1)
+	slot_normal.set_corner_radius_all(8)
+	var slot_hover := slot_normal.duplicate() as StyleBoxFlat
+	slot_hover.bg_color = Color(0.20, 0.26, 0.34, 0.68)
+	slot_hover.border_color = Color(0.98, 0.84, 0.42, 0.90)
+
+	for entry: Array in items:
+		var scr := String(entry[0])
+		var icon_k := String(entry[1])
+		var lbl_en := String(entry[2])
+		var lbl_ar := String(entry[3])
+
+		var btn := Button.new()
+		btn.name = "TopBtn_" + scr
+		btn.text = ""
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.custom_minimum_size = Vector2(56, 54)
+		for st: String in ["normal", "focus"]:
+			btn.add_theme_stylebox_override(st, slot_normal)
+		btn.add_theme_stylebox_override("hover", slot_hover)
+		btn.add_theme_stylebox_override("pressed", slot_hover)
+
+		var vb := VBoxContainer.new()
+		vb.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_theme_constant_override("separation", 2)
+		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+		var ic_center := CenterContainer.new()
+		ic_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ic_center.add_child(RpgIcon.new().setup(icon_k, Vector2(28, 28)))
+		vb.add_child(ic_center)
+
+		var txt_lbl := UIFactory.label(lbl_ar if Localization.is_arabic() else lbl_en, 11, Color(0.96, 0.95, 0.90))
+		txt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(txt_lbl)
+
+		btn.add_child(vb)
 		btn.pressed.connect(func() -> void: quick_menu_pressed.emit(scr))
 		ribbon.add_child(btn)
-		_ribbon_buttons[scr] = {"btn": btn, "en": lbl_en, "ar": lbl_ar}
+		_ribbon_buttons[scr] = {"btn": btn, "lbl": txt_lbl, "en": lbl_en, "ar": lbl_ar}
 
-	var lang_pill := UIFactory.glass_pill_button("EN/ع", 44, 28)
-	lang_pill.pressed.connect(func() -> void:
-		SettingsManager.language = "en" if Localization.is_arabic() else "ar"
-		SettingsManager.save_settings()
-		SettingsManager.apply_all()
-		refresh_all())
-	ribbon.add_child(lang_pill)
-
-	# Dynamic Boss Health Bar right beneath the ribbon
+	# Dynamic Boss Health Bar right beneath the dock
 	boss_panel = UIFactory.card_panel(Color(0.88, 0.28, 0.34))
 	boss_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	boss_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	boss_panel.position = Vector2(0, 58)
+	boss_panel.position = Vector2(0, 74)
 	boss_panel.custom_minimum_size = Vector2(420, 0)
 	boss_panel.visible = false
 	boss_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -160,11 +216,11 @@ func _build_top_bar_and_boss() -> void:
 	boss_hp_bar = UIFactory.progress_bar(Color(0.88, 0.22, 0.28), 14)
 	bbox.add_child(boss_hp_bar)
 
-	# Target Lock-On Enemy Card (shown when locked onto a non-boss hostile)
+	# Target Lock-On Enemy Card
 	target_panel = UIFactory.card_panel(UIFactory.GOLD)
 	target_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	target_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	target_panel.position = Vector2(0, 58)
+	target_panel.position = Vector2(0, 74)
 	target_panel.custom_minimum_size = Vector2(310, 0)
 	target_panel.visible = false
 	target_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -182,7 +238,7 @@ func _build_top_right() -> void:
 	var wrap := VBoxContainer.new()
 	wrap.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	wrap.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	wrap.position = Vector2(-14, 12)
+	wrap.position = Vector2(-12, 10)
 	wrap.add_theme_constant_override("separation", 6)
 	wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(wrap)
@@ -192,23 +248,31 @@ func _build_top_right() -> void:
 	minimap.size_flags_horizontal = Control.SIZE_SHRINK_END
 	wrap.add_child(minimap)
 
-	var pill := UIFactory.panel(0.92)
-	pill.custom_minimum_size = Vector2(158, 0)
+	var pill := PanelContainer.new()
+	pill.name = "DayWeatherPanel"
+	pill.custom_minimum_size = Vector2(142, 0)
 	pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pill.add_theme_stylebox_override("panel", _glass_box(
+		Color(0.06, 0.10, 0.08, 0.76), Color(0.66, 0.68, 0.52, 0.50), 8, 7))
 	wrap.add_child(pill)
+
 	var pbox := VBoxContainer.new()
 	pbox.add_theme_constant_override("separation", 2)
+	pbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pill.add_child(pbox)
-	clock_label = UIFactory.label("Day 1 · 08:30", 15, UIFactory.TEXT)
-	clock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	clock_label = UIFactory.label("اليوم الأول | 17:01", 13, Color(0.96, 0.96, 0.92))
+	clock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pbox.add_child(clock_label)
-	weather_label = UIFactory.label("Clear", 13, UIFactory.TEXT_DIM)
-	weather_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	weather_label = UIFactory.label("الطقس: صحو", 12, Color(0.88, 0.90, 0.86))
+	weather_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pbox.add_child(weather_label)
 
 func _build_quest_tracker() -> void:
-	quest_panel = UIFactory.panel(0.86)
-	quest_panel.custom_minimum_size = Vector2(276, 0)
+	quest_panel = UIFactory.panel(0.82)
+	quest_panel.custom_minimum_size = Vector2(236, 0)
+	quest_panel.visible = false
 	quest_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_top_left_stack.add_child(quest_panel)
 	quest_box = VBoxContainer.new()
@@ -276,17 +340,17 @@ func refresh_all() -> void:
 	var ar := Localization.is_arabic()
 	for scr: String in _ribbon_buttons.keys():
 		var info: Dictionary = _ribbon_buttons[scr]
-		var btn := info["btn"] as Button
-		if btn != null:
-			btn.text = String(info["ar"] if ar else info["en"])
+		var lbl_node := info.get("lbl") as Label
+		if lbl_node != null:
+			lbl_node.text = String(info["ar"] if ar else info["en"])
 	if health_bar != null:
-		health_bar.set_title("صحة" if ar else "HP")
+		health_bar.set_title("نقاط الصحة (HP)" if ar else "HP")
 	if mana_bar != null:
-		mana_bar.set_title("مانا" if ar else "MP")
+		mana_bar.set_title("نقاط الطاقة (MP)" if ar else "MP")
 	if stamina_bar != null:
-		stamina_bar.set_title("نشاط" if ar else "SP")
+		stamina_bar.set_title("نقاط التحمل (SP)" if ar else "SP")
 	if xp_bar != null:
-		xp_bar.set_title("خبرة" if ar else "XP")
+		xp_bar.set_title("نقاط الخبرة (XP)" if ar else "XP")
 	_on_xp_changed(GameManager.progression.level, GameManager.progression.xp,
 		GameManager.progression.xp_to_next())
 	_on_gold_changed(GameManager.gold)
@@ -303,10 +367,7 @@ func refresh_all() -> void:
 func _refresh_guild_badge() -> void:
 	if guild_label != null:
 		var rk := GameManager.guild.current_rank()
-		if Localization.is_arabic():
-			guild_label.text = ("رتبة " + rk) if GameManager.guild.registered else "غير مسجّل"
-		else:
-			guild_label.text = ("Rank " + rk) if GameManager.guild.registered else "Unreg."
+		guild_label.text = ("رتبة " + rk) if Localization.is_arabic() else ("Rank " + rk)
 
 func _on_health_changed(current: float, maximum: float) -> void:
 	health_bar.set_values(current, maximum)
@@ -318,9 +379,10 @@ func _on_stamina_changed(current: float, maximum: float) -> void:
 	stamina_bar.set_values(current, maximum)
 
 func _on_xp_changed(level: int, xp: int, xp_to_next: int) -> void:
-	var cdef := HeroClassDB.get_class_def(GameManager.hero_class)
-	var glyph := String(cdef.get("glyph", "⚔"))
-	level_label.text = "%s %s %d" % [glyph, Localization.tr_key("level"), level]
+	if Localization.is_arabic():
+		level_label.text = "المستوى: %d" % level
+	else:
+		level_label.text = "Level: %d" % level
 	xp_bar.set_values(xp, xp_to_next)
 	xp_bar.visible = level < Progression.MAX_LEVEL
 
@@ -331,11 +393,28 @@ func _on_prompt_changed(text: String) -> void:
 	interact_label.text = ("✦  " + text) if not text.is_empty() else ""
 	interact_panel.visible = not text.is_empty()
 
+func _arabic_day_label(day: int) -> String:
+	match day:
+		1:
+			return "اليوم الأول"
+		2:
+			return "اليوم الثاني"
+		3:
+			return "اليوم الثالث"
+		_:
+			return "اليوم %d" % day
+
 func _on_time_changed(hour: int, minute: int, day: int) -> void:
-	clock_label.text = "%s %d · %02d:%02d" % [Localization.tr_key("day"), day, hour, minute]
+	if Localization.is_arabic():
+		clock_label.text = "%s | %02d:%02d" % [_arabic_day_label(day), hour, minute]
+	else:
+		clock_label.text = "Day %d | %02d:%02d" % [day, hour, minute]
 
 func _on_weather_changed(weather: String) -> void:
-	weather_label.text = Localization.tr_key("weather_rain" if weather == "rain" else "weather_clear")
+	if Localization.is_arabic():
+		weather_label.text = "الطقس: ممطر" if weather == "rain" else "الطقس: صحو"
+	else:
+		weather_label.text = "Weather: Rain" if weather == "rain" else "Weather: Clear"
 
 func _on_boss_health(boss_name: String, current: float, maximum: float, phase: int, vis: bool) -> void:
 	if boss_panel == null:
@@ -391,7 +470,7 @@ func _refresh_quest_tracker() -> void:
 		if quest == null:
 			continue
 		shown += 1
-		quest_box.add_child(UIFactory.label(Localization.quest_title(quest), 15, UIFactory.GOLD))
+		quest_box.add_child(UIFactory.label(Localization.quest_title(quest), 14, UIFactory.GOLD))
 		for i: int in quest.objectives.size():
 			var objective: Dictionary = quest.objectives[i]
 			var progress := GameManager.quest_log.objective_progress(quest_id, i)
@@ -401,15 +480,15 @@ func _refresh_quest_tracker() -> void:
 			var text := "%s  %d/%d" % [olabel, progress, required]
 			if done:
 				text = "✔ " + text
-			quest_box.add_child(UIFactory.label("  " + text, 13,
+			quest_box.add_child(UIFactory.label("  " + text, 12,
 				UIFactory.ACCENT if done else UIFactory.TEXT_DIM))
 			var pbar := UIFactory.progress_bar(UIFactory.ACCENT if done else UIFactory.GOLD, 5)
 			pbar.max_value = maxf(1.0, float(required))
 			pbar.value = clampf(float(progress), 0.0, float(required))
 			quest_box.add_child(pbar)
 		if GameManager.quest_log.can_turn_in(quest_id):
-			quest_box.add_child(UIFactory.label("  ★ جاهزة للتسليم!" if ar else "  ★ Ready to turn in!", 13, UIFactory.ACCENT))
-	waypoint_label = UIFactory.label("", 13, Color(1.0, 0.88, 0.36))
+			quest_box.add_child(UIFactory.label("  ★ جاهزة للتسليم!" if ar else "  ★ Ready to turn in!", 12, UIFactory.ACCENT))
+	waypoint_label = UIFactory.label("", 12, Color(1.0, 0.88, 0.36))
 	quest_box.add_child(waypoint_label)
 
 func _refresh_target_card() -> void:

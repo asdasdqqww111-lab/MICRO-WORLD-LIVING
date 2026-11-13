@@ -74,22 +74,20 @@ func is_water_at(x: float, z: float) -> bool:
 	return height_at(x, z) < WATER_LEVEL - 0.08
 
 func is_road_at(x: float, z: float) -> bool:
-	# Grand Royal City Plaza & Ring Boulevards
-	var r_sq := sqrt(x * x + z * z)
-	if r_sq < 10.5 or (r_sq > 20.5 and r_sq < 23.2):
-		return true
-	# North-South Royal Boulevard (North Gate z=-38 to South Gate z=+38)
-	if absf(x) < 3.0 and z >= -42.0 and z <= 42.0:
-		return true
-	# East Boulevard from Royal Square through East Gate & across Stone Bridge (x=0..60)
+	# Winding country dirt trail across the Southern Meadow toward the Blue-Turret Castle
+	if z >= -18.0 and z <= 48.0:
+		var trail_x := -4.8 * smoothstep(-10.0, 26.0, z) + sin(z * 0.14) * 1.65
+		if absf(x - trail_x) < 2.25:
+			return true
+	# East path toward Stone Bridge (x=0..60)
 	var bridge_z := -4.0 * clampf(x / 36.0, 0.0, 1.0)
-	if x >= -2.0 and x <= 60.0 and absf(z - bridge_z) < 2.6:
+	if x >= -2.0 and x <= 60.0 and absf(z - bridge_z) < 2.3:
 		return true
-	# West Boulevard through Residential & Citadel Quarter toward Whispering Woods (x=-54..2)
-	if x >= -54.0 and x <= 2.0 and absf(z - 2.0) < 2.6:
+	# West path through Cottages & Barrel Tavern toward Pine Woods (x=-54..2)
+	if x >= -54.0 and x <= 2.0 and absf(z - 2.0) < 2.2:
 		return true
-	# Citadel & Cathedral Diagonal Promenade
-	if absf(z + 18.0) < 2.2 and x >= -28.0 and x <= 26.0:
+	# Castle & Guild Forecourt path
+	if absf(z + 18.0) < 2.4 and x >= -24.0 and x <= 22.0:
 		return true
 	return false
 
@@ -207,21 +205,7 @@ func _build() -> void:
 	var mi := MeshInstance3D.new()
 	mi.name = "TerrainMesh"
 	mi.mesh = mesh
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.albedo_texture = ArtDirection.terrain_detail_texture()
-	var nrm_tex := ArtDirection.terrain_normal_texture()
-	var rgh_tex := ArtDirection.terrain_roughness_texture()
-	if nrm_tex != null:
-		mat.normal_enabled = true
-		mat.normal_texture = nrm_tex
-		mat.normal_scale = 0.92
-	if rgh_tex != null:
-		mat.roughness_texture = rgh_tex
-	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
-	mat.roughness = 0.88
-	mat.metallic = 0.0
-	mi.material_override = mat
+	mi.material_override = ArtDirection.terrain_splat_shader_material()
 	add_child(mi)
 
 	var shape := HeightMapShape3D.new()
@@ -238,7 +222,7 @@ func _emit_vertex(st: SurfaceTool, gx: int, gz: int, h: float, step: float, half
 	var wx := -half + float(gx) * step
 	var wz := -half + float(gz) * step
 	var slope := _grid_slope(gx, gz, heights, n, step)
-	st.set_color(_color_for(wx, wz, h, slope))
+	st.set_color(_splat_weights_for(wx, wz, h, slope))
 	st.set_uv(Vector2(wx * 0.16, wz * 0.16))
 	st.add_vertex(Vector3(wx, h, wz))
 
@@ -251,45 +235,31 @@ func _grid_slope(gx: int, gz: int, heights: PackedFloat32Array, n: int, step: fl
 	var dz := (zu - zd) / (2.0 * step)
 	return sqrt(dx * dx + dz * dz)
 
-func _color_for(wx: float, wz: float, h: float, slope: float) -> Color:
-	var patch := _biome_noise.get_noise_2d(wx * 1.8, wz * 1.8) * 0.5 + 0.5
-	var meadow := Color(0.27, 0.46, 0.22).lerp(Color(0.35, 0.53, 0.25), patch)
-	var forest_humus := Color(0.20, 0.34, 0.17).lerp(Color(0.28, 0.25, 0.17), patch * 0.6)
-	var cobble := Color(0.47, 0.45, 0.42).lerp(Color(0.53, 0.50, 0.46), patch)
-	var dirt_road := Color(0.46, 0.37, 0.26).lerp(Color(0.52, 0.43, 0.30), patch)
-	var sand_bank := Color(0.58, 0.52, 0.39)
-	var riverbed := Color(0.24, 0.30, 0.28)
-	var cliff_rock := Color(0.40, 0.39, 0.38).lerp(Color(0.48, 0.46, 0.44), patch)
-	var snow_cap := Color(0.89, 0.92, 0.95)
+## Smooth 4-channel terrain splat weights:
+##   R = Dirt Path / Shoreline Sand, G = Lush Meadow Grass, B = Granite Rock, A = Snow Peaks
+func _splat_weights_for(wx: float, wz: float, h: float, slope: float) -> Color:
+	var dirt_w := 0.0
+	if h < WATER_LEVEL + 0.35:
+		dirt_w = 1.0 - smoothstep(WATER_LEVEL - 0.15, WATER_LEVEL + 0.35, h)
 
-	# Underwater & shoreline silt
-	if h < WATER_LEVEL + 0.28:
-		var shore_t := clampf((h - (WATER_LEVEL - 1.4)) / 1.68, 0.0, 1.0)
-		return riverbed.lerp(sand_bank, shore_t)
+	# Smoothly feathered country dirt trails
+	if wz >= -18.0 and wz <= 48.0:
+		var trail_x := -4.8 * smoothstep(-10.0, 26.0, wz) + sin(wz * 0.14) * 1.65
+		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.15, 3.35, absf(wx - trail_x)))
+	var bridge_z := -4.0 * clampf(wx / 36.0, 0.0, 1.0)
+	if wx >= -2.0 and wx <= 60.0:
+		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.2, 3.2, absf(wz - bridge_z)))
+	if wx >= -54.0 and wx <= 2.0:
+		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.1, 3.0, absf(wz - 2.0)))
+	if wx >= -24.0 and wx <= 22.0:
+		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.3, 3.4, absf(wz + 18.0)))
 
-	var c := meadow
-	if wx < -22.0 or (wz < -28.0 and h < 10.0):
-		var fw := clampf((-wx - 18.0) / 20.0, 0.0, 1.0) if wx < -18.0 else clampf((-wz - 26.0) / 18.0, 0.0, 0.75)
-		c = c.lerp(forest_humus, fw)
+	var rock_w := clampf((slope - 0.36) * 2.2, 0.0, 1.0)
+	rock_w = maxf(rock_w, smoothstep(8.2, 14.5, h) * 0.88)
 
-	# Royal City cobblestone boulevards & outer dirt roads
-	var radial := Vector2(wx, wz).length()
-	if radial < 11.5:
-		c = c.lerp(cobble, 1.0 - smoothstep(7.5, 11.5, radial))
-	elif is_road_at(wx, wz):
-		var road_col := cobble if radial < 37.5 else dirt_road
-		c = c.lerp(road_col, 0.90)
-	elif radial < VILLAGE_RADIUS:
-		c = c.lerp(Color(0.32, 0.46, 0.24), 0.38)
+	var snow_w := 0.0
+	if h >= 13.8:
+		snow_w = smoothstep(13.8, 18.8, h) * (1.0 - clampf((slope - 0.95) * 1.2, 0.0, 0.65))
 
-	# Steep slope -> exposed granite rock
-	var rock_w := clampf((slope - 0.42) * 2.1, 0.0, 1.0)
-	var alt_rock := smoothstep(9.5, 15.0, h)
-	c = c.lerp(cliff_rock, maxf(rock_w, alt_rock * 0.85))
-
-	# Alpine snow strictly restricted to high peaks (y >= 18.5m) on moderate slopes
-	if h >= 18.5:
-		var snow_w := smoothstep(18.5, 22.5, h) * (1.0 - clampf((slope - 0.85) * 1.4, 0.0, 0.75))
-		c = c.lerp(snow_cap, snow_w)
-
-	return c
+	var grass_w := clampf(1.0 - maxf(dirt_w, maxf(rock_w, snow_w)), 0.0, 1.0)
+	return Color(dirt_w, grass_w, rock_w, snow_w)

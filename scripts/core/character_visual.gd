@@ -74,12 +74,26 @@ func setup(model_path: String, model_scale: float = 1.0) -> bool:
 	add_child(model)
 	_skeleton = _find_skeleton(model)
 	_index_meshes_and_shadows(model)
+	_apply_chibi_hero_shader_if_kaykit(model_path)
 	_setup_hand_sockets()
 	anim_player = _find_animation_player(model)
 	if anim_player != null:
 		_build_state_machine()
 	play("idle")
 	return true
+
+func _apply_chibi_hero_shader_if_kaykit(model_path: String) -> void:
+	if not model_path.contains("Knight.glb"):
+		return
+	# Hide full-face helmet, cape & built-in weapons by default so sculpted brown hair & X-strap steel armor show cleanly
+	for hidden_part: String in ["Knight_Helmet", "Knight_Cape", "1H_Sword_Offhand", "Badge_Shield", "Rectangle_Shield", "Round_Shield", "Spike_Shield", "1H_Sword", "2H_Sword"]:
+		if _submeshes.has(hidden_part):
+			(_submeshes[hidden_part] as MeshInstance3D).visible = false
+	var rim_mat := ArtDirection.chibi_knight_rim_material()
+	for mesh_name: String in _submeshes.keys():
+		var mi := _submeshes[mesh_name] as MeshInstance3D
+		if mi != null:
+			mi.material_override = rim_mat
 
 func attach_existing(model_root: Node3D) -> void:
 	model = model_root
@@ -190,7 +204,7 @@ func configure_gear(visible_substrings: Array, hidden_substrings: Array) -> void
 					AssetLibrary.REALISTIC_WEAPONS_DIR + "war_bow.glb", 1.10, 5.44, Vector3(0.0, 0.0, 90.0))
 				break
 
-## Dynamically updates Hero 3D realistic weapons & shields on BoneAttachment3D sockets.
+## Dynamically updates Hero 3D stylized weapons & shields on KayKit / BoneAttachment3D rigs.
 func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> void:
 	if inventory == null:
 		return
@@ -204,6 +218,24 @@ func sync_player_equipment(inventory: Inventory, hero_class: String = "") -> voi
 	if _equipped_shield_node != null and is_instance_valid(_equipped_shield_node):
 		_equipped_shield_node.queue_free()
 		_equipped_shield_node = null
+
+	if _model_path.contains("Knight.glb"):
+		# Keep Knight_Helmet & Knight_Cape hidden so sculpted brown hair & X-strap steel backplate show!
+		if _submeshes.has("Knight_Helmet"):
+			(_submeshes["Knight_Helmet"] as MeshInstance3D).visible = false
+		if _submeshes.has("Knight_Cape"):
+			(_submeshes["Knight_Cape"] as MeshInstance3D).visible = false
+		# Keep starter weapon/shield sheathed when idle for the clean Chibi silhouette; show upgraded blades
+		var show_2h := weapon_id == "steel_greatsword" or weapon_id == "eldoria_mythic_blade"
+		var show_1h := not weapon_id.is_empty() and weapon_id != "rusty_sword" and not show_2h
+		var show_sh := not shield_id.is_empty() and shield_id != "oak_shield"
+		if _submeshes.has("1H_Sword"):
+			(_submeshes["1H_Sword"] as MeshInstance3D).visible = show_1h
+		if _submeshes.has("2H_Sword"):
+			(_submeshes["2H_Sword"] as MeshInstance3D).visible = show_2h
+		if _submeshes.has("Badge_Shield"):
+			(_submeshes["Badge_Shield"] as MeshInstance3D).visible = show_sh
+		return
 
 	if not weapon_id.is_empty() and _weapon_socket != null:
 		var w_path := AssetLibrary.REALISTIC_WEAPONS_DIR + "knight_longsword.glb"
@@ -279,6 +311,12 @@ func has_state(state_name: String) -> bool:
 func play(state_name: String, force: bool = false) -> void:
 	if state_name == "attack":
 		state_name = "attack_1"
+	if _model_path.contains("Knight.glb") and _submeshes.has("1H_Sword"):
+		var in_combat_pose := state_name.begins_with("attack") or state_name == "block" or state_name == "idle_combat"
+		if in_combat_pose:
+			(_submeshes["1H_Sword"] as MeshInstance3D).visible = true
+		if state_name == "block" and _submeshes.has("Badge_Shield"):
+			(_submeshes["Badge_Shield"] as MeshInstance3D).visible = true
 	if state_name == current_state and not force:
 		return
 	if playback == null:

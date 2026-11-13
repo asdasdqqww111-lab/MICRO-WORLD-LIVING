@@ -176,6 +176,10 @@ func _input(event: InputEvent) -> void:
 			SceneManager.change_scene(SceneManager.GAME)
 
 func toggle_screen(screen_name: String) -> void:
+	if screen_name == "lock":
+		if player != null:
+			player.toggle_target_lock()
+		return
 	if current_screen != null and _screens.get(screen_name) == current_screen:
 		close_current_screen()
 		return
