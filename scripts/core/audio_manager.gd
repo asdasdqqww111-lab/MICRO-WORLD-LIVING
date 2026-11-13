@@ -99,6 +99,7 @@ const MUSIC_PATHS := {
 	"house": "res://assets/music/music_eldoria_village.wav",
 	"menu": "res://assets/music/music_eldoria_village.wav",
 	"dungeon": "res://assets/music/music_dungeon_crypt.wav",
+	"tower": "res://assets/music/music_dungeon_crypt.wav",
 }
 
 const AMBIENCE_PATHS := {
@@ -228,7 +229,11 @@ func play_music(track_key: String) -> void:
 	_music_player.play()
 
 func play_music_for_zone(zone_id: String) -> void:
-	var key := "dungeon" if zone_id == "dungeon" else ("menu" if zone_id == "menu" else "village")
+	var key := "village"
+	if zone_id == "dungeon" or zone_id == "tower":
+		key = "dungeon"
+	elif zone_id == "menu":
+		key = "menu"
 	play_music(key)
 	if zone_id == "village" or zone_id == "":
 		update_biome_ambience("village", "village")

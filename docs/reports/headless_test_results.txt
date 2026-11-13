@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: mobile
-run at: 2026-11-13T16:56:33
+run at: 2026-11-13T21:25:55
 checks passed: 190
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 21.0
+  fps: 25.0
   draw calls: 0
   triangles: 0
-  nodes: 2342
+  nodes: 2447
 
 checks:
 
@@ -176,7 +176,7 @@ PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
 PASS  wildlife, monsters & crypt boss spawned (23)
-PASS  MultiMesh biome instancing is real (19 batches, 0 broken)
+PASS  MultiMesh biome instancing is real (21 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
 PASS  player lands on the ground
@@ -196,7 +196,7 @@ PASS  Phase 3: Player character uses Stylized Chibi Knight (res://assets/kaykit_
 PASS  Phase 3: CameraRig configured with FOV=55 and spring_arm=4.0
 PASS  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
 PASS  Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial
-PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 60m max distance
+PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 45m max distance
 PASS  Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built
 PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
 PASS  Player anti-clipping physics & CollisionLayers configured
@@ -205,7 +205,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.6)
+PASS  skeleton takes damage (46.0 -> 32.2)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
