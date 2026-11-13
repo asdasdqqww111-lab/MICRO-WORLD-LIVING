@@ -739,6 +739,12 @@ func spawn_creature(creature_id: String, uid: String, position: Vector3, zone_pa
 	if data == null:
 		push_warning("WorldRoot: unknown creature '%s'" % creature_id)
 		return null
+	return spawn_creature_data(data, uid, position, zone_parent)
+
+# Tower floors supply scaled copies of CreatureData, not database IDs.
+func spawn_creature_data(data: CreatureData, uid: String, position: Vector3, zone_parent: Node3D = null) -> Node:
+	if data == null:
+		return null
 	if _creatures.has(uid):
 		return _creatures[uid] as Node
 	if GameManager.world.is_dead(uid):
