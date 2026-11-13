@@ -3,58 +3,58 @@ engine: 4.3-stable (official)
 rendering method: gl_compatibility
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-13T01:36:40
+run at: 2026-11-13T13:21:43
 
 budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  draw calls (max): 293  [WARN]
-  triangles (max):  365413  [OVER]
-  objects:          466
-  static memory:    198.1 MB
+  draw calls (max): 558  [FAIL]
+  triangles (max):  1017289  [OVER]
+  objects:          731
+  static memory:    189.4 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  draw calls (max): 333  [WARN]
-  triangles (max):  386855  [OVER]
-  objects:          506
-  static memory:    206.2 MB
+  draw calls (max): 595  [FAIL]
+  triangles (max):  1034639  [OVER]
+  objects:          768
+  static memory:    197.5 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  draw calls (max): 193  [OK]
-  triangles (max):  278752  [OVER]
-  objects:          324
-  static memory:    206.2 MB
+  draw calls (max): 313  [WARN]
+  triangles (max):  710511  [OVER]
+  objects:          446
+  static memory:    197.9 MB
   fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 229  [OK]
-  triangles (max):  328462  [OVER]
-  objects:          386
-  static memory:    206.3 MB
+  draw calls (max): 429  [FAIL]
+  triangles (max):  845379  [OVER]
+  objects:          585
+  static memory:    197.9 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
-  draw calls (max): 214  [OK]
-  triangles (max):  55279  [OK]
-  objects:          315
-  static memory:    206.3 MB
+  draw calls (max): 241  [OK]
+  triangles (max):  63471  [OK]
+  objects:          341
+  static memory:    198.0 MB
   fps (min, this driver): 6.0
 Zone 6 · Hero Cottage Interior
-  draw calls (max): 96  [OK]
-  triangles (max):  17118  [OK]
-  objects:          223
-  static memory:    206.4 MB
-  fps (min, this driver): 9.0
+  draw calls (max): 93  [OK]
+  triangles (max):  13924  [OK]
+  objects:          219
+  static memory:    198.1 MB
+  fps (min, this driver): 11.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  draw calls (max): 165  [OK]
-  triangles (max):  81140  [OK]
-  objects:          287
-  static memory:    206.8 MB
-  fps (min, this driver): 4.0
+  draw calls (max): 162  [OK]
+  triangles (max):  77946  [OK]
+  objects:          283
+  static memory:    198.5 MB
+  fps (min, this driver): 5.0
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2399
-  MeshInstance3D:       850
+  nodes total:          2107
+  MeshInstance3D:       611
   MultiMeshInstance3D:  20 (batches) / 535 instances
   GPUParticles3D:       1
   omni lights:          19
@@ -64,22 +64,22 @@ SCENE AUDIT (renderer independent)
 --- running offenders ---
 
 TOP TRIANGLE CONSUMERS (whole world)
-    42336 tris |  1 surf | World/OverworldZone/HighlandPines [x49]
+   141512 tris |  2 surf | World/OverworldZone/HighlandPines [x49]
+    54528 tris |  4 surf | World/OverworldZone/LakesideBirches [x32]
+    35810 tris |  9 surf | World/OverworldZone/CityNobleManors [x5]
+    34548 tris |  9 surf | World/OverworldZone/CityTownhouses [x6]
     30752 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
     29328 tris |  1 surf | World/OverworldZone/MeadowGrass [x94]
+    21200 tris |  2 surf | World/OverworldZone/ForestCanopyTrees [x25]
     18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
-    16908 tris |  1 surf | World/OverworldZone/CityTownhouses [x6]
-    13104 tris |  1 surf | World/OverworldZone/CityStoneRamparts [x26]
-    12304 tris |  1 surf | World/OverworldZone/CityBastionTowers [x8]
+    18446 tris |  2 surf | World/OverworldZone/ForestOaks [x23]
+    14336 tris |  4 surf | World/OverworldZone/CityBastionTowers [x8]
+    11830 tris |  3 surf | AdventurersGuildExteriorBody/AdventurersGuildExterior/RootNode/TownCenter_SecondAge_Level3
+    11799 tris | 10 surf | RoyalClocktowerBody/RoyalClocktower/RootNode/Bell_Tower
     11520 tris |  1 surf | World/OverworldZone/FarmWheat [x16]
-    11500 tris |  1 surf | World/OverworldZone/ForestOaks [x23]
-    10920 tris |  1 surf | World/OverworldZone/ForestBushes [x35]
-    10240 tris |  1 surf | World/OverworldZone/LakesideBirches [x32]
-     9600 tris |  1 surf | World/OverworldZone/ForestCanopyTrees [x25]
-     6965 tris |  1 surf | World/OverworldZone/CityNobleManors [x5]
-     6784 tris |  1 surf | World/OverworldZone/CityStreetLanternPosts [x16]
+     9750 tris |  4 surf | RoyalCitadelKeepBody/RoyalCitadelKeep/RootNode/Wonder_SecondAge_Level3
 
-SHADOW / LOD: casters=54  shadow_off=796  with_visibility_range=800
+SHADOW / LOD: casters=40  shadow_off=571  with_visibility_range=575
 --- offenders done ---
 
 STATUS: COMPLETE

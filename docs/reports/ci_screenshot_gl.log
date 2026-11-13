@@ -19,6 +19,8 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 
 [shot] start: renderer=gl_compatibility adapter=llvmpipe (LLVM 21.1.8, 256 bits)
 [shot] 01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)
+WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ rendering backend.
+     at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:574)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.

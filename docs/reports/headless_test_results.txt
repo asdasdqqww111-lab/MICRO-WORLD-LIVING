@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: gl_compatibility
-run at: 2026-11-13T01:36:24
-checks passed: 182
+run at: 2026-11-13T13:20:59
+checks passed: 187
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 22.0
+  fps: 71.0
   draw calls: 0
   triangles: 0
-  nodes: 2750
+  nodes: 2458
 
 checks:
 
@@ -34,10 +34,10 @@ PASS  guild contract 'contract_forest_cull' present
 
 == Hero Classes (4), Articulated 3D Creature Rigs & Full Arabic Content ==
 PASS  HeroClassDB defines 4 playable classes
-PASS  3D GLB rig exists for hero class 'knight' (res://assets/characters/player/Knight.glb)
-PASS  3D GLB rig exists for hero class 'mage' (res://assets/characters/npcs/Mage.glb)
-PASS  3D GLB rig exists for hero class 'ranger' (res://assets/characters/npcs/Rogue_Hooded.glb)
-PASS  3D GLB rig exists for hero class 'barbarian' (res://assets/characters/npcs/Barbarian.glb)
+PASS  3D GLB rig exists for hero class 'knight' (res://assets_realistic/models/characters/knight_hero.glb)
+PASS  3D GLB rig exists for hero class 'mage' (res://assets_realistic/models/characters/hero_mage.glb)
+PASS  3D GLB rig exists for hero class 'ranger' (res://assets_realistic/models/characters/hero_ranger.glb)
+PASS  3D GLB rig exists for hero class 'barbarian' (res://assets_realistic/models/characters/npc_smith.glb)
 PASS  Mage class creation applies hero_class & hero_name
 PASS  Mage starts with elevated mana pool (105) & Firebolt unlocked
 PASS  Ranger starts with elevated crit chance (0.17) & Swift Feet unlocked
@@ -188,8 +188,13 @@ PASS  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
 PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
 PASS  Cairo variable font bundled & active
-PASS  Tiny Treats CC0 Homely House & Pretty Park Fountain models loaded
-PASS  Procedural PBR terrain Normal Map & Roughness Map generated
+PASS  Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded
+PASS  Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled
+PASS  Phase 2: Terrain PBR Normal Map & Roughness Map active
+PASS  Phase 2: Player character uses realistic 3D model (res://assets_realistic/models/characters/knight_hero.glb)
+PASS  Phase 3: WorldEnvironment configured with ACES Tonemap, subtle Glow, Depth Fog & mobile SSAO
+PASS  Phase 3: HDRI PanoramaSkyMaterial bound in Sky for ambient lighting
+PASS  Phase 3: DirectionalLight3D configured with Soft Shadows & 50m shadow max distance
 PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
 PASS  Player anti-clipping physics & CollisionLayers configured
 PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
@@ -197,7 +202,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 26.4)
+PASS  skeleton takes damage (46.0 -> 34.4)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
