@@ -607,6 +607,55 @@ func _spawn_npcs() -> void:
 		 "Shadowfang Bats near the northern cave forced my caravan to turn back."],
 		["spellbook"])
 
+	# --- 6 OUTER CITADEL & HAMLET STYLIZED CHIBI NPCS (Total 24 Living Citizens!) ---
+	var cmd := _make_npc(overworld_root, "citadel_commander", "Commander Vaelen", "guard", "Royal Citadel Commander",
+		k_knight,
+		{"work": Vector3(-16.0, 0.0, -18.5), "rest": Vector3(-14.5, 0.0, -16.5), "sleep": Vector3(-18.0, 0.0, -21.0)},
+		["The Sovereign Citadel stands watch over every hamlet and meadow of Eldoria.",
+		 "Clear the Western Monster Camp and the Granite Golems to earn the Crown's favor!"],
+		["2h_sword", "cape", "helmet"])
+	cmd.always_awake = true
+
+	var alch := _make_npc(overworld_root, "alchemist_master", "Master Zenia", "healer", "Royal Alchemist",
+		k_mage,
+		{"work": Vector3(24.0, 0.0, -16.0), "rest": Vector3(21.0, 0.0, -15.0), "sleep": Vector3(26.0, 0.0, -17.0)},
+		["Slime Gel and Moonpetals distill into the purest Arcane Elixirs in the realm.",
+		 "Bring me specimens from Crystal Lake and I will reward your scholarship handsomely!"],
+		["staff", "spellbook", "hat"])
+	alch.service_type = "healer"
+
+	var jeweler := _make_npc(overworld_root, "bazaar_jeweler", "Nader", "merchant", "Bazaar Jeweler",
+		k_rogue,
+		{"work": Vector3(20.0, 0.0, 2.5), "rest": Vector3(16.5, 0.0, 6.0), "sleep": Vector3(22.5, 0.0, 4.0)},
+		["Welcome to the East Trade Post! Fine rings, ingots, and relics pass through my counter.",
+		 "Bring Wolf Pelts or Iron Ingots if you wish to fulfill royal trade commissions!"],
+		["dagger"])
+	jeweler.has_shop = true
+
+	var arch_cap := _make_npc(overworld_root, "archery_captain", "Captain Selene", "hunter", "Garrison Archery Captain",
+		k_hood,
+		{"work": Vector3(18.0, 0.0, 20.5), "rest": Vector3(19.0, 0.0, 16.0), "sleep": Vector3(23.0, 0.0, 15.0)},
+		["Steady breath, keen eyes! Our garrison rangers patrol from Crystal Lake to the Alpine Rim.",
+		 "Hunt the grey wolves stalking the northern timberline and report back to me."],
+		["crossbow"])
+	arch_cap.patrol_points = [Vector3(18.0, 0.0, 20.5), Vector3(21.5, 0.0, 18.0), Vector3(15.5, 0.0, 21.5)]
+
+	var ng := _make_npc(overworld_root, "north_sentinel", "Rakan", "guard", "North Pass Sentinel",
+		k_knight,
+		{"work": Vector3(-8.5, 0.0, -33.5), "rest": Vector3(-6.0, 0.0, -32.5), "sleep": Vector3(22.0, 0.0, 14.0)},
+		["Beyond the North Pass rise the Pine Highlands and Shadowfang Cave.",
+		 "Keep your blade drawn if you venture toward the snow peaks!"],
+		["1h_sword", "spike_shield", "helmet"])
+	ng.always_awake = true
+
+	var wg := _make_npc(overworld_root, "west_warden", "Layan", "guard", "West Woods Warden",
+		k_hood,
+		{"work": Vector3(-33.5, 0.0, 4.2), "rest": Vector3(-31.5, 0.0, -0.5), "sleep": Vector3(-28.0, 0.0, 10.0)},
+		["The West Trail opens onto the Whispering Woods and Sacred Grove.",
+		 "Watch for Bramble Stalkers and forest undead beyond the timberline!"],
+		["dagger", "crossbow"])
+	wg.always_awake = true
+
 	# --- 6 ADVENTURERS GUILD INTERIOR NPCS (Stylized Chibi Cast!) ---
 	# 13. Guild Receptionist (Elena — Registration, Promotions F->S & Contracts!)
 	var recep := _make_npc(guild_root, "guild_receptionist", "Elena", "guild", "Guild Receptionist",

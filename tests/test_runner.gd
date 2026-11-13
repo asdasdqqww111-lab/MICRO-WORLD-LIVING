@@ -662,8 +662,10 @@ func _test_game_scene() -> void:
 
 	var boss: Creature = world._creatures.get("malakor_crypt_boss", null) as Creature
 	_check(boss != null and boss.data.is_boss, "Malakor the Bone Warden boss exists in Sunken Crypt")
-	_check(world.find_child("CityStoneRamparts", true, false) != null and world.find_child("RoyalCitadelKeep", true, false) != null,
-		"Walled Royal Capital City ramparts & Sovereign Citadel Keep built")
+	_check(world.find_child("RoyalCitadelKeep", true, false) != null
+		and world.find_child("MeadowWindGrass", true, false) != null
+		and world.find_child("HillsideStoneArch", true, false) != null,
+		"Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built")
 	_check(get_tree().get_nodes_in_group("npc").size() >= 24,
 		"Royal Capital City & Guild populated with %d >= 24 living NPCs" % get_tree().get_nodes_in_group("npc").size())
 

@@ -173,7 +173,7 @@ static func first_mesh(path: String, category_hint: String = "") -> Mesh:
 			merged.surface_set_material(idx, mat)
 
 	root.free()
-	var out_mesh: Mesh = merged if merged.get_surface_count() > 0 else null
+	var out_mesh: Mesh = merged if not mat_order.is_empty() else null
 	_mesh_cache[key] = out_mesh
 	return out_mesh
 

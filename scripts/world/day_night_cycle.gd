@@ -90,7 +90,7 @@ func apply_now() -> void:
 		environment.fog_light_color = fog_night.lerp(fog_day, daylight)
 		var top_day := Color(0.14, 0.36, 0.74)
 		var top_night := Color(0.03, 0.05, 0.12)
-		var horizon_day := Color(0.60, 0.76, 0.89).lerp(Color(0.95, 0.64, 0.42), golden_hour * 0.68)
+		var horizon_day := Color(0.60, 0.76, 0.89).lerp(Color(0.95, 0.64, 0.42), late_dusk * 0.68)
 		var horizon_night := Color(0.08, 0.11, 0.20)
 		var rain_grey := Color(0.44, 0.48, 0.54)
 		var top := top_day.lerp(top_night, night_factor)
@@ -99,14 +99,14 @@ func apply_now() -> void:
 			top = top.lerp(rain_grey, _weather_darkness * 0.68)
 			horizon = horizon.lerp(rain_grey, _weather_darkness * 0.68)
 		if panorama_sky_material != null:
-			panorama_sky_material.energy_multiplier = lerpf(0.16, 0.96, daylight) * (1.0 - golden_hour * 0.14) * weather_factor
+			panorama_sky_material.energy_multiplier = lerpf(0.16, 0.96, daylight) * (1.0 - late_dusk * 0.14) * weather_factor
 		elif sky_shader_material != null:
 			sky_shader_material.set_shader_parameter("sky_top", Vector3(top.r, top.g, top.b))
 			sky_shader_material.set_shader_parameter("sky_horizon", Vector3(horizon.r, horizon.g, horizon.b))
 			sky_shader_material.set_shader_parameter("night_factor", night_factor)
 			sky_shader_material.set_shader_parameter("rain_factor", _weather_darkness)
 			sky_shader_material.set_shader_parameter("sky_time", float(Time.get_ticks_msec()) * 0.001)
-			var cb := Color(0.99, 0.98, 0.96).lerp(Color(1.0, 0.74, 0.52), golden_hour * 0.65)
+			var cb := Color(0.99, 0.98, 0.96).lerp(Color(1.0, 0.74, 0.52), late_dusk * 0.65)
 			sky_shader_material.set_shader_parameter("cloud_bright", Vector3(cb.r, cb.g, cb.b))
 		elif sky_material != null:
 			sky_material.sky_top_color = top
@@ -115,7 +115,7 @@ func apply_now() -> void:
 			sky_material.ground_bottom_color = horizon.darkened(0.52)
 
 	if clouds != null:
-		var cloud_col := Color(1.0, 0.98, 0.95).lerp(Color(1.0, 0.76, 0.58), golden_hour * 0.6).lerp(Color(0.22, 0.26, 0.38), night_factor)
+		var cloud_col := Color(1.0, 0.98, 0.95).lerp(Color(1.0, 0.76, 0.58), late_dusk * 0.6).lerp(Color(0.22, 0.26, 0.38), night_factor)
 		if _weather_darkness > 0.0:
 			cloud_col = cloud_col.lerp(Color(0.55, 0.58, 0.62), _weather_darkness * 0.7)
 		clouds.set_sky_tint(cloud_col)
