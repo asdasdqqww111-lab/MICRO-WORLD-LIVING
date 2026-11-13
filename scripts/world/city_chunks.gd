@@ -2,11 +2,16 @@ extends Node3D
 class_name CityChunkStream
 ## Deterministic six-district city generator with chunk streaming.
 ##
-## - 40x40 m chunks; each district owns one explicit 2x2 chunk block (no overlap).
+## Geometry contract:
+## - 40x40 m chunks; chunk node origin = chunk CORNER; district content is built
+##   under a "Content" child offset to the chunk CENTER (+20,+0,+20).
+## - 8 m roads run along every chunk border strip; buildable band keeps every
+##   building AABB fully inside |centered coord| + half-extent <= BUILDABLE_HALF.
+## - Each district owns one explicit 2x2 chunk block (no overlap, all reachable).
 ## - Loads chunks within VIEW_CHUNKS of the player, unloads beyond UNLOAD_CHUNKS.
 ## - All placement from a chunk-seeded RNG: same chunk => same city, every run.
-## - Mobile budget: <= 3 MultiMesh draw calls per chunk, 1 StaticBody3D per
-##   building, BoxOccluder3D per building, shared lamp collision shape.
+## - Mobile budget: <= 2 MultiMesh draw calls per chunk, 1 StaticBody3D per
+##   building, BoxOccluder3D per building, one shared lamp collision shape.
 
 signal chunk_loaded(chunk: Vector2i, district: int)
 signal chunk_unloaded(chunk: Vector2i)
@@ -14,8 +19,8 @@ signal chunk_unloaded(chunk: Vector2i)
 const CHUNK_SIZE: float = 40.0
 const VIEW_CHUNKS: int = 2          # load within 2 chunks (80 m) of the player
 const UNLOAD_CHUNKS: int = 3        # unload beyond 3 chunks (120 m)
-const ROAD_HALF: float = 4.0        # roads run along chunk borders (8 m wide)
-const CLEAR_ZONE: float = 16.0      # building keep-out: |x|,|z| <= 16 inside a chunk
+const ROAD_HALF: float = 4.0        # 8 m roads along chunk borders
+const BUILDABLE_HALF: float = 12.0  # buildable band: |coord| + half_extent <= 12
 const DISTRICT_COUNT: int = 6
 
 enum District { RESIDENTIAL, MARKET, ROYAL, TEMPLE, HARBOR, GARDEN }
@@ -130,22 +135,27 @@ func _build_chunk(c: Vector2i) -> void:
 	node.name = "Chunk_%d_%d" % [c.x, c.y]
 	node.position = Vector3(c.x * CHUNK_SIZE, 0.0, c.y * CHUNK_SIZE)
 	add_child(node)
+	# Centered content container: builder coords are chunk-relative centers.
+	var content := Node3D.new()
+	content.name = "Content"
+	content.position = Vector3(CHUNK_SIZE * 0.5, 0.0, CHUNK_SIZE * 0.5)
+	node.add_child(content)
 	var rng := _chunk_rng(c.x, c.y)
 	match district:
 		District.RESIDENTIAL:
-			_build_residential(node, rng)
+			_build_residential(content, rng)
 		District.MARKET:
-			_build_market(node, rng)
+			_build_market(content, rng)
 		District.ROYAL:
-			_build_royal(node, rng)
+			_build_royal(content, rng)
 		District.TEMPLE:
-			_build_temple(node, rng)
+			_build_temple(content, rng)
 		District.HARBOR:
-			_build_harbor(node, rng)
+			_build_harbor(content, rng)
 		District.GARDEN:
-			_build_garden(node, rng)
+			_build_garden(content, rng)
 		_:
-			_build_meadow(node, rng)
+			_build_meadow(content, rng)
 	chunks[c] = node
 	chunk_loaded.emit(c, district)
 
@@ -239,14 +249,14 @@ func _batch(parent: Node3D, batch_name: String, mesh: Mesh, count: int, place: C
 # ---------------------------------------------------------------- districts
 
 func _build_residential(node: Node3D, rng: RandomNumberGenerator) -> void:
-	# Two fixed corner slots + jitter => guaranteed 12 m+ alley separation.
-	var slots := [Vector3(-9, 0, -9), Vector3(9, 0, 9)]
+	# Two fixed diagonal slots + small jitter => guaranteed 16 m+ alley separation.
+	var slots := [Vector3(-7, 0, -7), Vector3(7, 0, 7)]
 	var wall := Color(0.82, 0.74, 0.62)
 	var roof := Color(0.45, 0.28, 0.20)
 	for s in slots:
-		var p := s + Vector3(rng.randf_range(-3, 3), 0.0, rng.randf_range(-3, 3))
+		var p := s + Vector3(rng.randf_range(-2, 2), 0.0, rng.randf_range(-2, 2))
 		var h := rng.randf_range(3.2, 6.0)
-		_building(node, p, Vector3(rng.randf_range(4.5, 6.5), h, rng.randf_range(4.5, 6.5)), wall, roof)
+		_building(node, p, Vector3(rng.randf_range(3.5, 4.5), h, rng.randf_range(3.5, 4.5)), wall, roof)
 	_lamp(node, Vector3(ROAD_HALF + 1.0, 0.0, -ROAD_HALF + 3.0), Color(1.0, 0.85, 0.55))
 	var crate_mesh := BoxMesh.new()
 	crate_mesh.size = Vector3(0.8, 0.8, 0.8)
@@ -256,25 +266,16 @@ func _build_residential(node: Node3D, rng: RandomNumberGenerator) -> void:
 		return Vector3(rng.randf_range(-14, 14), 0.4, rng.randf_range(-14, 14)))
 
 func _build_market(node: Node3D, rng: RandomNumberGenerator) -> void:
-	var count := 3 + (rng.randi() % 3)
-	var placed: Array[Vector3] = []
-	var tries := 0
-	while placed.size() < count and tries < 8:
-		tries += 1
-		var p := Vector3(rng.randf_range(-12, 12), 0.0, rng.randf_range(-12, 12))
-		var ok := true
-		for q in placed:
-			if p.distance_to(q) < 9.0:
-				ok = false
-				break
-		if ok:
-			placed.append(p)
-			_building(node, p,
-				Vector3(rng.randf_range(5.0, 8.0), rng.randf_range(3.5, 7.0), rng.randf_range(5.0, 8.0)),
-				Color(0.78, 0.68, 0.55), Color(0.55, 0.35, 0.24))
+	# Four fixed market stalls (2x2), jittered per chunk for variety.
+	var slots := [Vector3(-8, 0, -8), Vector3(8, 0, -8), Vector3(-8, 0, 8), Vector3(8, 0, 8)]
+	for s in slots:
+		var p := s + Vector3(rng.randf_range(-1.5, 1.5), 0.0, rng.randf_range(-1.5, 1.5))
+		_building(node, p,
+			Vector3(rng.randf_range(3.5, 4.0), rng.randf_range(3.5, 5.5), rng.randf_range(3.5, 4.0)),
+			Color(0.78, 0.68, 0.55), Color(0.55, 0.35, 0.24))
 	for i in 4:
 		var a := TAU * float(i) / 4.0 + 0.4
-		_lamp(node, Vector3(cos(a), 0.0, sin(a)) * 16.0, Color(1.0, 0.8, 0.45))
+		_lamp(node, Vector3(cos(a), 0.0, sin(a)) * 14.0, Color(1.0, 0.8, 0.45))
 
 func _build_royal(node: Node3D, rng: RandomNumberGenerator) -> void:
 	# Central palace + 5 guard towers on a fixed ring (deterministic angles).
@@ -282,7 +283,7 @@ func _build_royal(node: Node3D, rng: RandomNumberGenerator) -> void:
 		Color(0.88, 0.86, 0.80), Color(0.35, 0.42, 0.62))
 	for i in 5:
 		var a := TAU * float(i) / 5.0
-		_building(node, Vector3(cos(a), 0.0, sin(a)) * 13.0,
+		_building(node, Vector3(cos(a), 0.0, sin(a)) * 10.5,
 			Vector3(2.6, rng.randf_range(6.0, 8.0), 2.6),
 			Color(0.85, 0.83, 0.78), Color(0.30, 0.38, 0.58))
 	_lamp(node, Vector3(6, 0, 6), Color(0.9, 0.95, 1.0))
@@ -294,10 +295,10 @@ func _build_temple(node: Node3D, rng: RandomNumberGenerator) -> void:
 		_lamp(node, Vector3(-6 + 12.0 * float(i), 0.0, 6.5), Color(1.0, 0.92, 0.7))
 
 func _build_harbor(node: Node3D, rng: RandomNumberGenerator) -> void:
-	# Warehouses along the west edge + masts near the water line.
+	# Three warehouses along the west side + masts batch near the water line.
 	for i in 3:
-		_building(node, Vector3(-11.0, 0.0, -12.0 + 12.0 * float(i)),
-			Vector3(6, rng.randf_range(4.0, 6.5), 7),
+		_building(node, Vector3(-8.0, 0.0, -8.0 + 8.0 * float(i)),
+			Vector3(6, rng.randf_range(4.0, 6.5), 6),
 			Color(0.62, 0.60, 0.56), Color(0.35, 0.34, 0.33))
 	var mast_mesh := CylinderMesh.new()
 	mast_mesh.top_radius = 0.05
@@ -306,13 +307,13 @@ func _build_harbor(node: Node3D, rng: RandomNumberGenerator) -> void:
 	mast_mesh.material = StandardMaterial3D.new()
 	mast_mesh.material.albedo_color = Color(0.45, 0.32, 0.2)
 	_batch(node, "Masts", mast_mesh, 3, func(i: int) -> Vector3:
-		return Vector3(12.0 + rng.randf_range(0, 4), 2.5, -12.0 + 12.0 * float(i)))
+		return Vector3(11.0 + rng.randf_range(0, 1.0), 2.5, -8.0 + 8.0 * float(i)))
 	_lamp(node, Vector3(8, 0, 0), Color(0.7, 0.9, 1.0))
 
 func _build_garden(node: Node3D, rng: RandomNumberGenerator) -> void:
 	for i in 4:
 		var a := TAU * float(i) / 4.0 + 0.8
-		_building(node, Vector3(cos(a), 0.0, sin(a)) * 14.0,
+		_building(node, Vector3(cos(a), 0.0, sin(a)) * 9.5,
 			Vector3(4, rng.randf_range(3.0, 5.0), 4),
 			Color(0.80, 0.78, 0.72), Color(0.55, 0.62, 0.45))
 	# Sakura petals: pink quads via MultiMesh (one draw call).
