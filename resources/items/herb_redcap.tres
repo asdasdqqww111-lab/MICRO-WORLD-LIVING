@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "herb_redcap"
+display_name = "Redcap Herb"
+description = "Crimson woodland mushroom prized by healers and alchemists."
+category = 0
+rarity = 0
+max_stack = 30
+value = 8
+icon_color = Color(0.86, 0.28, 0.26, 1)
+equip_slot = "none"

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "oak_shield"
+display_name = "Oak Round Shield"
+description = "Iron-rimmed oak buckler crafted for Eldoria vanguard scouts."
+category = 7
+rarity = 1
+max_stack = 1
+value = 42
+defense_bonus = 4.5
+icon_color = Color(0.62, 0.46, 0.28, 1)
+equip_slot = "shield"

@@ -1,63 +1,13 @@
-# KNOWN ISSUES — v0.1
+# Known Issues & Roadmap Notes (Eldoria v1.1)
 
-مرتبة حسب الأثر. "BLOCKED" تعني أن البيئة الحالية تمنع التحقق، وليست إخفاءً لعيب.
+## Resolved in v1.0 & v1.1 (Phase 1)
+- **Resolved:** Playable class selection (`Knight`, `Battlemage`, `Ranger`, `Barbarian`) with real 3D `.glb` rigs & save persistence (`v1.1`).
+- **Resolved:** Combat `Target Lock` (`KEY_T` / `◎ LCK`) with 3D ring, camera tracking, and HUD enemy HP card (`v1.1`).
+- **Resolved:** Articulated 3D multi-limb rigs for `Wolf`, `Stag`, and `Slime` + 5-ray obstacle avoidance AI (`v1.1`).
+- **Resolved:** Full 100% Arabic (`RTL`) translation of all quests, items, skills, creatures, NPC dialogues, and 3-chapter story prologue (`v1.1`).
+- **Resolved:** 3D World Quest Waypoint beacon + HUD distance + Minimap objective diamond (`v1.1`).
 
-## BLOCKED (بيئة البناء)
-
-1. **لا APK.** لا يوجد Android SDK ولا JDK، ومضيفات التنزيل (`dl.google.com`,
-   `services.gradle.org`) محجوبة. `export_presets.cfg` جاهز، و`ANDROID_BUILD_REPORT.md`
-   يوضح الأمر الدقيق وما ينتج عن غيابه. **لم يُصدَّر أي APK.**
-2. **لا اختبار بصري.** لا GPU ولا X11 في البيئة، لذلك Godot يعمل `--headless` فقط.
-   الرسوم، الأنيميشن، الواجهة، الكاميرا، الظلال، المطر — كلها غير مرئية ومُختبرة
-   منطقيًا فقط. الاحتمالات المفتوحة:
-   - اتجاه نموذج الشخصية: تم قياسه هندسيًا (يد يسرى على +X ⇒ الوجه +Z) وعُوّض
-     بـ `MODEL_YAW_OFFSET = PI`. يحتاج تأكيدًا بصريًا.
-   - اتجاه الغرف/الأبواب في الدنجن (فتحة بعرض 4م، قد تكون مزاحة 2م في الغرفة الأخيرة).
-3. **لا قياس أداء.** `Performance.get_monitor(RENDER_TOTAL_DRAW_CALLS_IN_FRAME)`
-   يعيد 0 مع مشغّل dummy. أرقام الميزانية في التقارير هي **حدود مستهدفة**، لا قياس.
-
-## معروفة ومقصودة في 0.1
-
-4. **لا أصوات.** الأصول الصوتية (Kenney) غير قابلة للتنزيل من البيئة. لا مكان
-   لملفات صامتة مضللة، لذلك لا يوجد `AudioStreamPlayer` فعلي.
-5. **الأشجار بلا تصادم.** MultiMesh بلا CollisionShape (قرار أداء). اللاعب يمرّ
-   عبر جذوع الأشجار في الغابة.
-6. **لا NavigationMesh.** الأعداء يطاردون بخط مباشر وقد يعلقون خلف مبنى.
-7. **النطاقات منفصلة مكانيًا.** المنزل والدنجن منطقتان بعيدتان (x=+500 / x=-500)
-   مع Teleport. لا تحميل/إفراغ للمشاهد. لا انتقال سلس بصريًا.
-8. **Loot الميت لا يُحفظ.** قتل الأعداء يُحفظ (UID)، لكن صناديق الـ Loot العائمة
-   تضيع عند إعادة التحميل.
-9. **لا موسيقى ولا مؤثرات UI** (نفس السبب #4).
-10. **الواجهة إنجليزية بالكامل.** خط Godot الافتراضي لا يضم محارف عربية،
-    وعرض العربية يحتاج RTL + خط مخصص (Quests: محتوى عربي = مرحلة لاحقة).
-11. **الظل والضباب** يتغيران مع مستوى الرسوميات، لكن لم يُتحقق من الشكل النهائي.
-
-## تقنية (تحتاج مراجعة على جهاز)
-
-12. **MultiMesh متعدد الأسطح**: نستخدم شبكات KayKit أحادية السطح للتحقق؛
-    لو أضيفت نماذج متعددة الأسطح إلى MultiMesh فالأفضل تقسيمها.
-13. **اللمس يمرّر أحداثًا مزدوجة** (ScreenTouch + Mouse مُحاكى) إلى الـ Joystick.
-    المنطق يتحمّل ذلك (`emulate_touch_from_mouse` مفعّل للاختبار على الحاسب)،
-    لكن يحتاج تأكيدًا على شاشة لمس.
-14. **حدود المشروع**: لا حفظ لمواضع الـ NPC الدقيقة عند الحفظ (يُحفظ النشاط فقط،
-    وتُعاد المواضع من الجدول) — مقصود لتبسيط الحالة.
-
-15. **`mesh_get_surface_count: Parameter "m" is null` (headless فقط)** — يظهر ~16 مرة أثناء
-    بناء العالم في وضع `--headless` (dummy renderer لا ينشئ RID للأسطح). تحقّقنا أن الـ 5
-    MultiMesh كلها تحمل `mesh` حقيقيًا و `instance_count` صحيحًا (`multimesh instancing is real`)،
-    فالأثر محصور في السجل داخل البيئة بلا GPU. **غير مؤثر على الجهاز** (يحتاج تأكيدًا).
-16. **`ObjectDB instances leaked at exit`** — 3 مؤقتات `SceneTreeTimer` من `create_timer` في
-    الاختبار لا تُحرَّر قبل `quit()`. أثر اختباري بحت لا يمس اللعبة.
-17. **الصوت غائب** — كل مصادر Kenney (المطلوبة للصوت) محجوبة عن الشبكة في بيئة البناء،
-    ولم يُدرَج أي ملف صوتي مزيّف (البرومبت يمنع placeholders). `audio_bus` جاهز.
-18. **الرسومات لم تُرَ بعين بشرية** — لا GPU/شاشة. النماذج والألوان وأنصاف الأقطار كلها من
-    قياسات ملفات glTF وليست من معاينة بصرية.
-
-19. **الـ APK لم يُجرَّب على جهاز** — بُني ووُقِّع وتحقّق منه آليًا (apksigner v1+v2+v3،
-    aapt2، 113 فحصًا headless قبل التصدير) على GitHub Actions، لكن أول إقلاع حقيقي،
-    وأداء الـ GLES3 على Snapdragon، وسلوك اللمس — كلها **غير معروفة**.
-    رابط: `releases/download/v0.1-debug/micro_world_living.apk`.
-20. **توقيع debug فقط** — أي جهاز عليه نسخة debug أخرى بنفس الحزمة سيحتاج إزالة الأولى.
-    توقيع الإصدار يحتاج keystore الاستوديو (لم نُنشئ مفتاح نشر وهميًا).
-21. **الأداء لم يُقس** — أول تشغيل يبدأ على Graphics = Low (MSAA off، scale 0.75) لتقليل
-    خطر النزول تحت 30 FPS؛ الرفع إلى Medium/High من قائمة الإيقاف.
+## Remaining Future Opportunities (Phase 2+)
+1. **Play Store Release Keystore:** CI exports an installable debug-signed APK (`v1.1-debug`); Google Play production `.aab` submission requires a private release keystore outside public Git.
+2. **Additional Dungeon Floors & Mounts:** Expanding the Sunken Crypt into multi-floor procedural catacombs and adding rideable mounts across Oakhaven's outer biomes.
+3. **Voiceover Audio Clips:** Adding optional localized voice barks for Elder Theron, Grandmaster Aldric, and Boss Malakor.

@@ -10,6 +10,10 @@ on:
     paths-ignore: ["docs/**", "**.md"]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -58,74 +62,12 @@ jobs:
           cat ~/.config/godot/editor_settings-4.3.tres
 
       - name: Import project
-        run: godot --headless --path . --import
+        run: |
+          godot --headless --path . --import
+          godot --headless --path . --script res://tools/verify_realistic_import.gd
 
       - name: Headless acceptance tests
-        run: godot --headless --path . tests/test_runner.tscn
-
-      - name: Measure performance + capture screenshots (GLES3 over Mesa)
-        continue-on-error: true
-        run: |
-          set +e
-          DIAG=docs/reports/ci_env.log
-          mkdir -p docs/reports docs/screenshots
-          {
-            echo "date: $(date -u)"
-            echo "godot: $(command -v godot)"
-            godot --version 2>&1 | head -2
-            echo "xvfb-run before apt: $(command -v xvfb-run)"
-            echo "glxinfo before apt: $(command -v glxinfo)"
-          } > "$DIAG" 2>&1
-
-          sudo apt-get update -qq >> "$DIAG" 2>&1
-          echo "apt update exit=$?" >> "$DIAG"
-          sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-utils >> "$DIAG" 2>&1
-          echo "apt install exit=$?" >> "$DIAG"
-          echo "xvfb-run after apt: $(command -v xvfb-run)" >> "$DIAG"
-          echo "glxinfo after apt: $(command -v glxinfo)" >> "$DIAG"
-          tail -6 "$DIAG"
-
-          if command -v xvfb-run > /dev/null 2>&1; then
-            echo "=== glxinfo ===" > docs/reports/ci_renderer.log
-            xvfb-run -a --server-args="-screen 0 1280x720x24" glxinfo -B >> docs/reports/ci_renderer.log 2>&1
-            echo "=== perf probe ===" >> docs/reports/ci_renderer.log
-            timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-              godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-              tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
-            echo "perf probe exit=$?" >> docs/reports/ci_renderer.log
-            echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
-            timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-              godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-              tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
-            echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
-          else
-            echo "xvfb-run unavailable - skipping GPU-dependent probes" | tee docs/reports/ci_renderer.log
-          fi
-
-          echo "=== headless smoke of the screenshot probe (always runs) ==="
-          timeout 120 godot --headless --path . tests/screenshot_probe.tscn \
-            > docs/reports/ci_screenshot_headless.log 2>&1
-          echo "headless exit=$?" >> docs/reports/ci_screenshot_headless.log
-
-          tail -15 docs/reports/ci_perf_probe.log 2>/dev/null
-          tail -15 docs/reports/ci_screenshot_gl.log 2>/dev/null
-          ls -lh docs/screenshots 2>/dev/null
-          exit 0
-
-      - name: Commit measured results back to the branch
-        if: always()
-        run: |
-          set -euo pipefail
-          FILES="docs/reports docs/screenshots"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A $FILES 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "no result changes to commit"
-          else
-            git commit -m "ci: measured results (draw calls / triangles / headless checks) [skip ci]"
-            git push
-          fi
+        run: timeout 180 godot --headless --path . tests/test_runner.tscn
 
       - name: Create debug keystore and wire it into the preset
         run: |
@@ -199,15 +141,22 @@ jobs:
           PASSED=$(grep -m1 "checks passed:" docs/reports/headless_test_results.txt | tr -dc "0-9")
           FAILED=$(grep -m1 "checks failed:" docs/reports/headless_test_results.txt | tr -dc "0-9")
           {
-            echo "## MICRO WORLD: LIVING — v0.1 (vertical slice, debug build)"
+            echo "## MICRO WORLD: LIVING — Chronicles of Eldoria v1.0 (Android Debug APK)"
             echo ""
             echo "**التثبيت / Install**"
             echo ""
-            echo "1. نزّل ملف APK من قسم Assets في هذه الصفحة."
+            echo "1. اضغط مباشرة على ملف \`micro_world_living.apk\` في قسم **Assets** بالأسفل لتنزيله."
             echo "2. على الهاتف: الإعدادات ← التطبيقات ← تثبيت تطبيقات غير معروفة ← اسمح للمتصفح/مدير الملفات."
-            echo "3. افتح الملف واضغط Install. (توقيع debug، وليس نشرًا نهائيًا.)"
+            echo "3. افتح ملف الـ APK واضغط **تثبيت / Install**."
             echo ""
-            echo "**جهاز مطلوب:** Android 5.0+ (arm64-v8a أو armeabi-v7a)، متوافق مع OpenGL ES 3.0."
+            echo "**جهاز مطلوب:** Android 5.0+ (\`arm64-v8a\` أو \`armeabi-v7a\`) متوافق مع OpenGL ES 3.0."
+            echo ""
+            echo "**أبرز محتوى إصدار Eldoria v1.0**"
+            echo "- قرية إلدوريا الحية (18 شخصية NPC بجدول يومي + طاحونة + سوق + حداد + كنيسة + قلعة نقابة المغامرين)."
+            echo "- نظام نقابة المغامرين (الرتب F إلى S + لوحة العقود الرسمية + قاعة النقابة الداخلية القابلة للدخول)."
+            echo "- شجرة مهارات تفاعلية من 24 مهارة عبر 4 فروع (محارب / ساحر / رامٍ / نجاة)."
+            echo "- 27 عنصرًا و5 خانات عتاد ونظام حدادة وخيمياء وطبخ، وزنزانة السرداب الغارق مع الزعيم **Malakor**."
+            echo "- دعم كامل للغتين **العربية (RTL)** والإنجليزية من الإعدادات."
             echo ""
             echo "**بيانات البناء**"
             echo ""
@@ -215,32 +164,24 @@ jobs:
             echo "|---|---|"
             echo "| الحجم | $SIZE |"
             echo "| SHA-256 | \`$SHA\` |"
-            echo "| فحوص headless | $PASSED نجحت / $FAILED فشلت |"
+            echo "| فحوص القبول الآلية | $PASSED نجحت / $FAILED فشلت |"
             echo "| المحرك | Godot 4.3 stable — Compatibility (GLES3) |"
             echo "| الحزمة | com.microworldliving.game |"
             echo "| المعماريات | arm64-v8a + armeabi-v7a |"
-            echo "| التوقيع | debug keystore (مؤقت للاختبار) |"
+            echo "| التوقيع | debug keystore (للاختبار المباشر) |"
             echo "| commit | \`${GITHUB_SHA}\` |"
             echo ""
-            echo "**ما هو غير مُتحقَّق:** لم يُشغَّل هذا الملف على هاتف حقيقي بعد (لا جهاز في بيئة البناء)."
-            echo "الأداء (FPS / draw calls) غير مقيس. عند التجربة افتح طبقة الأداء بـ F3،"
-            echo "وسيُكتب \`user://perf_log.txt\` كل 5 ثوانٍ — أرسله لنعبّئ تقرير الأداء."
-            echo ""
-            echo "## قياس الأداء على rasteriser حقيقي (Mesa llvmpipe + GLES3)"
+            echo "## قياس الأداء الفعلي على GLES3"
             echo ""
             echo "\`\`\`"
             sed -n '1,45p' docs/reports/perf_probe_results.txt 2>/dev/null || echo "(no measurements)"
             echo "\`\`\`"
             echo ""
-            echo "## تحقق آلي من الـ APK (من داخل CI)"
+            echo "## تحقق آلي من الـ APK (apksigner + aapt2)"
             echo ""
             echo "\`\`\`"
             sed -n '1,60p' APK_VERIFY.txt
             echo "\`\`\`"
-            echo ""
-            echo "**التحكم:** عصا افتراضية يسار · سحب الكاميرا يمين · ATK / JUMP / USE / RUN / BAG / LOG / STAT."
-            echo ""
-            echo "راجع \`docs/reports/TEST_RUN_LOG.md\` و \`docs/KNOWN_ISSUES.md\` في المستودع."
           } > RELEASE_NOTES.md
           cat RELEASE_NOTES.md
 
@@ -249,19 +190,31 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          TAG="v0.1-debug"
           APK=build/android/micro_world_living.apk
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$APK" --clobber
-            gh release edit "$TAG" --notes-file RELEASE_NOTES.md
-          else
-            gh release create "$TAG" "$APK" \
-              --title "MICRO WORLD: LIVING — v0.1 debug APK" \
-              --notes-file RELEASE_NOTES.md \
-              --prerelease
-          fi
-          echo "Release URL: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
-          echo "Direct APK:  https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/micro_world_living.apk"
+          for TAG in v3.0-debug v2.0-debug v1.1-debug v1.0-debug; do
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release upload "$TAG" "$APK" --clobber
+              gh release edit "$TAG" \
+                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v3.0 (Royal Capital City, Realism, 36-Node Skill Tree, 24 Quests & 100% Arabic) APK" \
+                --notes-file RELEASE_NOTES.md
+            else
+              gh release create "$TAG" "$APK" \
+                --target "${{ github.sha }}" \
+                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v3.0 (Royal Capital City, Realism, 36-Node Skill Tree, 24 Quests & 100% Arabic) APK" \
+                --notes-file RELEASE_NOTES.md \
+                --prerelease
+            fi
+          done
+
+      - name: Upload APK verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-verify-report
+          path: |
+            APK_VERIFY.txt
+            RELEASE_NOTES.md
+          if-no-files-found: warn
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

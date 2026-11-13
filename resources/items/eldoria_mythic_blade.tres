@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "eldoria_mythic_blade"
+display_name = "Sunblade of Eldoria"
+description = "Mythic runesword radiating dawnfire. Pinnacle of Eldorian smithing."
+category = 2
+rarity = 5
+max_stack = 1
+value = 420
+attack_bonus = 24.0
+magic_bonus = 10.0
+crit_bonus = 0.10
+icon_color = Color(0.98, 0.38, 0.44, 1)
+equip_slot = "weapon"

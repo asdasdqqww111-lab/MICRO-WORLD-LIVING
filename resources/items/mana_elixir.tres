@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "mana_elixir"
+display_name = "Mana Elixir"
+description = "Distilled Moonpetal draught that restores 45 Mana."
+category = 1
+rarity = 1
+max_stack = 15
+value = 26
+mana_amount = 45.0
+heal_amount = 10.0
+icon_color = Color(0.28, 0.56, 0.95, 1)
+equip_slot = "none"

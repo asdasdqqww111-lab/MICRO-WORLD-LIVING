@@ -1,6 +1,65 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game.gd" id="1_game"]
+[ext_resource type="Texture2D" path="res://assets/stylized_nature/stylized_meadow_sky_1k.hdr" id="2_hdri"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hdr"]
+panorama = ExtResource("2_hdri")
+energy_multiplier = 1.04
+
+[sub_resource type="Sky" id="Sky_cinematic"]
+sky_material = SubResource("PanoramaSkyMaterial_hdr")
+process_mode = 3
+radiance_size = 1
+
+[sub_resource type="Environment" id="Environment_cinematic"]
+background_mode = 2
+sky = SubResource("Sky_cinematic")
+ambient_light_source = 3
+ambient_light_color = Color(0.74, 0.80, 0.88, 1)
+ambient_light_sky_contribution = 0.88
+ambient_light_energy = 0.62
+tonemap_mode = 3
+tonemap_exposure = 1.1
+tonemap_white = 6.0
+ssao_enabled = true
+ssao_radius = 1.0
+ssao_intensity = 1.5
+ssao_power = 1.5
+ssao_detail = 0.25
+glow_enabled = true
+glow_intensity = 0.4
+glow_strength = 0.88
+glow_bloom = 0.1
+glow_blend_mode = 1
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.6, 0.75, 0.9, 1)
+fog_sun_scatter = 0.3
+fog_density = 0.0025
+fog_aerial_perspective = 0.52
+fog_sky_affect = 0.2
+fog_depth_curve = 1.35
+fog_depth_begin = 30.0
+fog_depth_end = 150.0
+adjustment_enabled = true
+adjustment_contrast = 1.06
+adjustment_saturation = 1.12
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_game")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cinematic")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, -0.40558, 0.579228, 0, 18, 0)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 1.24
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.2
+shadow_blur = 2.0
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0

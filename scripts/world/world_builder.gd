@@ -1,18 +1,23 @@
 class_name WorldBuilder
 extends RefCounted
-## Procedural assembly of the 200x200m slice.
-## All geometry is placed from code so layout, colliders and draw-call budgets
-## stay reviewable in one file.
+## Procedural & curated assembly of the 240x240m Eldoria Starting Region:
+##   - Eldoria Village (Square, Guild Castle Hall, Tavern, Chapel, Market,
+##     Blacksmith Forge, Residential Cottages, Windmill Farm, Guarded Gates)
+##   - 6 MultiMesh Biome Forest & Flora Zones + Eldoria River, Bridge & Crystal Lake
+##   - Outer Landmarks: Ancient Ruins, Shadowfang Cave, Monster Camp, Sacred Grove
+##   - Enterable Cottage Interior, Grand Adventurers Guild Hall Interior,
+##     and Modular Sunken Crypt Dungeon (Traps, Secret Alcove, Boss Sanctum)
 
-const GROUND_SIZE := 200.0
+const GROUND_SIZE := 240.0
 const INTERIOR_ORIGIN := Vector3(500.0, 0.0, 0.0)
+const GUILD_ORIGIN := Vector3(500.0, 0.0, 200.0)
 const DUNGEON_ORIGIN := Vector3(-500.0, 0.0, 0.0)
 const DUNGEON_TILE := 4.0
 
-# --- primitives --------------------------------------------------------------
+# --- Primitives & Placement Helpers ------------------------------------------
 
 static func build_ground(parent: Node3D, size: float, center: Vector3 = Vector3.ZERO,
-		color: Color = Color(0.41, 0.54, 0.31)) -> StaticBody3D:
+		color: Color = Color(0.28, 0.34, 0.24)) -> StaticBody3D:
 	var body := StaticBody3D.new()
 	body.name = "Ground"
 	body.collision_layer = 1
@@ -54,10 +59,15 @@ static func add_box_body(parent: Node3D, position: Vector3, size: Vector3, node_
 
 static func place_model(parent: Node3D, path: String, position: Vector3, rotation_y: float,
 		model_scale: float, collider_size: Vector3 = Vector3.ZERO, node_name: String = "") -> Node3D:
-	var scene := AssetLibrary.get_scene(path)
-	if scene == null:
-		return null
-	var node := scene.instantiate() as Node3D
+	# Merge multi-child static GLTF/GLB props & buildings into ONE single MeshInstance3D (~12x fewer draw calls!)
+	var node: Node3D = null
+	var merged_mesh: Mesh = AssetLibrary.first_mesh(path)
+	if merged_mesh != null:
+		var mmi := MeshInstance3D.new()
+		mmi.mesh = merged_mesh
+		node = mmi
+	else:
+		node = AssetLibrary.instantiate(path, model_scale)
 	if node == null:
 		return null
 	if not node_name.is_empty():
@@ -65,7 +75,7 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 	var holder: Node3D
 	if collider_size != Vector3.ZERO:
 		var body := StaticBody3D.new()
-		body.name = "Solid"
+		body.name = (node_name + "Body") if not node_name.is_empty() else "Solid"
 		body.collision_layer = 1
 		body.collision_mask = 0
 		var shape := CollisionShape3D.new()
@@ -80,7 +90,7 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 		holder = body
 	else:
 		holder = Node3D.new()
-		holder.name = "Prop"
+		holder.name = node_name if not node_name.is_empty() else "Prop"
 		parent.add_child(holder)
 		holder.global_position = position
 		holder.rotation.y = rotation_y
@@ -88,18 +98,26 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 	node.rotation = Vector3.ZERO
 	node.scale = Vector3.ONE * model_scale
 	holder.add_child(node)
-	# Several KayKit models are authored off-centre (e.g. fence_wood_straight
-	# spans x -1.05..-0.95), so rotating them swings the mesh away from its
-	# placement point. Centre them horizontally on their pivot. Y is untouched
-	# on purpose: dungeon walls/floors rely on their authored vertical offsets.
 	var bounds := _model_bounds(node)
 	if bounds.size != Vector3.ZERO:
 		var centre := bounds.get_center()
 		node.position.x -= centre.x * model_scale
 		node.position.z -= centre.z * model_scale
+	var is_hero := collider_size.length() >= 4.5
+	var lod_dist := 78.0 if is_hero else 36.0
+	_apply_model_lod(node, lod_dist, is_hero)
 	return node
 
-## Combined local AABB of every MeshInstance3D under a node.
+static func _apply_model_lod(root: Node, dist: float, cast_shadows: bool) -> void:
+	if root is GeometryInstance3D:
+		var gi := root as GeometryInstance3D
+		gi.visibility_range_end = dist
+		gi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		if not cast_shadows:
+			gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for c: Node in root.get_children():
+		_apply_model_lod(c, dist, cast_shadows)
+
 static func _model_bounds(root: Node) -> AABB:
 	var bounds := AABB()
 	var first := true
@@ -120,150 +138,651 @@ static func _model_bounds(root: Node) -> AABB:
 	return bounds
 
 static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array,
-		node_name: String, cast_shadow: bool = true) -> MultiMeshInstance3D:
+		node_name: String, cast_shadow: bool = true, vis_end: float = 0.0) -> MultiMeshInstance3D:
+	if transforms.is_empty():
+		return null
 	var mesh := AssetLibrary.first_mesh(mesh_path)
 	if mesh == null:
-		push_warning("WorldBuilder: no mesh for %s" % mesh_path)
 		return null
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.mesh = mesh
 	multimesh.instance_count = transforms.size()
 	for i: int in transforms.size():
-		multimesh.set_instance_transform(i, transforms[i])
+		multimesh.set_instance_transform(i, transforms[i] as Transform3D)
 	var instance := MultiMeshInstance3D.new()
 	instance.name = node_name
 	instance.multimesh = multimesh
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if cast_shadow \
 		else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if vis_end > 0.0:
+		instance.visibility_range_end = vis_end
+		instance.visibility_range_end_margin = 0.0
+		instance.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	parent.add_child(instance)
 	return instance
 
-# --- forest ------------------------------------------------------------------
+# --- 1. Eldoria Village & Outer Landmarks ------------------------------------
 
-static func build_forest(parent: Node3D, seed_value: int = 1337) -> Array:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = seed_value
-	var big_trees: Array = []
-	var small_trees: Array = []
-	var rocks: Array = []
-	var spawns: Array = []
-	for i: int in 90:
-		var x := rng.randf_range(-96.0, -26.0)
-		var z := rng.randf_range(-62.0, 62.0)
-		# keep a clearing around the skeleton camps
-		var s := rng.randf_range(4.2, 5.8)
-		var basis := Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * s)
-		var transform := Transform3D(basis, Vector3(x, rng.randf_range(-0.1, 0.05), z))
-		if i % 3 == 0:
-			big_trees.append(transform)
-		else:
-			small_trees.append(transform)
-	for i: int in 40:
-		var x := rng.randf_range(-100.0, -20.0)
-		var z := rng.randf_range(-70.0, 70.0)
-		var s := rng.randf_range(3.0, 7.0)
-		rocks.append(Transform3D(Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * s),
-			Vector3(x, 0.0, z)))
-	build_multimesh(parent, AssetLibrary.HEXAGON_DIR + "trees_A_large.gltf", big_trees, "ForestLargeTrees")
-	build_multimesh(parent, AssetLibrary.HEXAGON_DIR + "tree_single_A.gltf", small_trees, "ForestSmallTrees")
-	build_multimesh(parent, AssetLibrary.HEXAGON_DIR + "rock_single_A.gltf", rocks, "ForestRocks", false)
-	spawns.append(Vector3(-56.0, 0.2, -18.0))
-	spawns.append(Vector3(-64.0, 0.2, 6.0))
-	spawns.append(Vector3(-48.0, 0.2, 24.0))
-	spawns.append(Vector3(-38.0, 0.2, -34.0))
-	spawns.append(Vector3(-72.0, 0.2, -40.0))
-	return spawns
-
-# --- village -----------------------------------------------------------------
-
-static func build_village(parent: Node3D) -> Dictionary:
+static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary:
 	var hex := AssetLibrary.HEXAGON_DIR
+	var vdir := AssetLibrary.HEXAGON_DIR
+	var vprop := AssetLibrary.HEXAGON_DIR
+	var rbuild := AssetLibrary.REALISTIC_BUILDINGS_DIR
+	var rnat := AssetLibrary.REALISTIC_NATURE_DIR
+	var nprop := "res://assets/environments/villages/"
 	var b := AssetLibrary.SCALE_BUILDING
+
+	# Stylized Storybook Castle-Valley Architecture (KayKit Stylized PBR — 1 surface per building!):
 	var buildings: Array = [
-		{"model": "building_home_A_green.gltf", "pos": Vector3(-16.0, 0.0, -8.0), "rot": 0.0,
-			"scale": b, "collider": Vector3(7.2, 7.9, 7.6), "name": "HouseA"},
-		{"model": "building_home_B_green.gltf", "pos": Vector3(16.0, 0.0, -12.0), "rot": deg_to_rad(28.0),
-			"scale": b, "collider": Vector3(7.6, 7.9, 7.0), "name": "HouseB"},
-		{"model": "building_blacksmith_green.gltf", "pos": Vector3(-19.0, 0.0, 11.0), "rot": deg_to_rad(-18.0),
-			"scale": b, "collider": Vector3(11.5, 8.4, 11.0), "name": "Blacksmith"},
-		{"model": "building_market_green.gltf", "pos": Vector3(11.0, 0.0, 9.0), "rot": deg_to_rad(12.0),
-			"scale": b * 0.85, "collider": Vector3(13.0, 7.2, 9.6), "name": "Market"},
-		{"model": "building_tavern_green.gltf", "pos": Vector3(0.0, 0.0, -24.0), "rot": PI,
-			"scale": b * 0.9, "collider": Vector3(9.6, 11.0, 10.8), "name": "Tavern"},
-		{"model": "building_tower_A_green.gltf", "pos": Vector3(28.0, 0.0, 4.0), "rot": deg_to_rad(-10.0),
-			"scale": b, "collider": Vector3(6.4, 14.0, 6.4), "name": "Tower"},
+		# Central Stone Castle Keep + Pointed Blue-Roofed Turret (Guild Castle Anchor, rising proudly above Tavern!)
+		{"path": hex + "building_castle_blue.gltf", "fallback": vdir + "building_castle_blue.gltf",
+			"pos": Vector3(-0.6, 1.4, -25.8), "rot": 0.0, "scale": 10.6,
+			"collider": Vector3(11.5, 14.0, 10.5), "name": "AdventurersGuildExterior"},
+		# Soaring Upper Castle Keep Tower (matches the tall square stone keep silhouette!)
+		{"path": hex + "building_tower_A_green.gltf", "fallback": hex + "building_tower_B_blue.gltf",
+			"pos": Vector3(-1.4, 4.6, -27.2), "rot": 0.0, "scale": 9.8,
+			"collider": Vector3.ZERO, "name": "CastleHighKeepTower"},
+		# Pointed Blue-Roofed Side Turret flanking Castle Keep
+		{"path": hex + "building_tower_B_blue.gltf", "fallback": hex + "building_tower_B_blue.gltf",
+			"pos": Vector3(3.4, 1.5, -23.4), "rot": deg_to_rad(-20.0), "scale": 8.6,
+			"collider": Vector3(4.8, 12.0, 4.8), "name": "CastleBlueTurret"},
+		# Giant Wooden Barrel Tavern / Mill House nestled at the foot of the Castle!
+		{"path": hex + "building_tavern_red.gltf", "fallback": vdir + "building_tavern_yellow.gltf",
+			"pos": Vector3(2.8, 0.0, -17.6), "rot": deg_to_rad(-12.0), "scale": 6.6,
+			"collider": Vector3(6.2, 6.8, 6.2), "name": "Tavern"},
+		# Red-Tiled Medieval Cottages & Round Watchtower on the right flank (matching reference vista!)
+		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(9.6, 0.0, -17.6), "rot": deg_to_rad(-8.0), "scale": 8.2,
+			"collider": Vector3(5.8, 6.8, 5.8), "name": "RedCottageEastA"},
+		{"path": hex + "building_home_B_red.gltf", "fallback": hex + "building_home_B_green.gltf",
+			"pos": Vector3(14.6, 0.0, -17.8), "rot": deg_to_rad(-16.0), "scale": 8.2,
+			"collider": Vector3(6.2, 6.8, 6.0), "name": "HouseB"},
+		{"path": hex + "building_tower_B_red.gltf", "fallback": hex + "building_tower_B_blue.gltf",
+			"pos": Vector3(9.8, 0.0, -22.8), "rot": 0.0, "scale": 8.6,
+			"collider": Vector3(4.8, 11.0, 4.8), "name": "EastRedWatchtower"},
+		# Sanctuary Chapel (Northeast)
+		{"path": hex + "building_church_blue.gltf", "fallback": hex + "building_church_green.gltf",
+			"pos": Vector3(22.5, 0.0, -19.5), "rot": deg_to_rad(-148.0), "scale": 8.4,
+			"collider": Vector3(7.6, 10.0, 8.4), "name": "Chapel"},
+		# Player's Cottage (Preserved at (-16, 0, -8) with door at (-16, 0, -2.4))
+		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(-16.0, 0.0, -8.0), "rot": 0.0, "scale": 8.4,
+			"collider": Vector3(6.8, 7.2, 6.8), "name": "HouseA"},
+		# West Timber Cottage
+		{"path": hex + "building_home_B_red.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(-25.5, 0.0, -4.2), "rot": deg_to_rad(75.0), "scale": 8.2,
+			"collider": Vector3(6.6, 6.9, 6.8), "name": "HouseC"},
+		# Ironforge Blacksmith (Southwest)
+		{"path": hex + "building_blacksmith_red.gltf", "fallback": hex + "building_blacksmith_green.gltf",
+			"pos": Vector3(-19.0, 0.0, 11.0), "rot": deg_to_rad(-18.0), "scale": 8.4,
+			"collider": Vector3(8.5, 7.6, 8.2), "name": "Blacksmith"},
+		# Village Market Stalls (Southeast)
+		{"path": hex + "building_market_red.gltf", "fallback": hex + "building_market_blue.gltf",
+			"pos": Vector3(16.5, 0.0, 8.5), "rot": deg_to_rad(14.0), "scale": 8.2,
+			"collider": Vector3(7.8, 6.8, 7.6), "name": "Market"},
+		# Guard Barracks & Archery Range (East)
+		{"path": hex + "building_barracks_blue.gltf", "fallback": hex + "building_barracks_red.gltf",
+			"pos": Vector3(25.5, 0.0, 14.0), "rot": deg_to_rad(-65.0), "scale": 8.2,
+			"collider": Vector3(7.8, 7.6, 7.8), "name": "Barracks"},
+		# Farming District Windmill & Lumbermill (Southwest)
+		{"path": hex + "building_windmill_yellow.gltf", "fallback": vdir + "building_windmill_green.gltf",
+			"pos": Vector3(-18.5, 0.0, 23.5), "rot": deg_to_rad(25.0), "scale": 8.4,
+			"collider": Vector3(7.0, 11.5, 7.0), "name": "Windmill"},
+		{"path": hex + "building_lumbermill_green.gltf", "fallback": hex + "building_grain.gltf",
+			"pos": Vector3(-27.5, 0.0, 22.5), "rot": deg_to_rad(38.0), "scale": 8.0,
+			"collider": Vector3(7.4, 7.2, 7.4), "name": "CityGranary"},
 	]
 	for entry: Dictionary in buildings:
-		place_model(parent, hex + String(entry["model"]), entry["pos"] as Vector3,
-			float(entry["rot"]), float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
+		var chosen := String(entry["path"]) if AssetLibrary.has_model(String(entry["path"])) else String(entry["fallback"])
+		place_model(parent, chosen, entry["pos"] as Vector3, float(entry["rot"]),
+			float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
 
-	# Central well + plaza props.
-	place_model(parent, hex + "building_well_green.gltf", Vector3(0.0, 0.0, 2.0), 0.0, 2.4,
-		Vector3(1.6, 2.0, 1.8), "Well")
+	# Left-Hillside Ancient Stone Arch Ruin silhouetted against the pine hills & snowy mountains!
+	var arch_hill_y := terrain.height_at(-19.0, -47.0) if terrain != null else 3.2
+	if AssetLibrary.has_model("res://assets/environments/medieval_megakit/Wall_Arch.gltf"):
+		place_model(parent, "res://assets/environments/medieval_megakit/Wall_Arch.gltf",
+			Vector3(-19.0, arch_hill_y - 0.15, -47.0), deg_to_rad(18.0), 2.35, Vector3.ZERO, "HillsideStoneArch")
+
+	# Village Well tucked beside the Castle Forecourt (leaving the Southern Meadow vista wide open!)
+	place_model(parent, hex + "building_well_green.gltf", Vector3(-6.5, 0.0, -14.5), 0.0, 7.5,
+		Vector3(2.2, 2.4, 2.2), "CentralWell")
+
+	# Outer Valley Anti-Out-of-Bounds Physics Perimeter Colliders (±116m)
+	add_box_body(parent, Vector3(0.0, -4.0, -116.0), Vector3(240.0, 38.0, 2.0), "NorthValleyWall")
+	add_box_body(parent, Vector3(0.0, -4.0, 116.0), Vector3(240.0, 38.0, 2.0), "SouthValleyWall")
+	add_box_body(parent, Vector3(-116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "WestValleyWall")
+	add_box_body(parent, Vector3(116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "EastValleyWall")
+
+	# Town Lanterns tucked beside Castle Forecourt, Cottages & Market (keeping meadow vista pure!)
+	var lantern_spots := [
+		Vector3(-4.2, 0.0, -15.5), Vector3(6.8, 0.0, -15.5),
+		Vector3(-12.5, 0.0, -5.0), Vector3(13.5, 0.0, -14.5),
+		Vector3(-14.5, 0.0, 7.5), Vector3(13.5, 0.0, 6.5),
+		Vector3(-22.0, 0.0, -16.5), Vector3(21.5, 0.0, -14.5),
+	]
+	var lantern_xforms: Array = []
+	for lp: Vector3 in lantern_spots:
+		lantern_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.80), lp))
+	if AssetLibrary.has_model("res://assets/environments/tinytreats_park/street_lantern.gltf"):
+		build_multimesh(parent, "res://assets/environments/tinytreats_park/street_lantern.gltf", lantern_xforms, "CityStreetLanternPosts", false, 68.0)
+	for i: int in lantern_spots.size():
+		if i < 6:
+			_build_street_lantern_light_only(parent, lantern_spots[i])
+
+	# Heraldic Royal Banners flanking Castle Keep & Forecourt (1 MultiMesh!)
+	var flag_xforms: Array = []
+	for fp: Vector3 in [
+		Vector3(-2.8, 0.0, -18.5), Vector3(6.4, 0.0, -18.5),
+		Vector3(19.0, 0.0, -16.5), Vector3(-13.0, 0.0, -5.5),
+	]:
+		flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * (AssetLibrary.SCALE_PROP * 1.18)), fp))
+	build_multimesh(parent, vprop + "flag_blue.gltf", flag_xforms, "CityRoyalBanners", false, 68.0)
+
+	# Village Props & Farm Crop Rows
 	var prop_scale := AssetLibrary.SCALE_PROP
 	var props: Array = [
-		{"model": "barrel.gltf", "pos": Vector3(-15.0, 0.0, 6.5)},
-		{"model": "barrel.gltf", "pos": Vector3(-14.0, 0.0, 5.4)},
-		{"model": "crate_A_big.gltf", "pos": Vector3(-12.6, 0.0, 7.2)},
-		{"model": "crate_A_small.gltf", "pos": Vector3(11.6, 0.0, 5.2)},
-		{"model": "sack.gltf", "pos": Vector3(12.4, 0.0, 6.0)},
-		{"model": "weaponrack.gltf", "pos": Vector3(-17.4, 0.0, 6.2)},
-		{"model": "target.gltf", "pos": Vector3(26.0, 0.0, 10.0)},
-		{"model": "tent.gltf", "pos": Vector3(6.0, 0.0, 15.0)},
-		{"model": "ladder.gltf", "pos": Vector3(-20.0, 0.0, 6.0)},
-		{"model": "wheelbarrow.gltf", "pos": Vector3(-9.0, 0.0, 13.0)},
+		{"model": hex + "barrel.gltf", "pos": Vector3(-15.0, 0.0, 6.5), "s": prop_scale},
+		{"model": hex + "barrel.gltf", "pos": Vector3(-14.0, 0.0, 5.4), "s": prop_scale},
+		{"model": hex + "crate_A_big.gltf", "pos": Vector3(-12.6, 0.0, 7.2), "s": prop_scale},
+		{"model": hex + "crate_A_small.gltf", "pos": Vector3(14.6, 0.0, 5.2), "s": prop_scale},
+		{"model": hex + "sack.gltf", "pos": Vector3(15.4, 0.0, 6.0), "s": prop_scale},
+		{"model": hex + "weaponrack.gltf", "pos": Vector3(-17.4, 0.0, 6.2), "s": prop_scale},
+		{"model": hex + "target.gltf", "pos": Vector3(26.0, 0.0, 10.0), "s": prop_scale},
+		{"model": hex + "tent.gltf", "pos": Vector3(20.5, 0.0, 13.0), "s": prop_scale},
+		{"model": hex + "wheelbarrow.gltf", "pos": Vector3(-16.0, 0.0, 17.5), "s": prop_scale},
+		{"model": nprop + "sign.glb", "pos": Vector3(-12.2, 0.0, -2.5), "s": 2.2},
 	]
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 901
 	for prop: Dictionary in props:
-		place_model(parent, hex + String(prop["model"]), prop["pos"] as Vector3,
-			randf_range(0.0, TAU), prop_scale)
+		if AssetLibrary.has_model(String(prop["model"])):
+			place_model(parent, String(prop["model"]), prop["pos"] as Vector3, rng.randf_range(0.0, TAU), float(prop["s"]))
 
-	# Fences around the plaza (segments with gaps for paths).
-	var fence_path := hex + "fence_wood_straight.gltf"
-	for i: int in 6:
-		var x := -12.0 + float(i) * 4.6
-		if i == 2 or i == 3:
-			continue
-		place_model(parent, fence_path, Vector3(x, 0.0, 22.0), 0.0, AssetLibrary.SCALE_FENCE)
-	for i: int in 4:
-		place_model(parent, fence_path, Vector3(-24.0, 0.0, -2.0 + float(i) * 4.6), PI * 0.5,
-			AssetLibrary.SCALE_FENCE)
+	# Farming District Wheat & Pumpkin Rows beside Granary Mill (batched MultiMesh)
+	var wheat_xforms: Array = []
+	var pumpkin_xforms: Array = []
+	for rx: int in 2:
+		for rz: int in 3:
+			var fx := -20.5 + float(rx) * 2.1
+			var fz := 16.2 + float(rz) * 1.9
+			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.55), Vector3(fx, 0.0, fz)))
+	for px: int in 4:
+		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.0), Vector3(-20.0 + float(px) * 1.5, 0.0, 23.2)))
+	build_multimesh(parent, "res://assets/environments/villages/crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 42.0)
+	build_multimesh(parent, "res://assets/environments/villages/crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 42.0)
 
-	# Dungeon entrance: stone stairwell west-south of the village.
-	var entrance := Vector3(38.0, 0.0, 26.0)
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "stairs.glb", entrance, deg_to_rad(180.0), 1.0,
-		Vector3.ZERO, "DungeonStairs")
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "wall_doorway.glb", entrance + Vector3(0.0, 0.0, 3.4),
-		deg_to_rad(180.0), 1.0, Vector3.ZERO, "DungeonArch")
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", entrance + Vector3(1.9, 1.2, 3.4),
-		deg_to_rad(180.0), 1.0)
+	# Interactive World Stations in Village: Quest Board, Blacksmith Forge, Alchemy Table
+	var ext_board := QuestBoardProp.new()
+	ext_board.name = "VillageQuestBoard"
+	ext_board.setup("Inspect Adventurers Guild Quest Board")
+	parent.add_child(ext_board)
+	ext_board.global_position = Vector3(5.6, 0.0, -17.2)
+
+	var forge := CraftingStation.new()
+	forge.name = "BlacksmithForge"
+	forge.setup("forge", "Blacksmith Anvil Forge")
+	parent.add_child(forge)
+	forge.global_position = Vector3(-13.8, 0.0, 10.2)
+
+	var alchemy := CraftingStation.new()
+	alchemy.name = "ChapelAlchemyBench"
+	alchemy.setup("alchemy", "Alchemist's Workbench")
+	parent.add_child(alchemy)
+	alchemy.global_position = Vector3(13.2, 0.0, -14.0)
+
+	# River, Crystal Lake, East Stone Bridge, Waterfall, Ruins, Cave, Camp, Sacred Grove & Dungeon Entrance!
+	var outer := _build_water_and_outer_landmarks(parent, terrain)
 
 	return {
 		"spawn": Vector3(0.0, 0.6, 14.0),
-		"blacksmith_pos": Vector3(-15.0, 0.0, 10.5),
-		"farmer_pos": Vector3(9.0, 0.0, 14.0),
-		"guard_pos": Vector3(24.0, 0.0, 8.0),
-		"farmer_rest": Vector3(9.0, 0.0, 14.0),
-		"farmer_sleep": Vector3(-16.0, 0.0, -4.0),
-		"guard_sleep": Vector3(28.0, 0.0, 8.0),
-		"blacksmith_sleep": Vector3(-19.0, 0.0, 8.0),
-		"house_door": Vector3(-16.0, 0.0, -2.4),
-		"dungeon_entrance": entrance + Vector3(0.0, 0.0, 4.8),
-		"dungeon_stairs": entrance,
-		"raid_spawn": Vector3(0.0, 0.5, 34.0),
 		"plaza": Vector3(0.0, 0.0, 2.0),
+		"guild_door": Vector3(0.0, 0.0, -18.4),
+		"house_door": Vector3(-16.0, 0.0, -2.4),
+		"dungeon_entrance": outer["dungeon_entrance"],
+		"dungeon_stairs": outer["dungeon_stairs"],
+		"ruins": outer["ruins"],
+		"cave": outer["cave"],
+		"monster_camp": outer["monster_camp"],
+		"sacred_grove": outer["sacred_grove"],
+		"bridge": outer["bridge"],
+		"lake": Vector3(16.0, 0.0, 54.0),
+		"raid_spawn": Vector3(0.0, 0.5, 41.0),
+		"blacksmith_pos": Vector3(-15.0, 0.0, 10.5),
+		"blacksmith_sleep": Vector3(-19.0, 0.0, 8.0),
+		"farmer_pos": Vector3(-6.0, 0.0, 18.0),
+		"farmer_rest": Vector3(-4.0, 0.0, 12.0),
+		"farmer_sleep": Vector3(-16.0, 0.0, -4.0),
+		"guard_pos": Vector3(31.5, 0.0, -2.5),
+		"guard_sleep": Vector3(25.0, 0.0, 12.0),
 	}
 
-# --- house interior ----------------------------------------------------------
+static func _build_street_lantern_light_only(parent: Node3D, pos: Vector3) -> void:
+	var light := OmniLight3D.new()
+	light.add_to_group("village_lantern")
+	light.light_color = Color(1.0, 0.78, 0.44)
+	light.light_energy = 1.25
+	light.omni_range = 10.5
+	light.shadow_enabled = false
+	light.visible = false
+	parent.add_child(light)
+	light.global_position = pos + Vector3(0.0, 3.05, 0.0)
+
+static func _build_street_lantern(parent: Node3D, pos: Vector3) -> void:
+	var lantern_gltf := "res://assets/environments/tinytreats_park/street_lantern.gltf"
+	if AssetLibrary.has_model(lantern_gltf):
+		place_model(parent, lantern_gltf, pos, 0.0, 0.78, Vector3(0.32, 3.2, 0.32), "VillageLanternPost")
+	_build_street_lantern_light_only(parent, pos)
+
+static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -> Dictionary:
+	var y_at := func(x: float, z: float) -> float:
+		return terrain.height_at(x, z) if terrain != null else 0.0
+
+	# 1. Animated PBR Specular Water Surface for Eldoria River & Crystal Lake
+	var river_mesh := MeshInstance3D.new()
+	river_mesh.name = "EldoriaRiverAndLake"
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(106.0, 136.0)
+	river_mesh.mesh = plane
+	river_mesh.material_override = ArtDirection.water_shader_material()
+	river_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	river_mesh.position = Vector3(31.0, Terrain.WATER_LEVEL, -2.0)
+	parent.add_child(river_mesh)
+
+	# 2. East Stone Arch Bridge across Eldoria River + Solid Walkable Deck Collider
+	var bridge_x := terrain.river_center_x(-4.0) if terrain != null else 45.0
+	var bridge_pos := Vector3(bridge_x, 0.0, -4.0)
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_bridge_A.gltf", bridge_pos, 0.0, 7.8,
+		Vector3.ZERO, "EastStoneBridge")
+	add_box_body(parent, bridge_pos + Vector3(0.0, -0.35, 0.0), Vector3(15.5, 0.55, 4.6), "BridgeDeckCollider")
+
+	# Riverside Watermill & Northern Waterfall Cliff
+	var mill_z := -18.0
+	var mill_x := (terrain.river_center_x(mill_z) - 5.2) if terrain != null else 39.5
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_watermill_blue.gltf",
+		Vector3(mill_x, maxf(0.0, float(y_at.call(mill_x, mill_z))), mill_z), deg_to_rad(90.0), 7.0,
+		Vector3(6.8, 7.5, 6.8), "RiversideWatermill")
+	place_model(parent, "res://assets/environments/mountains/cliff-steps-rock.glb",
+		Vector3(46.0, maxf(0.0, float(y_at.call(46.0, -56.0)) - 1.0), -56.0), 0.0, 5.5, Vector3.ZERO, "NorthernWaterfall")
+
+	# 3. Eastern Ancient Ruins (x=66, z=-18) — Realistic Sculpted Stone Ruins
+	var ruins_y: float = float(y_at.call(66.0, -18.0))
+	var ruins_pos := Vector3(66.0, ruins_y, -18.0)
+	place_model(parent, AssetLibrary.REALISTIC_NATURE_DIR + "ancient_ruins_01.glb", ruins_pos, 0.4, 2.35,
+		Vector3(7.5, 5.5, 7.5), "AncientRuinsMain")
+	place_model(parent, AssetLibrary.REALISTIC_NATURE_DIR + "ancient_ruins_02.glb", ruins_pos + Vector3(-4.6, 0.0, 3.6), 0.1, 2.0)
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", ruins_pos + Vector3(5.0, 0.0, -4.0), 0.2, 1.2)
+	place_model(parent, "res://assets/environments/dungeons/statue-columndamaged.glb", ruins_pos + Vector3(3.5, 0.0, 4.5), 0.6, 2.8)
+
+	# 4. Northern Shadowfang Cave Mouth (x=-14, z=-64)
+	var cave_y: float = float(y_at.call(-14.0, -64.0))
+	var cave_pos := Vector3(-14.0, cave_y, -64.0)
+	place_model(parent, "res://assets/environments/mountains/cliff-cave-rock.glb", cave_pos, 0.0, 5.8,
+		Vector3.ZERO, "ShadowfangCave")
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", cave_pos + Vector3(-2.6, 1.4, 3.2), 0.0, 1.0)
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", cave_pos + Vector3(2.6, 1.4, 3.2), 0.0, 1.0)
+
+	# 5. Western Monster Camp (x=-62, z=-24)
+	var camp_y: float = float(y_at.call(-62.0, -24.0))
+	var camp_pos := Vector3(-62.0, camp_y, -24.0)
+	place_model(parent, "res://assets/environments/villages/tent-detailedopen.glb", camp_pos + Vector3(-3.8, 0.0, -2.5), 0.8, 2.8,
+		Vector3(2.8, 2.2, 2.8), "CampTentA")
+	place_model(parent, "res://assets/environments/villages/campfire-stones.glb", camp_pos, 0.0, 2.4)
+	_add_omni_light(parent, camp_pos + Vector3(0.0, 0.9, 0.0), Color(1.0, 0.52, 0.18), 1.1, 7.5)
+
+	# 6. Southwest Sacred Ancient Grove (Hidden Area: x=-56, z=44)
+	var grove_y: float = float(y_at.call(-56.0, 44.0))
+	var grove_pos := Vector3(-56.0, grove_y, 44.0)
+	place_model(parent, "res://assets/environments/dungeons/statue-obelisk.glb", grove_pos, 0.0, 3.4,
+		Vector3(1.5, 4.2, 1.5), "SacredGroveShrine")
+	_add_omni_light(parent, grove_pos + Vector3(0.0, 2.2, 0.0), Color(0.42, 0.82, 1.0), 1.3, 9.0)
+
+	# 7. Sunken Crypt Dungeon Entrance + Gothic Mausoleum Sanctuary (East of Stone Bridge: x=58, z=22)
+	var crypt_y: float = float(y_at.call(58.0, 22.0))
+	var entrance := Vector3(58.0, crypt_y, 22.0)
+	if AssetLibrary.has_model("res://assets/environments/crypt_bits/crypt.gltf"):
+		place_model(parent, "res://assets/environments/crypt_bits/crypt.gltf", entrance + Vector3(0.0, 0.0, -3.2),
+			0.0, 1.45, Vector3(4.5, 4.2, 4.2), "CryptMausoleum")
+		place_model(parent, "res://assets/environments/crypt_bits/post_lantern.gltf", entrance + Vector3(-2.6, 0.0, 3.8), 0.0, 1.15)
+		place_model(parent, "res://assets/environments/crypt_bits/post_lantern.gltf", entrance + Vector3(2.6, 0.0, 3.8), 0.0, 1.15)
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "stairs.glb", entrance, deg_to_rad(180.0), 1.15,
+		Vector3.ZERO, "DungeonStairs")
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "wall_doorway.glb", entrance + Vector3(0.0, 0.0, 3.4),
+		deg_to_rad(180.0), 1.15, Vector3.ZERO, "DungeonArch")
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", entrance + Vector3(2.0, 1.3, 3.4),
+		deg_to_rad(180.0), 1.0)
+	place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", entrance + Vector3(-2.0, 1.3, 3.4),
+		deg_to_rad(180.0), 1.0)
+
+	return {
+		"bridge": bridge_pos,
+		"ruins": ruins_pos,
+		"cave": cave_pos + Vector3(0.0, 0.4, 4.0),
+		"monster_camp": camp_pos,
+		"sacred_grove": grove_pos,
+		"dungeon_stairs": entrance,
+		"dungeon_entrance": entrance + Vector3(0.0, 0.2, 4.8),
+	}
+
+# --- 2. Multi-Biome GPU-Instanced Forests & Flora ----------------------------
+
+static func _make_stylized_grass_tuft_mesh() -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var angles := [0.0, 0.82, 1.68, 2.48]
+	var offsets := [Vector2(-0.08, -0.05), Vector2(0.09, -0.04), Vector2(-0.04, 0.09), Vector2(0.07, 0.08)]
+	var heights := [0.54, 0.46, 0.58, 0.42]
+	for idx in angles.size():
+		var a: float = angles[idx]
+		var off: Vector2 = offsets[idx]
+		var h: float = heights[idx]
+		var dir := Vector3(cos(a), 0.0, sin(a)) * 0.075
+		var lean := Vector3(-sin(a), 0.0, cos(a)) * 0.085
+		var base := Vector3(off.x, -0.03, off.y)
+		var v0 := base - dir
+		var v1 := base + dir
+		var v2 := base + Vector3(0.0, h, 0.0) + lean
+		var nrm := Vector3(0.0, 1.0, 0.0)
+		st.set_normal(nrm); st.set_uv(Vector2(0.0, 1.0)); st.add_vertex(v0)
+		st.set_normal(nrm); st.set_uv(Vector2(1.0, 1.0)); st.add_vertex(v1)
+		st.set_normal(nrm); st.set_uv(Vector2(0.5, 0.0)); st.add_vertex(v2)
+	var mesh := st.commit()
+	mesh.surface_set_material(0, ArtDirection.wind_grass_shader_material())
+	return mesh
+
+static func _add_golden_meadow_motes(parent: Node3D) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var motes := GPUParticles3D.new()
+	motes.name = "GoldenMeadowMotes"
+	motes.amount = 48
+	motes.lifetime = 5.5
+	motes.preprocess = 2.0
+	motes.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	motes.position = Vector3(0.0, 1.4, 4.0)
+	var pmat := ParticleProcessMaterial.new()
+	pmat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pmat.emission_box_extents = Vector3(18.0, 1.8, 18.0)
+	pmat.direction = Vector3(0.3, 0.4, -0.2)
+	pmat.spread = 180.0
+	pmat.initial_velocity_min = 0.08
+	pmat.initial_velocity_max = 0.24
+	pmat.gravity = Vector3(0.0, 0.02, 0.0)
+	pmat.scale_min = 0.65
+	pmat.scale_max = 1.35
+	motes.process_material = pmat
+	var q := QuadMesh.new()
+	q.size = Vector2(0.065, 0.065)
+	var qmat := StandardMaterial3D.new()
+	qmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	qmat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	qmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	qmat.albedo_color = Color(1.0, 0.90, 0.48, 0.82)
+	q.material = qmat
+	motes.draw_pass_1 = q
+	parent.add_child(motes)
+
+static func _overlaps_town_building(x: float, z: float) -> bool:
+	var footprints := [
+		Vector3(1.8, -24.5, 7.2),
+		Vector3(2.2, -16.8, 5.2),
+		Vector3(9.6, -17.6, 4.8),
+		Vector3(14.6, -17.8, 4.8),
+		Vector3(9.8, -22.8, 4.2),
+		Vector3(22.5, -19.5, 5.8),
+		Vector3(-16.0, -8.0, 5.4),
+		Vector3(-25.5, -4.2, 5.2),
+		Vector3(-19.0, 11.0, 6.2),
+		Vector3(16.5, 8.5, 5.8),
+		Vector3(25.5, 14.0, 5.8),
+		Vector3(-18.5, 23.5, 5.6),
+		Vector3(-27.5, 22.5, 5.6),
+	]
+	for fp: Vector3 in footprints:
+		if Vector2(x - fp.x, z - fp.y).length() < fp.z:
+			return true
+	return false
+
+static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: int = 1337) -> Array:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+
+	var oak_xforms: Array = []
+	var dense_xforms: Array = []
+	var pine_xforms: Array = []
+	var birch_xforms: Array = []
+	var rock_xforms: Array = []
+	var rock_big_xforms: Array = []
+	var bush_xforms: Array = []
+	var flower_xforms: Array = []
+	var reed_xforms: Array = []
+	var trunk_positions: Array[Vector3] = []
+	var rock_positions: Array[Vector3] = []
+
+	# 1. Curated Hero Stylized Layered Pine Trees framing the Castle-Meadow Vista (matching reference!)
+	var hero_pine_xforms: Array = []
+	var hero_pines := [
+		Vector3(6.2, 7.4, 2.55),     # Large pine framing right foreground!
+		Vector3(4.9, -11.8, 1.85),   # Pine between barrel tavern & red cottages
+		Vector3(2.4, -12.4, 1.55),   # Pine beside barrel tavern
+		Vector3(-1.3, -10.2, 2.10),  # Tall pine directly behind Chibi Knight's head/left!
+		Vector3(-2.6, -8.8, 1.65),   # Companion pine left-center
+		Vector3(-4.4, -4.8, 1.85),   # Midground left pine on meadow slope
+		Vector3(-8.2, -9.5, 1.95),
+		Vector3(-11.8, -15.5, 1.95),
+	]
+	for hp: Vector3 in hero_pines:
+		var hy := terrain.height_at(hp.x, hp.y) if terrain != null else 0.0
+		var hpos := Vector3(hp.x, hy - 0.08, hp.y)
+		hero_pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * hp.z), hpos))
+		trunk_positions.append(hpos)
+
+	# Dense left-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
+	for i: int in 16:
+		var lx := rng.randf_range(-44.0, -8.5)
+		var lz := rng.randf_range(-44.0, 4.0)
+		if _overlaps_town_building(lx, lz) or (terrain != null and terrain.is_road_at(lx, lz)):
+			continue
+		var ly := terrain.height_at(lx, lz) if terrain != null else 0.0
+		var lpos := Vector3(lx, ly - 0.08, lz)
+		var ls := rng.randf_range(3.6, 4.8)
+		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
+		trunk_positions.append(lpos)
+
+	# Outer Valley Multi-Biome Stylized Trees (natural 7.5-10m forest scale, <160k total triangles!)
+	for i: int in 52:
+		var x := rng.randf_range(-108.0, 108.0)
+		var z := rng.randf_range(-108.0, 108.0)
+		var r := Vector2(x, z).length()
+		if r < 34.0:
+			continue
+		if terrain != null:
+			if terrain.is_road_at(x, z) or terrain.is_water_at(x, z):
+				continue
+			if terrain.river_distance(x, z) < 5.5 or terrain.lake_distance(x, z) < 1.12:
+				continue
+			if terrain.slope_at(x, z) > 0.56:
+				continue
+		if Vector2(x - 66.0, z + 18.0).length() < 11.0 or Vector2(x - 58.0, z - 22.0).length() < 10.5:
+			continue
+		if Vector2(x + 62.0, z + 24.0).length() < 10.0 or Vector2(x + 56.0, z - 44.0).length() < 8.5:
+			continue
+		if Vector2(x + 14.0, z + 64.0).length() < 9.5 or Vector2(x + 19.0, z + 47.0).length() < 5.5:
+			continue
+
+		var y := terrain.height_at(x, z) if terrain != null else 0.0
+		if y > 17.0:
+			continue
+		var biome := terrain.biome_at(x, z) if terrain != null else "dense_woodland"
+		var yaw := rng.randf_range(0.0, TAU)
+		var pos := Vector3(x, y - 0.08, z)
+		var sp := rng.randf_range(3.5, 4.7)
+
+		match biome:
+			"lakeside_birch":
+				if birch_xforms.size() < 4:
+					birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.45, 1.95)), pos))
+			"dense_woodland", "ancient_grove":
+				oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(3.4, 4.5)), pos))
+			_:
+				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
+		trunk_positions.append(pos)
+
+	# 2. Curated Foreground & Valley Stylized Faceted Grey Boulders (Quaternius Rock_1 & Rock_4)
+	var hero_rocks := [
+		Vector3(-4.2, 11.8, 1.55),   # Left foreground flat boulder cluster
+		Vector3(-3.4, 12.6, 1.15),
+		Vector3(-1.4, 10.2, 0.92),   # Pointed meadow stone left of Chibi Knight
+		Vector3(3.6, 12.2, 1.85),    # Right foreground sculpted grey boulder under pine!
+		Vector3(4.5, -2.5, 1.10),
+		Vector3(-7.2, 2.5, 1.35),
+	]
+	for hr: Vector3 in hero_rocks:
+		var hry := terrain.height_at(hr.x, hr.y) if terrain != null else 0.0
+		var hrpos := Vector3(hr.x, hry - 0.08, hr.y)
+		rock_big_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hr.z), hrpos))
+		rock_positions.append(hrpos)
+
+	for i: int in 80:
+		var rx := rng.randf_range(-96.0, 96.0)
+		var rz := rng.randf_range(-96.0, 96.0)
+		if _overlaps_town_building(rx, rz):
+			continue
+		if Vector2(rx, rz + 14.0).length() < 9.0:
+			continue
+		if terrain != null and (terrain.is_road_at(rx, rz) or terrain.is_water_at(rx, rz) or terrain.slope_at(rx, rz) > 0.65):
+			continue
+		var ry := terrain.height_at(rx, rz) if terrain != null else 0.0
+		var yaw := rng.randf_range(0.0, TAU)
+		if i < 42:
+			var rs := rng.randf_range(0.95, 1.75)
+			var rpos := Vector3(rx, ry - 0.08, rz)
+			rock_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rs), rpos))
+			rock_positions.append(rpos)
+		else:
+			var bs := rng.randf_range(0.85, 1.30)
+			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry - 0.04, rz)))
+
+	# 3. Lush GPU Wind-Animated 3D Meadow Grass (3,200 tufts concentrated in hero meadow = 12.8k tris, 1 Draw Call!)
+	var wind_grass_xforms: Array = []
+	var hero_flower_xforms: Array = []
+	for i: int in 3200:
+		var gx: float
+		var gz: float
+		if i < 2500:
+			gx = rng.randf_range(-20.0, 20.0)
+			gz = rng.randf_range(-16.0, 22.0)
+		else:
+			gx = rng.randf_range(-58.0, 58.0)
+			gz = rng.randf_range(-58.0, 58.0)
+		if _overlaps_town_building(gx, gz):
+			continue
+		if terrain != null:
+			if terrain.is_water_at(gx, gz) or terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 12.5:
+				continue
+			if gz >= -18.0 and gz <= 46.0:
+				var trail_x := -2.0 - 3.2 * smoothstep(-10.0, 18.0, gz) + sin(gz * 0.14) * 1.25
+				if absf(gx - trail_x) < 1.15:
+					continue
+			elif terrain.is_road_at(gx, gz):
+				continue
+		var gy := terrain.height_at(gx, gz) if terrain != null else 0.0
+		var gyaw := rng.randf_range(0.0, TAU)
+		var gscale := rng.randf_range(0.85, 1.42)
+		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.90, 1.28), gscale)), Vector3(gx, gy, gz)))
+		if absf(gx) < 14.0 and gz > -12.0 and gz < 18.0 and hero_flower_xforms.size() < 18 and i % 32 == 0:
+			var hfs := rng.randf_range(0.90, 1.35)
+			hero_flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hfs), Vector3(gx, gy - 0.02, gz)))
+		elif i % 15 == 0 and flower_xforms.size() < 110:
+			var fs := rng.randf_range(0.95, 1.45)
+			flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * fs), Vector3(gx, gy - 0.02, gz)))
+
+	# Shoreline Reeds around Crystal Lake
+	for i: int in 18:
+		var ang := float(i) / 18.0 * TAU
+		var lx := 16.0 + cos(ang) * 15.6
+		var lz := 54.0 + sin(ang) * 12.2
+		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
+		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
+
+	var stree := AssetLibrary.STYLIZED_TREES_DIR
+	var srock := AssetLibrary.STYLIZED_ROCKS_DIR
+	var sfol := AssetLibrary.STYLIZED_FOLIAGE_DIR
+	var hex_dir := AssetLibrary.HEXAGON_DIR
+	build_multimesh(parent, stree + "PineTree_5.glb", hero_pine_xforms, "StylizedPines", true, 90.0)
+	build_multimesh(parent, hex_dir + "trees_A_medium.gltf", pine_xforms, "ValleyStylizedPines", false, 88.0)
+	build_multimesh(parent, hex_dir + "trees_B_medium.gltf", oak_xforms, "ForestOaks", false, 82.0)
+	build_multimesh(parent, stree + "BirchTree_2.glb", birch_xforms, "LakesideBirches", false, 72.0)
+	build_multimesh(parent, srock + "Rock_4.glb", rock_big_xforms, "HeroMeadowRocks", false, 68.0)
+	build_multimesh(parent, srock + "Rock_1.glb", rock_xforms, "WorldRocks", false, 64.0)
+	build_multimesh(parent, sfol + "Bush_2.glb", bush_xforms, "ForestBushes", false, 44.0)
+	build_multimesh(parent, sfol + "Flowers.glb", hero_flower_xforms, "MeadowFlowers", false, 38.0)
+	build_multimesh(parent, sfol + "Flower_2.glb", flower_xforms, "ValleyWildflowers", false, 42.0)
+	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 60.0)
+
+	# Build the 1-draw-call GPU Wind Grass MultiMeshInstance3D!
+	if not wind_grass_xforms.is_empty():
+		var g_mm := MultiMesh.new()
+		g_mm.transform_format = MultiMesh.TRANSFORM_3D
+		g_mm.mesh = _make_stylized_grass_tuft_mesh()
+		g_mm.instance_count = wind_grass_xforms.size()
+		for gi in wind_grass_xforms.size():
+			g_mm.set_instance_transform(gi, wind_grass_xforms[gi] as Transform3D)
+		var g_inst := MultiMeshInstance3D.new()
+		g_inst.name = "MeadowWindGrass"
+		g_inst.multimesh = g_mm
+		g_inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		g_inst.visibility_range_end = 42.0
+		g_inst.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		parent.add_child(g_inst)
+
+	_add_golden_meadow_motes(parent)
+
+	# Batched StaticBody3D for tree trunks AND large rock boulders within playable elevation
+	var trunk_body := StaticBody3D.new()
+	trunk_body.name = "ForestTrunkColliders"
+	trunk_body.collision_layer = 1
+	trunk_body.collision_mask = 0
+	var shared_cyl := CylinderShape3D.new()
+	shared_cyl.radius = 0.44
+	shared_cyl.height = 3.4
+	var shared_rock := SphereShape3D.new()
+	shared_rock.radius = 0.95
+	parent.add_child(trunk_body)
+	for tp: Vector3 in trunk_positions:
+		if tp.y > 12.0:
+			continue
+		var cs := CollisionShape3D.new()
+		cs.shape = shared_cyl
+		cs.position = tp + Vector3(0.0, 1.7, 0.0)
+		trunk_body.add_child(cs)
+	for rp: Vector3 in rock_positions:
+		if rp.y > 12.0:
+			continue
+		var rcs := CollisionShape3D.new()
+		rcs.shape = shared_rock
+		rcs.position = rp + Vector3(0.0, 0.7, 0.0)
+		trunk_body.add_child(rcs)
+
+	var y_fn := func(px: float, pz: float) -> float:
+		return (terrain.height_at(px, pz) + 0.35) if terrain != null else 0.35
+	return [
+		Vector3(-56.0, y_fn.call(-56.0, -18.0), -18.0),
+		Vector3(-64.0, y_fn.call(-64.0, -26.0), -26.0),
+		Vector3(-48.0, y_fn.call(-48.0, 16.0), 16.0),
+		Vector3(-38.0, y_fn.call(-38.0, -34.0), -34.0),
+		Vector3(-68.0, y_fn.call(-68.0, -38.0), -38.0),
+	]
+
+# --- 3. Cottage Interior -----------------------------------------------------
 
 static func build_house_interior(parent: Node3D) -> Dictionary:
 	var origin := INTERIOR_ORIGIN
 	var room := Rect2(-5.0, -4.0, 10.0, 8.0)
-	var wall_color := Color(0.72, 0.66, 0.55)
-	var floor_color := Color(0.42, 0.3, 0.2)
-	var wall_height := 3.0
+	var wall_color := Color(0.68, 0.62, 0.52)
+	var floor_color := Color(0.38, 0.27, 0.18)
+	var wall_height := 3.2
 	var wall_thickness := 0.3
-	# Floor + ceiling slabs.
 	_solid_box(parent, origin + Vector3(0.0, -0.4, 0.0),
 		Vector3(room.size.x, 0.4, room.size.y), floor_color, "HouseFloor")
 
@@ -271,35 +790,26 @@ static func build_house_interior(parent: Node3D) -> Dictionary:
 	var ceiling_box := BoxMesh.new()
 	ceiling_box.size = Vector3(room.size.x, 0.2, room.size.y)
 	ceiling.mesh = ceiling_box
-	ceiling.material_override = _color_material(Color(0.3, 0.28, 0.26))
+	ceiling.material_override = _color_material(Color(0.28, 0.24, 0.20))
 	ceiling.position = origin + Vector3(0.0, wall_height, 0.0)
 	parent.add_child(ceiling)
 
-	# Walls (4 sides) with a 2m doorway in the south wall so the exit is reachable.
 	var south_z := room.position.y + room.size.y
 	var half_width := room.size.x * 0.5
 	var side_piece := half_width - 1.0
 	var walls: Array = [
-		{"size": Vector3(room.size.x, wall_height, wall_thickness),
-			"pos": Vector3(0.0, 0.0, room.position.y)},
-		{"size": Vector3(side_piece, wall_height, wall_thickness),
-			"pos": Vector3(-(1.0 + side_piece * 0.5), 0.0, south_z)},
-		{"size": Vector3(side_piece, wall_height, wall_thickness),
-			"pos": Vector3(1.0 + side_piece * 0.5, 0.0, south_z)},
-		{"size": Vector3(wall_thickness, wall_height, room.size.y),
-			"pos": Vector3(room.position.x, 0.0, 0.0)},
-		{"size": Vector3(wall_thickness, wall_height, room.size.y),
-			"pos": Vector3(room.position.x + room.size.x, 0.0, 0.0)},
+		{"size": Vector3(room.size.x, wall_height, wall_thickness), "pos": Vector3(0.0, 0.0, room.position.y)},
+		{"size": Vector3(side_piece, wall_height, wall_thickness), "pos": Vector3(-(1.0 + side_piece * 0.5), 0.0, south_z)},
+		{"size": Vector3(side_piece, wall_height, wall_thickness), "pos": Vector3(1.0 + side_piece * 0.5, 0.0, south_z)},
+		{"size": Vector3(wall_thickness, wall_height, room.size.y), "pos": Vector3(room.position.x, 0.0, 0.0)},
+		{"size": Vector3(wall_thickness, wall_height, room.size.y), "pos": Vector3(room.position.x + room.size.x, 0.0, 0.0)},
 	]
 	for wall: Dictionary in walls:
-		_solid_box(parent, origin + (wall["pos"] as Vector3), wall["size"] as Vector3,
-			wall_color, "HouseWall")
+		_solid_box(parent, origin + (wall["pos"] as Vector3), wall["size"] as Vector3, wall_color, "HouseWall")
 
-	# Furniture from KayKit Furniture Bits.
 	var fur := AssetLibrary.FURNITURE_DIR
 	place_model(parent, fur + "bed_single_A.gltf", origin + Vector3(-3.6, 0.0, -2.6), 0.0, 1.0)
-	place_model(parent, fur + "table_small.gltf", origin + Vector3(1.2, 0.0, -2.4), 0.0, 1.0,
-		Vector3(1.0, 0.9, 1.0), "HouseTable")
+	place_model(parent, fur + "table_small.gltf", origin + Vector3(1.2, 0.0, -2.4), 0.0, 1.0, Vector3(1.0, 0.9, 1.0), "HouseTable")
 	place_model(parent, fur + "chair_A_wood.gltf", origin + Vector3(2.3, 0.0, -2.4), -PI * 0.5, 1.0)
 	place_model(parent, fur + "chair_stool_wood.gltf", origin + Vector3(0.2, 0.0, -2.2), PI, 1.0)
 	place_model(parent, fur + "rug_rectangle_A.gltf", origin + Vector3(0.0, 0.02, 0.4), 0.0, 1.8)
@@ -307,28 +817,122 @@ static func build_house_interior(parent: Node3D) -> Dictionary:
 	place_model(parent, fur + "shelf_A_small.gltf", origin + Vector3(-4.4, 0.0, 1.8), PI * 0.5, 1.0)
 	place_model(parent, fur + "book_set.gltf", origin + Vector3(1.2, 0.62, -2.4), 0.0, 1.0)
 	place_model(parent, fur + "lamp_table.gltf", origin + Vector3(-1.4, 0.0, -2.4), 0.0, 1.0)
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "candle_lit.glb", origin + Vector3(-1.4, 0.55, -2.4), 0.0, 0.6)
 
-	_add_omni_light(parent, origin + Vector3(0.0, 2.5, 0.0), Color(1.0, 0.82, 0.6), 1.6, 9.0)
+	_add_omni_light(parent, origin + Vector3(0.0, 2.6, 0.0), Color(1.0, 0.82, 0.58), 1.5, 10.0)
 	return {
 		"spawn": origin + Vector3(0.0, 0.6, 2.2),
-		"exit": origin + Vector3(0.0, 0.0, 4.6),
+		"exit": origin + Vector3(0.0, 0.0, 4.4),
 		"origin": origin,
 	}
 
-# --- dungeon -----------------------------------------------------------------
+# --- 4. Grand Adventurers Guild Hall Interior (Section 13) -------------------
+
+static func build_guild_interior(parent: Node3D) -> Dictionary:
+	var origin := GUILD_ORIGIN
+	var w := 20.0
+	var d := 24.0
+	var h := 5.6
+	var thick := 0.45
+
+	# Polished Stone Hall Floor + Royal Blue & Gold Carpet Runner + Timber Ceiling
+	_solid_box(parent, origin + Vector3(0.0, -0.4, 0.0), Vector3(w, 0.4, d), Color(0.36, 0.35, 0.38), "GuildFloor")
+	var carpet := MeshInstance3D.new()
+	var cbox := BoxMesh.new()
+	cbox.size = Vector3(3.2, 0.03, 18.0)
+	carpet.mesh = cbox
+	carpet.position = origin + Vector3(0.0, 0.015, 1.0)
+	carpet.material_override = _color_material(Color(0.18, 0.34, 0.64))
+	parent.add_child(carpet)
+
+	var ceiling := MeshInstance3D.new()
+	var ceil_box := BoxMesh.new()
+	ceil_box.size = Vector3(w, 0.3, d)
+	ceiling.mesh = ceil_box
+	ceiling.position = origin + Vector3(0.0, h, 0.0)
+	ceiling.material_override = _color_material(Color(0.24, 0.18, 0.13))
+	parent.add_child(ceiling)
+
+	# Perimeter Stone Walls with South Entrance Archway
+	var half_w := w * 0.5
+	var half_d := d * 0.5
+	var door_side := half_w - 1.5
+	var guild_walls := [
+		{"size": Vector3(w, h, thick), "pos": Vector3(0.0, 0.0, -half_d)},
+		{"size": Vector3(door_side, h, thick), "pos": Vector3(-(1.5 + door_side * 0.5), 0.0, half_d)},
+		{"size": Vector3(door_side, h, thick), "pos": Vector3(1.5 + door_side * 0.5, 0.0, half_d)},
+		{"size": Vector3(thick, h, d), "pos": Vector3(-half_w, 0.0, 0.0)},
+		{"size": Vector3(thick, h, d), "pos": Vector3(half_w, 0.0, 0.0)},
+	]
+	for gw: Dictionary in guild_walls:
+		_solid_box(parent, origin + (gw["pos"] as Vector3), gw["size"] as Vector3, Color(0.56, 0.53, 0.48), "GuildWall")
+
+	# Stone Pillars & Royal Banners
+	for pz: float in [-7.5, -1.5, 4.5]:
+		for px: float in [-6.8, 6.8]:
+			place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", origin + Vector3(px, 0.0, pz), 0.0, 1.35,
+				Vector3(0.9, 5.2, 0.9), "GuildPillar")
+			place_model(parent, "res://assets/environments/dungeons/banner_blue.glb", origin + Vector3(px * 0.92, 2.2, pz),
+				PI * 0.5 if px < 0 else -PI * 0.5, 1.2)
+
+	# 1) Reception Counter (West-Center)
+	_solid_box(parent, origin + Vector3(-5.2, 0.0, 1.5), Vector3(3.8, 1.05, 1.1), Color(0.38, 0.25, 0.15), "ReceptionDesk")
+
+	# 2) Interactive Guild Quest Board (East-Center)
+	var board := QuestBoardProp.new()
+	board.name = "GuildHallQuestBoard"
+	board.setup("Inspect Official Guild Contracts")
+	parent.add_child(board)
+	board.global_position = origin + Vector3(4.8, 0.0, 2.0)
+	board.rotation.y = -0.35
+
+	# 3) Guild Master's Raised Dais & Command Desk (North End)
+	_solid_box(parent, origin + Vector3(0.0, 0.0, -8.8), Vector3(7.6, 0.35, 4.2), Color(0.44, 0.41, 0.38), "MasterDais")
+	place_model(parent, AssetLibrary.FURNITURE_DIR + "table_small.gltf", origin + Vector3(0.0, 0.35, -8.8), 0.0, 1.6,
+		Vector3(1.8, 1.0, 1.2), "MasterDesk")
+	place_model(parent, "res://assets/environments/dungeons/banner_blue.glb", origin + Vector3(0.0, 2.8, -11.6), 0.0, 1.8)
+
+	# 4) Quartermaster Armory Corner (Northwest) & Training Area (Southeast)
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "weaponrack.gltf", origin + Vector3(-7.6, 0.0, -5.5), PI * 0.5, 3.6)
+	place_model(parent, AssetLibrary.HEXAGON_DIR + "target.gltf", origin + Vector3(7.4, 0.0, 7.2), -PI * 0.5, 3.6)
+	place_model(parent, AssetLibrary.FURNITURE_DIR + "table_small.gltf", origin + Vector3(-5.5, 0.0, 7.2), 0.0, 1.4)
+	place_model(parent, AssetLibrary.FURNITURE_DIR + "chair_A_wood.gltf", origin + Vector3(-4.2, 0.0, 7.2), -PI * 0.5, 1.1)
+
+	# Warm Chandelier Illumination
+	_add_omni_light(parent, origin + Vector3(0.0, 4.4, 4.0), Color(1.0, 0.85, 0.62), 1.5, 16.0)
+	_add_omni_light(parent, origin + Vector3(0.0, 4.4, -6.5), Color(1.0, 0.85, 0.62), 1.6, 16.0)
+
+	return {
+		"origin": origin,
+		"spawn": origin + Vector3(0.0, 0.6, 8.8),
+		"exit": origin + Vector3(0.0, 0.0, 11.4),
+		"receptionist_pos": origin + Vector3(-5.2, 0.0, 0.2),
+		"master_pos": origin + Vector3(0.0, 0.35, -9.8),
+		"quartermaster_pos": origin + Vector3(-6.2, 0.0, -4.8),
+		"trainer_pos": origin + Vector3(5.8, 0.0, 6.8),
+		"veteran_pos": origin + Vector3(3.2, 0.0, -1.2),
+		"recruit_pos": origin + Vector3(-3.2, 0.0, 6.8),
+	}
+
+# --- 5. Modular Sunken Crypt Dungeon (Traps, Secret Room & Boss Sanctum) -----
 
 static func build_dungeon(parent: Node3D) -> Dictionary:
 	var origin := DUNGEON_ORIGIN
-	build_ground(parent, 80.0, origin + Vector3(0.0, 0.0, 0.0), Color(0.2, 0.19, 0.18))
+	build_ground(parent, 96.0, origin, Color(0.16, 0.16, 0.18))
 	var floor_transforms: Array = []
 	var wall_transforms: Array = []
 	var rooms: Array = [
+		# Entry Antechamber
 		{"rect": Rect2(0.0, 0.0, 8.0, 8.0), "doors": ["south"]},
+		# Trap Gauntlet Corridor
 		{"rect": Rect2(2.0, 8.0, 4.0, 8.0), "doors": ["north", "south"]},
-		{"rect": Rect2(0.0, 16.0, 8.0, 8.0), "doors": ["north", "south"]},
+		# Crypt Guard Hall (with East Secret Alcove!)
+		{"rect": Rect2(0.0, 16.0, 8.0, 8.0), "doors": ["north", "south", "east"]},
+		# Hidden Secret Treasure Alcove (East)
+		{"rect": Rect2(8.0, 16.0, 8.0, 8.0), "doors": ["west"]},
+		# Boss Approach Bridge
 		{"rect": Rect2(2.0, 24.0, 4.0, 4.0), "doors": ["north", "south"]},
-		{"rect": Rect2(-4.0, 28.0, 16.0, 8.0), "doors": ["north"]},
+		# Malakor's Dread Sanctum (16m x 12m Boss Arena!)
+		{"rect": Rect2(-4.0, 28.0, 16.0, 12.0), "doors": ["north"]},
 	]
 	for room: Dictionary in rooms:
 		_add_dungeon_room(room["rect"] as Rect2, room["doors"] as Array, floor_transforms, wall_transforms)
@@ -336,35 +940,50 @@ static func build_dungeon(parent: Node3D) -> Dictionary:
 		floor_transforms[i] = _offset_transform(floor_transforms[i], origin)
 	for i: int in wall_transforms.size():
 		wall_transforms[i] = _offset_transform(wall_transforms[i], origin)
+
 	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "floor_tile_large.glb", floor_transforms, "DungeonFloors", false)
-	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "wall.glb", wall_transforms, "DungeonWalls")
+	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "wall.glb", wall_transforms, "DungeonWalls", false)
 	_add_dungeon_colliders(parent, wall_transforms)
+	_solid_box(parent, origin + Vector3(6.0, 4.35, 20.0), Vector3(28.0, 0.35, 44.0), Color(0.11, 0.12, 0.15), "DungeonCeiling")
 
-	# Props + light sources.
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", origin + Vector3(1.0, 0.0, 1.0), 0.0, 1.0,
-		Vector3(0.8, 4.0, 0.8), "DungeonPillar")
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", origin + Vector3(7.0, 0.0, 1.0), 0.0, 1.0,
-		Vector3(0.8, 4.0, 0.8))
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "rubble_large.glb", origin + Vector3(3.0, 0.0, 20.0), 0.4, 1.0)
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "barrel_large.glb", origin + Vector3(-3.0, 0.0, 30.0), 0.0, 1.0,
-		Vector3(1.2, 1.8, 1.2))
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "crates_stacked.glb", origin + Vector3(-1.5, 0.0, 32.0), 0.7, 1.0)
-	for torch_pos: Vector3 in [Vector3(0.4, 2.0, 2.0), Vector3(7.6, 2.0, 14.0), Vector3(2.4, 2.0, 26.0),
-			Vector3(-3.0, 2.0, 33.0)]:
-		place_model(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", origin + torch_pos, 0.0, 1.0)
-	# Spike trap in the second room.
-	place_model(parent, AssetLibrary.DUNGEON_DIR + "floor_tile_big_spikes.glb", origin + Vector3(4.0, 0.0, 20.0),
-		0.0, 1.0)
+	# Columns, Banners & Torches (MultiMesh batched for <300 total draw calls!)
+	var pillar_xforms: Array = []
+	for p_off: Vector3 in [Vector3(1.0, 0.0, 1.0), Vector3(7.0, 0.0, 1.0), Vector3(-2.5, 0.0, 30.0), Vector3(10.5, 0.0, 30.0), Vector3(-2.5, 0.0, 38.0), Vector3(10.5, 0.0, 38.0)]:
+		pillar_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 1.1), origin + p_off))
+	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "pillar.glb", pillar_xforms, "DungeonPillars", false)
+	place_model(parent, "res://assets/environments/dungeons/banner_red.glb", origin + Vector3(0.5, 2.2, 39.6), PI, 1.4)
+	place_model(parent, "res://assets/environments/dungeons/banner_red.glb", origin + Vector3(7.5, 2.2, 39.6), PI, 1.4)
 
-	_add_omni_light(parent, origin + Vector3(4.0, 3.0, 4.0), Color(1.0, 0.7, 0.45), 1.4, 12.0)
-	_add_omni_light(parent, origin + Vector3(4.0, 3.0, 20.0), Color(1.0, 0.7, 0.45), 1.4, 12.0)
-	_add_omni_light(parent, origin + Vector3(4.0, 3.0, 32.0), Color(0.85, 0.75, 1.0), 1.6, 14.0)
+	var torch_xforms: Array = []
+	for torch_pos: Vector3 in [Vector3(0.4, 2.0, 2.0), Vector3(5.6, 2.0, 12.0), Vector3(0.4, 2.0, 20.0), Vector3(14.5, 2.0, 20.0), Vector3(-3.4, 2.0, 34.0), Vector3(11.4, 2.0, 34.0)]:
+		torch_xforms.append(Transform3D(Basis.IDENTITY, origin + torch_pos))
+	build_multimesh(parent, AssetLibrary.DUNGEON_DIR + "torch_lit.glb", torch_xforms, "DungeonTorches", false)
+
+	# Real Timed Spike Traps in the Gauntlet & Guard Hall!
+	var trap_offsets := [Vector3(4.0, 0.0, 11.0), Vector3(4.0, 0.0, 14.0), Vector3(4.0, 0.0, 20.0)]
+	for ti: int in trap_offsets.size():
+		var trap := DungeonTrap.new()
+		trap.name = "CryptSpikeTrap_%d" % ti
+		trap.phase_offset = float(ti) * 1.15
+		parent.add_child(trap)
+		trap.global_position = origin + trap_offsets[ti]
+
+	_add_omni_light(parent, origin + Vector3(4.0, 3.2, 4.0), Color(1.0, 0.72, 0.45), 1.4, 13.0)
+	_add_omni_light(parent, origin + Vector3(4.0, 3.2, 20.0), Color(1.0, 0.68, 0.42), 1.4, 14.0)
+	_add_omni_light(parent, origin + Vector3(12.0, 3.0, 20.0), Color(0.55, 0.82, 1.0), 1.2, 11.0)
+	_add_omni_light(parent, origin + Vector3(4.0, 3.8, 34.0), Color(0.92, 0.42, 0.55), 1.65, 18.0)
+
 	return {
-		"spawn": origin + Vector3(4.0, 0.6, 3.0),
-		"exit": origin + Vector3(4.0, 0.0, 7.4),
-		"chest": origin + Vector3(4.0, 0.0, 33.0),
+		"spawn": origin + Vector3(4.0, 0.6, 2.5),
+		"exit": origin + Vector3(4.0, 0.0, 1.0),
+		"chest": origin + Vector3(4.0, 0.0, 38.2),
+		"secret_chest": origin + Vector3(13.5, 0.0, 20.0),
 		"trap": origin + Vector3(4.0, 0.0, 20.0),
-		"enemy_spawns": [origin + Vector3(4.0, 0.4, 18.0), origin + Vector3(6.0, 0.4, 31.0)],
+		"boss_spawn": origin + Vector3(4.0, 0.4, 34.0),
+		"enemy_spawns": [
+			origin + Vector3(3.2, 0.4, 18.5),
+			origin + Vector3(5.4, 0.4, 22.0),
+		],
 		"origin": origin,
 	}
 
@@ -380,27 +999,21 @@ static func _add_dungeon_room(rect: Rect2, doors: Array, floor_transforms: Array
 			floor_transforms.append(Transform3D(Basis.IDENTITY, Vector3(x + half_tile, 0.0, z + half_tile)))
 			z += DUNGEON_TILE
 		x += DUNGEON_TILE
-	# Perimeter walls; skip the middle segment on sides that have a door.
 	var segments_x := int(rect.size.x / DUNGEON_TILE)
 	var segments_z := int(rect.size.y / DUNGEON_TILE)
 	for i: int in segments_x:
 		var cx := rect.position.x + half_tile + float(i) * DUNGEON_TILE
-		var skip_middle := doors.has("north") and i == int(segments_x / 2)
-		if not skip_middle:
+		if not (doors.has("north") and i == int(segments_x / 2)):
 			wall_transforms.append(Transform3D(Basis.IDENTITY, Vector3(cx, 0.0, rect.position.y)))
-		var skip_south := doors.has("south") and i == int(segments_x / 2)
-		if not skip_south:
-			wall_transforms.append(Transform3D(Basis.IDENTITY,
-				Vector3(cx, 0.0, rect.position.y + rect.size.y)))
+		if not (doors.has("south") and i == int(segments_x / 2)):
+			wall_transforms.append(Transform3D(Basis.IDENTITY, Vector3(cx, 0.0, rect.position.y + rect.size.y)))
 	for i: int in segments_z:
 		var cz := rect.position.y + half_tile + float(i) * DUNGEON_TILE
 		var door_middle := i == int(segments_z / 2)
 		if not (doors.has("west") and door_middle):
-			wall_transforms.append(Transform3D(Basis(Vector3.UP, PI * 0.5),
-				Vector3(rect.position.x, 0.0, cz)))
+			wall_transforms.append(Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(rect.position.x, 0.0, cz)))
 		if not (doors.has("east") and door_middle):
-			wall_transforms.append(Transform3D(Basis(Vector3.UP, PI * 0.5),
-				Vector3(rect.position.x + rect.size.x, 0.0, cz)))
+			wall_transforms.append(Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(rect.position.x + rect.size.x, 0.0, cz)))
 
 static func _add_dungeon_colliders(parent: Node3D, wall_transforms: Array) -> void:
 	var body := StaticBody3D.new()
@@ -416,7 +1029,6 @@ static func _add_dungeon_colliders(parent: Node3D, wall_transforms: Array) -> vo
 		shape.transform = Transform3D(transform.basis, transform.origin + Vector3(0.0, 2.0, 0.0))
 		body.add_child(shape)
 
-## Static box whose collider and mesh share the same base position.
 static func _solid_box(parent: Node3D, base_position: Vector3, size: Vector3,
 		color: Color, node_name: String = "SolidBox") -> StaticBody3D:
 	var body := add_box_body(parent, base_position, size, node_name)
@@ -443,5 +1055,5 @@ static func _add_omni_light(parent: Node3D, position: Vector3, color: Color,
 static func _color_material(color: Color) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = color
-	mat.roughness = 0.9
+	mat.roughness = 0.88
 	return mat

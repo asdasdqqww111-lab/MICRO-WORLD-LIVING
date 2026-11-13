@@ -1,6 +1,6 @@
 class_name CreatureData
 extends Resource
-## Data-driven creature template (resources/creatures/*.tres).
+## Data-driven creature, wildlife, elite & boss template (resources/creatures/*.tres).
 
 @export var id: String = ""
 @export var display_name: String = ""
@@ -16,12 +16,15 @@ extends Resource
 @export var xp_reward: int = 20
 @export var gold_reward: int = 3
 @export var hostile: bool = true
+@export var flee_when_hurt: bool = false
+@export var is_elite: bool = false
+@export var is_boss: bool = false
 @export var body_scale: float = 1.0
-@export_enum("skeleton", "slime", "wolf") var visual_type: String = "skeleton"
-@export var loot: Array = []   # [{"id": String, "chance": float, "min": int, "max": int}]
+@export var model_y_offset: float = 0.0
+@export var tint_color: Color = Color.WHITE
+@export var visual_type: String = "skeleton"
+@export var loot: Array = []
 
-## Rolls this creature's loot table.  Deterministic for a given RNG so tests
-## can seed it.
 func roll_loot(rng: RandomNumberGenerator) -> Array:
 	var drops: Array = []
 	for entry: Dictionary in loot:

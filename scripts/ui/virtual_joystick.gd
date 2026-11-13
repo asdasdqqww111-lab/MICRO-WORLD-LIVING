@@ -1,18 +1,18 @@
 class_name VirtualJoystick
 extends Control
-## Touch joystick (also usable with the mouse thanks to touch emulation).
+## Transparent Dual-Ring Mobile RPG Joystick with 4 directional chevrons.
 
 signal moved(vector: Vector2)
 
-var radius: float = 92.0
-var dead_zone: float = 0.16
+var radius: float = 78.0
+var dead_zone: float = 0.15
 var _center: Vector2
 var _knob: Vector2
 var _pointer_id: int = -1
 var _active: bool = false
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(radius * 2.2, radius * 2.2)
+	custom_minimum_size = Vector2(radius * 2.25, radius * 2.25)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_center = size * 0.5
 	_knob = _center
@@ -71,9 +71,20 @@ func vector() -> Vector2:
 	return Vector2.ZERO if delta.length() < dead_zone else delta
 
 func _draw() -> void:
-	var base_color := Color(1, 1, 1, 0.12)
-	var ring_color := Color(1, 1, 1, 0.35)
-	draw_circle(_center, radius, base_color)
-	draw_arc(_center, radius, 0.0, TAU, 48, ring_color, 3.0, true)
-	draw_circle(_knob, radius * 0.38, Color(0.55, 0.78, 0.45, 0.75))
-	draw_arc(_knob, radius * 0.38, 0.0, TAU, 32, Color(1, 1, 1, 0.6), 2.0, true)
+	# Subtle translucent outer ring + faint inner glass disc
+	draw_circle(_center, radius, Color(0.86, 0.90, 0.88, 0.12))
+	draw_arc(_center, radius, 0.0, TAU, 56, Color(0.92, 0.94, 0.92, 0.34), 2.0, true)
+	draw_arc(_center, radius - 5.0, 0.0, TAU, 48, Color(0.92, 0.94, 0.92, 0.12), 1.0, true)
+
+	# Four subtle cardinal chevrons around outer ring
+	var chev_col := Color(0.94, 0.95, 0.92, 0.38)
+	var cr := radius - 11.0
+	for dir: Vector2 in [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]:
+		var tip := _center + dir * (cr + 4.0)
+		var perp := Vector2(-dir.y, dir.x) * 4.5
+		draw_colored_polygon(PackedVector2Array([tip, _center + dir * (cr - 2.0) + perp, _center + dir * (cr - 2.0) - perp]), chev_col)
+
+	# Frosted translucent inner thumb knob
+	var knob_r := radius * 0.36
+	draw_circle(_knob, knob_r, Color(0.84, 0.87, 0.86, 0.48))
+	draw_arc(_knob, knob_r, 0.0, TAU, 36, Color(0.98, 0.99, 0.98, 0.72), 2.2, true)

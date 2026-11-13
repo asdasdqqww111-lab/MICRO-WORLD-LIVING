@@ -1,13 +1,12 @@
 class_name Inventory
 extends RefCounted
-## Slot based inventory + 3 equipment slots. Pure data: no node dependencies so
-## it can be unit tested headless.
+## Slot-based inventory + 5 RPG equipment slots (weapon, armor, helmet, shield, accessory).
 
 signal changed()
 signal equipment_changed()
 
 const SLOT_COUNT := 20
-const EQUIP_SLOTS: Array[String] = ["weapon", "armor", "helmet"]
+const EQUIP_SLOTS: Array[String] = ["weapon", "armor", "helmet", "shield", "accessory"]
 
 var slots: Array[Dictionary] = []
 var equipment: Dictionary = {}
@@ -108,11 +107,12 @@ func equip(item_id: String) -> bool:
 	if count_item(item_id) <= 0:
 		return false
 	var slot_name := data.equip_slot
+	if not EQUIP_SLOTS.has(slot_name):
+		return false
 	var previous := String(equipment.get(slot_name, ""))
 	if not remove_item(item_id, 1):
 		return false
 	if not previous.is_empty() and add_item(previous, 1) > 0:
-		# No room for the swapped-out gear: roll back.
 		add_item(item_id, 1)
 		return false
 	equipment[slot_name] = item_id
@@ -152,6 +152,22 @@ func total_defense_bonus() -> float:
 			total += data.defense_bonus
 	return total
 
+func total_magic_bonus() -> float:
+	var total := 0.0
+	for slot_name: String in EQUIP_SLOTS:
+		var data := ItemDB.get_item(equipped(slot_name))
+		if data != null:
+			total += data.magic_bonus
+	return total
+
+func total_crit_bonus() -> float:
+	var total := 0.0
+	for slot_name: String in EQUIP_SLOTS:
+		var data := ItemDB.get_item(equipped(slot_name))
+		if data != null:
+			total += data.crit_bonus
+	return total
+
 func swap_slots(a: int, b: int) -> bool:
 	if a == b or a < 0 or b < 0 or a >= slots.size() or b >= slots.size():
 		return false
@@ -161,7 +177,6 @@ func swap_slots(a: int, b: int) -> bool:
 	changed.emit()
 	return true
 
-## Moves an equipped item back into the bags (fails when the bags are full).
 func move_equipment_to_bag(slot_name: String) -> bool:
 	var item_id := equipped(slot_name)
 	if item_id.is_empty():

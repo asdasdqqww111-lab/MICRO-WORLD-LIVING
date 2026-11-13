@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "knight_plate"
+display_name = "Knight's Vanguard Plate"
+description = "Articulated steel cuirass and royal mantle forged in Eldoria."
+category = 3
+rarity = 2
+max_stack = 1
+value = 145
+defense_bonus = 12.0
+icon_color = Color(0.74, 0.78, 0.86, 1)
+equip_slot = "armor"

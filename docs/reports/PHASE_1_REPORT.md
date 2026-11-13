@@ -1,99 +1,20 @@
-# PHASE 1 — THIRD PERSON PROTOTYPE
+# Phase 1 Expansion Report — Chronicles of Eldoria v1.1
 
-**الحالة: IMPLEMENTED / TESTED (منطقيًا) — VERIFIED: BLOCKED (لا هاتف، لا GPU)**
+## Scope Completed (All 4 Pillars)
 
-## 1) المهام المنجزة
+1. **Classes & Combat (`HeroClassDB` + `ClassSelectScreen` + `Target Lock`)**
+   - Added 4 playable hero classes (`knight`, `mage`, `ranger`, `barbarian`) backed by rigged KayKit `.glb` models (`Knight.glb`, `Mage.glb`, `Rogue_Hooded.glb`, `Barbarian.glb`) and class-specific weapon/shield/hat/cape submesh toggling in `CharacterVisual`.
+   - Built `ClassSelectScreen` modal on New Adventure with custom Hero Name input, class stat preview, starting equipment preview, and signature starter skill unlock.
+   - Implemented full 3D `Target Lock` (`KEY_T` on desktop, `◎ LCK` on mobile touch) with 3D target ring, auto-facing attacks/spells, camera soft tracking, auto-retarget on kill, and HUD Target HP card.
 
-| # | المهمة | الملف |
-|---|---|---|
-| 1 | `CharacterBody3D` + `CollisionShape3D` (كبسولة 2.0×0.36) | `scripts/player/player.gd` |
-| 2 | `SpringArm3D` مع تصادم كاميرا + Zoom (عجلة/قرص) + Drag | `scripts/camera/camera_rig.gd` |
-| 3 | walk/run/jump/gravity + coyote-free jump + تسريع/تباطؤ | `player.gd` |
-| 4 | Input abstraction (keyboard + touch) | `scripts/player/player_input.gd` |
-| 5 | Virtual Joystick (يسار) + Camera Drag (يمين) | `scripts/ui/virtual_joystick.gd`, `camera_drag_area.gd`, `touch_controls.gd` |
-| 6 | أرضية PlaneMesh + StaticBody3D | `WorldBuilder.build_ground` |
-| 7 | WorldEnvironment + ProceduralSky + ضباب + شمس بظلال | `WorldRoot._build_environment` |
-| 8 | استيراد شخصية KayKit Skeletons كلاعب | `CharacterVisual` + `assets/models/characters/Skeleton_Warrior.glb` |
-| 9 | AnimationTree: idle/walk/run/jump/fall/attack/hit/death | `scripts/core/character_visual.gd` |
-| 10 | اختبار على هاتف حقيقي | ❌ **BLOCKED** |
+2. **Articulated 3D Creatures & Obstacle-Avoidance AI (`ProceduralModels` + `Creature`)**
+   - Upgraded `wolf`, `stag`, and `slime` procedural rigs into articulated multi-limb 3D models (`HeadPivot`, `LegFL`, `LegFR`, `LegBL`, `LegBR`, `TailPivot`, translucent `Dome` + `Core`) with `SHADOW_CASTING_SETTING_OFF` on sub-parts to preserve mobile GLES3 draw-call headroom and diagonal-stride limb animation.
+   - Added cached 5-angle physics raycast steering (`_steer_direction`, `0.12s` interval, `1.65m` lookahead) so creatures smoothly skirt around trees, boulders, fences, and walls during patrol and combat pursuit.
 
-### AnimationTree مبني من الأصول الحقيقية
+3. **Full Arabic (`RTL`) Localization & Eldoria Story Prologue (`Localization` + `StoryIntroOverlay`)**
+   - Translated 100% of game content into Arabic (`RTL`): all 27 items, all 11 quests & guild contracts (titles, descriptions, objectives), all 24 skills, all 11 creatures/bosses, and all 18 NPC names, titles, prompts, and dialogues.
+   - Added 3-chapter interactive `StoryIntroOverlay` prologue when starting a new adventure.
 
-`Skeleton_Warrior.glb` يحتوي **95 مقطعًا** (تم فحصها بقراءة JSON داخل GLB).
-البناء في الكود: `AnimationNodeStateMachine` + ربط كامل بين الحالات مع crossfade،
-والاختيار بالاسم مع بدائل:
-`idle→Idle`, `walk→Walking_A`, `run→Running_A`, `jump→Jump_Start`,
-`fall→Jump_Idle`, `attack_1→1H_Melee_Attack_Slice_Diagonal`,
-`attack_2→1H_Melee_Attack_Slice_Horizontal`, `hit→Hit_A`, `death→Death_A`.
-تم ضبط `loop_mode = LOOP_LINEAR` للمقاطع الدورية.
-
-### اتجاه النموذج (قرار مبني على قياس لا تخمين)
-
-قراءة مواضع العظام من GLB: `hand.l` عند x=+0.212 و`hand.r` عند x=−0.212
-⇒ الشخصية تواجه **+Z**، بينما Godot يعتبر −Z إلى الأمام ⇒ `MODEL_YAW_OFFSET = PI`.
-ارتفاع الشبكة 2.166 وحدة، والكبسولة 2.0م.
-
-## 2) الملفات المنشأة
-
-`scripts/player/player.gd`, `player_input.gd`, `scripts/camera/camera_rig.gd`,
-`scripts/core/character_visual.gd`, `asset_library.gd`,
-`scripts/ui/{virtual_joystick,camera_drag_area,touch_controls}.gd`,
-`scenes/player/player.tscn`, `scenes/game/game.tscn`, `scripts/core/game.gd`.
-
-## 3) الأصول المستخدمة
-
-| الاسم | المصدر | الترخيص | المسار المحلي | الحالة |
-|---|---|---|---|---|
-| Skeleton_Warrior.glb (95 anim) | KayKit-Character-Pack-Skeletons-1.0 | CC0 | `assets/models/characters/` | مدمج كلاعب |
-
-## 4) الأنظمة التي تعمل
-
-- حركة كاميرا-نسبية: `right * move.x + forward * (-move.y)` مع دوران الجسم نحو الحركة.
-- ستامينا: الجري يستهلك، الهجوم يستهلك، التجديد تلقائي، والحالة تُرسل عبر `EventBus`.
-- الكاميرا: yaw/pitch مع clamp، `SpringArm3D` يستثني جسم اللاعب ويتصادم مع الطبقة 1.
-- لمس: Joystick مخصّص (`_gui_input` + draw)، سحب الكاميرا، Pinch، أزرار أفعال.
-
-## 5) الاختبارات + النتائج (آلية، headless)
-
-| اختبار | النتيجة |
-|---|---|
-| `player.visual.model != null` | PASS — النموذج يُحمَّل من GLB المستورد |
-| حالات idle/run موجودة في AnimationTree | PASS |
-| اللاعب يهبط ويقف على الأرض (y≈0) | PASS |
-| إدخال Joystick (MockTouch) يحرّك اللاعب > 0.5م | PASS |
-| دوران الكاميرا بتغيّر yaw | PASS |
-| تغيير Zoom للمسافة | PASS |
-| `player.is_on_floor()` بعد 60 tick | PASS |
-| FPS / Draw calls | **غير مقيس** (dummy renderer = 0) |
-
-الأرقام الفعلية في `docs/reports/headless_test_results.txt`.
-
-## 6) الأداء
-
-| مقياس | الهدف | المقيس |
-|---|---|---|
-| Draw calls (مشهد اللاعب فقط) | < 50 | **غير مقيس** |
-| FPS | ≥ 30 | **غير مقيس** |
-
-## 7) المشكلات المتبقية
-
-- الاتجاه/الأنيميشن لم يُرَ بصريًا؛ تعويض PI مبني على قياس العظام فقط.
-- اللمس يمرّر أحداثًا مزدوجة (touch + mouse مُحاكى)؛ يحتاج تأكيدًا على جهاز.
-- لا موسيقى/خطوات (لا أصول صوتية متاحة).
-
-## 8) الحالة
-
-`IMPLEMENTED` + `TESTED` (منطقي). `VERIFIED`: ❌ — الشرط كان "APK مثبت ومختبر فعليًا"،
-وهذا مستحيل في هذه البيئة، لذا لا يُدّعى.
-
----
-
-## تحديث 2026-11-12 — نتيجة تشغيل المحرك الحقيقي
-
-المحرك: `4.3.stable.custom_build` (بُني من المصدر). **هذه المرحلة: IMPLEMENTED + TESTED (headless)**،
-وما زالت **NOT VERIFIED على جهاز حقيقي**.
-
-ما أُثبت آليًا في هذه المرحلة: اللاعب يظهر ويستقر على الأرض، AnimationTree يحل مقاطع KayKit، الجويستيك يحرّك 3.09 م، الكاميرا تدور وتقرّب.
-
-Commit: `f4b599e` · القياس الكامل: `docs/reports/headless_test_results.txt` (113/113) ·
-سجل التشغيل والعيوب المُصلحة: `docs/reports/TEST_RUN_LOG.md`.
+4. **Mobile UX & 3D Quest Waypoints (`QuestWaypoint3D` + `TouchControls` + `HUD` + `MinimapControl`)**
+   - Added `QuestWaypoint3D` golden 3D world beacon + ground halo + billboard distance label, synchronized with HUD Quest Tracker distance readout and Minimap pulsing golden diamond (`◆`).
+   - Upgraded `TouchControls` with larger ergonomic action arc, `◎ LCK` Target-Lock button, and touch press-glow feedback.

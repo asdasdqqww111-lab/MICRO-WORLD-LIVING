@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "crypt_heart"
+display_name = "Dread Crypt Core"
+description = "Pulsing crystalline core of Malakor. Required to reforge Mythic arms."
+category = 0
+rarity = 4
+max_stack = 5
+value = 180
+icon_color = Color(0.92, 0.28, 0.42, 1)
+equip_slot = "none"

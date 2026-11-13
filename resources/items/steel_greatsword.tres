@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "steel_greatsword"
+display_name = "Highland Greatsword"
+description = "Two-handed forged steel blade with sweeping reach and cleaving heft."
+category = 2
+rarity = 2
+max_stack = 1
+value = 120
+attack_bonus = 15.0
+crit_bonus = 0.05
+icon_color = Color(0.76, 0.82, 0.92, 1)
+equip_slot = "weapon"

@@ -1,20 +1,16 @@
-start: renderer=gl_compatibility adapter=
-scene ready: player=true ui=true
-ERROR: no image for 01_village_overview
-captured 01_village_overview
-ERROR: no image for 02_village_street
-captured 02_village_street
-ERROR: no image for 03_mountains
-captured 03_mountains
-ERROR: no image for 04_sky_clouds
-captured 04_sky_clouds
-ERROR: no image for 05_forest_floor
-captured 05_forest_floor
-ERROR: no image for 06_house_interior
-captured 06_house_interior
-ERROR: no image for 07_dungeon
-captured 07_dungeon
-ERROR: no image for 08_gameplay_hud
-captured 08_gameplay_hud
-ERROR: no image for 09_main_menu
-done
+start: renderer=mobile adapter=llvmpipe (LLVM 21.1.8, 256 bits)
+01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)
+00_reference_stylized_hud -> res://docs/screenshots/00_reference_stylized_hud.png (ok)
+02_village_square -> res://docs/screenshots/02_village_square.png (ok)
+03_guild_exterior -> res://docs/screenshots/03_guild_exterior.png (ok)
+04_guild_interior -> res://docs/screenshots/04_guild_interior.png (ok)
+05_forest_exploration -> res://docs/screenshots/05_forest_exploration.png (ok)
+06_river_lake_bridge -> res://docs/screenshots/06_river_lake_bridge.png (ok)
+07_mountains_sunset -> res://docs/screenshots/07_mountains_sunset.png (ok)
+12_sunken_crypt_dungeon -> res://docs/screenshots/12_sunken_crypt_dungeon.png (ok)
+08_gameplay_combat_hud -> res://docs/screenshots/08_gameplay_combat_hud.png (ok)
+09_inventory_equipment -> res://docs/screenshots/09_inventory_equipment.png (ok)
+10_skill_tree -> res://docs/screenshots/10_skill_tree.png (ok)
+11_quest_guild_board -> res://docs/screenshots/11_quest_guild_board.png (ok)
+13_world_map_cartography -> res://docs/screenshots/13_world_map_cartography.png (ok)
+all 13 screenshots captured successfully

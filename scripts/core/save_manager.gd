@@ -134,7 +134,9 @@ func _gather_state() -> Dictionary:
 		"saved_at": Time.get_datetime_string_from_system(true),
 		"meta": {
 			"zone": String(player_state.get("zone", "village")),
-			"version_name": "0.1",
+			"version_name": "1.0",
+			"level": GameManager.progression.level,
+			"guild_rank": GameManager.guild.current_rank(),
 			"engine": Engine.get_version_info().get("string", ""),
 		},
 		"game": GameManager.to_dict(),
@@ -142,7 +144,7 @@ func _gather_state() -> Dictionary:
 	}
 
 ## v1 -> v2: added the skill tree payload.
-## v2 -> v3: world clock/weather/raid state moved into game.world.
+## v2 -> v3: world clock/weather/raid state moved into game.world + guild safety.
 func _migrate(data: Dictionary, from_version: int) -> Dictionary:
 	var game: Dictionary = data.get("game", {})
 	if from_version < 2:
@@ -152,7 +154,9 @@ func _migrate(data: Dictionary, from_version: int) -> Dictionary:
 		if not game.has("world"):
 			game["world"] = WorldState.new().to_dict()
 		if not data.has("meta"):
-			data["meta"] = {"zone": "village", "version_name": "0.1"}
+			data["meta"] = {"zone": "village", "version_name": "1.0"}
+	if not game.has("guild"):
+		game["guild"] = {"registered": false, "rank_index": 0, "reputation": 0, "contracts_completed": 0}
 	data["game"] = game
 	data["schema_version"] = SCHEMA_VERSION
 	return data

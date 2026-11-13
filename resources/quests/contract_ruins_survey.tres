@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "contract_ruins_survey"
+title = "[Rank E] Survey the Eastern Ruins"
+description = "Guild Exploration Contract: Cross the stone river bridge, reconnoiter the Ancient Ruins, and banish the Ruins Wraith."
+giver_npc = "guild_receptionist"
+turn_in_npc = "guild_receptionist"
+objectives = [{"type": "visit", "target": "ruins", "required": 1, "label": "Reach the Ancient Ruins"}, {"type": "kill", "target": "wraith_elite", "required": 1, "label": "Banish the Ruins Wraith"}]
+reward_xp = 115
+reward_gold = 65
+reward_items = [{"id": "iron_shield", "count": 1}]
+is_guild_contract = true
+contract_category = "exploration"
+required_guild_rank = "E"
+reward_reputation = 95

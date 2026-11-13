@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_questdata"]
+
+[resource]
+script = ExtResource("1_questdata")
+id = "contract_crypt_lord"
+title = "[Rank C] Dungeon Bounty: Dread Crypt Lord"
+description = "Guild Dungeon Contract: Enter the Sunken Crypt and slay Malakor, Dread Crypt Lord."
+giver_npc = "guild_receptionist"
+turn_in_npc = "guild_receptionist"
+objectives = [{"type": "kill", "target": "crypt_boss", "required": 1, "label": "Malakor, Dread Crypt Lord slain"}]
+reward_xp = 240
+reward_gold = 150
+reward_items = [{"id": "guild_ring", "count": 1}]
+is_guild_contract = true
+contract_category = "dungeon"
+required_guild_rank = "C"
+reward_reputation = 240

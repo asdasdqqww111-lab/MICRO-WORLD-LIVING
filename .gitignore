@@ -12,3 +12,5 @@ export/
 *.translation
 # Local test artifacts
 docs/reports/perf_local.log
+
+docs/screenshots/*.import
