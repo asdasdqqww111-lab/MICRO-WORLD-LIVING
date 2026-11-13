@@ -36,8 +36,11 @@ func _run() -> void:
 	# ===== 1. TowerDB integrity =====
 	_lines.append("== TowerDB integrity ==")
 	var report: Dictionary = TowerDB.validate()
-	_check("TowerDB.validate() reports no errors", bool(report["valid"]),
-		", ".join((report["errors"] as Array[String]).slice(0, 6)))
+	var err_list: Array = report["errors"]
+	var err_preview := ""
+	for i in mini(6, err_list.size()):
+		err_preview += (", " if i > 0 else "") + String(err_list[i])
+	_check("TowerDB.validate() reports no errors", bool(report["valid"]), err_preview)
 	_check("TowerDB defines exactly 100 floors", TowerDB.FLOOR_COUNT == 100)
 	_check("TowerDB defines 10 regions", TowerDB.REGIONS.size() == 10)
 	var region_ok := true
@@ -116,10 +119,9 @@ func _run() -> void:
 	_check("Floor23 has a floor light", froot.has_node("FloorLight"))
 	_check("Floor23 belongs to magical_forest region", TowerDB.region_for_floor(23) == "magical_forest")
 	for child in root.get_children():
-		child.queue_free()
-	await get_tree().process_frame
-	_check("Floor nodes freed after queue_free", root.get_child_count() <= 1)
-	root.queue_free()
+		child.free()
+	_check("Floor nodes freed after free()", root.get_child_count() == 0)
+	root.free()
 
 	# ===== 5. TowerManager runtime =====
 	_lines.append("")
@@ -156,22 +158,21 @@ func _run() -> void:
 	tm.ascend(fp)
 	_check("Cannot ascend before Floor Master defeat", tm.active_floor() == 1)
 
-	EventBus.creature_died.emit("tower_master_1", "tower_f1_master_0", Vector3.ZERO)
+	EventBus.creature_died.emit("tower_master_1", "tower_1_master_0", Vector3.ZERO)
 	_check("Floor 1 master defeat recorded", tm.is_master_defeated(1))
 	_check("Floor 2 becomes reachable", tm.highest_unlocked_floor() == 2)
 	_check("floors_cleared counts 1", tm.floors_cleared() == 1)
 
 	tm.ascend(fp)
 	_check("Ascending after defeat loads floor 2", tm.active_floor() == 2)
-	_check("Only ONE floor container child loaded at a time", tm.floor_container.get_child_count() >= 1
-		and tm.floor_container.get_child_count() <= 2)
+	_check("Only ONE floor loaded at a time (single root child)", tm.floor_container.get_child_count() == 1)
 
 	tm._load_floor(100, fp)
 	_check("Floor 100 loads", tm.active_floor() == 100)
 	_check("Floor 100 has NO ascent portal (final)", tm.floor_container.get_node_or_null("TowerUpPortal") == null)
 	_check("Floor 100 still has an exit portal", tm.floor_container.get_node_or_null("TowerExitPortal") != null)
 
-	EventBus.creature_died.emit("tower_master_100", "tower_f100_master_0", Vector3.ZERO)
+	EventBus.creature_died.emit("tower_master_100", "tower_100_master_0", Vector3.ZERO)
 	_check("Tower completion flag set on final master defeat",
 		bool(GameManager.world.get_flag("tower_completed", false)))
 	_check("floors_cleared counts both defeated masters", tm.floors_cleared() == 2)
@@ -194,9 +195,9 @@ func _run() -> void:
 	_check("Exiting hides the tower interior", not tm.tower_root.visible)
 	_check("Exit returns the player to the overworld zone", fp.zone == "village")
 
-	tm.queue_free()
-	world.queue_free()
-	fp.queue_free()
+	tm.free()
+	world.free()
+	fp.free()
 	await get_tree().process_frame
 
 	_lines.append("")
