@@ -302,10 +302,10 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	# Farming District Wheat & Pumpkin Rows beside Granary Mill (batched MultiMesh)
 	var wheat_xforms: Array = []
 	var pumpkin_xforms: Array = []
-	for rx: int in 4:
-		for rz: int in 4:
-			var fx := -20.5 + float(rx) * 1.65
-			var fz := 16.2 + float(rz) * 1.55
+	for rx: int in 2:
+		for rz: int in 3:
+			var fx := -20.5 + float(rx) * 2.1
+			var fz := 16.2 + float(rz) * 1.9
 			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.55), Vector3(fx, 0.0, fz)))
 	for px: int in 4:
 		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.0), Vector3(-20.0 + float(px) * 1.5, 0.0, 23.2)))
@@ -571,9 +571,6 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		Vector3(-8.2, -9.5, 1.95),
 		Vector3(-10.5, -13.5, 1.80),
 		Vector3(-12.8, -17.5, 2.00),
-		Vector3(-15.5, -21.5, 1.90),
-		Vector3(-7.4, -18.0, 1.70),
-		Vector3(-11.2, -25.0, 1.85),
 	]
 	for hp: Vector3 in hero_pines:
 		var hy := terrain.height_at(hp.x, hp.y) if terrain != null else 0.0
@@ -582,19 +579,19 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		trunk_positions.append(hpos)
 
 	# Dense left-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
-	for i: int in 22:
+	for i: int in 16:
 		var lx := rng.randf_range(-44.0, -8.5)
 		var lz := rng.randf_range(-44.0, 4.0)
 		if _overlaps_town_building(lx, lz) or (terrain != null and terrain.is_road_at(lx, lz)):
 			continue
 		var ly := terrain.height_at(lx, lz) if terrain != null else 0.0
 		var lpos := Vector3(lx, ly - 0.08, lz)
-		var ls := rng.randf_range(8.5, 11.8)
+		var ls := rng.randf_range(3.6, 4.8)
 		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
 		trunk_positions.append(lpos)
 
-	# Outer Valley Multi-Biome Stylized Trees (full 8-11m forest scale, <165k total triangles!)
-	for i: int in 72:
+	# Outer Valley Multi-Biome Stylized Trees (natural 7.5-10m forest scale, <160k total triangles!)
+	for i: int in 52:
 		var x := rng.randf_range(-108.0, 108.0)
 		var z := rng.randf_range(-108.0, 108.0)
 		var r := Vector2(x, z).length()
@@ -620,14 +617,14 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var biome := terrain.biome_at(x, z) if terrain != null else "dense_woodland"
 		var yaw := rng.randf_range(0.0, TAU)
 		var pos := Vector3(x, y - 0.08, z)
-		var sp := rng.randf_range(8.5, 11.8)
+		var sp := rng.randf_range(3.5, 4.7)
 
 		match biome:
 			"lakeside_birch":
-				if birch_xforms.size() < 6:
-					birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.50, 2.05)), pos))
+				if birch_xforms.size() < 4:
+					birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(1.45, 1.95)), pos))
 			"dense_woodland", "ancient_grove":
-				oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(7.8, 10.6)), pos))
+				oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rng.randf_range(3.4, 4.5)), pos))
 			_:
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 		trunk_positions.append(pos)

@@ -143,11 +143,7 @@ func _build() -> void:
 	qs_bar.add_theme_constant_override("separation", 6)
 	qs_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(qs_bar)
-	var qs_sb := StyleBoxFlat.new()
-	qs_sb.bg_color = Color(0.08, 0.11, 0.10, 0.56)
-	qs_sb.border_color = Color(0.62, 0.64, 0.52, 0.52)
-	qs_sb.set_border_width_all(1)
-	qs_sb.set_corner_radius_all(5)
+	var qs_sb := RpgIcon.shared_stylebox("slot_box")
 	for qi in 5:
 		var slot := PanelContainer.new()
 		slot.name = "QuickSlot_%d" % qi
@@ -188,12 +184,9 @@ func _place_rpg_button(action: String, icon_kind: String, right_margin: float, b
 	b.offset_right = -right_margin
 	b.offset_bottom = -bottom_margin
 
-	var rad := int(btn_size * 0.5)
-	var bg := Color(0.16, 0.14, 0.11, 0.84) if is_main_attack else Color(0.14, 0.15, 0.14, 0.78)
-	var rim := Color(0.84, 0.70, 0.38, 0.92) if is_main_attack else Color(0.72, 0.64, 0.42, 0.80)
-	var bw := 3 if is_main_attack else 2
-	var sb_n := _make_bronze_circle_style(rad, bg, rim, bw)
-	var sb_p := _make_bronze_circle_style(rad, Color(0.28, 0.24, 0.16, 0.92), Color(1.0, 0.88, 0.48, 1.0), bw)
+	var tex_key := "btn_attack" if is_main_attack else "btn_circle"
+	var sb_n := RpgIcon.shared_stylebox(tex_key)
+	var sb_p := RpgIcon.shared_stylebox(tex_key, 0, Color(1.22, 1.18, 1.05, 1.0))
 	for st: String in ["normal", "hover", "focus"]:
 		b.add_theme_stylebox_override(st, sb_n)
 	b.add_theme_stylebox_override("pressed", sb_p)

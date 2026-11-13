@@ -71,7 +71,7 @@ func _build_visual() -> void:
 		visual.configure_gear(visible_gear, hidden_gear)
 		visual.play("idle")
 	add_child(ArtDirection.make_contact_ao(0.52, 0.34))
-	_apply_lod_recursive(visual, 24.0)
+	_apply_lod_recursive(visual, 16.0)
 
 func _apply_lod_recursive(node: Node, dist: float) -> void:
 	if node is GeometryInstance3D:

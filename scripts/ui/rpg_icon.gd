@@ -11,6 +11,7 @@ const KINDS := [
 	"map", "lock", "guide", "swords",
 	"sprint", "sparkle", "stone", "book",
 	"burst", "hand", "potion", "default",
+	"btn_circle", "btn_attack", "btn_dock", "slot_box",
 ]
 
 static var _atlas_tex: ImageTexture = null
@@ -199,8 +200,33 @@ static func _rasterize_icon(img: Image, ox: int, oy: int, k: String) -> void:
 			_disc(img, ox, oy, 32.0, 38.0, 14.0, Color(0.94, 0.24, 0.30, 1.0))
 			_ring(img, ox, oy, 32.0, 38.0, 14.2, 2.0, Color(0.86, 0.92, 0.96, 1.0))
 			_box(img, ox, oy, 27, 13, 10, 12, Color(0.86, 0.92, 0.96, 1.0))
+		"btn_circle":
+			_disc(img, ox, oy, 32.0, 32.0, 29.0, Color(0.14, 0.15, 0.14, 0.80))
+			_ring(img, ox, oy, 32.0, 32.0, 28.0, 1.8, Color(0.76, 0.68, 0.44, 0.86))
+		"btn_attack":
+			_disc(img, ox, oy, 32.0, 32.0, 29.5, Color(0.16, 0.14, 0.11, 0.86))
+			_ring(img, ox, oy, 32.0, 32.0, 28.2, 2.3, Color(0.88, 0.74, 0.40, 0.95))
+		"btn_dock":
+			_box(img, ox, oy, 3, 3, 58, 58, Color(0.76, 0.72, 0.56, 0.44))
+			_box(img, ox, oy, 5, 5, 54, 54, Color(0.13, 0.17, 0.23, 0.78))
+		"slot_box":
+			_box(img, ox, oy, 3, 3, 58, 58, Color(0.64, 0.66, 0.54, 0.55))
+			_box(img, ox, oy, 5, 5, 54, 54, Color(0.08, 0.11, 0.10, 0.62))
 		_:
 			_disc(img, ox, oy, 32.0, 32.0, 16.0, cream)
+
+static func shared_stylebox(kind_key: String, margin: int = 0, mod: Color = Color.WHITE) -> StyleBoxTexture:
+	_ensure_atlas()
+	var sb := StyleBoxTexture.new()
+	sb.texture = _atlas_tex
+	sb.region_rect = _kind_uv.get(kind_key, _kind_uv["btn_dock"])
+	sb.modulate_color = mod
+	if margin > 0:
+		sb.content_margin_left = margin
+		sb.content_margin_right = margin
+		sb.content_margin_top = margin
+		sb.content_margin_bottom = margin
+	return sb
 
 func _draw() -> void:
 	_ensure_atlas()

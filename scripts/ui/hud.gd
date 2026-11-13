@@ -152,14 +152,8 @@ func _build_top_bar_and_boss() -> void:
 		["lock", "lock", "Lock", "القفل"],
 		["guild", "guide", "Guide", "الدليل"],
 	]
-	var slot_normal := StyleBoxFlat.new()
-	slot_normal.bg_color = Color(0.08, 0.11, 0.16, 0.36)
-	slot_normal.border_color = Color(0.84, 0.72, 0.42, 0.48)
-	slot_normal.set_border_width_all(1)
-	slot_normal.set_corner_radius_all(8)
-	var slot_hover := slot_normal.duplicate() as StyleBoxFlat
-	slot_hover.bg_color = Color(0.20, 0.26, 0.34, 0.68)
-	slot_hover.border_color = Color(0.98, 0.84, 0.42, 0.90)
+	var slot_normal := RpgIcon.shared_stylebox("btn_dock", 4)
+	var slot_hover := RpgIcon.shared_stylebox("btn_dock", 4, Color(1.25, 1.22, 1.08, 1.0))
 
 	for entry: Array in items:
 		var scr := String(entry[0])

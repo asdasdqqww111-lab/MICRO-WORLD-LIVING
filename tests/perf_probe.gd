@@ -3,7 +3,7 @@ extends Node3D
 ##   xvfb-run -a godot --path . --rendering-driver opengl3 --resolution 1280x720 tests/perf_probe.tscn
 
 const OUT_PATH := "res://docs/reports/perf_probe_results.txt"
-const SETTLE_FRAMES := 8
+const SETTLE_FRAMES := 14
 const SAMPLE_FRAMES := 10
 
 var _game: Node
@@ -48,6 +48,11 @@ func _run() -> void:
 		_flush(true)
 		get_tree().quit(1)
 		return
+	var ui := _game.get("ui") as UIRoot
+	if ui != null and ui.story_intro != null and ui.story_intro.visible:
+		ui.story_intro.visible = false
+		get_tree().paused = false
+	await _frames(4)
 
 	await _measure("Zone 1 · Eldoria Village Square & Guild Exterior")
 
