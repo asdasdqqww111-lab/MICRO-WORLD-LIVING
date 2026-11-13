@@ -12,7 +12,7 @@ extends Node3D
 ## Integration: Game.gd instantiates this right after the WorldRoot is added.
 
 const GATE_HEIGHT := 42.0
-const FLAG_PREFIX := "tower_"
+const FLAG_PREFIX := "tower_master_"
 const CURRENT_FLOOR_FLAG := "tower_current_floor"
 const FINAL_FLOOR := TowerDB.FLOOR_COUNT
 
@@ -114,7 +114,7 @@ func _build_gate() -> void:
 # --- Save/load bridge ---------------------------------------------------------
 
 func _flag_key(floor_num: int) -> String:
-	return FLAG_PREFIX + "master_%d" % floor_num
+	return FLAG_PREFIX + str(floor_num)
 
 func is_master_defeated(floor_num: int) -> bool:
 	return bool(GameManager.world.get_flag(_flag_key(floor_num), false))
@@ -148,7 +148,7 @@ func player_entered(player: Node) -> void:
 	var ar := Localization.is_arabic()
 	EventBus.notify.emit("دخلت برج الصعود السماوي — الطابق %d" % target if ar else "You enter the Celestial Ascent Tower — Floor %d" % target)
 	if AudioManager != null:
-		AudioManager.play_music_for_zone("dungeon")
+		AudioManager.play_music_for_zone("tower")
 
 func ascend(player: Node) -> void:
 	if current_floor <= 0 or current_floor >= FINAL_FLOOR:
@@ -163,6 +163,7 @@ func player_exited(player: Node) -> void:
 	GameManager.world.set_flag(CURRENT_FLOOR_FLAG, current_floor)
 	_clear_floor()
 	current_floor = 0
+	tower_root.visible = false
 	if player != null and player.has_method("teleport"):
 		player.call("teleport", TowerDB.TOWER_GATE_OVERWORLD + Vector3(0.0, 0.6, 6.5), "village")
 	if AudioManager != null:
@@ -265,20 +266,23 @@ func _clear_floor() -> void:
 			world._creatures.erase(uid)
 	_floor_uids.clear()
 	for child in floor_container.get_children():
-		child.queue_free()
+		child.free()
 
 func _uid_for(floor_num: int, role: String, idx: int) -> String:
-	return "tower_f%d_%s_%d" % [floor_num, role, idx]
+	# Parseable by _on_creature_died: "tower_7_master_0".
+	return "tower_%d_%s_%d" % [floor_num, role, idx]
 
 # --- Master defeat ---------------------------------------------------------------
 
 func _on_creature_died(creature_id: String, uid: String, _position: Vector3) -> void:
-	if not uid.begins_with("tower_f"):
+	if not uid.begins_with("tower_"):
 		return
 	var parts := uid.split("_")
-	if parts.size() < 4 or parts[2] != "master":
+	if parts.size() != 4 or parts[2] != "master":
 		return
-	var floor_num := int(parts[1])
+	var floor_num := parts[1].to_int()
+	if floor_num <= 0 or floor_num > FINAL_FLOOR:
+		return
 	GameManager.world.set_flag(_flag_key(floor_num), true)
 	var ar := Localization.is_arabic()
 	if floor_num >= FINAL_FLOOR:
@@ -295,11 +299,8 @@ func restore_after_load(player: Node) -> void:
 	# Called by Game._apply_state when the saved zone was "tower".
 	var saved := int(GameManager.world.get_flag(CURRENT_FLOOR_FLAG, 1))
 	var target := clampi(saved, 1, FINAL_FLOOR)
-	if current_floor > 0:
-		_load_floor(target, player)
-		return
 	var pending := GameManager.pending_zone
-	if pending == "tower":
+	if pending == "tower" and current_floor == 0:
 		_load_floor(target, player)
 
 func active_floor() -> int:
