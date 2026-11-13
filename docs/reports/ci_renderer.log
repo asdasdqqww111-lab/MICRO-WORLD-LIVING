@@ -63,3 +63,6 @@ GPU0:
 	driverUUID         = 6c6c766d-7069-7065-5555-494400000000
 selected_driver=vulkan
 === perf probe ===
+perf exit=0
+=== screenshot probe ===
+screenshot exit=0

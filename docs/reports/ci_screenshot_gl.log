@@ -28,11 +28,7 @@ WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will 
 [shot] 05_forest_exploration -> res://docs/screenshots/05_forest_exploration.png (ok)
 [shot] 06_river_lake_bridge -> res://docs/screenshots/06_river_lake_bridge.png (ok)
 [shot] 07_mountains_sunset -> res://docs/screenshots/07_mountains_sunset.png (ok)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 [shot] 12_sunken_crypt_dungeon -> res://docs/screenshots/12_sunken_crypt_dungeon.png (ok)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 [shot] 08_gameplay_combat_hud -> res://docs/screenshots/08_gameplay_combat_hud.png (ok)
 [shot] 09_inventory_equipment -> res://docs/screenshots/09_inventory_equipment.png (ok)
 WARNING: Target object freed before starting, aborting Tweener.

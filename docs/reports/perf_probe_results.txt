@@ -3,7 +3,90 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-13T20:43:30
+run at: 2026-11-13T20:46:13
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
+Zone 1 · Eldoria Village Square & Guild Exterior
+  3D draw calls:    44  [OK]
+  total draw calls: 404  [FAIL]
+  triangles (max):  166965  [OK]
+  objects:          406
+  static memory:    203.2 MB
+  fps (min, this driver): 1.0
+  creatures in world: 26
+Zone 2 · Active Combat (Village + 3 Skeletons)
+  3D draw calls:    47  [OK]
+  total draw calls: 289  [OK]
+  triangles (max):  182647  [OVER]
+  objects:          291
+  static memory:    211.5 MB
+  fps (min, this driver): 1.0
+Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
+  3D draw calls:    13  [OK]
+  total draw calls: 254  [OK]
+  triangles (max):  65122  [OK]
+  objects:          254
+  static memory:    211.3 MB
+  fps (min, this driver): 2.0
+Zone 4 · River, Stone Bridge & Crystal Lake
+  3D draw calls:    50  [OK]
+  total draw calls: 291  [OK]
+  triangles (max):  152076  [OK]
+  objects:          291
+  static memory:    211.4 MB
+  fps (min, this driver): 1.0
+Zone 5 · Adventurers Guild Grand Hall Interior
+  3D draw calls:    52  [OK]
+  total draw calls: 293  [OK]
+  triangles (max):  44977  [OK]
+  objects:          302
+  static memory:    211.6 MB
+  fps (min, this driver): 3.0
+Zone 6 · Hero Cottage Interior
+  3D draw calls:    17  [OK]
+  total draw calls: 287  [OK]
+  triangles (max):  12436  [OK]
+  objects:          287
+  static memory:    211.9 MB
+  fps (min, this driver): 5.0
+Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
+  3D draw calls:    45  [OK]
+  total draw calls: 312  [WARN]
+  triangles (max):  74410  [OK]
+  objects:          312
+  static memory:    212.5 MB
+  fps (min, this driver): 2.0
+
+--- running structural audit ---
+SCENE AUDIT (renderer independent)
+  nodes total:          1978
+  MeshInstance3D:       580
+  MultiMeshInstance3D:  19 (batches) / 2724 instances
+  GPUParticles3D:       2
+  omni lights:          19
+  shadow casting dir:   1
+--- structural audit done ---
+
+--- running offenders ---
+
+TOP TRIANGLE CONSUMERS (whole world)
+    18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
+    12528 tris |  2 surf | World/OverworldZone/StylizedPines [x8]
+    11520 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x24]
+    11000 tris |  1 surf | World/OverworldZone/ForestOaks [x10]
+    10368 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
+     9476 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x2369]
+     7448 tris |  1 surf | World/OverworldZone/ForestBushes [x28]
+     7344 tris |  3 surf | World/OverworldZone/MeadowFlowers [x18]
+     6268 tris |  3 surf | World/OverworldZone/LakesideBirches [x4]
+     5659 tris |  1 surf | World/OverworldZone/AdventurersGuildExteriorBody/AdventurersGuildExterior
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+
+SHADOW / LOD: casters=32  shadow_off=548  with_visibility_range=543
+--- offenders done ---
+
+STATUS: COMPLETE
