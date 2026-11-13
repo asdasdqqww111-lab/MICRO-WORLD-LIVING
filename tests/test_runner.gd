@@ -662,7 +662,7 @@ func _test_game_scene() -> void:
 
 	var boss: Creature = world._creatures.get("malakor_crypt_boss", null) as Creature
 	_check(boss != null and boss.data.is_boss, "Malakor the Bone Warden boss exists in Sunken Crypt")
-	_check(world.find_child("RoyalCitadelKeep", true, false) != null
+	_check(world.find_child("CastleHighKeepTower", true, false) != null
 		and world.find_child("MeadowWindGrass", true, false) != null
 		and world.find_child("HillsideStoneArch", true, false) != null,
 		"Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built")
