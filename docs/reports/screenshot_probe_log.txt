@@ -1,5 +1,6 @@
-start: renderer=gl_compatibility adapter=llvmpipe (LLVM 21.1.8, 256 bits)
+start: renderer=mobile adapter=llvmpipe (LLVM 21.1.8, 256 bits)
 01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)
+00_reference_stylized_hud -> res://docs/screenshots/00_reference_stylized_hud.png (ok)
 02_village_square -> res://docs/screenshots/02_village_square.png (ok)
 03_guild_exterior -> res://docs/screenshots/03_guild_exterior.png (ok)
 04_guild_interior -> res://docs/screenshots/04_guild_interior.png (ok)
@@ -12,4 +13,4 @@ start: renderer=gl_compatibility adapter=llvmpipe (LLVM 21.1.8, 256 bits)
 10_skill_tree -> res://docs/screenshots/10_skill_tree.png (ok)
 11_quest_guild_board -> res://docs/screenshots/11_quest_guild_board.png (ok)
 13_world_map_cartography -> res://docs/screenshots/13_world_map_cartography.png (ok)
-all 12 screenshots captured successfully
+all 13 screenshots captured successfully

@@ -20,28 +20,99 @@ WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will 
 WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
      at: set_radiance_size (servers/rendering/renderer_rd/environment/sky.cpp:620)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
-SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
-          at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:335)
+MICRO WORLD: LIVING — Polished Stylized/Chibi PBR Mobile Vulkan Probe
+engine: 4.3-stable (official)
+rendering method: mobile
+video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
+driver: 1.4.335
+run at: 2026-11-13T16:20:19
+
+budget: draw calls < 300 · triangles < 180k · target 60 FPS
+
+Zone 1 · Eldoria Village Square & Guild Exterior
+  draw calls (max): 576  [FAIL]
+  triangles (max):  212163  [OVER]
+  objects:          576
+  static memory:    204.0 MB
+  fps (min, this driver): 1.0
+  creatures in world: 26
+Zone 2 · Active Combat (Village + 3 Skeletons)
+  draw calls (max): 461  [FAIL]
+  triangles (max):  227791  [OVER]
+  objects:          461
+  static memory:    212.1 MB
+  fps (min, this driver): 1.0
+Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
+  draw calls (max): 396  [FAIL]
+  triangles (max):  94251  [OK]
+  objects:          396
+  static memory:    212.1 MB
+  fps (min, this driver): 1.0
+Zone 4 · River, Stone Bridge & Crystal Lake
+  draw calls (max): 452  [FAIL]
+  triangles (max):  195698  [OVER]
+  objects:          452
+  static memory:    212.2 MB
+  fps (min, this driver): 1.0
+Zone 5 · Adventurers Guild Grand Hall Interior
+  draw calls (max): 410  [FAIL]
+  triangles (max):  55354  [OK]
+  objects:          410
+  static memory:    212.4 MB
+  fps (min, this driver): 2.0
+Zone 6 · Hero Cottage Interior
+  draw calls (max): 389  [FAIL]
+  triangles (max):  22429  [OK]
+  objects:          389
+  static memory:    212.7 MB
+  fps (min, this driver): 2.0
+Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
+  draw calls (max): 418  [FAIL]
+  triangles (max):  83275  [OK]
+  objects:          418
+  static memory:    213.1 MB
+  fps (min, this driver): 1.0
+
+--- running structural audit ---
+SCENE AUDIT (renderer independent)
+  nodes total:          2141
+  MeshInstance3D:       603
+  MultiMeshInstance3D:  17 (batches) / 1794 instances
+  GPUParticles3D:       2
+  omni lights:          19
+  shadow casting dir:   1
+--- structural audit done ---
+
+--- running offenders ---
+
+TOP TRIANGLE CONSUMERS (whole world)
+    43200 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x50]
+    18792 tris |  2 surf | World/OverworldZone/StylizedPines [x12]
+    18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
+    14112 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
+    12536 tris |  3 surf | World/OverworldZone/LakesideBirches [x8]
+    11520 tris |  1 surf | World/OverworldZone/FarmWheat [x16]
+     9900 tris |  1 surf | World/OverworldZone/ForestOaks [x9]
+     8512 tris |  1 surf | World/OverworldZone/ForestBushes [x32]
+     7752 tris |  3 surf | World/OverworldZone/MeadowFlowers [x19]
+     6300 tris |  1 surf | World/OverworldZone/ValleyWildflowers [x150]
+     5659 tris |  1 surf | OverworldZone/AdventurersGuildExteriorBody/AdventurersGuildExterior/building_castle_blue
+     5444 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x1361]
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+
+SHADOW / LOD: casters=33  shadow_off=570  with_visibility_range=568
+--- offenders done ---
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2284)
