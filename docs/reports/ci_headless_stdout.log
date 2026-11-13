@@ -1,8 +1,20 @@
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
+SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/ui/minimap_control.gd:143)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/ui/hud.gd:-1)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/ui/world_map_screen.gd:409)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/ui/ui_root.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://tests/test_runner.gd:-1)
+ERROR: Failed to load script "res://tests/test_runner.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:2936)
 PASS  ItemDB loads >= 25 items (got 27)
-PASS  QuestDB loads >= 10 quests & contracts (got 11)
-PASS  SkillDB loads 24 skill tree nodes across 4 branches (got 24)
+PASS  QuestDB loads >= 10 quests & contracts (got 24)
+FAIL  SkillDB loads 24 skill tree nodes across 4 branches (got 36)
 PASS  CreatureDB loads >= 10 creature archetypes (got 11)
 PASS  every item resource has id/name/stack and a valid 5-slot equip_slot
 PASS  core & mythic items exist across weapon/shield/accessory
@@ -131,20 +143,24 @@ ERROR: Parameter "m" is null.
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  all 27 items have distinct Arabic names & descriptions
-PASS  all 11 quests & guild contracts have distinct Arabic titles & objectives
-PASS  all 24 skills have Arabic titles & descriptions
+PASS  all 24 quests & guild contracts have distinct Arabic titles & objectives
+PASS  all 36 skills have Arabic titles & descriptions
 PASS  all 11 creatures & bosses have Arabic names
 PASS  Eldoria Story Prologue has 3 localized narrative chapters
 PASS  level 1 needs 60 xp (got 60)
 PASS  60 xp levels up to 2
 PASS  leftover xp is carried correctly (got 0)
 PASS  xp is capped at max level 20 (got 20)
+PASS  Expanded 5-Tier Skill Tree has 36 >= 36 interconnected nodes
 PASS  tier-1 skill locked before prerequisite
 PASS  tier-0 warrior skill unlocks
 PASS  tier-1 warrior skill unlocks after mighty_blow
 PASS  heavy_cleave unlocked
-PASS  skill points tracked accurately
-PASS  skill tree reset refunds all spent points
+PASS  tier-2 lethal_precision unlocked
+PASS  tier-3 berserker_rage unlocked
+FAIL  tier-4 capstone sovereign_juggernaut unlocked
+SCRIPT ERROR: Invalid call. Nonexistent function 'combo_finisher_mult' in base 'RefCounted (SkillTree)'.
+          at: _test_progression_and_skill_tree (res://tests/test_runner.gd:228)
 PASS  new hero starts unregistered at Guild
 PASS  hero registers as Rank F adventurer
 PASS  initial Guild rank is F
@@ -158,6 +174,10 @@ PASS  Arabic language mode activates RTL
 PASS  Arabic string table returns localized label
 PASS  English string table restores cleanly
 PASS  AudioManager autoload registered
+PASS  Kenney RPG foley (.ogg) & combo_finisher.wav assets present
+PASS  Royal City & Forest Birds stereo ambience loops present
+PASS  Expanded Royal City Quest roster has 24 >= 24 quests
+PASS  CharacterVisual supports 40 >= 34 skeletal combat/life states
 PASS  adding 40 bones fits
 PASS  bone count is 40 (got 40)
 PASS  40 bones use 2 stacks of 30 (got 2)
@@ -229,6 +249,22 @@ ERROR: SaveManager: save version 99 is newer than supported 3
    at: push_error (core/variant/variant_utility.cpp:1092)
 PASS  newer schema version is refused
 PASS  game.tscn loads
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: HUD._build_top_right (res://scripts/ui/hud.gd:190)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_weather_changed (res://scripts/ui/hud.gd:338)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: UIRoot._build (res://scripts/ui/ui_root.gd:66)
+SCRIPT ERROR: Invalid access to property or key 'open_skill_tree_requested' on a base object of type 'Nil'.
+          at: UIRoot._connect (res://scripts/ui/ui_root.gd:119)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_weather_changed (res://scripts/ui/hud.gd:338)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
 PASS  world root created
 PASS  player created
 PASS  ui root created
@@ -236,16 +272,20 @@ PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
 PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
-PASS  wildlife, monsters & crypt boss spawned (18)
-PASS  MultiMesh biome instancing is real (13 batches, 0 broken)
+PASS  wildlife, monsters & crypt boss spawned (23)
+PASS  MultiMesh biome instancing is real (20 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
 PASS  player lands on the ground
 PASS  player stands at ground height (y=0.04)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
 PASS  joystick input moves the player (3.38m)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
-PASS  UI screens open and refresh without error
+FAIL  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
 PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
 PASS  Cairo variable font bundled & active
@@ -256,9 +296,11 @@ PASS  Player anti-clipping physics & CollisionLayers configured
 PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
 PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
+SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
+          at: Creature._try_attack (res://scripts/creatures/creature.gd:318)
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton takes damage (46.0 -> 34.8)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -271,8 +313,12 @@ PASS  loot is collected into the inventory (got 2)
 PASS  Adventurers Guild door exists
 PASS  door moves player into Adventurers Guild Hall
 PASS  house door exists
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
 PASS  door moves player into house zone
 PASS  Malakor the Bone Warden boss exists in Sunken Crypt
+PASS  Walled Royal Capital City ramparts & Sovereign Citadel Keep built
+PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
 ERROR: Parameter "m" is null.
@@ -669,8 +715,128 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  scene state reloads
-PASS  dead creatures stay dead after reload (15 alive vs 18 before)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: HUD._build_top_right (res://scripts/ui/hud.gd:190)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_weather_changed (res://scripts/ui/hud.gd:338)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: UIRoot._build (res://scripts/ui/ui_root.gd:66)
+SCRIPT ERROR: Invalid access to property or key 'open_skill_tree_requested' on a base object of type 'Nil'.
+          at: UIRoot._connect (res://scripts/ui/ui_root.gd:119)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_weather_changed (res://scripts/ui/hud.gd:338)
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'String' on a base object of type 'Nil'.
+          at: HUD._on_time_changed (res://scripts/ui/hud.gd:335)
+PASS  dead creatures stay dead after reload (20 alive vs 23 before)
 PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
@@ -1064,10 +1230,115 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  save/load survives 10 rounds
 
-=== 171 passed, 0 failed ===
+=== 176 passed, 3 failed ===
+FAILED: SkillDB loads 24 skill tree nodes across 4 branches (got 36)
+FAILED: tier-4 capstone sovereign_juggernaut unlocked
+FAILED: UI screens open and refresh without error
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
+ERROR: 6 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:604)
