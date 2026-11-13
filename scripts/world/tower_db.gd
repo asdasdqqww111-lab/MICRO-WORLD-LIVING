@@ -127,6 +127,7 @@ const FLOOR_MASTER_AR := [
 
 ## Which creature archetype the Floor Master fights like (reuses combat rig).
 ## Uses only archetypes already shipped in resources/creatures/*.tres.
+## EXACTLY 100 entries, one per floor.
 const FLOOR_MASTER_ARCHETYPE := [
 	"skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon",
 	"skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon",
@@ -146,12 +147,9 @@ const FLOOR_MASTER_ARCHETYPE := [
 	"cave_bat", "cave_bat", "cave_bat", "cave_bat", "cave_bat",
 	"wraith_elite", "wraith_elite", "wraith_elite", "wraith_elite", "wraith_elite",
 	"wraith_elite", "wraith_elite", "wraith_elite", "wraith_elite", "wraith_elite",
-	"skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon",
-	"skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon",
 	"cave_bat", "cave_bat", "cave_bat", "cave_bat", "cave_bat",
 	"rock_golem", "rock_golem",
-	"skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon", "skeleton_dungeon",
-	"wraith_elite", "wraith_elite", "forest_goblin", "rock_golem",
+	"skeleton_dungeon", "wraith_elite",
 	"skeleton_dungeon",
 ]
 
