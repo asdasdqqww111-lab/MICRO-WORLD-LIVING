@@ -548,7 +548,7 @@ func _test_game_scene() -> void:
 		and AssetLibrary.has_model("res://assets_realistic/models/buildings/citadel_keep.glb")
 		and AssetLibrary.has_model("res://assets_realistic/models/trees/realistic_oak_01.glb"),
 		"Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded")
-	var stone_pbr: StandardMaterial3D = ArtDirection.pbr_surface("stone_wall")
+	var stone_pbr: StandardMaterial3D = ArtDirection.pbr_material("test_stone_wall", "stone_wall")
 	_check(stone_pbr != null and stone_pbr.normal_enabled and stone_pbr.normal_texture != null and stone_pbr.roughness_texture != null,
 		"Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled")
 	_check(ArtDirection.terrain_normal_texture() != null and ArtDirection.terrain_roughness_texture() != null,
