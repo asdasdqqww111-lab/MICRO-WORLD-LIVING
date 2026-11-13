@@ -34,16 +34,28 @@ class TreeCanvas extends Control:
 				var from_btn := screen_ref.node_buttons[req_id] as Control
 				var from_center := from_btn.position + from_btn.size * 0.5
 				var req_rank := GameManager.skills.rank_of(req_id)
-				var line_col := Color(0.28, 0.34, 0.42, 0.65)
-				var width := 2.5 * z
+				var line_col := Color(0.32, 0.40, 0.52, 0.50)
+				var glow_col := Color(0.18, 0.24, 0.34, 0.18)
+				var width := 2.4 * z
 				if rank > 0 and req_rank > 0:
 					line_col = UIFactory.GOLD
-					width = 4.0 * z
+					glow_col = Color(1.0, 0.84, 0.34, 0.36)
+					width = 3.8 * z
 				elif can and req_rank > 0:
 					line_col = UIFactory.ACCENT
+					glow_col = Color(0.42, 0.92, 0.62, 0.32)
 					width = 3.2 * z
-				draw_line(from_center, to_center, Color(0, 0, 0, 0.55), width + 2.5)
+				# Outer halo + shadow + core constellation line + midpoint rune diamond
+				draw_line(from_center, to_center, glow_col, width + 5.5 * z, true)
+				draw_line(from_center, to_center, Color(0, 0, 0, 0.52), width + 2.0)
 				draw_line(from_center, to_center, line_col, width, true)
+				var mid := (from_center + to_center) * 0.5
+				var dr := 4.2 * z
+				draw_colored_polygon(PackedVector2Array([
+					mid + Vector2(0, -dr), mid + Vector2(dr, 0),
+					mid + Vector2(0, dr), mid + Vector2(-dr, 0)]), line_col)
+				draw_circle(from_center, 3.5 * z, line_col)
+				draw_circle(to_center, 3.5 * z, line_col)
 
 var zoom_scale: float = 1.0
 var selected_skill_id: String = "mighty_blow"

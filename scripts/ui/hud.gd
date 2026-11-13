@@ -69,8 +69,8 @@ func _build_vitals() -> void:
 	_top_left_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_top_left_stack)
 
-	var panel := UIFactory.panel(0.94)
-	panel.custom_minimum_size = Vector2(276, 0)
+	var panel := UIFactory.card_panel(Color(0.86, 0.78, 0.52, 0.38), UIFactory.BG_GLASS_HUD)
+	panel.custom_minimum_size = Vector2(248, 0)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_top_left_stack.add_child(panel)
 
@@ -129,9 +129,7 @@ func _build_top_bar_and_boss() -> void:
 		var lbl_en := String(pair[1])
 		var lbl_ar := String(pair[2])
 		var lbl := lbl_ar if Localization.is_arabic() else lbl_en
-		var btn := UIFactory.button(lbl, 38)
-		btn.custom_minimum_size = Vector2(72 if lbl_en != "II" else 44, 38)
-		btn.add_theme_font_size_override("font_size", 14)
+		var btn := UIFactory.glass_pill_button(lbl, 56 if lbl_en != "II" else 34, 28)
 		btn.pressed.connect(func() -> void: quick_menu_pressed.emit(scr))
 		ribbon.add_child(btn)
 		_ribbon_buttons[scr] = {"btn": btn, "en": lbl_en, "ar": lbl_ar}
@@ -383,11 +381,15 @@ func _refresh_quest_tracker() -> void:
 			var required := int(objective.get("required", 1))
 			var done := progress >= required
 			var olabel := Localization.quest_obj_label(quest, i, String(objective.get("label", "Objective")))
-			var text := "%s %d/%d" % [olabel, progress, required]
+			var text := "%s  %d/%d" % [olabel, progress, required]
 			if done:
 				text = "✔ " + text
 			quest_box.add_child(UIFactory.label("  " + text, 13,
 				UIFactory.ACCENT if done else UIFactory.TEXT_DIM))
+			var pbar := UIFactory.progress_bar(UIFactory.ACCENT if done else UIFactory.GOLD, 5)
+			pbar.max_value = maxf(1.0, float(required))
+			pbar.value = clampf(float(progress), 0.0, float(required))
+			quest_box.add_child(pbar)
 		if GameManager.quest_log.can_turn_in(quest_id):
 			quest_box.add_child(UIFactory.label("  ★ جاهزة للتسليم!" if ar else "  ★ Ready to turn in!", 13, UIFactory.ACCENT))
 	waypoint_label = UIFactory.label("", 13, Color(1.0, 0.88, 0.36))

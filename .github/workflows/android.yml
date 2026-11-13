@@ -189,16 +189,16 @@ jobs:
         run: |
           set -euo pipefail
           APK=build/android/micro_world_living.apk
-          for TAG in v1.1-debug v1.0-debug; do
+          for TAG in v2.0-debug v1.1-debug v1.0-debug; do
             if gh release view "$TAG" >/dev/null 2>&1; then
               gh release upload "$TAG" "$APK" --clobber
               gh release edit "$TAG" \
-                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v1.1 (Phase 1) APK" \
+                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v2.0 (Ultra Immersion & Systems Overhaul) APK" \
                 --notes-file RELEASE_NOTES.md
             else
               gh release create "$TAG" "$APK" \
                 --target "${{ github.sha }}" \
-                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v1.1 (Phase 1) APK" \
+                --title "MICRO WORLD: LIVING — Chronicles of Eldoria v2.0 (Ultra Immersion & Systems Overhaul) APK" \
                 --notes-file RELEASE_NOTES.md \
                 --prerelease
             fi

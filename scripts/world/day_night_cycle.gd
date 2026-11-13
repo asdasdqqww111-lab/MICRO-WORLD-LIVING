@@ -15,6 +15,7 @@ var moon: DirectionalLight3D
 var clouds: CloudLayer
 var environment: Environment
 var sky_material: ProceduralSkyMaterial
+var sky_shader_material: ShaderMaterial
 
 var _last_minute: int = -1
 var _last_hour: int = -1
@@ -29,6 +30,7 @@ func setup(sun_light: DirectionalLight3D, env: Environment, moon_light: Directio
 	environment = env
 	if env != null and env.sky != null:
 		sky_material = env.sky.sky_material as ProceduralSkyMaterial
+		sky_shader_material = env.sky.sky_material as ShaderMaterial
 	apply_now()
 
 func set_time_scale_multiplier(value: float) -> void:
@@ -83,17 +85,24 @@ func apply_now() -> void:
 		var fog_day := Color(0.64, 0.74, 0.84).lerp(Color(0.86, 0.66, 0.52), golden_hour * 0.55)
 		var fog_night := Color(0.10, 0.14, 0.22)
 		environment.fog_light_color = fog_night.lerp(fog_day, daylight)
-		if sky_material != null:
-			var top_day := Color(0.18, 0.40, 0.74)
-			var top_night := Color(0.03, 0.05, 0.12)
-			var horizon_day := Color(0.62, 0.76, 0.88).lerp(Color(0.94, 0.64, 0.44), golden_hour * 0.65)
-			var horizon_night := Color(0.08, 0.11, 0.20)
-			var rain_grey := Color(0.46, 0.50, 0.55)
-			var top := top_day.lerp(top_night, night_factor)
-			var horizon := horizon_day.lerp(horizon_night, night_factor)
-			if _weather_darkness > 0.0:
-				top = top.lerp(rain_grey, _weather_darkness * 0.68)
-				horizon = horizon.lerp(rain_grey, _weather_darkness * 0.68)
+		var top_day := Color(0.14, 0.36, 0.74)
+		var top_night := Color(0.03, 0.05, 0.12)
+		var horizon_day := Color(0.60, 0.76, 0.89).lerp(Color(0.95, 0.64, 0.42), golden_hour * 0.68)
+		var horizon_night := Color(0.08, 0.11, 0.20)
+		var rain_grey := Color(0.44, 0.48, 0.54)
+		var top := top_day.lerp(top_night, night_factor)
+		var horizon := horizon_day.lerp(horizon_night, night_factor)
+		if _weather_darkness > 0.0:
+			top = top.lerp(rain_grey, _weather_darkness * 0.68)
+			horizon = horizon.lerp(rain_grey, _weather_darkness * 0.68)
+		if sky_shader_material != null:
+			sky_shader_material.set_shader_parameter("sky_top", Vector3(top.r, top.g, top.b))
+			sky_shader_material.set_shader_parameter("sky_horizon", Vector3(horizon.r, horizon.g, horizon.b))
+			sky_shader_material.set_shader_parameter("night_factor", night_factor)
+			sky_shader_material.set_shader_parameter("rain_factor", _weather_darkness)
+			var cb := Color(0.99, 0.98, 0.96).lerp(Color(1.0, 0.74, 0.52), golden_hour * 0.65)
+			sky_shader_material.set_shader_parameter("cloud_bright", Vector3(cb.r, cb.g, cb.b))
+		elif sky_material != null:
 			sky_material.sky_top_color = top
 			sky_material.sky_horizon_color = horizon
 			sky_material.ground_horizon_color = horizon.darkened(0.28)

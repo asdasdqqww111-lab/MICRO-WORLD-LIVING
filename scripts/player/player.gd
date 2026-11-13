@@ -51,6 +51,7 @@ var zone: String = "village"
 var dead: bool = false
 var is_blocking: bool = false
 var locked_target: Node3D = null
+var state_machine := PlayerStateMachine.new()
 
 var _loaded_class_id: String = ""
 var _target_ring: MeshInstance3D
@@ -71,10 +72,10 @@ var _spawn_position := Vector3(0.0, 1.2, 16.0)
 func _ready() -> void:
 	add_to_group("player")
 	add_to_group(Combat.DAMAGEABLE_GROUP)
-	collision_layer = 2
-	collision_mask = 1
+	CollisionLayers.configure_player_body(self)
 	_build_collision()
 	_build_visual()
+	add_child(ArtDirection.make_contact_ao(0.56, 0.38))
 	_build_target_ring()
 	_build_camera()
 	_build_health()
@@ -254,10 +255,27 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("camera_recenter") and camera_rig != null:
 		camera_rig.recenter_behind(rotation.y)
 
+	_enforce_anti_clip_safety()
 	_update_target_lock(delta)
 	_update_vitals_regen(delta)
 	_update_interactable()
+	state_machine.evaluate(delta, dead, _dodge_timer, _attack_timer, _spell_timer, is_blocking, is_on_floor(), sprinting, planar)
 	_update_animation(sprinting, planar)
+
+func _enforce_anti_clip_safety() -> void:
+	if zone == "village":
+		global_position.x = clampf(global_position.x, -114.5, 114.5)
+		global_position.z = clampf(global_position.z, -114.5, 114.5)
+		var wr := get_tree().get_first_node_in_group("world_root") as WorldRoot
+		if wr != null and wr.terrain != null:
+			var min_y := wr.terrain.height_at(global_position.x, global_position.z) - 0.85
+			if global_position.y < min_y:
+				global_position.y = min_y + 0.90
+				velocity.y = maxf(0.0, velocity.y)
+	else:
+		if global_position.y < -3.5:
+			global_position.y = 0.25
+			velocity.y = 0.0
 
 func toggle_target_lock() -> Node3D:
 	var candidates: Array[Node3D] = []

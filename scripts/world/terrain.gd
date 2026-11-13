@@ -198,6 +198,7 @@ func _build() -> void:
 			_emit_vertex(st, gx + 1, gz + 1, heights[i11], step, half, heights, n)
 			_emit_vertex(st, gx, gz + 1, heights[i01], step, half, heights, n)
 	st.generate_normals()
+	st.generate_tangents()
 	var mesh := st.commit()
 
 	var mi := MeshInstance3D.new()
@@ -206,8 +207,13 @@ func _build() -> void:
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
 	mat.albedo_texture = ArtDirection.terrain_detail_texture()
+	if DisplayServer.get_name() != "headless":
+		mat.normal_enabled = true
+		mat.normal_texture = ArtDirection.terrain_normal_texture()
+		mat.normal_scale = 0.72
+		mat.roughness_texture = ArtDirection.terrain_roughness_texture()
 	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
-	mat.roughness = 0.93
+	mat.roughness = 0.90
 	mat.metallic = 0.0
 	mi.material_override = mat
 	add_child(mi)

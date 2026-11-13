@@ -58,41 +58,44 @@ func _build() -> void:
 	add_child(joystick)
 	joystick.moved.connect(func(vector: Vector2) -> void: _move = vector)
 
-	# Left-side Sprint toggle just above joystick
-	sprint_button = UIFactory.icon_button("RUN", 58)
+	# Left-side Circular Glassmorphism Sprint Toggle
+	sprint_button = UIFactory.glass_circle_button("RUN", 56, UIFactory.STAMINA_TEAL)
 	sprint_button.name = "Btn_sprint"
 	sprint_button.anchor_left = 0.0
 	sprint_button.anchor_top = 1.0
 	sprint_button.anchor_right = 0.0
 	sprint_button.anchor_bottom = 1.0
-	sprint_button.offset_left = 236
-	sprint_button.offset_top = -90
-	sprint_button.offset_right = 294
-	sprint_button.offset_bottom = -32
-	sprint_button.modulate = Color(1, 1, 1, 0.78)
+	sprint_button.offset_left = 248
+	sprint_button.offset_top = -94
+	sprint_button.offset_right = 304
+	sprint_button.offset_bottom = -38
+	sprint_button.modulate = Color(1, 1, 1, 0.82)
 	sprint_button.button_down.connect(func() -> void:
 		_sprint = not _sprint
-		sprint_button.modulate = Color(1.0, 0.95, 0.65, 1.0) if _sprint else Color(1, 1, 1, 0.78))
+		sprint_button.modulate = Color(1.0, 0.96, 0.68, 1.0) if _sprint else Color(1, 1, 1, 0.82))
 	add_child(sprint_button)
 
-	# Ergonomic Right-Hand Curved Action Cluster (larger mobile targets + Target Lock!)
-	_place_action_button("attack", "⚔ ATK", 22.0, 22.0, 114.0, UIFactory.DANGER)
-	_place_action_button("attack_heavy", "🪓 HVY", 148.0, 20.0, 78.0, Color(0.96, 0.58, 0.24))
-	_place_action_button("cast_spell", "✦ MAG", 236.0, 20.0, 76.0, UIFactory.MANA_BLUE)
-	_place_action_button("dodge", "💨 DGE", 146.0, 108.0, 76.0, UIFactory.STAMINA_TEAL)
-	_place_action_button("jump", "⬆ JMP", 24.0, 148.0, 76.0, Color(0.55, 0.78, 1.0))
-	_place_action_button("interact", "✦ USE", 112.0, 194.0, 74.0, UIFactory.GOLD)
-	_place_action_button("quick_potion", "⚗ POT", 234.0, 106.0, 68.0, UIFactory.ACCENT)
-	_place_action_button("lock_target", "◎ LCK", 200.0, 186.0, 68.0, Color(1.0, 0.84, 0.30))
+	# Ergonomic "Thumb-Zone" Concentric Circular Glassmorphic Cluster
+	# Mathematically spaced so EVERY pair of right-hand buttons has >= 46px clear gap!
+	_place_action_button("attack", "⚔\nATK", 35.0, 35.0, 94.0, UIFactory.DANGER)
+	# Inner Thumb Arc (R = 150px from ATK center)
+	_place_action_button("attack_heavy", "🪓", 200.0, 60.5, 64.0, Color(0.96, 0.58, 0.24))
+	_place_action_button("dodge", "💨", 152.3, 159.7, 64.0, UIFactory.STAMINA_TEAL)
+	_place_action_button("jump", "⬆", 50.0, 200.0, 64.0, Color(0.55, 0.78, 1.0))
+	# Outer Secondary Arc (R = 260px from ATK center)
+	_place_action_button("cast_spell", "✦", 312.0, 75.7, 58.0, UIFactory.MANA_BLUE)
+	_place_action_button("quick_potion", "⚗", 271.1, 194.6, 58.0, UIFactory.ACCENT)
+	_place_action_button("lock_target", "◎", 179.1, 280.4, 58.0, Color(1.0, 0.84, 0.30))
+	_place_action_button("interact", "✋", 419.0, 43.0, 58.0, UIFactory.GOLD)
 
-	# Hold-to-Block Shield Button
-	block_button = _place_action_button("block", "🛡 BLK", 24.0, 234.0, 70.0, Color(0.72, 0.78, 0.92))
+	# Hold-to-Block Shield Button (Outer Arc top-right)
+	block_button = _place_action_button("block", "🛡", 57.5, 313.0, 58.0, Color(0.72, 0.78, 0.92))
 	block_button.button_down.connect(func() -> void: _blocking = true)
 	block_button.button_up.connect(func() -> void: _blocking = false)
 
 func _place_action_button(action: String, text: String, right_margin: float, bottom_margin: float,
 		btn_size: float, tint: Color) -> Button:
-	var b := UIFactory.icon_button(text, int(btn_size))
+	var b := UIFactory.glass_circle_button(text, int(btn_size), tint)
 	b.name = "Btn_" + action
 	b.anchor_left = 1.0
 	b.anchor_top = 1.0
@@ -102,15 +105,14 @@ func _place_action_button(action: String, text: String, right_margin: float, bot
 	b.offset_top = -(bottom_margin + btn_size)
 	b.offset_right = -right_margin
 	b.offset_bottom = -bottom_margin
-	b.modulate = Color(1, 1, 1, 0.92)
-	b.add_theme_font_size_override("font_size", 15 if btn_size < 95.0 else 19)
-	b.add_theme_color_override("font_color", tint.lerp(Color.WHITE, 0.32))
+	b.modulate = Color(1, 1, 1, 0.88)
+	b.add_theme_font_size_override("font_size", 16 if btn_size < 90.0 else 18)
 	b.button_down.connect(func() -> void:
-		b.modulate = Color(1.22, 1.18, 1.05, 1.0)
+		b.modulate = Color(1.24, 1.20, 1.08, 1.0)
 		if action != "block":
 			_pressed[action] = true)
 	b.button_up.connect(func() -> void:
-		b.modulate = Color(1, 1, 1, 0.92))
+		b.modulate = Color(1, 1, 1, 0.88))
 	add_child(b)
 	return b
 

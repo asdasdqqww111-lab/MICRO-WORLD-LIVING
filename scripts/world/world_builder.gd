@@ -136,8 +136,8 @@ static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array
 		else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if vis_end > 0.0:
 		instance.visibility_range_end = vis_end
-		instance.visibility_range_end_margin = 12.0
-		instance.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+		instance.visibility_range_end_margin = 0.0
+		instance.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	parent.add_child(instance)
 	return instance
 
@@ -162,21 +162,21 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 			"pos": Vector3(-15.5, 0.0, -20.5), "rot": deg_to_rad(155.0), "scale": b * 0.88,
 			"collider": Vector3(9.4, 10.5, 10.2), "name": "Tavern"},
 		# Sanctuary Chapel (Northeast)
-		{"path": vdir + "building_church_yellow.gltf", "fallback": hex + "building_home_B_green.gltf",
+		{"path": hex + "building_church_blue.gltf", "fallback": hex + "building_church_green.gltf",
 			"pos": Vector3(16.0, 0.0, -19.5), "rot": deg_to_rad(-148.0), "scale": b * 0.90,
 			"collider": Vector3(8.8, 11.5, 10.2), "name": "Chapel"},
 		# Player's Cottage (Preserved at (-16, 0, -8) with door at (-16, 0, -2.4))
 		{"path": hex + "building_home_A_green.gltf", "fallback": hex + "building_home_A_green.gltf",
 			"pos": Vector3(-16.0, 0.0, -8.0), "rot": 0.0, "scale": b,
 			"collider": Vector3(7.2, 7.9, 7.6), "name": "HouseA"},
-		# Residential Cottage East
-		{"path": vdir + "building_home_B_red.gltf", "fallback": hex + "building_home_B_green.gltf",
-			"pos": Vector3(17.5, 0.0, -7.5), "rot": deg_to_rad(-35.0), "scale": b,
-			"collider": Vector3(7.6, 7.9, 7.0), "name": "HouseB"},
-		# Residential Cottage West
-		{"path": vdir + "building_home_A_yellow.gltf", "fallback": hex + "building_home_A_green.gltf",
-			"pos": Vector3(-25.0, 0.0, -3.5), "rot": deg_to_rad(75.0), "scale": b * 0.92,
-			"collider": Vector3(7.0, 7.6, 7.2), "name": "HouseC"},
+		# Residential Cottage East (Upgraded to Tiny Treats Homely House CC0!)
+		{"path": "res://assets/environments/tinytreats_house/house.gltf", "fallback": hex + "building_home_B_green.gltf",
+			"pos": Vector3(17.8, 0.0, -7.5), "rot": deg_to_rad(-35.0), "scale": 1.18,
+			"collider": Vector3(7.0, 7.1, 7.6), "name": "HouseB"},
+		# Residential Cottage West (Upgraded to Tiny Treats Homely House CC0!)
+		{"path": "res://assets/environments/tinytreats_house/house.gltf", "fallback": hex + "building_home_A_green.gltf",
+			"pos": Vector3(-25.0, 0.0, -3.5), "rot": deg_to_rad(75.0), "scale": 1.14,
+			"collider": Vector3(6.8, 6.9, 7.4), "name": "HouseC"},
 		# Blacksmith & Crafting District (Southwest)
 		{"path": vdir + "building_blacksmith_red.gltf", "fallback": hex + "building_blacksmith_green.gltf",
 			"pos": Vector3(-19.0, 0.0, 11.0), "rot": deg_to_rad(-18.0), "scale": b,
@@ -202,11 +202,32 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		place_model(parent, chosen, entry["pos"] as Vector3, float(entry["rot"]),
 			float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
 
-	# Central Village Square: Well + Memorial Obelisk + Lanterns
-	place_model(parent, hex + "building_well_green.gltf", Vector3(0.0, 0.0, 2.0), 0.0, 2.5,
-		Vector3(1.8, 2.1, 1.8), "CentralWell")
+	# Central Village Square: Sculpted Stone Fountain + Cobblestones + Benches + Memorial Obelisk
+	var fountain_path := "res://assets/environments/tinytreats_park/fountain.gltf"
+	if AssetLibrary.has_model(fountain_path):
+		place_model(parent, fountain_path, Vector3(0.0, 0.0, 2.0), 0.0, 1.05,
+			Vector3(3.4, 1.8, 3.4), "CentralWell")
+	else:
+		place_model(parent, hex + "building_well_green.gltf", Vector3(0.0, 0.0, 2.0), 0.0, 2.5,
+			Vector3(1.8, 2.1, 1.8), "CentralWell")
+	if AssetLibrary.has_model("res://assets/environments/tinytreats_house/bench_A.gltf"):
+		place_model(parent, "res://assets/environments/tinytreats_house/bench_A.gltf",
+			Vector3(-4.2, 0.0, 2.0), deg_to_rad(90.0), 0.95, Vector3(0.9, 1.0, 1.8), "PlazaBenchW")
+		place_model(parent, "res://assets/environments/tinytreats_house/bench_A.gltf",
+			Vector3(4.2, 0.0, 2.0), deg_to_rad(-90.0), 0.95, Vector3(0.9, 1.0, 1.8), "PlazaBenchE")
+	if AssetLibrary.has_model("res://assets/environments/tinytreats_park/cobble_stones_large.gltf"):
+		place_model(parent, "res://assets/environments/tinytreats_park/cobble_stones_large.gltf",
+			Vector3(0.0, 0.01, -1.6), 0.0, 1.35)
+		place_model(parent, "res://assets/environments/tinytreats_park/cobble_stones_large.gltf",
+			Vector3(0.0, 0.01, 5.6), 0.4, 1.35)
 	place_model(parent, "res://assets/environments/dungeons/statue-obelisk.glb", Vector3(0.0, 0.0, -5.5), 0.0, 2.4,
 		Vector3(1.2, 3.2, 1.2), "PlazaObelisk")
+
+	# Outer Valley Anti-Out-of-Bounds Physics Perimeter Colliders (±116m)
+	add_box_body(parent, Vector3(0.0, -4.0, -116.0), Vector3(240.0, 38.0, 2.0), "NorthValleyWall")
+	add_box_body(parent, Vector3(0.0, -4.0, 116.0), Vector3(240.0, 38.0, 2.0), "SouthValleyWall")
+	add_box_body(parent, Vector3(-116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "WestValleyWall")
+	add_box_body(parent, Vector3(116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "EastValleyWall")
 
 	# Guarded South & West Gates + Stone Perimeter Segments
 	if AssetLibrary.has_model(vprop + "wall_straight_gate.gltf"):
@@ -308,55 +329,42 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	}
 
 static func _build_street_lantern(parent: Node3D, pos: Vector3) -> void:
-	var post := MeshInstance3D.new()
-	var cyl := CylinderMesh.new()
-	cyl.top_radius = 0.07
-	cyl.bottom_radius = 0.09
-	cyl.height = 2.65
-	post.mesh = cyl
-	post.position = pos + Vector3(0.0, 1.325, 0.0)
-	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	post.material_override = ProceduralModels.make_material(Color(0.24, 0.22, 0.20), 0.85)
-	parent.add_child(post)
-
-	var bulb := MeshInstance3D.new()
-	var box := BoxMesh.new()
-	box.size = Vector3(0.28, 0.34, 0.28)
-	bulb.mesh = box
-	bulb.position = pos + Vector3(0.0, 2.72, 0.0)
-	bulb.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	bulb.material_override = ProceduralModels.make_material(
-		Color(1.0, 0.84, 0.52), 0.4, 0.0, Color(1.0, 0.72, 0.32), 1.4)
-	parent.add_child(bulb)
+	var lantern_gltf := "res://assets/environments/tinytreats_park/street_lantern.gltf"
+	if AssetLibrary.has_model(lantern_gltf):
+		place_model(parent, lantern_gltf, pos, 0.0, 0.78, Vector3(0.32, 3.2, 0.32), "VillageLanternPost")
+	else:
+		var post := MeshInstance3D.new()
+		var cyl := CylinderMesh.new()
+		cyl.top_radius = 0.07
+		cyl.bottom_radius = 0.09
+		cyl.height = 2.65
+		post.mesh = cyl
+		post.position = pos + Vector3(0.0, 1.325, 0.0)
+		post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		post.material_override = ProceduralModels.make_material(Color(0.24, 0.22, 0.20), 0.85)
+		parent.add_child(post)
 
 	var light := OmniLight3D.new()
 	light.add_to_group("village_lantern")
-	light.light_color = Color(1.0, 0.76, 0.42)
-	light.light_energy = 1.15
-	light.omni_range = 8.5
+	light.light_color = Color(1.0, 0.78, 0.44)
+	light.light_energy = 1.25
+	light.omni_range = 9.0
 	light.shadow_enabled = false
 	light.visible = false
 	parent.add_child(light)
-	light.global_position = pos + Vector3(0.0, 2.75, 0.0)
+	light.global_position = pos + Vector3(0.0, 3.05, 0.0)
 
 static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -> Dictionary:
 	var y_at := func(x: float, z: float) -> float:
 		return terrain.height_at(x, z) if terrain != null else 0.0
 
-	# 1. Translucent Eldoria River & Crystal Lake Water Surface
-	var water_mat := StandardMaterial3D.new()
-	water_mat.albedo_color = Color(0.14, 0.42, 0.56, 0.78)
-	water_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	water_mat.roughness = 0.14
-	water_mat.metallic = 0.18
-	water_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-
+	# 1. Animated PBR Specular Water Surface for Eldoria River & Crystal Lake
 	var river_mesh := MeshInstance3D.new()
 	river_mesh.name = "EldoriaRiverAndLake"
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(96.0, 128.0)
 	river_mesh.mesh = plane
-	river_mesh.material_override = water_mat
+	river_mesh.material_override = ArtDirection.water_shader_material()
 	river_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	river_mesh.position = Vector3(26.0, Terrain.WATER_LEVEL, -4.0)
 	parent.add_child(river_mesh)
@@ -477,19 +485,19 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 
 		match biome:
 			"pine_highlands", "alpine":
-				var sp := rng.randf_range(4.4, 6.6)
+				var sp := rng.randf_range(4.2, 6.2)
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 				trunk_positions.append(pos)
 			"lakeside_birch":
-				var sb := rng.randf_range(4.0, 5.8)
+				var sb := rng.randf_range(1.15, 1.58)
 				birch_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sb), pos))
 				trunk_positions.append(pos)
 			"dense_woodland", "ancient_grove":
-				if rng.randf() < 0.55:
-					var sd := rng.randf_range(2.6, 3.9)
+				if rng.randf() < 0.52:
+					var sd := rng.randf_range(1.22, 1.78)
 					dense_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sd), pos))
 				else:
-					var so := rng.randf_range(4.6, 6.8)
+					var so := rng.randf_range(1.18, 1.68)
 					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * so), pos))
 				trunk_positions.append(pos)
 			"rocky_hills":
@@ -499,29 +507,51 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 					trunk_positions.append(pos)
 			_:
 				if rng.randf() < 0.55:
-					var sm := rng.randf_range(4.2, 5.8)
+					var sm := rng.randf_range(1.12, 1.56)
 					oak_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sm), pos))
 					trunk_positions.append(pos)
 
-	# Rocks, Undergrowth Bushes, Wildflowers & Shoreline Reeds
-	for i: int in 150:
-		var rx := rng.randf_range(-106.0, 106.0)
-		var rz := rng.randf_range(-106.0, 106.0)
-		if Vector2(rx, rz).length() < 31.0:
+	# Rocks, Undergrowth Bushes, Wildflowers, Lush 3D Grass Clumps & Shoreline Reeds
+	var grass_xforms: Array = []
+	var rock_positions: Array[Vector3] = []
+	for i: int in 160:
+		var rx := rng.randf_range(-104.0, 104.0)
+		var rz := rng.randf_range(-104.0, 104.0)
+		if Vector2(rx, rz).length() < 30.5:
 			continue
 		if terrain != null and (terrain.is_road_at(rx, rz) or terrain.is_water_at(rx, rz)):
+			continue
+		if terrain != null and terrain.slope_at(rx, rz) > 0.65:
 			continue
 		var ry := terrain.height_at(rx, rz) if terrain != null else 0.0
 		var yaw := rng.randf_range(0.0, TAU)
 		if i < 55:
-			var rs := rng.randf_range(1.2, 2.8)
-			rock_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rs), Vector3(rx, ry - 0.1, rz)))
-		elif i < 105:
-			var bs := rng.randf_range(1.5, 2.5)
+			var rs := rng.randf_range(3.2, 6.2)
+			var rpos := Vector3(rx, ry - 0.08, rz)
+			rock_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * rs), rpos))
+			rock_positions.append(rpos)
+		elif i < 110:
+			var bs := rng.randf_range(0.88, 1.45)
 			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry, rz)))
 		else:
-			var fs := rng.randf_range(1.6, 2.4)
+			var fs := rng.randf_range(1.35, 2.15)
 			flower_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * fs), Vector3(rx, ry, rz)))
+
+	# Natural Non-Grid 3D Grass Scatter across Meadows, Village Fringe & Woodland Clearings (1 Draw Call!)
+	for i: int in 220:
+		var gx := rng.randf_range(-88.0, 88.0)
+		var gz := rng.randf_range(-88.0, 88.0)
+		if Vector2(gx, gz).length() < 11.5:
+			continue
+		if terrain != null:
+			if terrain.is_road_at(gx, gz) or terrain.is_water_at(gx, gz):
+				continue
+			if terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 13.5:
+				continue
+		var gy := terrain.height_at(gx, gz) if terrain != null else 0.0
+		var gyaw := rng.randf_range(0.0, TAU)
+		var gscale := rng.randf_range(1.05, 1.85)
+		grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3.ONE * gscale), Vector3(gx, gy - 0.02, gz)))
 
 	# Shoreline Reeds around Crystal Lake
 	for i: int in 28:
@@ -531,31 +561,41 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		var ly := terrain.height_at(lx, lz) if terrain != null else -0.3
 		reed_xforms.append(Transform3D(Basis(Vector3.UP, ang).scaled(Vector3.ONE * 1.6), Vector3(lx, ly, lz)))
 
-	build_multimesh(parent, "res://assets/environments/forests/tree-oak.glb", oak_xforms, "ForestOaks", false, 110.0)
-	build_multimesh(parent, "res://assets/environments/forests/tree-detailed-dark.glb", dense_xforms, "ForestCanopyTrees", false, 105.0)
-	build_multimesh(parent, "res://assets/environments/forests/tree-pinetalla-detailed.glb", pine_xforms, "HighlandPines", false, 118.0)
-	build_multimesh(parent, "res://assets/environments/forests/tree-thin.glb", birch_xforms, "LakesideBirches", false, 100.0)
-	build_multimesh(parent, "res://assets/environments/mountains/rock-largea.glb", rock_xforms, "WorldRocks", false, 95.0)
-	build_multimesh(parent, "res://assets/environments/forests/plant-bushlarge.glb", bush_xforms, "ForestBushes", false, 68.0)
-	build_multimesh(parent, "res://assets/environments/forests/flower-yellowa.glb", flower_xforms, "MeadowFlowers", false, 58.0)
-	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 70.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/tree_large.gltf", oak_xforms, "ForestOaks", true, 92.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_house/tree_large.gltf", dense_xforms, "ForestCanopyTrees", true, 88.0)
+	build_multimesh(parent, "res://assets/models/hexagon/trees_A_large.gltf", pine_xforms, "HighlandPines", false, 112.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/tree.gltf", birch_xforms, "LakesideBirches", true, 86.0)
+	build_multimesh(parent, "res://assets/models/hexagon/rock_single_A.gltf", rock_xforms, "WorldRocks", true, 84.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/bush_large.gltf", bush_xforms, "ForestBushes", false, 58.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/flower_A.gltf", flower_xforms, "MeadowFlowers", false, 48.0)
+	build_multimesh(parent, "res://assets/environments/tinytreats_park/grass_A.gltf", grass_xforms, "MeadowGrass", false, 40.0)
+	build_multimesh(parent, "res://assets/environments/rivers/lily-large.glb", reed_xforms, "LakeReeds", false, 64.0)
 
-	# Batched single StaticBody3D for tree trunks within playable elevation
+	# Batched StaticBody3D for tree trunks AND large rock boulders within playable elevation
 	var trunk_body := StaticBody3D.new()
 	trunk_body.name = "ForestTrunkColliders"
 	trunk_body.collision_layer = 1
 	trunk_body.collision_mask = 0
 	var shared_cyl := CylinderShape3D.new()
-	shared_cyl.radius = 0.42
-	shared_cyl.height = 3.2
+	shared_cyl.radius = 0.44
+	shared_cyl.height = 3.4
+	var shared_rock := SphereShape3D.new()
+	shared_rock.radius = 0.95
 	parent.add_child(trunk_body)
 	for tp: Vector3 in trunk_positions:
 		if tp.y > 12.0:
 			continue
 		var cs := CollisionShape3D.new()
 		cs.shape = shared_cyl
-		cs.position = tp + Vector3(0.0, 1.6, 0.0)
+		cs.position = tp + Vector3(0.0, 1.7, 0.0)
 		trunk_body.add_child(cs)
+	for rp: Vector3 in rock_positions:
+		if rp.y > 12.0:
+			continue
+		var rcs := CollisionShape3D.new()
+		rcs.shape = shared_rock
+		rcs.position = rp + Vector3(0.0, 0.7, 0.0)
+		trunk_body.add_child(rcs)
 
 	var y_fn := func(px: float, pz: float) -> float:
 		return (terrain.height_at(px, pz) + 0.35) if terrain != null else 0.35

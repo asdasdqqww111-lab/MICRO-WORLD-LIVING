@@ -509,6 +509,38 @@ func _test_game_scene() -> void:
 	await _wait_frames(2)
 	_check(ui.touch != null and ui.touch.find_child("Btn_lock_target", true, false) != null,
 		"Mobile TouchControls includes Target-Lock button (Btn_lock_target)")
+
+	# Verify Thumb-Zone >= 44px clear spacing across all right-hand circular buttons
+	var right_btns: Array[Button] = []
+	for act_name: String in ["attack", "attack_heavy", "dodge", "jump", "cast_spell", "quick_potion", "lock_target", "block", "interact"]:
+		var rb := ui.touch.find_child("Btn_" + act_name, true, false) as Button
+		if rb != null:
+			right_btns.append(rb)
+	var min_btn_gap := 999.0
+	for i in right_btns.size():
+		for j in range(i + 1, right_btns.size()):
+			var b1 := right_btns[i]
+			var b2 := right_btns[j]
+			var c1 := Vector2((b1.offset_left + b1.offset_right) * 0.5, (b1.offset_top + b1.offset_bottom) * 0.5)
+			var c2 := Vector2((b2.offset_left + b2.offset_right) * 0.5, (b2.offset_top + b2.offset_bottom) * 0.5)
+			var r1 := (b1.offset_right - b1.offset_left) * 0.5
+			var r2 := (b2.offset_right - b2.offset_left) * 0.5
+			min_btn_gap = minf(min_btn_gap, c1.distance_to(c2) - (r1 + r2))
+	_check(right_btns.size() == 9 and min_btn_gap >= 44.0,
+		"Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=%.1fpx)" % min_btn_gap)
+
+	# Verify v2.0 Assets, PBR Maps, VFXManager, Anti-Clipping Physics, FSM & QuestManager
+	_check(ResourceLoader.exists("res://assets/ui/fonts/Cairo-Variable.ttf"), "Cairo variable font bundled & active")
+	_check(AssetLibrary.has_model("res://assets/environments/tinytreats_house/house.gltf") and AssetLibrary.has_model("res://assets/environments/tinytreats_park/fountain.gltf"),
+		"Tiny Treats CC0 Homely House & Pretty Park Fountain models loaded")
+	_check(ArtDirection.terrain_normal_texture() != null and ArtDirection.terrain_roughness_texture() != null,
+		"Procedural PBR terrain Normal Map & Roughness Map generated")
+	_check(game.get("vfx") != null and (game.get("vfx") as Node).get_node_or_null("FootstepDust") != null,
+		"VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active")
+	_check(player.collision_layer == CollisionLayers.PLAYER and player.collision_mask == CollisionLayers.MASK_PLAYER_SOLID and player.safe_margin >= 0.04,
+		"Player anti-clipping physics & CollisionLayers configured")
+	_check(player.state_machine != null and QuestManager.get_quest("main_guild_call") != null,
+		"PlayerStateMachine FSM & QuestManager Resource facade operational")
 	_check(world.quest_waypoint != null, "3D QuestWaypoint beacon exists in WorldRoot")
 
 	# Attack, Target Lock & Spell test against a forest skeleton.
@@ -649,7 +681,7 @@ func _report() -> void:
 	_finished = true
 	var info := Engine.get_version_info()
 	var lines: PackedStringArray = []
-	lines.append("MICRO WORLD: LIVING — headless test results (Eldoria Edition v1.1 — Phase 1 Complete)")
+	lines.append("MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)")
 	lines.append("engine: %s %s" % [info.get("string", "?"), info.get("status", "")])
 	lines.append("rendering method: %s" % ProjectSettings.get_setting("rendering/renderer/rendering_method"))
 	lines.append("run at: %s" % Time.get_datetime_string_from_system(true))

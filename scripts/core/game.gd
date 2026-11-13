@@ -5,6 +5,7 @@ extends Node3D
 var world: WorldRoot
 var player: Player
 var ui: UIRoot
+var vfx: VFXManager
 
 func _ready() -> void:
 	randomize()
@@ -22,6 +23,10 @@ func _build() -> void:
 	player = Player.new()
 	player.name = "Player"
 	add_child(player)
+
+	vfx = VFXManager.new()
+	vfx.setup(player)
+	add_child(vfx)
 
 	ui = UIRoot.new()
 	ui.name = "UI"

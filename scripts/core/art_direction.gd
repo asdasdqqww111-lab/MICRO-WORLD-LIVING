@@ -144,17 +144,116 @@ static func harmonize_material(orig: Material, variant: String = "") -> Standard
 static func terrain_detail_texture() -> ImageTexture:
 	if _mat_cache.has("terrain_detail_tex"):
 		return _mat_cache["terrain_detail_tex"] as ImageTexture
-	var img := Image.create(64, 64, true, Image.FORMAT_RGBA8)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 4242
-	for y in 64:
-		for x in 64:
-			var n := 0.88 + rng.randf() * 0.22
-			img.set_pixel(x, y, Color(n, n * 0.99, n * 0.97, 1.0))
+	var fn := FastNoiseLite.new()
+	fn.seed = 4242
+	fn.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	fn.frequency = 0.085
+	fn.fractal_octaves = 4
+	var img := Image.create(128, 128, true, Image.FORMAT_RGBA8)
+	var h_img := Image.create(128, 128, false, Image.FORMAT_RF)
+	var r_img := Image.create(128, 128, true, Image.FORMAT_RGBA8)
+	for y in 128:
+		for x in 128:
+			# Tileable 4D torus noise for zero visible seams!
+			var u := float(x) / 128.0 * TAU
+			var v := float(y) / 128.0 * TAU
+			var n := fn.get_noise_3d(cos(u) * 18.0 + sin(v) * 4.0, sin(u) * 18.0, cos(v) * 18.0) * 0.5 + 0.5
+			var blade := fn.get_noise_3d(cos(u) * 52.0, sin(u) * 52.0, sin(v) * 52.0) * 0.5 + 0.5
+			var lum := clampf(0.80 + n * 0.24 + (blade - 0.5) * 0.14, 0.65, 1.12)
+			img.set_pixel(x, y, Color(lum * 0.98, lum * 1.01, lum * 0.95, 1.0))
+			h_img.set_pixel(x, y, Color(clampf(n * 0.65 + blade * 0.35, 0.0, 1.0), 0.0, 0.0, 1.0))
+			var rough := clampf(0.76 + (1.0 - n) * 0.20, 0.62, 0.98)
+			r_img.set_pixel(x, y, Color(rough, rough, rough, 1.0))
 	img.generate_mipmaps()
+	r_img.generate_mipmaps()
+	h_img.bump_map_to_normal_map(3.2)
+	h_img.generate_mipmaps()
 	var tex := ImageTexture.create_from_image(img)
 	_mat_cache["terrain_detail_tex"] = tex
+	_mat_cache["terrain_normal_tex"] = ImageTexture.create_from_image(h_img)
+	_mat_cache["terrain_rough_tex"] = ImageTexture.create_from_image(r_img)
 	return tex
+
+static func terrain_normal_texture() -> ImageTexture:
+	if not _mat_cache.has("terrain_normal_tex"):
+		terrain_detail_texture()
+	return _mat_cache.get("terrain_normal_tex", null) as ImageTexture
+
+static func terrain_roughness_texture() -> ImageTexture:
+	if not _mat_cache.has("terrain_rough_tex"):
+		terrain_detail_texture()
+	return _mat_cache.get("terrain_rough_tex", null) as ImageTexture
+
+static func water_shader_material() -> Material:
+	if DisplayServer.get_name() == "headless":
+		return water_material()
+	if _mat_cache.has("water_shader_mat"):
+		return _mat_cache["water_shader_mat"] as Material
+	var sh := Shader.new()
+	sh.code = """
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, specular_schlick_ggx;
+
+uniform vec4 deep_color : source_color = vec4(0.09, 0.34, 0.48, 0.84);
+uniform vec4 shallow_color : source_color = vec4(0.20, 0.54, 0.66, 0.76);
+
+float wave_h(vec2 p, float t) {
+	return sin(p.x * 1.35 + t * 1.6) * cos(p.y * 1.15 - t * 1.2) * 0.5
+		+ sin((p.x + p.y) * 2.4 - t * 2.1) * 0.25;
+}
+
+void fragment() {
+	vec2 wp = UV * 48.0;
+	float e = 0.08;
+	float h0 = wave_h(wp, TIME);
+	float hx = wave_h(wp + vec2(e, 0.0), TIME);
+	float hy = wave_h(wp + vec2(0.0, e), TIME);
+	vec3 n = normalize(vec3((h0 - hx) * 0.55, (h0 - hy) * 0.55, 1.0));
+	NORMAL_MAP = n * 0.5 + 0.5;
+	float fresnel = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);
+	vec3 col = mix(deep_color.rgb, shallow_color.rgb, clamp(h0 * 0.5 + 0.5, 0.0, 1.0));
+	col = mix(col, vec3(0.72, 0.86, 0.96), fresnel * 0.42);
+	ALBEDO = col;
+	ROUGHNESS = 0.09;
+	METALLIC = 0.14;
+	SPECULAR = 0.75;
+	ALPHA = mix(deep_color.a, 0.92, fresnel * 0.5);
+}
+"""
+	var sm := ShaderMaterial.new()
+	sm.shader = sh
+	_mat_cache["water_shader_mat"] = sm
+	return sm
+
+## Creates a zero-shadow-cost Ground Contact Ambient Occlusion (AO) quad decal.
+static func make_contact_ao(radius: float = 0.65, opacity: float = 0.42) -> MeshInstance3D:
+	if not _mat_cache.has("contact_ao_mat"):
+		var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+		for y in 32:
+			for x in 32:
+				var dx := (float(x) - 15.5) / 15.5
+				var dy := (float(y) - 15.5) / 15.5
+				var d := sqrt(dx * dx + dy * dy)
+				var a := pow(clampf(1.0 - d, 0.0, 1.0), 1.85)
+				img.set_pixel(x, y, Color(0.0, 0.0, 0.0, a))
+		var tex := ImageTexture.create_from_image(img)
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_texture = tex
+		mat.albedo_color = Color(0.02, 0.03, 0.04, opacity)
+		_mat_cache["contact_ao_mat"] = mat
+	var mi := MeshInstance3D.new()
+	mi.name = "ContactAO"
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(radius * 2.0, radius * 2.0)
+	mi.mesh = plane
+	mi.position = Vector3(0.0, 0.025, 0.0)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.visibility_range_end = 34.0
+	mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	mi.material_override = _mat_cache["contact_ao_mat"] as Material
+	return mi
 
 ## Harmonizes an instantiated Node3D hierarchy in-place (strips metallic=1 glare).
 static func harmonize_node(root: Node, variant: String = "") -> void:

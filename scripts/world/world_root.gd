@@ -58,30 +58,27 @@ func _build_environment() -> void:
 	environment = Environment.new()
 	environment.background_mode = Environment.BG_SKY
 	var sky := Sky.new()
-	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color(0.18, 0.40, 0.74)
-	sky_material.sky_horizon_color = Color(0.62, 0.76, 0.88)
-	sky_material.sky_curve = 0.12
-	sky_material.ground_horizon_color = Color(0.42, 0.46, 0.44)
-	sky_material.ground_bottom_color = Color(0.20, 0.22, 0.21)
-	sky_material.ground_curve = 0.05
-	sky_material.sun_angle_max = 18.0
-	sky_material.sun_curve = 0.10
-	sky.sky_material = sky_material
+	if DisplayServer.get_name() == "headless":
+		var sky_material := ProceduralSkyMaterial.new()
+		sky_material.sky_top_color = Color(0.18, 0.40, 0.74)
+		sky_material.sky_horizon_color = Color(0.62, 0.76, 0.88)
+		sky.sky_material = sky_material
+	else:
+		sky.sky_material = DynamicSkyShader.create_material()
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	environment.ambient_light_sky_contribution = 0.92
-	environment.ambient_light_energy = 0.48
+	environment.ambient_light_sky_contribution = 0.88
+	environment.ambient_light_energy = 0.52
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	environment.tonemap_exposure = 0.88
+	environment.tonemap_exposure = 0.94
 	environment.adjustment_enabled = true
-	environment.adjustment_contrast = 1.09
-	environment.adjustment_saturation = 0.96
+	environment.adjustment_contrast = 1.12
+	environment.adjustment_saturation = 1.04
 	environment.fog_enabled = true
-	environment.fog_density = 0.0024
-	environment.fog_light_color = Color(0.62, 0.72, 0.82)
-	environment.fog_sky_affect = 0.26
-	environment.fog_aerial_perspective = 0.35
+	environment.fog_density = 0.0032
+	environment.fog_light_color = Color(0.62, 0.74, 0.86)
+	environment.fog_sky_affect = 0.32
+	environment.fog_aerial_perspective = 0.46
 	world_environment.environment = environment
 	add_child(world_environment)
 
@@ -89,9 +86,11 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 68.0
-	sun.shadow_bias = 0.04
-	sun.light_energy = 1.30
+	sun.directional_shadow_max_distance = 75.0
+	sun.shadow_bias = 0.025
+	sun.shadow_normal_bias = 1.2
+	sun.shadow_blur = 1.45
+	sun.light_energy = 1.32
 	sun.light_color = Color(1.0, 0.95, 0.86)
 	add_child(sun)
 

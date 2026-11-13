@@ -10,7 +10,8 @@ const MAX_PITCH := 52.0
 @export var min_distance: float = 2.2
 @export var max_distance: float = 9.0
 @export var height_offset: float = 1.50
-@export var follow_smoothing: float = 16.0
+@export var follow_smoothing: float = 14.0
+@export var rotation_smoothing: float = 16.0
 
 var yaw: float = 0.0
 var pitch: float = -15.0
@@ -18,6 +19,8 @@ var pitch: float = -15.0
 var spring_arm: SpringArm3D
 var camera: Camera3D
 var _target_distance: float = 5.4
+var _smoothed_yaw: float = 0.0
+var _smoothed_pitch: float = -15.0
 var _body: CollisionObject3D
 
 func _ready() -> void:
@@ -25,6 +28,8 @@ func _ready() -> void:
 	var follow := get_parent() as Node3D
 	if follow != null:
 		global_position = follow.global_position + Vector3(0.0, height_offset, 0.0)
+	_smoothed_yaw = yaw
+	_smoothed_pitch = pitch
 	_build()
 	_target_distance = distance
 
@@ -58,17 +63,24 @@ func snap_to_parent() -> void:
 	var follow := get_parent() as Node3D
 	if follow != null and is_inside_tree():
 		global_position = follow.global_position + Vector3(0.0, height_offset, 0.0)
+	_smoothed_yaw = yaw
+	_smoothed_pitch = pitch
 
 func _process(delta: float) -> void:
 	var follow := get_parent() as Node3D
+	var pos_alpha := 1.0 - exp(-follow_smoothing * delta)
+	var rot_alpha := 1.0 - exp(-rotation_smoothing * delta)
 	if follow != null:
 		if _body == null:
 			_body = follow as CollisionObject3D
 		var desired := follow.global_position + Vector3(0.0, height_offset, 0.0)
-		global_position = global_position.lerp(desired, clampf(delta * follow_smoothing, 0.0, 1.0))
-	rotation = Vector3(0.0, yaw, 0.0)
-	spring_arm.rotation.x = deg_to_rad(clampf(pitch, MIN_PITCH, MAX_PITCH))
-	spring_arm.spring_length = lerpf(spring_arm.spring_length, _target_distance, clampf(delta * follow_smoothing, 0.0, 1.0))
+		global_position = global_position.lerp(desired, clampf(pos_alpha, 0.0, 1.0))
+	pitch = clampf(pitch, MIN_PITCH, MAX_PITCH)
+	_smoothed_yaw = lerp_angle(_smoothed_yaw, yaw, clampf(rot_alpha, 0.0, 1.0))
+	_smoothed_pitch = lerpf(_smoothed_pitch, pitch, clampf(rot_alpha, 0.0, 1.0))
+	rotation = Vector3(0.0, _smoothed_yaw, 0.0)
+	spring_arm.rotation.x = deg_to_rad(_smoothed_pitch)
+	spring_arm.spring_length = lerpf(spring_arm.spring_length, _target_distance, clampf(pos_alpha, 0.0, 1.0))
 
 func add_look(relative: Vector2) -> void:
 	var sens := 0.0045 * SettingsManager.camera_sensitivity

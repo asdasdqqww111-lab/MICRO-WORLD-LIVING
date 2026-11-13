@@ -19,6 +19,8 @@ Untouched original copies of every downloaded asset and upstream `LICENSE` file 
 | **KayKit Dungeon Remastered** | Kay Lousberg — `https://github.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.1` | **CC0 1.0 Public Domain** | `assets/models/dungeon_remastered/` (29 `.gltf` modular stone walls, arches, pillars, stairs, banners, crates, barrels, tables, chairs, chests, beds, torches, keys + shared `dungeon_texture.png` atlas) | Adventurers Guild Grand Hall interior, Hero Cottage interior, Sunken Crypt multi-room dungeon, traps & Boss Sanctum |
 | **Hidencod TGE Foliage & Props (CC0)** | `https://github.com/Hidencod/tge-assets` | **CC0 1.0 Public Domain** | `assets/models/nature_tge/` (`oak_trees.glb`, `Grass.glb`, `Flowers.glb`, `DeadTree.glb`, `Rock.glb`, `Fence.glb`, `Lantern.glb`, `WoodLog.glb`, `SignBoard.glb`) | MultiMesh multi-species woodland canopy, ground grass, wildflower patches, deadwood & trail props |
 | **Kenney Nature & Graveyard Props** | Kenney.nl (existing repo CC0 pack) | **CC0 1.0 Public Domain** | `assets/models/nature/`, `assets/models/village/`, `assets/models/dungeon/` | Pine groves, river boulders, mushrooms, campfires, crypt pillars & iron fences |
+| **Tiny Treats: Homely House 1.0** | Isa Lousberg — `https://github.com/TinyTreats-Game-Assets/Tiny-Treats-Homely-House-1.0` | **CC0 1.0 Public Domain** | `assets/environments/tinytreats_house/` (`house.gltf`, `bench_A.gltf`, `cobblestones.gltf`, `fence_straight.gltf`, `mailbox.gltf`, `tree_large.gltf` + `tiny_treats_texture_1.png`) | Detailed shingle-roofed residential cottages, plaza benches, fences & woodland canopy |
+| **Tiny Treats: Pretty Park 1.0** | Isa Lousberg — `https://github.com/TinyTreats-Game-Assets/Tiny-Treats-Pretty-Park-1.0` | **CC0 1.0 Public Domain** | `assets/environments/tinytreats_park/` (`fountain.gltf`, `street_lantern.gltf`, `cobble_stones_large.gltf`, `bush_large.gltf`, `flower_A.gltf`, `grass_A.gltf`, `tree.gltf`, `tree_large.gltf` + `tiny_treats_texture_1.png`) | Village Plaza stone fountain, iron street lanterns, MultiMesh trees, bushes, wildflowers & 3D meadow grass |
 | **Procedural Wildlife & Boss Adornments** | In-repo `scripts/creatures/procedural_models.gd` | **CC0 1.0 (Original Code)** | Runtime `ArrayMesh` | Forest Deer, Grey Wolf, Dire Wolf, Meadow Rabbit & Elder Treant |
 
 ---
@@ -36,7 +38,8 @@ Untouched original copies of every downloaded asset and upstream `LICENSE` file 
 
 | Font | Upstream Repository | License | Destination in Project | Usage |
 |---|---|---|---|---|
-| **Noto Sans Bold & Regular** | Google Noto Fonts — `https://github.com/notofonts/latin-greek-cyrillic` | **SIL OFL 1.1** (`assets/fonts/OFL_LICENSE.txt`) | `assets/fonts/NotoSans-Bold.ttf`, `assets/fonts/NotoSans-Regular.ttf` | Primary fantasy UI & HUD Latin typography |
+| **Cairo Variable (Arabic + Latin)** | Mohamed Gaber / Google Fonts — `https://github.com/google/fonts/tree/main/ofl/cairo` | **SIL OFL 1.1** (`assets/ui/fonts/LICENSE_Cairo_OFL.txt`) | `assets/ui/fonts/Cairo-Variable.ttf` | Primary Glassmorphism UI & HUD Arabic + English geometric typography |
+| **Noto Sans Bold & Regular** | Google Noto Fonts — `https://github.com/notofonts/latin-greek-cyrillic` | **SIL OFL 1.1** (`assets/fonts/OFL_LICENSE.txt`) | `assets/ui/fonts/NotoSans-Bold.ttf`, `assets/ui/fonts/NotoSans-Medium.ttf` | Fallback Latin typography |
 | **Noto Sans Arabic Bold & Regular** | Google Noto Fonts — `https://github.com/notofonts/arabic` | **SIL OFL 1.1** (`assets/fonts/OFL_LICENSE.txt`) | `assets/fonts/NotoSansArabic-Bold.ttf`, `assets/fonts/NotoSansArabic-Regular.ttf` | Native Arabic script shaping + RTL fallback across all UI menus & dialogues |
 
 ---

@@ -527,12 +527,17 @@ static func ui_font(bold: bool = false) -> Font:
 	return active_font(bold)
 
 static func active_font(bold: bool = false) -> Font:
+	var cairo_path := "res://assets/ui/fonts/Cairo-Variable.ttf"
+	if ResourceLoader.exists(cairo_path):
+		var cf := load(cairo_path) as Font
+		if cf != null:
+			return cf
 	var lang := current_lang()
 	var path := ""
 	if lang == LANG_AR:
-		path = "res://assets/fonts/NotoSansArabic-Bold.ttf" if bold else "res://assets/fonts/NotoSansArabic-Regular.ttf"
+		path = "res://assets/ui/fonts/NotoSansArabic-Medium.ttf"
 	else:
-		path = "res://assets/fonts/NotoSans-Bold.ttf" if bold else "res://assets/fonts/NotoSans-Regular.ttf"
+		path = "res://assets/ui/fonts/NotoSans-Bold.ttf" if bold else "res://assets/ui/fonts/NotoSans-Medium.ttf"
 	if ResourceLoader.exists(path):
 		var f := load(path) as Font
 		if f != null:
