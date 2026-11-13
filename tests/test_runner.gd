@@ -548,13 +548,13 @@ func _test_game_scene() -> void:
 		and AssetLibrary.has_model("res://assets_realistic/models/buildings/citadel_keep.glb")
 		and AssetLibrary.has_model("res://assets_realistic/models/trees/realistic_oak_01.glb"),
 		"Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded")
-	var stone_pbr := ArtDirection.pbr_surface_material("stone_wall")
+	var stone_pbr: StandardMaterial3D = ArtDirection.pbr_surface("stone_wall")
 	_check(stone_pbr != null and stone_pbr.normal_enabled and stone_pbr.normal_texture != null and stone_pbr.roughness_texture != null,
 		"Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled")
 	_check(ArtDirection.terrain_normal_texture() != null and ArtDirection.terrain_roughness_texture() != null,
 		"Phase 2: Terrain PBR Normal Map & Roughness Map active")
-	_check(player.model_path.begins_with("res://assets_realistic/models/characters/"),
-		"Phase 2: Player character uses realistic 3D model (%s)" % player.model_path)
+	_check(player.visual != null and player.visual._model_path.begins_with("res://assets_realistic/models/characters/"),
+		"Phase 2: Player character uses realistic 3D model (%s)" % (player.visual._model_path if player.visual != null else ""))
 	var env_res: Environment = world.environment
 	var sky_pano: PanoramaSkyMaterial = env_res.sky.sky_material as PanoramaSkyMaterial if (env_res != null and env_res.sky != null) else null
 	_check(env_res != null
