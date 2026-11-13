@@ -1,12 +1,12 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: mobile
-run at: 2026-11-13T16:03:01
-checks passed: 189
-checks failed: 1
+run at: 2026-11-13T16:05:09
+checks passed: 190
+checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 28.0
+  fps: 21.0
   draw calls: 0
   triangles: 0
   nodes: 2831
@@ -205,7 +205,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 33.4)
+PASS  skeleton takes damage (46.0 -> 33.1)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -218,7 +218,7 @@ PASS  door moves player into Adventurers Guild Hall
 PASS  house door exists
 PASS  door moves player into house zone
 PASS  Malakor the Bone Warden boss exists in Sunken Crypt
-FAIL  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
+PASS  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
 PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
@@ -228,6 +228,3 @@ PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
 PASS  save/load survives 10 rounds
-
-FAILURES:
-  - Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built

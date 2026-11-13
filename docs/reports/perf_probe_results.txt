@@ -1,85 +1,22 @@
-MICRO WORLD: LIVING — Eldoria Edition v1.0 GLES3 Performance Probe
+MICRO WORLD: LIVING — Polished Stylized/Chibi PBR Mobile Vulkan Probe
 engine: 4.3-stable (official)
-rendering method: gl_compatibility
+rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
-driver: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-run at: 2026-11-13T14:03:25
+driver: 1.4.335
+run at: 2026-11-13T16:05:37
 
-budget: draw calls < 250 (hard cap 350) · triangles < 180k · fps >= 30
+budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  draw calls (max): 286  [WARN]
-  triangles (max):  463562  [OVER]
-  objects:          459
-  static memory:    193.3 MB
+  draw calls (max): 472  [FAIL]
+  triangles (max):  822943  [OVER]
+  objects:          472
+  static memory:    208.1 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  draw calls (max): 315  [WARN]
-  triangles (max):  477898  [OVER]
-  objects:          488
-  static memory:    201.5 MB
+  draw calls (max): 499  [FAIL]
+  triangles (max):  838075  [OVER]
+  objects:          499
+  static memory:    216.6 MB
   fps (min, this driver): 1.0
-Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  draw calls (max): 148  [OK]
-  triangles (max):  260174  [OVER]
-  objects:          279
-  static memory:    201.6 MB
-  fps (min, this driver): 2.0
-Zone 4 · River, Stone Bridge & Crystal Lake
-  draw calls (max): 211  [OK]
-  triangles (max):  319579  [OVER]
-  objects:          368
-  static memory:    201.6 MB
-  fps (min, this driver): 1.0
-Zone 5 · Adventurers Guild Grand Hall Interior
-  draw calls (max): 192  [OK]
-  triangles (max):  77021  [OK]
-  objects:          293
-  static memory:    201.7 MB
-  fps (min, this driver): 6.0
-Zone 6 · Hero Cottage Interior
-  draw calls (max): 94  [OK]
-  triangles (max):  20870  [OK]
-  objects:          221
-  static memory:    201.7 MB
-  fps (min, this driver): 12.0
-Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  draw calls (max): 163  [OK]
-  triangles (max):  84892  [OK]
-  objects:          285
-  static memory:    202.2 MB
-  fps (min, this driver): 5.0
-
---- running structural audit ---
-SCENE AUDIT (renderer independent)
-  nodes total:          2115
-  MeshInstance3D:       623
-  MultiMeshInstance3D:  20 (batches) / 535 instances
-  GPUParticles3D:       1
-  omni lights:          19
-  shadow casting dir:   1
---- structural audit done ---
-
---- running offenders ---
-
-TOP TRIANGLE CONSUMERS (whole world)
-    54528 tris |  3 surf | World/OverworldZone/LakesideBirches [x32]
-    30752 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
-    29328 tris |  1 surf | World/OverworldZone/MeadowGrass [x94]
-    23340 tris |  2 surf | World/OverworldZone/CityNobleManors [x5]
-    21200 tris |  2 surf | World/OverworldZone/ForestCanopyTrees [x25]
-    18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
-    18620 tris |  2 surf | World/OverworldZone/HighlandPines [x49]
-    18446 tris |  2 surf | World/OverworldZone/ForestOaks [x23]
-    18144 tris |  2 surf | World/OverworldZone/CityTownhouses [x6]
-    14336 tris |  2 surf | World/OverworldZone/CityBastionTowers [x8]
-    11830 tris |  3 surf | AdventurersGuildExteriorBody/AdventurersGuildExterior/RootNode/TownCenter_SecondAge_Level3
-    11799 tris |  6 surf | RoyalClocktowerBody/RoyalClocktower/RootNode/Bell_Tower
-    11520 tris |  1 surf | World/OverworldZone/FarmWheat [x16]
-     9750 tris |  2 surf | RoyalCitadelKeepBody/RoyalCitadelKeep/RootNode/Wonder_SecondAge_Level3
-
-SHADOW / LOD: casters=24  shadow_off=599  with_visibility_range=594
---- offenders done ---
-
-STATUS: COMPLETE

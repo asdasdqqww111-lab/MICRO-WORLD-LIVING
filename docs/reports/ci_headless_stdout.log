@@ -287,7 +287,7 @@ SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Nod
           at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 33.4)
+PASS  skeleton takes damage (46.0 -> 33.1)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -302,7 +302,7 @@ PASS  door moves player into Adventurers Guild Hall
 PASS  house door exists
 PASS  door moves player into house zone
 PASS  Malakor the Bone Warden boss exists in Sunken Crypt
-FAIL  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
+PASS  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
 PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
@@ -1771,9 +1771,6 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  save/load survives 10 rounds
 
-=== 189 passed, 1 failed ===
-FAILED: Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
+=== 190 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 6 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)
