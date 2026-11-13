@@ -67,7 +67,18 @@ jobs:
           godot --headless --path . --script res://tools/verify_realistic_import.gd
 
       - name: Headless acceptance tests
-        run: timeout 180 godot --headless --path . tests/test_runner.tscn
+        run: |
+          set -o pipefail
+          timeout 180 godot --headless --path . tests/test_runner.tscn 2>&1 | tee /tmp/acceptance.log
+
+      - name: Annotate test failures
+        if: failure()
+        run: |
+          if [ -f /tmp/acceptance.log ]; then
+            grep -E 'SCRIPT ERROR|Parse Error|ERROR:|FAIL|failed|Failed' /tmp/acceptance.log | head -40 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
 
       - name: Create debug keystore and wire it into the preset
         run: |
