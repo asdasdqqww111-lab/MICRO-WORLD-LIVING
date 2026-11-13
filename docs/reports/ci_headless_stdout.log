@@ -1,5 +1,33 @@
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:93)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:102)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:109)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:118)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:93)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:102)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:109)
+SCRIPT ERROR: Parse Error: Identifier "golden_hour" not declared in the current scope.
+          at: GDScript::reload (res://scripts/world/day_night_cycle.gd:118)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/weather_system.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/world_root.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/player/player.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://scripts/world/village_npc.gd:-1)
+SCRIPT ERROR: Compile Error: 
+          at: GDScript::reload (res://tests/test_runner.gd:-1)
+ERROR: Failed to load script "res://tests/test_runner.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:2936)
 PASS  ItemDB loads >= 25 items (got 27)
 PASS  QuestDB loads >= 24 quests & contracts (got 24)
 PASS  SkillDB loads >= 36 skill tree nodes across 4 branches (got 36)
@@ -18,14 +46,14 @@ PASS  quest 'skeleton_menace' present
 PASS  main quest 'main_guild_call' present
 PASS  guild contract 'contract_forest_cull' present
 PASS  HeroClassDB defines 4 playable classes
-PASS  3D GLB rig exists for hero class 'knight' (res://assets_realistic/models/characters/knight_hero.glb)
-PASS  3D GLB rig exists for hero class 'mage' (res://assets_realistic/models/characters/hero_mage.glb)
-PASS  3D GLB rig exists for hero class 'ranger' (res://assets_realistic/models/characters/hero_ranger.glb)
-PASS  3D GLB rig exists for hero class 'barbarian' (res://assets_realistic/models/characters/npc_smith.glb)
+PASS  3D GLB rig exists for hero class 'knight' (res://assets/kaykit_adventurers/Knight.glb)
+PASS  3D GLB rig exists for hero class 'mage' (res://assets/characters/npcs/Mage.glb)
+PASS  3D GLB rig exists for hero class 'ranger' (res://assets/characters/npcs/Rogue.glb)
+PASS  3D GLB rig exists for hero class 'barbarian' (res://assets/characters/npcs/Barbarian.glb)
 PASS  Mage class creation applies hero_class & hero_name
-PASS  Mage starts with elevated mana pool (105) & Firebolt unlocked
+PASS  Mage starts with elevated mana pool (111) & Firebolt unlocked
 PASS  Ranger starts with elevated crit chance (0.17) & Swift Feet unlocked
-PASS  Barbarian starts with elevated max HP (130) & Mighty Blow unlocked
+PASS  Barbarian starts with elevated max HP (142) & Mighty Blow unlocked
 PASS  Wolf procedural 3D rig has articulated legs, head & tail pivots
 PASS  Wolf articulated limb stride animates smoothly
 ERROR: Parameter "m" is null.
@@ -240,22 +268,8 @@ PASS  newer schema version is refused
 WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ rendering backend.
      at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:574)
 PASS  game.tscn loads
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: WorldRoot._build_systems (res://scripts/world/world_root.gd:362)
 PASS  world root created
 PASS  player created
 PASS  ui root created
@@ -264,46 +278,12 @@ PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
 PASS  wildlife, monsters & crypt boss spawned (23)
-PASS  MultiMesh biome instancing is real (20 batches, 0 broken)
+PASS  MultiMesh biome instancing is real (16 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  player lands on the ground
 PASS  player stands at ground height (y=0.04)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  joystick input moves the player (3.38m)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
@@ -315,18 +295,19 @@ SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 
 SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
           at: WorldMapScreen._draw_map (res://scripts/ui/world_map_screen.gd:390)
 PASS  UI screens open and refresh without error
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
-PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
+PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=51.6px)
+PASS  Phase 1: Project renderer set to Vulkan Mobile ('mobile')
 PASS  Cairo variable font bundled & active
-PASS  Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded
-PASS  Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled
-PASS  Phase 2: Terrain PBR Normal Map & Roughness Map active
-PASS  Phase 2: Player character uses realistic 3D model (res://assets_realistic/models/characters/knight_hero.glb)
-PASS  Phase 3: WorldEnvironment configured with ACES Tonemap, subtle Glow, Depth Fog & mobile SSAO
-PASS  Phase 3: HDRI PanoramaSkyMaterial bound in Sky for ambient lighting
-PASS  Phase 3: DirectionalLight3D configured with Soft Shadows & 50m shadow max distance
+PASS  Step 1 & 2: CC0 Stylized Assets (KayKit Chibi Knight + Quaternius Pine/Rock/Flowers) imported
+PASS  Stylized PBR surface material has Normal Maps & Roughness enabled
+PASS  Phase 2 & 3: Terrain Splatmap, GPU Wind Grass & Chibi Fresnel Rim Shaders present
+PASS  Phase 3: Player character uses Stylized Chibi Knight (res://assets/kaykit_adventurers/Knight.glb)
+PASS  Phase 3: CameraRig configured with FOV=55 and spring_arm=4.0
+PASS  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
+PASS  Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial
+PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 60m max distance
+PASS  Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built
 PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
 PASS  Player anti-clipping physics & CollisionLayers configured
 PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
@@ -335,19 +316,13 @@ PASS  a forest skeleton exists
 SCRIPT ERROR: Invalid type in function 'spawn_slash_arc (via call)' in base 'Node3D (VFXManager)'. Cannot convert argument 4 from Color to float.
           at: Creature._try_attack (res://scripts/creatures/creature.gd:329)
 PASS  Target Lock acquires nearest hostile creature
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton takes damage (46.0 -> 33.4)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  killing 3 skeletons completes the objective
 PASS  farmer accepts the quest turn-in
 PASS  turn-in reports the reward
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  loot drop spawned
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
@@ -355,12 +330,10 @@ PASS  loot is collected into the inventory (got 2)
 PASS  Adventurers Guild door exists
 PASS  door moves player into Adventurers Guild Hall
 PASS  house door exists
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
 PASS  door moves player into house zone
 PASS  Malakor the Bone Warden boss exists in Sunken Crypt
-PASS  Walled Royal Capital City ramparts & Sovereign Citadel Keep built
-PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
+FAIL  Walled Royal Capital City ramparts & Sovereign Citadel Keep built
+FAIL  Royal Capital City & Guild populated with 18 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
 ERROR: Parameter "m" is null.
@@ -885,19 +858,147 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  scene state reloads
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
-SCRIPT ERROR: Invalid access to property or key 'dead' on a base object of type 'CharacterBody3D (Creature)'.
-          at: MinimapControl._draw (res://scripts/ui/minimap_control.gd:122)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: WorldRoot._build_systems (res://scripts/world/world_root.gd:362)
 PASS  dead creatures stay dead after reload (20 alive vs 23 before)
 PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
@@ -1418,8 +1519,150 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  save/load survives 10 rounds
 
-=== 187 passed, 0 failed ===
+=== 188 passed, 2 failed ===
+FAILED: Walled Royal Capital City ramparts & Sovereign Citadel Keep built
+FAILED: Royal Capital City & Guild populated with 18 >= 24 living NPCs
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
+ERROR: 4 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:604)

@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
-rendering method: gl_compatibility
-run at: 2026-11-13T14:03:17
-checks passed: 187
-checks failed: 0
+rendering method: mobile
+run at: 2026-11-13T15:59:48
+checks passed: 188
+checks failed: 2
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 46.0
+  fps: 125.0
   draw calls: 0
   triangles: 0
-  nodes: 2466
+  nodes: 2617
 
 checks:
 
@@ -34,14 +34,14 @@ PASS  guild contract 'contract_forest_cull' present
 
 == Hero Classes (4), Articulated 3D Creature Rigs & Full Arabic Content ==
 PASS  HeroClassDB defines 4 playable classes
-PASS  3D GLB rig exists for hero class 'knight' (res://assets_realistic/models/characters/knight_hero.glb)
-PASS  3D GLB rig exists for hero class 'mage' (res://assets_realistic/models/characters/hero_mage.glb)
-PASS  3D GLB rig exists for hero class 'ranger' (res://assets_realistic/models/characters/hero_ranger.glb)
-PASS  3D GLB rig exists for hero class 'barbarian' (res://assets_realistic/models/characters/npc_smith.glb)
+PASS  3D GLB rig exists for hero class 'knight' (res://assets/kaykit_adventurers/Knight.glb)
+PASS  3D GLB rig exists for hero class 'mage' (res://assets/characters/npcs/Mage.glb)
+PASS  3D GLB rig exists for hero class 'ranger' (res://assets/characters/npcs/Rogue.glb)
+PASS  3D GLB rig exists for hero class 'barbarian' (res://assets/characters/npcs/Barbarian.glb)
 PASS  Mage class creation applies hero_class & hero_name
-PASS  Mage starts with elevated mana pool (105) & Firebolt unlocked
+PASS  Mage starts with elevated mana pool (111) & Firebolt unlocked
 PASS  Ranger starts with elevated crit chance (0.17) & Swift Feet unlocked
-PASS  Barbarian starts with elevated max HP (130) & Mighty Blow unlocked
+PASS  Barbarian starts with elevated max HP (142) & Mighty Blow unlocked
 PASS  Wolf procedural 3D rig has articulated legs, head & tail pivots
 PASS  Wolf articulated limb stride animates smoothly
 PASS  Stag procedural 3D rig has crowned antler head & 4 articulated legs
@@ -176,7 +176,7 @@ PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
 PASS  wildlife, monsters & crypt boss spawned (23)
-PASS  MultiMesh biome instancing is real (20 batches, 0 broken)
+PASS  MultiMesh biome instancing is real (16 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
 PASS  player lands on the ground
@@ -186,15 +186,18 @@ PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 PASS  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
-PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=46.0px)
+PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=51.6px)
+PASS  Phase 1: Project renderer set to Vulkan Mobile ('mobile')
 PASS  Cairo variable font bundled & active
-PASS  Phase 1 & 2: assets_realistic/ 3D models (knight_hero, citadel_keep, realistic_oak_01) imported & loaded
-PASS  Phase 2: StandardMaterial3D PBR surface material has Normal Maps & Roughness textures enabled
-PASS  Phase 2: Terrain PBR Normal Map & Roughness Map active
-PASS  Phase 2: Player character uses realistic 3D model (res://assets_realistic/models/characters/knight_hero.glb)
-PASS  Phase 3: WorldEnvironment configured with ACES Tonemap, subtle Glow, Depth Fog & mobile SSAO
-PASS  Phase 3: HDRI PanoramaSkyMaterial bound in Sky for ambient lighting
-PASS  Phase 3: DirectionalLight3D configured with Soft Shadows & 50m shadow max distance
+PASS  Step 1 & 2: CC0 Stylized Assets (KayKit Chibi Knight + Quaternius Pine/Rock/Flowers) imported
+PASS  Stylized PBR surface material has Normal Maps & Roughness enabled
+PASS  Phase 2 & 3: Terrain Splatmap, GPU Wind Grass & Chibi Fresnel Rim Shaders present
+PASS  Phase 3: Player character uses Stylized Chibi Knight (res://assets/kaykit_adventurers/Knight.glb)
+PASS  Phase 3: CameraRig configured with FOV=55 and spring_arm=4.0
+PASS  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
+PASS  Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial
+PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 60m max distance
+PASS  Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built
 PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
 PASS  Player anti-clipping physics & CollisionLayers configured
 PASS  PlayerStateMachine FSM & QuestManager Resource facade operational
@@ -202,7 +205,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 34.5)
+PASS  skeleton takes damage (46.0 -> 33.4)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -215,8 +218,8 @@ PASS  door moves player into Adventurers Guild Hall
 PASS  house door exists
 PASS  door moves player into house zone
 PASS  Malakor the Bone Warden boss exists in Sunken Crypt
-PASS  Walled Royal Capital City ramparts & Sovereign Citadel Keep built
-PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
+FAIL  Walled Royal Capital City ramparts & Sovereign Citadel Keep built
+FAIL  Royal Capital City & Guild populated with 18 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
 PASS  scene state reloads
@@ -225,3 +228,7 @@ PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
 PASS  save/load survives 10 rounds
+
+FAILURES:
+  - Walled Royal Capital City ramparts & Sovereign Citadel Keep built
+  - Royal Capital City & Guild populated with 18 >= 24 living NPCs
