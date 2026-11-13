@@ -143,7 +143,7 @@ func gain_xp(amount: int) -> void:
 		recalc_stats()
 		EventBus.player_level_up.emit(progression.level)
 		EventBus.skill_tree_changed.emit()
-		EventBus.notify.emit("Level up! Reached Level %d (+%d Skill Pt)" % [progression.level, levels])
+		EventBus.notify.emit(("ارتقيت إلى المستوى %d! (+%d نقطة مهارة)" if Localization.is_arabic() else "Level up! Reached Level %d (+%d Skill Pt)") % [progression.level, levels])
 	EventBus.player_xp_changed.emit(progression.level, progression.xp, progression.xp_to_next())
 
 func gain_gold(amount: int) -> void:
@@ -161,11 +161,11 @@ func gain_item(item_id: String, count: int = 1) -> void:
 	var leftover := inventory.add_item(item_id, count)
 	if leftover < count:
 		var data := ItemDB.get_item(item_id)
-		var label := data.display_name if data != null else item_id
+		var label := Localization.item_name(data) if data != null else item_id
 		EventBus.notify.emit("+%d %s" % [count - leftover, label])
 		EventBus.item_picked_up.emit(item_id, count - leftover)
 	if leftover > 0:
-		EventBus.notify.emit("Inventory full!")
+		EventBus.notify.emit("الحقيبة ممتلئة!" if Localization.is_arabic() else "Inventory full!")
 
 func upgrade_skill(skill_id: String) -> bool:
 	if not skills.upgrade(skill_id, progression.level):
@@ -173,7 +173,7 @@ func upgrade_skill(skill_id: String) -> bool:
 	recalc_stats()
 	var s := SkillDB.get_skill(skill_id)
 	if s != null:
-		EventBus.notify.emit("Skill unlocked: %s (%d/%d)" % [s.title, skills.rank_of(skill_id), s.max_rank])
+		EventBus.notify.emit(("تم فتح المهارة: %s (%d/%d)" if Localization.is_arabic() else "Skill unlocked: %s (%d/%d)") % [Localization.skill_title(s), skills.rank_of(skill_id), s.max_rank])
 	EventBus.skill_tree_changed.emit()
 	return true
 
@@ -181,12 +181,12 @@ func reset_skill_tree(require_gold: bool = true) -> bool:
 	if skills.total_spent_points() <= 0:
 		return false
 	if require_gold and not spend_gold(SKILL_RESET_COST):
-		EventBus.notify.emit("Need %d Gold to reset skills" % SKILL_RESET_COST)
+		EventBus.notify.emit(("تحتاج إلى %d ذهب لإعادة تعيين المهارات" if Localization.is_arabic() else "Need %d Gold to reset skills") % SKILL_RESET_COST)
 		return false
 	var refunded := skills.reset_all()
 	recalc_stats()
 	EventBus.skill_tree_changed.emit()
-	EventBus.notify.emit("Skills reset! Refunded %d points." % refunded)
+	EventBus.notify.emit(("تمت إعادة المهارات! استرجعت %d نقطة." if Localization.is_arabic() else "Skills reset! Refunded %d points.") % refunded)
 	return true
 
 # --- Quests, Guild & Crafting ------------------------------------------------
@@ -195,7 +195,7 @@ func start_quest(quest_id: String) -> bool:
 	if q == null:
 		return false
 	if q.is_guild_contract and not guild.meets_rank(q.required_guild_rank):
-		EventBus.notify.emit("Requires Adventurers Guild Rank %s" % q.required_guild_rank)
+		EventBus.notify.emit(("يتطلب رتبة النقابة %s" if Localization.is_arabic() else "Requires Adventurers Guild Rank %s") % q.required_guild_rank)
 		return false
 	return quest_log.start_quest(quest_id)
 
@@ -216,7 +216,7 @@ func turn_in_quest(quest_id: String) -> bool:
 	if not quest.story_flag_on_complete.is_empty():
 		world.set_flag(quest.story_flag_on_complete, true)
 	quest_log.complete_quest(quest_id)
-	EventBus.notify.emit("Quest complete: %s" % quest.title)
+	EventBus.notify.emit(("اكتملت المهمة: %s" if Localization.is_arabic() else "Quest complete: %s") % Localization.quest_title(quest))
 	return true
 
 func register_in_guild() -> bool:
@@ -224,7 +224,7 @@ func register_in_guild() -> bool:
 		return false
 	world.set_flag("guild_registered", true)
 	EventBus.guild_updated.emit()
-	EventBus.notify.emit("Registered in the Adventurers Guild — Rank F!")
+	EventBus.notify.emit("تم تسجيلك رسمياً في نقابة المغامرين — الرتبة F!" if Localization.is_arabic() else "Registered in the Adventurers Guild — Rank F!")
 	return true
 
 func promote_guild_rank() -> Dictionary:
@@ -236,7 +236,7 @@ func promote_guild_rank() -> Dictionary:
 	if not reward_item.is_empty() and ItemDB.has(reward_item):
 		gain_item(reward_item, 1)
 	EventBus.guild_updated.emit()
-	EventBus.notify.emit("Promoted to Guild Rank %s — %s!" % [String(info["rank"]), String(info["title"])])
+	EventBus.notify.emit(("تمت ترقيتك إلى رتبة النقابة %s — %s!" if Localization.is_arabic() else "Promoted to Guild Rank %s — %s!") % [String(info["rank"]), guild.rank_title()])
 	return info
 
 func craft_recipe(recipe_id: String) -> bool:
@@ -251,7 +251,8 @@ func craft_recipe(recipe_id: String) -> bool:
 	EventBus.item_crafted.emit(recipe_id, out_id)
 	if AudioManager != null:
 		AudioManager.play_sfx("craft_anvil")
-	EventBus.notify.emit("Crafted %dx %s" % [out_cnt, data.display_name if data != null else out_id])
+	var item_lbl := Localization.item_name(data) if data != null else out_id
+	EventBus.notify.emit(("تم تصنيع %d× %s" if Localization.is_arabic() else "Crafted %dx %s") % [out_cnt, item_lbl])
 	return true
 
 func report_visit(zone_id: String) -> void:

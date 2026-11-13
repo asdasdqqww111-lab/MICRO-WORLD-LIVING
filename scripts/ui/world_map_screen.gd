@@ -198,6 +198,17 @@ func refresh() -> void:
 			if _canvas != null: _canvas.queue_redraw())
 		legend.add_child(qbtn)
 
+func _draw_shaped(text: String, pos: Vector2, fsize: int, col: Color) -> void:
+	var font := Localization.ui_font(true)
+	if font == null:
+		return
+	var tl := TextLine.new()
+	tl.direction = TextServer.DIRECTION_RTL if Localization.is_arabic() else TextServer.DIRECTION_LTR
+	tl.add_string(text, font, fsize)
+	var draw_pos := pos - Vector2(0.0, tl.get_size().y * 0.72)
+	tl.draw(_canvas.get_canvas_item(), draw_pos + Vector2(1, 1), Color(0.05, 0.04, 0.03, 0.94))
+	tl.draw(_canvas.get_canvas_item(), draw_pos, col)
+
 func _map_rect() -> Rect2:
 	var sz := _canvas.size
 	var side := minf(sz.x, sz.y) - 12.0
@@ -360,10 +371,7 @@ func _draw_map() -> void:
 			continue
 		_canvas.draw_circle(mp, 3.8, Color(0.14, 0.11, 0.08, 0.92))
 		_canvas.draw_circle(mp, 2.5, UIFactory.GOLD)
-		if font != null:
-			var lbl := String(m[2])
-			_canvas.draw_string(font, mp + Vector2(6, 4), lbl, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.06, 0.05, 0.04, 0.92))
-			_canvas.draw_string(font, mp + Vector2(5, 3), lbl, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(1.0, 0.95, 0.80))
+		_draw_shaped(String(m[2]), mp + Vector2(6, 4), 11, Color(1.0, 0.95, 0.80))
 
 	# 5. Living NPCs & Quest Giver Markers (! / ?)
 	if _show_npcs:
@@ -424,12 +432,10 @@ func _draw_map() -> void:
 	_canvas.draw_arc(rose, 18.0, 0.0, TAU, 24, UIFactory.GOLD, 1.4)
 	_canvas.draw_line(rose + Vector2(0, -13), rose + Vector2(0, 13), UIFactory.GOLD, 1.5)
 	_canvas.draw_line(rose + Vector2(-13, 0), rose + Vector2(13, 0), UIFactory.GOLD, 1.2)
-	if font != null:
-		_canvas.draw_string(font, rose + Vector2(-5, -19), "ش" if ar else "N", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, UIFactory.GOLD)
-		# Scale bar (50m)
-		var bar_w := 50.0 * px_per_m
-		var sb := rect.position + Vector2(14.0, rect.size.y - 14.0)
-		_canvas.draw_line(sb, sb + Vector2(bar_w, 0), Color(0.96, 0.90, 0.74), 2.5)
-		_canvas.draw_string(font, sb + Vector2(4, -5), "50م" if ar else "50m", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.96, 0.90, 0.74))
+	_draw_shaped("ش" if ar else "N", rose + Vector2(-5, -18), 12, UIFactory.GOLD)
+	var bar_w := 50.0 * px_per_m
+	var sb := rect.position + Vector2(14.0, rect.size.y - 14.0)
+	_canvas.draw_line(sb, sb + Vector2(bar_w, 0), Color(0.96, 0.90, 0.74), 2.5)
+	_draw_shaped("50م" if ar else "50m", sb + Vector2(4, -5), 11, Color(0.96, 0.90, 0.74))
 
 	_canvas.draw_rect(rect, UIFactory.GOLD, false, 2.2)

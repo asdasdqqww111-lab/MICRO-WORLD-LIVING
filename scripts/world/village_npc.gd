@@ -71,6 +71,16 @@ func _build_visual() -> void:
 		visual.configure_gear(visible_gear, hidden_gear)
 		visual.play("idle")
 	add_child(ArtDirection.make_contact_ao(0.52, 0.34))
+	_apply_lod_recursive(visual, 34.0)
+
+func _apply_lod_recursive(node: Node, dist: float) -> void:
+	if node is GeometryInstance3D:
+		var gi := node as GeometryInstance3D
+		gi.visibility_range_end = dist
+		gi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for c: Node in node.get_children():
+		_apply_lod_recursive(c, dist)
 
 func _build_labels() -> void:
 	_nameplate = Label3D.new()
@@ -79,6 +89,7 @@ func _build_labels() -> void:
 	_nameplate.modulate = Color(0.96, 0.92, 0.80)
 	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_nameplate.position = Vector3(0.0, 2.22 * model_scale, 0.0)
+	_nameplate.visibility_range_end = 26.0
 	add_child(_nameplate)
 	_refresh_nameplate()
 
@@ -89,6 +100,7 @@ func _build_labels() -> void:
 	_quest_marker.modulate = Color(1.0, 0.84, 0.22)
 	_quest_marker.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_quest_marker.position = Vector3(0.0, 2.68 * model_scale, 0.0)
+	_quest_marker.visibility_range_end = 34.0
 	_quest_marker.visible = false
 	add_child(_quest_marker)
 

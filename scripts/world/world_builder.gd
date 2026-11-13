@@ -95,7 +95,20 @@ static func place_model(parent: Node3D, path: String, position: Vector3, rotatio
 		var centre := bounds.get_center()
 		node.position.x -= centre.x * model_scale
 		node.position.z -= centre.z * model_scale
+	var is_hero := collider_size.length() >= 4.5
+	var lod_dist := 78.0 if is_hero else 40.0
+	_apply_model_lod(node, lod_dist, is_hero)
 	return node
+
+static func _apply_model_lod(root: Node, dist: float, cast_shadows: bool) -> void:
+	if root is GeometryInstance3D:
+		var gi := root as GeometryInstance3D
+		gi.visibility_range_end = dist
+		gi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		if not cast_shadows:
+			gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for c: Node in root.get_children():
+		_apply_model_lod(c, dist, cast_shadows)
 
 static func _model_bounds(root: Node) -> AABB:
 	var bounds := AABB()
@@ -359,7 +372,7 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 	if AssetLibrary.has_model("res://assets/environments/tinytreats_park/street_lantern.gltf"):
 		build_multimesh(parent, "res://assets/environments/tinytreats_park/street_lantern.gltf", lantern_xforms, "CityStreetLanternPosts", false, 68.0)
 	for i: int in lantern_spots.size():
-		if i < 10:
+		if i < 6:
 			_build_street_lantern_light_only(parent, lantern_spots[i])
 
 	# Heraldic Royal Banners along Gates, Citadel & Guild Keep (1 MultiMesh!)
@@ -385,9 +398,7 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		{"model": hex + "weaponrack.gltf", "pos": Vector3(-17.4, 0.0, 6.2), "s": prop_scale},
 		{"model": hex + "target.gltf", "pos": Vector3(26.0, 0.0, 10.0), "s": prop_scale},
 		{"model": hex + "tent.gltf", "pos": Vector3(6.5, 0.0, 15.0), "s": prop_scale},
-		{"model": hex + "wheelbarrow.gltf", "pos": Vector3(-9.0, 0.0, 18.5), "s": prop_scale},
-		{"model": vprop + "flag_blue.gltf", "pos": Vector3(-4.2, 0.0, -18.2), "s": prop_scale * 1.15},
-		{"model": vprop + "flag_blue.gltf", "pos": Vector3(4.2, 0.0, -18.2), "s": prop_scale * 1.15},
+		{"model": hex + "wheelbarrow.gltf", "pos": Vector3(-16.0, 0.0, 17.5), "s": prop_scale},
 		{"model": nprop + "sign.glb", "pos": Vector3(3.2, 0.0, 5.5), "s": 2.2},
 	]
 	var rng := RandomNumberGenerator.new()
@@ -396,16 +407,16 @@ static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary
 		if AssetLibrary.has_model(String(prop["model"])):
 			place_model(parent, String(prop["model"]), prop["pos"] as Vector3, rng.randf_range(0.0, TAU), float(prop["s"]))
 
-	# Farming District Wheat & Pumpkin Rows (batched MultiMesh)
+	# Farming District Wheat & Pumpkin Rows beside Granary Mill (batched MultiMesh)
 	var wheat_xforms: Array = []
 	var pumpkin_xforms: Array = []
 	for rx: int in 4:
 		for rz: int in 4:
-			var fx := -8.5 + float(rx) * 1.85
-			var fz := 19.8 + float(rz) * 1.75
-			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.75), Vector3(fx, 0.0, fz)))
+			var fx := -20.5 + float(rx) * 1.65
+			var fz := 16.2 + float(rz) * 1.55
+			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.55), Vector3(fx, 0.0, fz)))
 	for px: int in 4:
-		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.1), Vector3(-6.5 + float(px) * 1.5, 0.0, 26.8)))
+		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.0), Vector3(-20.0 + float(px) * 1.5, 0.0, 23.2)))
 	build_multimesh(parent, "res://assets/environments/villages/crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 42.0)
 	build_multimesh(parent, "res://assets/environments/villages/crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 42.0)
 
