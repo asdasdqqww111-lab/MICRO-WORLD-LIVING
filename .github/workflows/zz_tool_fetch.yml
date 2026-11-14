@@ -1,8 +1,8 @@
 name: Tool fetch (temporary)
 
-# Temporary helper: stores the Godot editor binary under a hidden git ref so the
-# development sandbox (which can only reach github.com over git) can run the
-# project headless. Removed again once the binary has been fetched.
+# Temporary helper: stores development tooling under a hidden git ref so the
+# development sandbox (which can only reach github.com over git) can run and
+# render the project. Removed again once the tooling has been fetched.
 
 on:
   push:
@@ -13,21 +13,29 @@ permissions:
   contents: write
 
 jobs:
-  fetch:
+  render-libs:
     runs-on: ubuntu-latest
+    container: debian:bookworm
     steps:
-      - name: Store Godot under refs/arena-tools
+      - name: Store X + software Vulkan packages under refs/arena-tools
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          V=4.4.1-stable
-          mkdir carrier && cd carrier
-          wget -q "https://github.com/godotengine/godot/releases/download/${V}/Godot_v${V}_linux.x86_64.zip" -O godot.zip
-          ls -l godot.zip
+          set -eu
+          apt-get update -qq
+          apt-get install -y -qq --download-only --no-install-recommends \
+            xvfb xauth mesa-vulkan-drivers libvulkan1 libgl1 libgl1-mesa-dri libegl1 libgles2 \
+            libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libasound2 libfontconfig1 \
+            libdbus-1-3 libxext6 libxrender1 libxfixes3 x11-xkb-utils xkb-data
+          mkdir -p /carrier
+          cp /var/cache/apt/archives/*.deb /carrier/
+          ls -l /carrier | head -150
+          du -sh /carrier
+          apt-get install -y -qq --no-install-recommends git ca-certificates
+          cd /carrier
           git init -q .
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add godot.zip
-          git commit -q -m "Godot ${V} linux editor binary (tooling only)"
-          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/arena-tools/godot-${V}"
+          git add .
+          git commit -q -m "Debian bookworm X + lavapipe packages (tooling only)"
+          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/arena-tools/render-libs-bookworm"
