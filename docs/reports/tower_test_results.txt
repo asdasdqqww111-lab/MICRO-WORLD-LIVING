@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING — Celestial Ascent Tower acceptance suite
-run at: 2026-11-14T15:20:27
+run at: 2026-11-14T16:56:46
 
 == TowerDB integrity ==
 PASS  TowerDB.validate() reports no errors
@@ -75,6 +75,6 @@ PASS  Completion flag survives round-trip
 PASS  Exiting hides the tower interior
 PASS  Exit returns the player to the overworld zone
 
-elapsed: 870 ms
+elapsed: 1066 ms
 checks passed: 62
 checks failed: 0

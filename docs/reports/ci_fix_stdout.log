@@ -1,0 +1,25 @@
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
+
+WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
+     at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
+== Problem 1 - villagers: pose, behaviour, size
+PASS  hero is about 1.3 m tall (capsule 1.30 m, model scale 0.56)
+PASS  18 villagers live in the town
+PASS  no villager is larger than the hero (0 oversized)
+PASS  no villager stands in the bind pose (arms out): 
+PASS  every villager turns to face the hero: 
+PASS  every villager greets the hero out loud: 
+PASS  villagers are solid for the hero
+PASS  walking straight at a villager does not pass through them
+    (stood still: blacksmith)
+PASS  villagers go about their day (17 of 18 moved)
+PASS  no villager is standing inside a building: 
+PASS  at night villagers walk home and go indoors (5 did)
+PASS  quest givers, guards and shopkeepers stay available at night
+PASS  everybody is back outside in the morning (18 of 18)
+checks passed: 13
+checks failed: 0
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2378)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
