@@ -71,14 +71,21 @@ jobs:
           set -o pipefail
           timeout 180 godot --headless --path . tests/test_runner.tscn 2>&1 | tee /tmp/acceptance.log
 
+      - name: Tower acceptance tests
+        run: |
+          set -o pipefail
+          timeout 180 godot --headless --path . tests/tower_test_runner.tscn 2>&1 | tee /tmp/tower.log
+
       - name: Annotate test failures
         if: failure()
         run: |
-          if [ -f /tmp/acceptance.log ]; then
-            grep -E 'SCRIPT ERROR|Parse Error|FAIL|failed|Failed' /tmp/acceptance.log | head -40 | while IFS= read -r line; do
-              echo "::error::$line"
-            done
-          fi
+          for log in /tmp/acceptance.log /tmp/tower.log; do
+            if [ -f "$log" ]; then
+              grep -E 'SCRIPT ERROR|Parse Error|FAIL|failed|Failed' "$log" | head -40 | while IFS= read -r line; do
+                echo "::error::$line"
+              done
+            fi
+          done
 
       - name: Create debug keystore and wire it into the preset
         run: |

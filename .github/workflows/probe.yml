@@ -86,6 +86,13 @@ jobs:
           tail -30 docs/reports/ci_perf_probe.log
           ls -lh docs/screenshots
 
+      - name: Tower acceptance tests
+        if: success() || failure()
+        run: |
+          set -o pipefail
+          mkdir -p docs/reports
+          timeout 180 godot --headless --path . tests/tower_test_runner.tscn 2>&1 | tee docs/reports/ci_tower_stdout.log
+
       - name: Upload screenshots and reports artifact
         if: always()
         uses: actions/upload-artifact@v4

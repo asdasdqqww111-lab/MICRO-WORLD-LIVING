@@ -205,7 +205,9 @@ static func master_stats(floor_num: int) -> Dictionary:
 
 ## Deterministic mob stat scaling per floor region.
 static func mob_stats(floor_num: int) -> Dictionary:
-	var region := REGIONS.get(region_for_floor(floor_num), {})
+	# Explicit type: Dictionary.get() returns Variant, and Godot 4.3 treats
+	# inference from Variant as a parse error in editor/debug builds.
+	var region: Dictionary = REGIONS.get(region_for_floor(floor_num), {})
 	var base_id := String(region.get("mob", "skeleton_dungeon"))
 	var base := CreatureDB.get_creature(base_id)
 	var f := clampi(floor_num, 1, FLOOR_COUNT)
