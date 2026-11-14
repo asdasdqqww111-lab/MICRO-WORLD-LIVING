@@ -124,9 +124,26 @@ PASS  the NPC shows the ready-quest marker (? visible)
 PASS  turning in through the NPC succeeds
 PASS  turning in grants the quest gold reward
 PASS  the quest is marked completed
-checks passed: 114
+== Problem 8 - physics: walls, trees, ground block the player
+PASS  player sits on the PLAYER collision layer
+PASS  player collides with the solid environment
+PASS  world builds solid colliders (98 found)
+WARNING: Target object freed before starting, aborting Tweener.
+     at: start (scene/animation/tween.cpp:594)
+WARNING: Target object freed before starting, aborting Tweener.
+     at: start (scene/animation/tween.cpp:594)
+PASS  walls block the player (4/4)
+WARNING: Target object freed before starting, aborting Tweener.
+     at: start (scene/animation/tween.cpp:594)
+WARNING: Target object freed before starting, aborting Tweener.
+     at: start (scene/animation/tween.cpp:594)
+WARNING: Target object freed before starting, aborting Tweener.
+     at: start (scene/animation/tween.cpp:594)
+PASS  tree trunks block the player (4/4)
+PASS  player lands on the terrain instead of falling through (y=0.00 ground=0.00)
+checks passed: 120
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 6 resources still in use at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:614)
