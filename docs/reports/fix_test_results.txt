@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 84
+checks passed: 103
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -95,3 +95,24 @@ PASS  blacksmith stock is listed with prices (8 items)
 PASS  crafting screen opens from the UI
 PASS  craft button is disabled without materials
 PASS  craft button enables when materials are present
+
+== Problem 6 - finance: gold, guild ranks, quest rewards, loot
+PASS  player starts with gold (35)
+PASS  gain_gold increases the balance
+PASS  spend_gold deducts when affordable
+PASS  balance reflects the spend
+PASS  spending beyond the balance is blocked
+PASS  registering in the guild succeeds
+PASS  registration grants rank F and starter reputation
+PASS  guild promotion reaches rank E when requirements are met
+PASS  promotion grants bonus gold (+40)
+PASS  promotion grants the rank reward item
+PASS  a quest can be started
+PASS  fulfilling objectives makes the quest ready to turn in
+PASS  turning in the quest succeeds
+PASS  quest turn-in grants gold (+45)
+PASS  quest turn-in grants XP
+PASS  quest turn-in grants guild reputation
+PASS  quest turn-in grants the reward items
+PASS  defeating a creature drops loot gold (+2)
+PASS  guild screen opens from the UI

@@ -63,6 +63,7 @@ func _run_all() -> void:
 	await _test_p3_enemies()
 	await _test_p4_inventory()
 	await _test_p5_materials()
+	await _test_p6_finance()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -576,6 +577,66 @@ func _test_p5_materials() -> void:
 	await _frames(2)
 	btn = _find_button(ui.crafting_screen, Localization.tr_key("craft"))
 	_check(btn != null and not btn.disabled, "craft button enables when materials are present")
+
+
+# --- Problem 6: financial system, currencies, rewards ---------------------------
+
+func _test_p6_finance() -> void:
+	_section("Problem 6 - finance: gold, guild ranks, quest rewards, loot")
+	var gm := GameManager
+
+	# gold: starting balance, gain/spend, overspend protection
+	_check(gm.gold > 0, "player starts with gold (%d)" % gm.gold)
+	var gold0 := gm.gold
+	gm.gain_gold(50)
+	_check(gm.gold == gold0 + 50, "gain_gold increases the balance")
+	_check(gm.spend_gold(20), "spend_gold deducts when affordable")
+	_check(gm.gold == gold0 + 30, "balance reflects the spend")
+	var overspent := gm.spend_gold(10_000_000)
+	_check(not overspent and gm.gold == gold0 + 30, "spending beyond the balance is blocked")
+
+	# guild: registration, rank F, promotion with bonus gold + item
+	_check(gm.register_in_guild(), "registering in the guild succeeds")
+	_check(gm.guild.current_rank() == "F" and gm.guild.reputation >= 10, "registration grants rank F and starter reputation")
+	var gold_before_promo := gm.gold
+	gm.guild.add_reputation(200)
+	gm.guild.contracts_completed = 3
+	gm.progression.level = 3
+	var promo := gm.promote_guild_rank()
+	_check(not promo.is_empty() and gm.guild.current_rank() == "E", "guild promotion reaches rank E when requirements are met")
+	_check(gm.gold > gold_before_promo, "promotion grants bonus gold (+%d)" % (gm.gold - gold_before_promo))
+	_check(gm.inventory.count_item(String(promo.get("item", ""))) == 1, "promotion grants the rank reward item")
+
+	# quest turn-in: gold + XP + reputation + items
+	gm.inventory.clear()
+	var q_gold := gm.gold
+	var q_xp := gm.progression.xp
+	var q_rep := gm.guild.reputation
+	_check(gm.start_quest("city_alchemist_slime"), "a quest can be started")
+	gm.quest_log.record_event("kill", "slime", 2)
+	gm.quest_log.record_event("collect", "slime_gel", 2)
+	_check(gm.quest_log.can_turn_in("city_alchemist_slime"), "fulfilling objectives makes the quest ready to turn in")
+	_check(gm.turn_in_quest("city_alchemist_slime"), "turning in the quest succeeds")
+	_check(gm.gold > q_gold, "quest turn-in grants gold (+%d)" % (gm.gold - q_gold))
+	_check(gm.progression.xp > q_xp, "quest turn-in grants XP")
+	_check(gm.guild.reputation > q_rep, "quest turn-in grants guild reputation")
+	_check(gm.inventory.count_item("mana_elixir") == 2, "quest turn-in grants the reward items")
+
+	# creature loot gold
+	var loot_gold := gm.gold
+	var data := CreatureDB.get_creature("slime")
+	var c := Creature.new()
+	c.setup(data, "p6_loot_test", world.spawn_point + Vector3(2.0, 0.0, 2.0))
+	world.add_child(c)
+	await _frames(2)
+	c.take_hit(99999.0, player, false)
+	await _frames(2)
+	_check(gm.gold > loot_gold, "defeating a creature drops loot gold (+%d)" % (gm.gold - loot_gold))
+
+	# guild screen opens
+	ui.toggle_screen("guild")
+	await _frames(3)
+	_check(ui.guild_screen.is_visible_in_tree(), "guild screen opens from the UI")
 
 
 # --- report -------------------------------------------------------------------
