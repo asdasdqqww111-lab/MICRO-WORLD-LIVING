@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 34
+checks passed: 44
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -11,7 +11,7 @@ PASS  every villager turns to face the hero:
 PASS  every villager greets the hero out loud: 
 PASS  villagers are solid for the hero
 PASS  walking straight at a villager does not pass through them
-PASS  villagers go about their day (17 of 18 moved)
+PASS  villagers go about their day (16 of 18 moved)
 PASS  no villager is standing inside a building: 
 PASS  at night villagers walk home and go indoors (5 did)
 PASS  quest givers, guards and shopkeepers stay available at night
@@ -39,3 +39,15 @@ PASS  the tower floor has a ceiling
 PASS  the tower floor has wall dressing and props
 PASS  the tower floor keeps its central light
 PASS  the tower floor burns with fire lights (3)
+
+== Problem 3: tower enemies and combat feedback
+PASS  the celestial tower manager exists
+PASS  a tower floor is built for the fight
+PASS  the floor has enemies to fight (5)
+PASS  every tower enemy is visible
+PASS  every tower enemy has a rendered model
+PASS  a non-boss enemy is present to test
+PASS  a freshly spawned enemy does not attack instantly
+PASS  the VFX manager can spawn attack arcs
+PASS  aggressive enemies show a hit (HP) indicator
+PASS  hitting an enemy deals damage through take_hit

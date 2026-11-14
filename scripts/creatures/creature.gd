@@ -40,6 +40,7 @@ var _boss_hp_sent: float = -1.0
 var _boss_phase_sent: int = -1
 var _boss_emit_timer: float = 0.0
 var _steer_timer: float = 0.0
+var _spawn_grace: float = 0.0
 var _steered_dir: Vector3 = Vector3.ZERO
 var _hp_label: Label3D
 var _boss_phase: int = 1
@@ -62,6 +63,9 @@ func setup(creature_data: CreatureData, creature_uid: String, home_position: Vec
 	data = creature_data
 	uid = creature_uid
 	home = home_position
+	# Newly spawned creatures stay calm for a moment so the player can see
+	# them before the fight starts (the tower used to attack on spawn).
+	_spawn_grace = 1.4
 
 func _build() -> void:
 	var capsule := CapsuleShape3D.new()
@@ -140,6 +144,10 @@ func _build_aura_and_label() -> void:
 	_hp_label.visible = data.is_boss or data.is_elite
 	add_child(_hp_label)
 	_refresh_hp_label()
+	# Hostile creatures raise their bar while chasing or attacking so the player
+	# always has a hit indicator without needing to land a first blow.
+	if data.hostile and not (data.is_boss or data.is_elite):
+		_hp_label.visible = false
 
 	if data.is_boss or data.is_elite:
 		var glow := OmniLight3D.new()
@@ -194,21 +202,30 @@ func _physics_process(delta: float) -> void:
 			_distant_accum = 0.0
 
 	_attack_cooldown = maxf(0.0, _attack_cooldown - delta)
+	if _spawn_grace > 0.0:
+		_spawn_grace = maxf(0.0, _spawn_grace - delta)
 	_flee_timer = maxf(0.0, _flee_timer - delta)
 	if _slow_timer > 0.0:
 		_slow_timer -= delta
 		if _slow_timer <= 0.0:
 			_slow_mult = 1.0
 
-	if data.hostile and player != null and not player.dead and distance <= data.aggro_radius:
+	if _spawn_grace > 0.0:
+		# Still face the player, but do not aggro during the grace window.
+		if data.hostile and player != null and not player.dead and distance <= data.aggro_radius:
+			if anim != null:
+				anim.play("idle", true)
+	elif data.hostile and player != null and not player.dead and distance <= data.aggro_radius:
 		if not aggro:
 			if anim != null:
 				anim.play("taunt", true)
 			EventBus.creature_aggro.emit(self)
 		aggro = true
+		_update_hp_label_visibility()
 	if aggro and (player == null or player.dead or distance > data.aggro_radius * 2.4
 			or global_position.distance_to(home) > data.leash_radius):
 		aggro = false
+		_update_hp_label_visibility()
 		if data.is_boss:
 			_boss_hp_sent = -1.0
 			EventBus.boss_health_changed.emit(data.display_name, health.current_health, health.max_health, _boss_phase, false)
@@ -356,9 +373,11 @@ func _try_attack(player: Player) -> void:
 		var clips := ["attack_1", "attack_2", "attack_3", "attack_heavy"]
 		anim.play(clips[randi() % clips.size()], true)
 	var vfx := get_tree().get_first_node_in_group("vfx_manager")
-	if vfx != null and vfx.has_method("spawn_slash_arc") and (data.is_boss or data.id.begins_with("skeleton")):
+	if vfx != null and vfx.has_method("spawn_slash_arc") and data.hostile:
+		# Every hostile creature shows a swing: bosses get a big red arc, the
+		# rest get a smaller amber one, so the player can always read the attack.
 		vfx.call("spawn_slash_arc", global_position + Vector3(0.0, 1.05, 0.0), rotation.y + PI,
-			-18.0, 1.65 if data.is_boss else 1.25, Color(1.0, 0.28, 0.24, 0.85))
+			-18.0, 1.65 if data.is_boss else 1.2, Color(1.0, 0.28, 0.24, 0.85) if data.is_boss else Color(1.0, 0.62, 0.22, 0.8))
 	if AudioManager != null:
 		AudioManager.play_sfx("monster_attack", -3.0, randf_range(0.9, 1.1))
 	var dmg := data.damage * (1.18 if _boss_phase == 2 else 1.0)
@@ -399,6 +418,52 @@ func take_hit(amount: float, source: Node, is_crit: bool = false) -> void:
 		aggro = true
 	if anim != null and not health.is_dead():
 		anim.play("hit", true)
+	_flash_on_hit()
+
+func _update_hp_label_visibility() -> void:
+	if _hp_label == null:
+		return
+	if data.is_boss or data.is_elite:
+		_hp_label.visible = true
+	else:
+		_hp_label.visible = aggro
+
+func _flash_on_hit() -> void:
+	if model_root == null or not model_root.is_inside_tree():
+		return
+	# A brief white flash across every mesh of the visual: a clear "you were
+	# hit" cue that works whether the meshes carry an override material or the
+	# GLB's own materials.
+	var meshes: Array = []
+	var stack: Array = [model_root]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is MeshInstance3D:
+			meshes.append(n as MeshInstance3D)
+		for c: Node in n.get_children():
+			stack.append(c)
+	if meshes.is_empty():
+		return
+	# Each creature owns its own visual, so its materials are not shared with
+	# other creatures: flashing the albedo is safe and reads as a clear hit.
+	var orig: Array = []
+	for mi: MeshInstance3D in meshes:
+		var mat := mi.material_override as StandardMaterial3D
+		if mat == null and mi.mesh != null and mi.mesh.get_surface_count() > 0:
+			mat = mi.mesh.surface_get_material(0) as StandardMaterial3D
+		if mat == null:
+			continue
+		orig.append(mat.albedo_color)
+		mat.albedo_color = Color(1.0, 0.80, 0.80)
+	get_tree().create_timer(0.24).timeout.connect(func() -> void:
+		for i in orig.size():
+			var mi: MeshInstance3D = meshes[i]
+			if is_instance_valid(mi):
+				var mat := mi.material_override as StandardMaterial3D
+				if mat == null and mi.mesh != null and mi.mesh.get_surface_count() > 0:
+					mat = mi.mesh.surface_get_material(0) as StandardMaterial3D
+				if mat != null:
+					mat.albedo_color = orig[i])
 
 func _refresh_hp_label() -> void:
 	if _hp_label == null or health == null or data == null:

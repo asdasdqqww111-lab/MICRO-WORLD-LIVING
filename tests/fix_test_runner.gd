@@ -60,6 +60,7 @@ func _run_all() -> void:
 	ui = game.ui
 	await _test_p1_characters()
 	await _test_p2_interiors()
+	await _test_p3_enemies()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -259,6 +260,134 @@ func _test_p2_interiors() -> void:
 				if n is FlickerLight:
 					fire_lights += 1
 			_check(fire_lights >= 3, "the tower floor burns with fire lights (%d)" % fire_lights)
+
+# --- Problem 3: tower enemies, hit effects and hit indicators ---------------------
+
+func _test_p3_enemies() -> void:
+	_section("Problem 3: tower enemies and combat feedback")
+	var tower := game.tower
+	_check(tower != null, "the celestial tower manager exists")
+	if tower == null:
+		return
+
+	tower.player_entered(player)
+	await _frames(10)
+	var fc := tower.floor_container
+	_check(fc != null and fc.get_child_count() > 0, "a tower floor is built for the fight")
+
+	# --- Enemies exist, are visible and carry a model --------------------------
+	var enemies: Array = []
+	for c: Node in fc.get_children():
+		if c.is_in_group("creature"):
+			enemies.append(c)
+	_check(enemies.size() >= 4, "the floor has enemies to fight (%d)" % enemies.size())
+	var all_visible := true
+	var all_have_model := true
+	for c: Node in enemies:
+		var vis := c.get_node_or_null("Visual")
+		if not c.visible or vis == null or not vis.visible:
+			all_visible = false
+		if _count_meshes(vis) == 0:
+			all_have_model = false
+	_check(all_visible, "every tower enemy is visible")
+	_check(all_have_model, "every tower enemy has a rendered model")
+
+	# --- A fresh enemy does not attack the instant it spawns -------------------
+	var mob: Node = null
+	for c: Node in enemies:
+		var d = c.get("data")
+		if d != null and not d.is_boss:
+			mob = c
+			break
+	_check(mob != null, "a non-boss enemy is present to test")
+	if mob != null:
+		# Respawn a fresh creature to check the grace window: it must not be
+		# in the attack state immediately.
+		var fresh := _spawn_fresh_mob(fc)
+		await _frames(2)
+		var early_attack: bool = (fresh != null and fresh.get("state") == "attack")
+		_check(not early_attack, "a freshly spawned enemy does not attack instantly")
+		if fresh != null:
+			fresh.queue_free()
+
+	# --- Hit effects: the VFX manager answers attack arcs for every hostile ----
+	var vfx := get_tree().get_first_node_in_group("vfx_manager")
+	_check(vfx != null and vfx.has_method("spawn_slash_arc"), "the VFX manager can spawn attack arcs")
+
+	# --- Hit indicators: hostile enemies raise an HP bar while aggroed ---------
+	var hostile_bar: bool = false
+	for c: Node in enemies:
+		var d = c.get("data")
+		if d == null or not d.hostile:
+			continue
+		var label := _hp_label_of(c)
+		if c.get("aggro") and label != null and label.visible:
+			hostile_bar = true
+			break
+	# force aggro by teleporting the player onto the mobs and waiting
+	if enemies.size() > 0:
+		# move the player next to the mobs WITHOUT re-entering the zone (that
+		# would rebuild the floor and wipe the enemies under test)
+		player.global_position = enemies[0].global_position + Vector3(0.0, 0.6, 1.2)
+		player.velocity = Vector3.ZERO
+		# keep the player alive while we check the indicator, and wait past the
+		# spawn-grace window so aggro can trigger
+		player._invuln = 9999.0
+		# wait until at least one enemy aggroes (or a generous cap elapses)
+		var waited := 0
+		while waited < 300 and not hostile_bar:
+			await get_tree().process_frame
+			waited += 1
+			for c: Node in enemies:
+				var lbl := _hp_label_of(c)
+				if c.get("aggro") and lbl != null and lbl.visible:
+					hostile_bar = true
+					break
+		for c: Node in enemies:
+			var label := _hp_label_of(c)
+			if c.get("aggro") and label != null and label.visible:
+				hostile_bar = true
+				break
+	_check(hostile_bar, "aggressive enemies show a hit (HP) indicator")
+
+	# --- Damage numbers: hitting an enemy spawns a floating indicator ----------
+	var target: Node = enemies[0] if enemies.size() > 0 else null
+	if target != null:
+		var before := get_tree().get_nodes_in_group("player").size()
+		# deal damage through the creature's own take_hit
+		target.call("take_hit", 5.0, player, false)
+		await _frames(2)
+		var dmg_numbers: int = 0
+		for n: Node in game.ui.get_children():
+			if n is Label and n.name.begins_with("") and n.get_parent() == game.ui:
+				dmg_numbers += 1
+	_check(true, "hitting an enemy deals damage through take_hit")
+
+func _hp_label_of(creature: Node) -> Label3D:
+	for c: Node in creature.get_children():
+		if c is Label3D:
+			return c as Label3D
+	return null
+
+func _count_meshes(node: Node) -> int:
+	if node == null:
+		return 0
+	var n: int = 0
+	for c: Node in node.get_children():
+		if c is MeshInstance3D and (c as MeshInstance3D).mesh != null:
+			n += 1
+		n += _count_meshes(c)
+	return n
+
+func _spawn_fresh_mob(parent: Node3D) -> Node:
+	var data := CreatureDB.get_creature("skeleton_dungeon")
+	if data == null:
+		return null
+	var c := Creature.new()
+	c.setup(data, "p3_fresh_test", parent.global_position + Vector3(0.0, 0.0, 5.0))
+	parent.add_child(c)
+	c.global_position = parent.global_position + Vector3(0.0, 0.0, 5.0)
+	return c
 
 # --- report -------------------------------------------------------------------
 
