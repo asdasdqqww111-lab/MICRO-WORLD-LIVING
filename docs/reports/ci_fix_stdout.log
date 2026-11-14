@@ -17,9 +17,31 @@ PASS  no villager is standing inside a building:
 PASS  at night villagers walk home and go indoors (5 did)
 PASS  quest givers, guards and shopkeepers stay available at night
 PASS  everybody is back outside in the morning (18 of 18)
-checks passed: 13
+== Problem 2: interiors and tower floors
+PASS  the cottage interior is built (HouseInterior mesh)
+PASS  the cottage glow batch is built
+PASS  the cottage has its own lights (3)
+PASS  the cottage entrance door exists in the square
+PASS  the guild hall interior is built (GuildInterior mesh)
+PASS  the guild hall is lit by its own lights (4)
+PASS  the guild quest board stands in the hall
+PASS  the guild hall has its staff (6)
+PASS  every guild staff member keeps a post and faces it (6 of 6)
+PASS  entering the cottage shows the cottage zone
+PASS  the cottage ambient matches its room tone (0.55)
+PASS  entering the guild hall shows the guild zone
+PASS  the guild hall ambient matches its room tone (0.58)
+PASS  leaving the buildings hides both interiors
+PASS  the overworld ambient is restored outside
+PASS  the celestial tower manager exists
+PASS  a tower floor is built (Floor1)
+PASS  the tower floor has a ceiling
+PASS  the tower floor has wall dressing and props
+PASS  the tower floor keeps its central light
+PASS  the tower floor burns with fire lights (3)
+checks passed: 34
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
+ERROR: 5 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:614)

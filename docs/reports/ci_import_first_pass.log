@@ -8,7 +8,7 @@ first_scan_filesystem: begin: Project initialization steps: 5
 	first_scan_filesystem: step 4: Initializing plugins...
 	first_scan_filesystem: step 5: Starting file scan...
 first_scan_filesystem: end
-update_scripts_classes: begin: Registering global classes... steps: 99
+update_scripts_classes: begin: Registering global classes... steps: 102
 	update_scripts_classes: step 0: CameraRig
 	update_scripts_classes: step 1: Combat
 	update_scripts_classes: step 2: HealthComponent
@@ -78,29 +78,29 @@ update_scripts_classes: begin: Registering global classes... steps: 99
 	update_scripts_classes: step 66: CraftingStation
 	update_scripts_classes: step 67: DayNightCycle
 	update_scripts_classes: step 68: DungeonTrap
-	update_scripts_classes: step 69: Interactable
-	update_scripts_classes: step 70: LootDrop
-	update_scripts_classes: step 71: Market
-	update_scripts_classes: step 72: QuestBoardProp
-	update_scripts_classes: step 73: QuestWaypoint3D
-	update_scripts_classes: step 74: RaidEvent
-	update_scripts_classes: step 75: ResourceNode
-	update_scripts_classes: step 76: DynamicSkyShader
-	update_scripts_classes: step 77: Terrain
-	update_scripts_classes: step 78: TowerDB
-	update_scripts_classes: step 79: TowerFloorBuilder
-	update_scripts_classes: step 80: TowerManager
-	update_scripts_classes: step 81: TowerPortal
-	update_scripts_classes: step 82: TreasureChest
-	update_scripts_classes: step 83: VillageNPC
-	update_scripts_classes: step 84: WeatherSystem
-	update_scripts_classes: step 85: WorldBuilder
-	update_scripts_classes: step 86: WorldRoot
-	update_scripts_classes: step 87: WorldState
-	update_scripts_classes: step 88: ZoneDoor
-	update_scripts_classes: step 89: 
-	update_scripts_classes: step 90: 
-	update_scripts_classes: step 91: 
+	update_scripts_classes: step 69: FlickerLight
+	update_scripts_classes: step 70: Interactable
+	update_scripts_classes: step 71: Interiors
+	update_scripts_classes: step 72: InteriorKit
+	update_scripts_classes: step 73: LootDrop
+	update_scripts_classes: step 74: Market
+	update_scripts_classes: step 75: QuestBoardProp
+	update_scripts_classes: step 76: QuestWaypoint3D
+	update_scripts_classes: step 77: RaidEvent
+	update_scripts_classes: step 78: ResourceNode
+	update_scripts_classes: step 79: DynamicSkyShader
+	update_scripts_classes: step 80: Terrain
+	update_scripts_classes: step 81: TowerDB
+	update_scripts_classes: step 82: TowerFloorBuilder
+	update_scripts_classes: step 83: TowerManager
+	update_scripts_classes: step 84: TowerPortal
+	update_scripts_classes: step 85: TreasureChest
+	update_scripts_classes: step 86: VillageNPC
+	update_scripts_classes: step 87: WeatherSystem
+	update_scripts_classes: step 88: WorldBuilder
+	update_scripts_classes: step 89: WorldRoot
+	update_scripts_classes: step 90: WorldState
+	update_scripts_classes: step 91: ZoneDoor
 	update_scripts_classes: step 92: 
 	update_scripts_classes: step 93: 
 	update_scripts_classes: step 94: 
@@ -108,6 +108,9 @@ update_scripts_classes: begin: Registering global classes... steps: 99
 	update_scripts_classes: step 96: 
 	update_scripts_classes: step 97: 
 	update_scripts_classes: step 98: 
+	update_scripts_classes: step 99: 
+	update_scripts_classes: step 100: 
+	update_scripts_classes: step 101: 
 update_scripts_classes: end
 _update_scan_actions: begin: Scanning actions... steps: 239
 	_update_scan_actions: step 0: Barbarian.glb
@@ -601,25 +604,31 @@ preload_reimporting_scene: end
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
 	reimport: step 5: NotoSans-Medium.ttf
+	reimport: step 6: NotoSans-Bold.ttf
 	reimport: step 7: Cairo-Variable.ttf
 	reimport: step 8: footstep_3.ogg
+	reimport: step 9: footstep_4.ogg
 	reimport: step 10: footstep_5.ogg
 	reimport: step 11: footstep_6.ogg
 	reimport: step 12: footstep_7.ogg
 	reimport: step 13: footstep_8.ogg
 	reimport: step 14: footstep_9.ogg
+	reimport: step 15: handle_coins.ogg
 	reimport: step 16: handle_coins_2.ogg
 	reimport: step 17: knife_slice.ogg
-	reimport: step 18: knife_slice_2.ogg
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
 	reimport: step 21: door_close_1.ogg
 	reimport: step 22: door_open_1.ogg
 	reimport: step 23: door_open_2.ogg
 	reimport: step 24: draw_knife_1.ogg
+	reimport: step 25: creak_1.ogg
+	reimport: step 26: cloth_belt.ogg
 	reimport: step 27: cloth_3.ogg
 	reimport: step 28: cloth_2.ogg
+	reimport: step 29: cloth_1.ogg
 	reimport: step 30: footstep_2.ogg
+	reimport: step 31: footstep_1.ogg
 	reimport: step 32: footstep_0.ogg
 	reimport: step 33: belt_handle_1.ogg
 	reimport: step 34: book_flip_1.ogg
@@ -1613,7 +1622,7 @@ ERROR: Parameter "t" is null.
 import: end
 	reimport: step 239: Finalizing Asset Import...
 reimport: end
-update_script_paths_documentation: begin: Updating scripts documentation steps: 99
+update_script_paths_documentation: begin: Updating scripts documentation steps: 102
 	update_script_paths_documentation: step 0: camera_rig.gd
 	update_script_paths_documentation: step 1: combat.gd
 	update_script_paths_documentation: step 2: health_component.gd
@@ -1683,36 +1692,39 @@ update_script_paths_documentation: begin: Updating scripts documentation steps: 
 	update_script_paths_documentation: step 66: crafting_station.gd
 	update_script_paths_documentation: step 67: day_night_cycle.gd
 	update_script_paths_documentation: step 68: dungeon_trap.gd
-	update_script_paths_documentation: step 69: interactable.gd
-	update_script_paths_documentation: step 70: loot_drop.gd
-	update_script_paths_documentation: step 71: market.gd
-	update_script_paths_documentation: step 72: quest_board_prop.gd
-	update_script_paths_documentation: step 73: quest_waypoint.gd
-	update_script_paths_documentation: step 74: raid_event.gd
-	update_script_paths_documentation: step 75: resource_node.gd
-	update_script_paths_documentation: step 76: sky_shader.gd
-	update_script_paths_documentation: step 77: terrain.gd
-	update_script_paths_documentation: step 78: tower_db.gd
-	update_script_paths_documentation: step 79: tower_floor_builder.gd
-	update_script_paths_documentation: step 80: tower_manager.gd
-	update_script_paths_documentation: step 81: tower_portal.gd
-	update_script_paths_documentation: step 82: treasure_chest.gd
-	update_script_paths_documentation: step 83: village_npc.gd
-	update_script_paths_documentation: step 84: weather_system.gd
-	update_script_paths_documentation: step 85: world_builder.gd
-	update_script_paths_documentation: step 86: world_root.gd
-	update_script_paths_documentation: step 87: world_state.gd
-	update_script_paths_documentation: step 88: zone_door.gd
-	update_script_paths_documentation: step 89: fix_test_runner.gd
-	update_script_paths_documentation: step 90: perf_probe.gd
-	update_script_paths_documentation: step 91: probe.gd
-	update_script_paths_documentation: step 92: screenshot_probe.gd
-	update_script_paths_documentation: step 93: test_runner.gd
-	update_script_paths_documentation: step 94: tower_test_runner.gd
-	update_script_paths_documentation: step 95: auto_import_realistic_assets.gd
-	update_script_paths_documentation: step 96: import_stylized_assets.gd
-	update_script_paths_documentation: step 97: verify_realistic_import.gd
-	update_script_paths_documentation: step 98: verify_stylized_import.gd
+	update_script_paths_documentation: step 69: flicker_light.gd
+	update_script_paths_documentation: step 70: interactable.gd
+	update_script_paths_documentation: step 71: interiors.gd
+	update_script_paths_documentation: step 72: interior_kit.gd
+	update_script_paths_documentation: step 73: loot_drop.gd
+	update_script_paths_documentation: step 74: market.gd
+	update_script_paths_documentation: step 75: quest_board_prop.gd
+	update_script_paths_documentation: step 76: quest_waypoint.gd
+	update_script_paths_documentation: step 77: raid_event.gd
+	update_script_paths_documentation: step 78: resource_node.gd
+	update_script_paths_documentation: step 79: sky_shader.gd
+	update_script_paths_documentation: step 80: terrain.gd
+	update_script_paths_documentation: step 81: tower_db.gd
+	update_script_paths_documentation: step 82: tower_floor_builder.gd
+	update_script_paths_documentation: step 83: tower_manager.gd
+	update_script_paths_documentation: step 84: tower_portal.gd
+	update_script_paths_documentation: step 85: treasure_chest.gd
+	update_script_paths_documentation: step 86: village_npc.gd
+	update_script_paths_documentation: step 87: weather_system.gd
+	update_script_paths_documentation: step 88: world_builder.gd
+	update_script_paths_documentation: step 89: world_root.gd
+	update_script_paths_documentation: step 90: world_state.gd
+	update_script_paths_documentation: step 91: zone_door.gd
+	update_script_paths_documentation: step 92: fix_test_runner.gd
+	update_script_paths_documentation: step 93: perf_probe.gd
+	update_script_paths_documentation: step 94: probe.gd
+	update_script_paths_documentation: step 95: screenshot_probe.gd
+	update_script_paths_documentation: step 96: test_runner.gd
+	update_script_paths_documentation: step 97: tower_test_runner.gd
+	update_script_paths_documentation: step 98: auto_import_realistic_assets.gd
+	update_script_paths_documentation: step 99: import_stylized_assets.gd
+	update_script_paths_documentation: step 100: verify_realistic_import.gd
+	update_script_paths_documentation: step 101: verify_stylized_import.gd
 update_script_paths_documentation: end
 update_scene_groups: begin: Updating Scene Groups steps: 121
 	update_scene_groups: step 0: game.tscn

@@ -11,7 +11,7 @@ PASS  every villager turns to face the hero:
 PASS  every villager greets the hero out loud: 
 PASS  villagers are solid for the hero
 PASS  walking straight at a villager does not pass through them
-PASS  villagers go about their day (18 of 18 moved)
+PASS  villagers go about their day (17 of 18 moved)
 PASS  no villager is standing inside a building: 
 PASS  at night villagers walk home and go indoors (5 did)
 PASS  quest givers, guards and shopkeepers stay available at night
