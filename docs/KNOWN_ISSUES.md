@@ -34,8 +34,7 @@
 - **No on-device measurements exist.** All numbers come from a software rasteriser in CI; FPS, frame time and thermal behaviour on Android hardware are unmeasured.
 
 ### Open (by inspection, not yet addressed)
-- HUD top-centre dock, minimap and menu screens still use stock `Button` input (single pointer). They work when no other finger is down.
-- Quick-slot squares in the touch layout are decorative; `TouchControls.menu_action` is never emitted.
+- Minimap and menu screens still use stock `Button` input (single pointer). They work when no other finger is down.
 - `Continue` in the main menu loads only the manual slot, never the autosave slot.
 - Saving removes the previous file before the temporary file is renamed; there is no backup copy.
 - `CollisionLayers` bit values do not match the layer names declared in `project.godot`.
@@ -43,3 +42,22 @@
 - Volume sliders write the settings file on every slider step.
 - Several UI strings bypass `Localization` (main menu, pause screen, HUD).
 - Release signing: CI produces a debug-signed APK only.
+
+## City, controls, performance and size pass (same branch, second round)
+
+### Resolved
+- **Town layout was scattered.** Buildings, streets, walls, gates and gardens now come from one plan (`scripts/world/city_plan.gd`): a round wall (radius 36 m) with east, south and west gates, the citadel closing the north side, a central plaza, two crossing avenues and side streets, and 22 building lots that face their street. Terrain flattening, road material, minimap, world map, NPC routes and door exits read the same plan. The forest no longer grows inside the walls. `docs/screenshots/14_city_overview.png` is a top-down capture of the result.
+- **East bridge sat at an angle to its road.** The hexagon-kit bridge model runs along a hex axis; it is now turned 60 degrees so the deck lies on the East Avenue.
+- **HUD draw calls.** CI probe, Hero Cottage Interior: 324 -> 119 draw calls per frame (HUD 258 -> 44, touch controls 48 -> 57 with three new working quick slots and the interact prompt, 3D 18). Village Square total 448 -> 271, Active Combat 334 -> 156.
+- **Touch layout.** Icon-only round buttons in two arcs around the attack button, working quick slots (health potion, mana elixir, food), a tappable interact prompt, a round sprint toggle and safe-area offsets. The top dock now uses `TouchActionButton`, so menus open while another finger holds the stick.
+- **Per-frame work.** NPCs and creatures stop animating and drawing when far away, far AI is throttled, shared player/terrain lookups are cached, day-night atmosphere updates four times a second, FXAA no longer runs on top of MSAA.
+- **Phone resolution.** On mobile the 3D image height is capped per preset (LOW 720 px, MEDIUM 900 px, HIGH 1080 px); the HUD stays native. Mobile also uses one shadow split and a 1024 px shadow map.
+- **Download size.** Debug APK 96.7 MB -> about 69.5 MB. 311 unreferenced asset files and a duplicate `Knight.glb` were removed, three 2048 px textures were reduced to 512 px, and each character rig keeps only the animation clips the game resolves (76/95 -> 33/36). `assets/` went from 76 MB to 27 MB.
+- City ambience never played because the audio code compared against a biome name the terrain no longer returns.
+
+### Open
+- **Triangle budget** is still exceeded in the plaza (about 212k in Village Square, 228k in Active Combat, against 180k) on the MEDIUM preset with shadows. Each character rig is 5-7k triangles and the compact town puts more buildings in view. LOW (the phone default) draws no shadow pass.
+- **No on-device measurements exist.** Draw-call and triangle counts come from a software rasteriser in CI. Frame rate, frame time and heat on Android hardware are unmeasured, and the mobile-only settings (resolution cap, single shadow split, 1024 px shadow map) are not exercised by CI.
+- About 45 MB of the APK is the Godot engine library for two CPU architectures. Shipping `arm64-v8a` only would save roughly 20 MB but drops 32-bit phones.
+- Shader compilation hitches the first time a material appears are a Godot 4.3 Mobile limitation; Godot 4.4 addresses it and would need a planned engine upgrade.
+- `TouchControls.menu_action` is still never emitted (the menu button lives in the HUD dock).

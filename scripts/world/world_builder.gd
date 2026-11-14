@@ -527,11 +527,14 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	var bridge_x := terrain.river_center_x(bridge_z) if terrain != null else 45.5
 	var bridge_pos := Vector3(bridge_x, 0.0, bridge_z)
 	var bridge_path := AssetLibrary.HEXAGON_DIR + "building_bridge_A.gltf"
-	var bridge_node := place_model(parent, bridge_path, bridge_pos, deg_to_rad(90.0), 7.8,
+	# The hexagon-kit bridge runs along a hex axis (60 degrees off the model's
+	# X axis), so a 60 degree turn is what lines the deck up with the avenue.
+	var bridge_yaw := deg_to_rad(60.0)
+	var bridge_node := place_model(parent, bridge_path, bridge_pos, bridge_yaw, 7.8,
 		Vector3.ZERO, "EastStoneBridge")
 	if bridge_node != null:
 		_apply_model_lod(bridge_node, 90.0, false)
-	add_mesh_collider(parent, bridge_path, bridge_pos, deg_to_rad(90.0), 7.8, "BridgeDeckCollider")
+	add_mesh_collider(parent, bridge_path, bridge_pos, bridge_yaw, 7.8, "BridgeDeckCollider")
 
 	# Riverside watermill on the west bank, north-east of the walls.
 	var mill_z := -30.0
