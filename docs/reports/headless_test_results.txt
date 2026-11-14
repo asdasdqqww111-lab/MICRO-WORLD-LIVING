@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: mobile
-run at: 2026-11-13T23:25:54
-checks passed: 190
+run at: 2026-11-14T00:13:31
+checks passed: 211
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 13.0
+  fps: 2.0
   draw calls: 0
   triangles: 0
-  nodes: 2461
+  nodes: 2459
 
 checks:
 
@@ -171,6 +171,7 @@ PASS  game.tscn loads
 PASS  world root created
 PASS  player created
 PASS  ui root created
+PASS  Celestial Tower manager created in the game scene
 PASS  HUD, TouchControls, SkillTreeScreen, and GuildScreen built
 PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
@@ -187,6 +188,26 @@ PASS  camera zoom changes distance
 PASS  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
 PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=51.6px)
+PASS  touch: stick deflection inside the dead zone outputs zero
+PASS  touch: dead zone is rescaled (0.575 raw -> 0.500)
+PASS  touch: full deflection outputs magnitude 1.0
+PASS  touch: joystick and TouchActionButton controls are registered
+PASS  touch: finger 0 drives the joystick (x=1.00)
+PASS  touch: attack button is pressed by a second finger while the joystick is held
+PASS  touch: attack press is queued for the player
+PASS  touch: one touch-down queues exactly one attack
+PASS  touch: releasing the attack finger does not release the joystick
+PASS  touch: a foreign finger cannot steal or release the joystick
+PASS  touch: block is held (not queued) while its finger is down
+PASS  touch: block ends when its finger lifts
+PASS  touch: sprint toggles on and off per tap
+PASS  touch: one finger on the camera area orbits (dx=40.0)
+PASS  touch: two fingers spreading pinch-zoom without orbiting (factor=2.00)
+PASS  touch: camera fingers release independently of the joystick
+PASS  touch: interact button highlights while a prompt is shown
+PASS  touch: attack button dims when stamina is insufficient
+PASS  touch: hiding the controls releases the joystick and held buttons
+PASS  settings expose the haptics toggle
 PASS  Phase 1: Project renderer set to Vulkan Mobile ('mobile')
 PASS  Cairo variable font bundled & active
 PASS  Step 1 & 2: CC0 Stylized Assets (KayKit Chibi Knight + Quaternius Pine/Rock/Flowers) imported
@@ -205,7 +226,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.7)
+PASS  skeleton takes damage (46.0 -> 33.5)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective

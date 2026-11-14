@@ -1,0 +1,80 @@
+MICRO WORLD: LIVING — Celestial Ascent Tower acceptance suite
+run at: 2026-11-14T00:18:24
+
+== TowerDB integrity ==
+PASS  TowerDB.validate() reports no errors
+PASS  TowerDB defines exactly 100 floors
+PASS  TowerDB defines 10 regions
+PASS  All 100 floors map to bilingual regions
+PASS  Floor 1 is ancient_ruins
+PASS  Floor 11 is crystal_caverns
+PASS  Floor 100 is divine_battlefield
+PASS  Floor Master EN #100 is the final boss
+PASS  Floor Master AR #100 is the final boss (Arabic)
+PASS  100 unique EN Floor Master names
+PASS  100 unique AR Floor Master names
+PASS  Floor Master #1 EN is Gravelord Vash
+
+== Stat scaling ==
+PASS  Master HP scales up across the tower
+PASS  Master damage scales up across the tower
+PASS  Master XP reward scales up
+PASS  Final master HP is 8x+ the first master
+PASS  master_stats deterministic for floor 37
+PASS  Floor 1 mob stats well-formed
+PASS  Mob count within mobile budget (<= 5)
+
+== Geometry ==
+PASS  Floor origins stack on FLOOR_STRIDE
+PASS  Floor origins share TOWER_ORIGIN x/z
+PASS  Floor spawn sits 1.2m above the origin
+PASS  Overworld gate is outside city radius (>58m)
+PASS  Tower interiors sit far outside the map (>400m)
+PASS  Floor 100 origin is 594m above ground
+
+== Floor builder (real nodes) ==
+PASS  Floor23 anchors returned
+PASS  Floor23 root is a real node in tree
+PASS  Floor23 has a walkable platform collider
+PASS  Floor23 has all 4 walls
+PASS  Floor23 has all 4 pillars
+PASS  Floor23 has a boss arena ring
+PASS  Floor23 has a floor light
+PASS  Floor23 belongs to magical_forest region
+PASS  Floor nodes freed after free()
+
+== TowerManager runtime ==
+PASS  Manager built the overworld gate portal
+PASS  Manager gate is an Interactable
+PASS  Floor 1 unlocked from the start
+PASS  No floors cleared initially
+PASS  Floor 1 master not defeated initially
+PASS  Entering the tower loads floor 1
+PASS  Tower zone container became visible
+PASS  Floor 1 has an exit portal
+PASS  Floor 1 has an ascent portal
+PASS  Floor 1 spawned creatures (mobs + master)
+PASS  Player teleported into the tower zone
+PASS  Current floor persisted in world flags
+PASS  Cannot ascend before Floor Master defeat
+PASS  Floor 1 master defeat recorded
+PASS  Floor 2 becomes reachable
+PASS  floors_cleared counts 1
+PASS  Ascending after defeat loads floor 2
+FAIL  Only ONE floor loaded at a time (single root child)
+PASS  Floor 100 loads
+PASS  Floor 100 has NO ascent portal (final)
+PASS  Floor 100 still has an exit portal
+PASS  Tower completion flag set on final master defeat
+PASS  floors_cleared counts both defeated masters
+
+== Persistence ==
+PASS  Master defeat flags survive WorldState round-trip
+PASS  Current floor flag survives round-trip
+PASS  Completion flag survives round-trip
+PASS  Exiting hides the tower interior
+PASS  Exit returns the player to the overworld zone
+
+elapsed: 1572 ms
+checks passed: 61
+checks failed: 1

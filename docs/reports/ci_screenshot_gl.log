@@ -17,18 +17,6 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 
 [shot] start: renderer=mobile adapter=llvmpipe (LLVM 21.1.8, 256 bits)
 [shot] 01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)
-SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
-          at: GDScript::reload (res://scripts/world/tower_db.gd:208)
-SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
-          at: GDScript::reload (res://scripts/world/tower_db.gd:208)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/world/tower_floor_builder.gd:-1)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/world/tower_manager.gd:-1)
-SCRIPT ERROR: Compile Error: 
-          at: GDScript::reload (res://scripts/core/game.gd:-1)
-ERROR: Failed to load script "res://scripts/core/game.gd" with error "Compilation failed".
-   at: load (modules/gdscript/gdscript.cpp:2936)
 WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
      at: set_radiance_size (servers/rendering/renderer_rd/environment/sky.cpp:620)
 WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
@@ -51,5 +39,3 @@ WARNING: Target object freed before starting, aborting Tweener.
 [shot] all 13 screenshots captured successfully
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)
