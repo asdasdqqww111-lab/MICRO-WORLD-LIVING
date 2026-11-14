@@ -20,7 +20,7 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T14:41:30
+run at: 2026-11-14T14:48:13
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -37,7 +37,7 @@ Zone 2 · Active Combat (Village + 3 Skeletons)
   total draw calls: 156  [OK]
   triangles (max):  227530  [OVER]
   objects:          157
-  static memory:    189.7 MB
+  static memory:    189.8 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
   3D draw calls:    20  [OK]
@@ -59,7 +59,7 @@ Zone 5 · Adventurers Guild Grand Hall Interior
   triangles (max):  42538  [OK]
   objects:          141
   static memory:    189.8 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 3.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    17  [OK]
   total draw calls: 119  [OK]
@@ -73,7 +73,7 @@ Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   triangles (max):  71961  [OK]
   objects:          146
   static memory:    190.6 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
   all UI visible           total  119 | 3D (visible+shadow)   17 | objects  119
@@ -126,5 +126,3 @@ SHADOW / LOD: casters=30  shadow_off=560  with_visibility_range=549
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 1 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)
