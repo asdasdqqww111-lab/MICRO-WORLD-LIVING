@@ -1,4 +1,4 @@
-Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 Vulkan 1.4.335 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 21.1.8, 256 bits)
 libpulse.so.0: cannot open shared object file: No such file or directory
 libpulse.so.0: cannot open shared object file: No such file or directory
@@ -13,85 +13,85 @@ ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) [error.pcm] Unknown PCM default
 ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
    at: init_output_device (drivers/alsa/audio_driver_alsa.cpp:90)
 WARNING: All audio drivers failed, falling back to the dummy driver.
-     at: initialize (servers/audio_server.cpp:247)
+     at: initialize (servers/audio_server.cpp:246)
 
 MICRO WORLD: LIVING — Polished Stylized/Chibi PBR Mobile Vulkan Probe
-engine: 4.3-stable (official)
+engine: 4.4.1-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T14:48:13
+run at: 2026-11-14T15:16:46
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  3D draw calls:    72  [OK]
-  total draw calls: 271  [OK]
+  3D draw calls:    117  [OK]
+  total draw calls: 171  [OK]
   triangles (max):  211848  [OVER]
-  objects:          272
-  static memory:    181.4 MB
+  objects:          317
+  static memory:    195.2 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    75  [OK]
-  total draw calls: 156  [OK]
+  3D draw calls:    123  [OK]
+  total draw calls: 175  [OK]
   triangles (max):  227530  [OVER]
-  objects:          157
-  static memory:    189.8 MB
+  objects:          204
+  static memory:    205.7 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    20  [OK]
-  total draw calls: 102  [OK]
-  triangles (max):  98639  [OK]
-  objects:          102
-  static memory:    189.5 MB
+  3D draw calls:    24  [OK]
+  total draw calls: 76  [OK]
+  triangles (max):  98879  [OK]
+  objects:          106
+  static memory:    203.5 MB
   fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  3D draw calls:    45  [OK]
-  total draw calls: 122  [OK]
+  3D draw calls:    64  [OK]
+  total draw calls: 116  [OK]
   triangles (max):  153597  [OK]
-  objects:          122
-  static memory:    189.6 MB
-  fps (min, this driver): 1.0
-Zone 5 · Adventurers Guild Grand Hall Interior
-  3D draw calls:    52  [OK]
-  total draw calls: 132  [OK]
-  triangles (max):  42538  [OK]
   objects:          141
-  static memory:    189.8 MB
+  static memory:    203.6 MB
+  fps (min, this driver): 2.0
+Zone 5 · Adventurers Guild Grand Hall Interior
+  3D draw calls:    82  [OK]
+  total draw calls: 134  [OK]
+  triangles (max):  42538  [OK]
+  objects:          171
+  static memory:    203.8 MB
   fps (min, this driver): 3.0
 Zone 6 · Hero Cottage Interior
-  3D draw calls:    17  [OK]
-  total draw calls: 119  [OK]
+  3D draw calls:    20  [OK]
+  total draw calls: 75  [OK]
   triangles (max):  9983  [OK]
-  objects:          119
-  static memory:    190.0 MB
-  fps (min, this driver): 4.0
+  objects:          122
+  static memory:    204.0 MB
+  fps (min, this driver): 3.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  3D draw calls:    45  [OK]
-  total draw calls: 146  [OK]
+  3D draw calls:    50  [OK]
+  total draw calls: 107  [OK]
   triangles (max):  71961  [OK]
-  objects:          146
-  static memory:    190.6 MB
+  objects:          151
+  static memory:    204.6 MB
   fps (min, this driver): 2.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
-  all UI visible           total  119 | 3D (visible+shadow)   17 | objects  119
-  touch controls hidden    total   62 | 3D (visible+shadow)   17 | objects   62
-  HUD hidden               total   75 | 3D (visible+shadow)   17 | objects   75
-  HUD + touch hidden       total   18 | 3D (visible+shadow)   17 | objects   18
-  entire UI layer hidden   total   18 | 3D (visible+shadow)   17 | objects   18
-  => touch controls: 57 draw calls
-  => HUD:            44 draw calls
+  all UI visible           total   75 | 3D (visible+shadow)   20 | objects  122
+  touch controls hidden    total   45 | 3D (visible+shadow)   20 | objects   65
+  HUD hidden               total   51 | 3D (visible+shadow)   20 | objects   78
+  HUD + touch hidden       total   21 | 3D (visible+shadow)   20 | objects   21
+  entire UI layer hidden   total   21 | 3D (visible+shadow)   20 | objects   21
+  => touch controls: 30 draw calls
+  => HUD:            24 draw calls
   => other UI nodes: 0 draw calls
-  => non-UI (3D):    18 draw calls
-  HUD per panel (touch hidden, HUD total 44):
-  HUD vitals panel (StatsGlassPanel)     17 draw calls
+  => non-UI (3D):    21 draw calls
+  HUD per panel (touch hidden, HUD total 24):
+  HUD vitals panel (StatsGlassPanel)     12 draw calls
   HUD quest tracker                    not visible
-  HUD top-centre action dock              8 draw calls
+  HUD top-centre action dock              2 draw calls
   HUD minimap                             4 draw calls
-  HUD clock + weather pill                9 draw calls
-  HUD city district pill                  5 draw calls
+  HUD clock + weather pill                3 draw calls
+  HUD city district pill                  2 draw calls
   HUD notifications                       0 draw calls
 
 --- running structural audit ---
@@ -125,4 +125,6 @@ TOP TRIANGLE CONSUMERS (whole world)
 SHADOW / LOD: casters=30  shadow_off=560  with_visibility_range=549
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
-     at: cleanup (core/object/object.cpp:2284)
+     at: cleanup (core/object/object.cpp:2378)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
