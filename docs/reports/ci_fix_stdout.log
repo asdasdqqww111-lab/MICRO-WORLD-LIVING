@@ -141,9 +141,28 @@ WARNING: Target object freed before starting, aborting Tweener.
      at: start (scene/animation/tween.cpp:594)
 PASS  tree trunks block the player (4/4)
 PASS  player lands on the terrain instead of falling through (y=0.00 ground=0.00)
-checks passed: 120
+== Problem 9 - UI design: localization, cards, indicators
+PASS  localization key 'settings' resolves
+PASS  localization key 'language' resolves
+PASS  localization key 'graphics' resolves
+PASS  localization key 'camera_sensitivity' resolves
+PASS  localization key 'touch_controls' resolves
+PASS  localization key 'haptics' resolves
+PASS  localization key 'dev_diagnostics' resolves
+PASS  localization key 'select_skill' resolves
+PASS  localization key 'saved_adventure' resolves
+PASS  localization key 'no_save' resolves
+PASS  localization key 'on_txt' resolves
+PASS  localization key 'off_txt' resolves
+PASS  localization key has Arabic text
+PASS  main menu settings labels resolve through Localization
+PASS  crafting screen builds cards
+PASS  HUD has the boss indicator panel
+PASS  HUD has the target indicator panel
+PASS  HUD has the interact prompt panel
+PASS  VFX manager spawns floating damage numbers
+PASS  a floating damage number is visible after a hit (3)
+checks passed: 140
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 1 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)
