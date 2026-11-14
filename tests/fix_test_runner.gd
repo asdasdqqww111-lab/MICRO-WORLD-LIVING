@@ -64,6 +64,7 @@ func _run_all() -> void:
 	await _test_p4_inventory()
 	await _test_p5_materials()
 	await _test_p6_finance()
+	await _test_p7_quests()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -496,6 +497,24 @@ func _find_button(root: Node, label_text: String) -> Button:
 			return found
 	return null
 
+func _click_button_containing(root: Node, text: String) -> bool:
+	for child: Node in root.get_children():
+		if child is Button:
+			if child.text.contains(text):
+				child.pressed.emit()
+				return true
+			continue
+		if _click_button_containing(child, text):
+			return true
+	return false
+
+func _find_action(payload: Dictionary, action_type: String) -> Dictionary:
+	var actions: Array = payload.get("actions", [])
+	for a: Dictionary in actions:
+		if String(a.get("type", "")) == action_type:
+			return a
+	return {}
+
 # --- Problem 5: materials, resources, crafting, upgrades, value ------------------
 
 func _test_p5_materials() -> void:
@@ -637,6 +656,58 @@ func _test_p6_finance() -> void:
 	ui.toggle_screen("guild")
 	await _frames(3)
 	_check(ui.guild_screen.is_visible_in_tree(), "guild screen opens from the UI")
+
+
+# --- Problem 7: quest system -----------------------------------------------------
+
+func _test_p7_quests() -> void:
+	_section("Problem 7 - quests: load, journal, NPC offer/turn-in, markers")
+	QuestDB.ensure_loaded()
+	var all: Array = QuestDB.all_quests()
+	_check(all.size() == 24, "all 24 quests load (%d)" % all.size())
+	var well_formed: int = 0
+	for q: QuestData in all:
+		if q.objectives.size() > 0 and (q.reward_xp > 0 or q.reward_gold > 0 or q.reward_items.size() > 0):
+			well_formed += 1
+	_check(well_formed == all.size(), "every quest has objectives and rewards (%d)" % well_formed)
+
+	# journal: open, switch to Available, accept a quest through its button
+	ui.toggle_screen("journal")
+	await _frames(3)
+	_check(ui.journal.is_visible_in_tree(), "journal screen opens from the UI")
+	ui.journal.refresh()
+	await _frames(2)
+	_click_button_containing(ui.journal, "المتاحة") or _click_button_containing(ui.journal, "Available")
+	await _frames(2)
+	var before_tracked := GameManager.quest_log.tracked_quests().size()
+	var accepted := _click_button_containing(ui.journal, "قبول") or _click_button_containing(ui.journal, "Accept")
+	_check(accepted and GameManager.quest_log.tracked_quests().size() > before_tracked,
+		"accepting a quest from the journal starts it")
+
+	# NPC dialog: offer -> progress -> turn-in, and the ready marker shows
+	var npc := VillageNPC.new()
+	npc.setup("west_warden", "Warden Layan", "guard", "res://assets/characters/npcs/Knight.glb", {})
+	world.add_child(npc)
+	await _frames(2)
+	var payload: Dictionary = npc.dialog_payload()
+	var offer: Dictionary = _find_action(payload, "quest_offer")
+	_check(not offer.is_empty(), "an NPC with a quest offers it in the dialog")
+	if not offer.is_empty():
+		var qid := String(offer["quest_id"])
+		GameManager.start_quest(qid)
+		await _frames(2)
+		GameManager.quest_log.record_event("collect", "wood", 4)
+		await _frames(2)
+		_check(GameManager.quest_log.can_turn_in(qid), "fulfilling objectives makes the quest ready")
+		payload = npc.dialog_payload()
+		var turnin: Dictionary = _find_action(payload, "quest_turnin")
+		_check(not turnin.is_empty(), "the NPC shows a turn-in action for the ready quest")
+		_check(npc._quest_marker != null and npc._quest_marker.visible,
+			"the NPC shows the ready-quest marker (? visible)")
+		var q_gold := GameManager.gold
+		_check(GameManager.turn_in_quest(String(turnin["quest_id"])), "turning in through the NPC succeeds")
+		_check(GameManager.gold > q_gold, "turning in grants the quest gold reward")
+		_check(GameManager.quest_log.state_of(qid) == QuestLog.STATE_COMPLETED, "the quest is marked completed")
 
 
 # --- report -------------------------------------------------------------------

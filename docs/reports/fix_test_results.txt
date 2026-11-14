@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 103
+checks passed: 114
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -116,3 +116,16 @@ PASS  quest turn-in grants guild reputation
 PASS  quest turn-in grants the reward items
 PASS  defeating a creature drops loot gold (+2)
 PASS  guild screen opens from the UI
+
+== Problem 7 - quests: load, journal, NPC offer/turn-in, markers
+PASS  all 24 quests load (24)
+PASS  every quest has objectives and rewards (24)
+PASS  journal screen opens from the UI
+PASS  accepting a quest from the journal starts it
+PASS  an NPC with a quest offers it in the dialog
+PASS  fulfilling objectives makes the quest ready
+PASS  the NPC shows a turn-in action for the ready quest
+PASS  the NPC shows the ready-quest marker (? visible)
+PASS  turning in through the NPC succeeds
+PASS  turning in grants the quest gold reward
+PASS  the quest is marked completed

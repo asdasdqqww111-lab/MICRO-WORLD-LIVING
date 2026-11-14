@@ -111,6 +111,7 @@ func _ready() -> void:
 	if schedule.is_empty():
 		schedule = {"work": global_position, "rest": global_position, "sleep": global_position}
 	EventBus.quest_updated.connect(_on_quest_or_guild_changed)
+	EventBus.quest_ready_to_turn_in.connect(_on_quest_or_guild_changed)
 	EventBus.guild_updated.connect(_on_guild_changed)
 	EventBus.language_changed.connect(func(_l: String) -> void: _refresh_nameplate())
 	_refresh_nameplate()
@@ -709,20 +710,23 @@ func _refresh_marker() -> void:
 		return
 	_wants_marker = false
 	_needed_now = false
+	# Priority: a quest ready to turn in here ("?") beats a new main-quest offer ("!").
+	# Scan in passes so an earlier "!" match cannot hide a later "?" match.
 	for quest: QuestData in QuestDB.quests_involving_npc(npc_id):
-		var st := GameManager.quest_log.state_of(quest.id)
-		if st == QuestLog.STATE_READY and quest.turn_in_npc == npc_id:
+		if GameManager.quest_log.state_of(quest.id) == QuestLog.STATE_READY and quest.turn_in_npc == npc_id:
 			_needed_now = true
 			_show_marker("?", Color(0.42, 0.96, 0.55))
 			return
-		if st == QuestLog.STATE_ACTIVE and quest.turn_in_npc == npc_id:
+	for quest: QuestData in QuestDB.quests_involving_npc(npc_id):
+		if GameManager.quest_log.state_of(quest.id) == QuestLog.STATE_ACTIVE and quest.turn_in_npc == npc_id:
 			_needed_now = true
-		if st == QuestLog.STATE_NOT_STARTED and quest.giver_npc == npc_id:
+	for quest: QuestData in QuestDB.quests_involving_npc(npc_id):
+		if GameManager.quest_log.state_of(quest.id) == QuestLog.STATE_NOT_STARTED and quest.giver_npc == npc_id:
 			if not quest.is_guild_contract or GameManager.guild.meets_rank(quest.required_guild_rank):
 				if quest.is_main_quest:
 					_needed_now = true
-				_show_marker("!", Color(1.0, 0.85, 0.25))
-				return
+					_show_marker("!", Color(1.0, 0.85, 0.25))
+					return
 	if guild_role == "receptionist" and (not GameManager.guild.registered or GameManager.guild.can_promote(GameManager.progression.level)):
 		_show_marker("★", Color(0.45, 0.82, 1.0))
 		return
@@ -732,9 +736,11 @@ func _show_marker(symbol: String, color: Color) -> void:
 	_wants_marker = true
 	_quest_marker.text = symbol
 	_quest_marker.modulate = color
-	_quest_marker.visible = mode != Mode.INDOORS
 	if mode == Mode.INDOORS and _needed_now:
-		# Somebody the player needs: come back out.
-		_come_outside()
+		# Somebody the player needs: come back out, then the marker shows.
+		# Set IDLE first: _come_outside() refreshes the marker, which must not
+		# re-enter this branch while the mode is still INDOORS (infinite recursion).
 		mode = Mode.IDLE
 		_pause = 0.5
+		_come_outside()
+	_quest_marker.visible = mode != Mode.INDOORS
