@@ -24,7 +24,7 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T00:20:33
+run at: 2026-11-14T00:27:23
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -44,10 +44,10 @@ Zone 2 · Active Combat (Village + 3 Skeletons)
   static memory:    214.9 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    27  [OK]
-  total draw calls: 305  [WARN]
-  triangles (max):  77419  [OK]
-  objects:          305
+  3D draw calls:    43  [OK]
+  total draw calls: 321  [WARN]
+  triangles (max):  88399  [OK]
+  objects:          321
   static memory:    214.7 MB
   fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
@@ -69,14 +69,14 @@ Zone 6 · Hero Cottage Interior
   total draw calls: 324  [WARN]
   triangles (max):  12830  [OK]
   objects:          324
-  static memory:    215.4 MB
-  fps (min, this driver): 4.0
+  static memory:    215.3 MB
+  fps (min, this driver): 3.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    45  [OK]
   total draw calls: 349  [WARN]
   triangles (max):  74804  [OK]
   objects:          349
-  static memory:    216.0 MB
+  static memory:    215.9 MB
   fps (min, this driver): 1.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
@@ -89,11 +89,19 @@ UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
   => HUD:            258 draw calls
   => other UI nodes: 0 draw calls
   => non-UI (3D):    18 draw calls
+  HUD per panel (touch hidden, HUD total 258):
+  HUD vitals panel (StatsGlassPanel)    102 draw calls
+  HUD quest tracker                    not visible
+  HUD top-centre action dock             60 draw calls
+  HUD minimap                             4 draw calls
+  HUD clock + weather pill               25 draw calls
+  HUD city district pill                 37 draw calls
+  HUD notifications                       0 draw calls
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2094
-  MeshInstance3D:       634
+  nodes total:          2095
+  MeshInstance3D:       635
   MultiMeshInstance3D:  21 (batches) / 2801 instances
   GPUParticles3D:       2
   omni lights:          20
@@ -118,7 +126,9 @@ TOP TRIANGLE CONSUMERS (whole world)
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
 
-SHADOW / LOD: casters=37  shadow_off=597  with_visibility_range=594
+SHADOW / LOD: casters=37  shadow_off=598  with_visibility_range=594
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:604)

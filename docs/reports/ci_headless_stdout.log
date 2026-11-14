@@ -364,6 +364,10 @@ PASS  Phase 3: CameraRig configured with FOV=55 and spring_arm=4.0
 PASS  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
 PASS  Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial
 PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 45m max distance
+PASS  graphics: viewport MSAA and 3D scale match the active preset after the world is built
+PASS  graphics: LOW preset applies MSAA 2X, 0.82 render scale, no glow, no sun shadows
+PASS  graphics: HIGH preset applies MSAA 4X, native render scale, glow and sun shadows
+PASS  graphics: restoring the original preset restores glow and shadows
 PASS  Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built
 PASS  VFXManager particle system (FootstepDust, RainSplashes, HitSparks) active
 PASS  Player anti-clipping physics & CollisionLayers configured
@@ -372,7 +376,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.3)
+PASS  skeleton takes damage (46.0 -> 32.8)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -391,6 +395,8 @@ PASS  Stylized Castle Keep, 3D Wind Grass Meadow & Hillside Stone Arch built
 PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
+ERROR: Parameter "m" is null.
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
@@ -1770,8 +1776,6 @@ ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  save/load survives 10 rounds
 
-=== 211 passed, 0 failed ===
+=== 215 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 4 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)
