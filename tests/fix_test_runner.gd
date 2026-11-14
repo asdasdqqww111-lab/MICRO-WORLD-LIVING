@@ -61,6 +61,7 @@ func _run_all() -> void:
 	await _test_p1_characters()
 	await _test_p2_interiors()
 	await _test_p3_enemies()
+	await _test_p4_inventory()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -388,6 +389,110 @@ func _spawn_fresh_mob(parent: Node3D) -> Node:
 	parent.add_child(c)
 	c.global_position = parent.global_position + Vector3(0.0, 0.0, 5.0)
 	return c
+
+# --- Problem 4: inventory & equipment -------------------------------------------
+
+func _test_p4_inventory() -> void:
+	_section("Problem 4 - inventory: add, stack, equip, use, drop")
+	var inv := GameManager.inventory
+	var screen: InventoryScreen = ui.inventory
+
+	ui.toggle_screen("inventory")
+	await _frames(3)
+	_check(screen.is_visible_in_tree(), "inventory screen opens from the UI")
+
+	var grid: GridContainer = screen._grid
+	_check(grid.get_child_count() == Inventory.SLOT_COUNT, "bag shows %d slot buttons" % Inventory.SLOT_COUNT)
+	_check(screen._equipment_box.get_child_count() == Inventory.EQUIP_SLOTS.size(), "equipment row shows 5 slot buttons")
+
+	# deterministic state: empty bag, nothing equipped
+	inv.clear()
+	screen.refresh()
+	_check(inv.used_slots() == 0 and inv.equipped("weapon") == "", "inventory starts empty for the test")
+
+	# add + non-stackable slots
+	var left := inv.add_item("iron_sword", 1)
+	_check(left == 0 and inv.count_item("iron_sword") == 1, "iron_sword added to bag")
+	_check(inv.used_slots() == 1, "non-stackable item takes exactly one slot")
+	inv.add_item("iron_sword", 1)
+	_check(inv.count_item("iron_sword") == 2 and inv.used_slots() == 2, "second sword takes a second slot")
+
+	# stacking cap: max_stack 10 -> 12 potions = 10 + 2 in two slots
+	var pots_left := inv.add_item("health_potion", 12)
+	_check(pots_left == 0 and inv.count_item("health_potion") == 12, "12 potions all stored (stacked 10 + 2)")
+	_check(inv.used_slots() == 4, "stacked potions occupy two slots (10 + 2)")
+	screen.refresh()
+
+	# equip through the UI detail button
+	var atk_before := GameManager.attack_power()
+	_press_bag_slot_with(screen, ItemDB.get_item("iron_sword").icon_letter())
+	await _frames(2)
+	_check(_has_detail_button(screen, Localization.tr_key("equip")), "equip button appears in detail panel")
+	_press_button(screen, Localization.tr_key("equip"))
+	_check(inv.equipped("weapon") == "iron_sword", "equip button equips the sword into the weapon slot")
+	var atk_after := GameManager.attack_power()
+	_check(atk_after > atk_before, "equipping the sword raises attack power (%.1f -> %.1f)" % [atk_before, atk_after])
+	_check(inv.count_item("iron_sword") == 1, "equipped sword leaves the bag")
+
+	# unequip through the UI
+	_press_equipment_button(screen, "weapon")
+	await _frames(2)
+	_check(_has_detail_button(screen, Localization.tr_key("unequip")), "unequip button appears for the weapon slot")
+	_press_button(screen, Localization.tr_key("unequip"))
+	_check(inv.equipped("weapon") == "" and inv.count_item("iron_sword") == 2, "unequip returns the sword to the bag")
+
+	# use a consumable through the UI (wired to player.use_consumable)
+	player.health.take_damage(player.health.max_health - 20.0)
+	var pots_before := inv.count_item("health_potion")
+	_press_bag_slot_with(screen, ItemDB.get_item("health_potion").icon_letter())
+	await _frames(2)
+	_check(_has_detail_button(screen, Localization.tr_key("use")), "use button appears for consumables")
+	_press_button(screen, Localization.tr_key("use"))
+	_check(inv.count_item("health_potion") == pots_before - 1, "use button consumes the potion")
+	_check(player.health.current_health > 20.0, "potion heals the player (hp > 20 after use, was 20)")
+
+	# drop through the UI
+	var swords_before := inv.count_item("iron_sword")
+	_press_bag_slot_with(screen, ItemDB.get_item("iron_sword").icon_letter())
+	await _frames(2)
+	_check(_has_detail_button(screen, Localization.tr_key("drop")), "drop button appears for bag items")
+	_press_button(screen, Localization.tr_key("drop"))
+	_check(inv.count_item("iron_sword") == swords_before - 1, "drop button removes the item from the bag")
+
+
+func _press_bag_slot_with(screen: InventoryScreen, icon: String) -> void:
+	for child: Node in screen._grid.get_children():
+		if child is Button and child.text.begins_with(icon):
+			child.pressed.emit()
+			return
+
+func _press_equipment_button(screen: InventoryScreen, slot_name: String) -> void:
+	# equipment buttons are built in Inventory.EQUIP_SLOTS order
+	var index := Inventory.EQUIP_SLOTS.find(slot_name)
+	if index < 0:
+		return
+	var child: Node = screen._equipment_box.get_child(index)
+	if child is Button:
+		child.pressed.emit()
+
+func _has_detail_button(screen: InventoryScreen, label_text: String) -> bool:
+	return _find_button(screen, label_text) != null
+
+func _press_button(root: Node, label_text: String) -> void:
+	var b := _find_button(root, label_text)
+	if b != null:
+		b.pressed.emit()
+
+func _find_button(root: Node, label_text: String) -> Button:
+	for child: Node in root.get_children():
+		if child is Button:
+			if child.text == label_text:
+				return child
+			continue
+		var found := _find_button(child, label_text)
+		if found != null:
+			return found
+	return null
 
 # --- report -------------------------------------------------------------------
 
