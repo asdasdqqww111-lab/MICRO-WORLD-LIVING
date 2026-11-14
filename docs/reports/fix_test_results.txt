@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 114
+checks passed: 120
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -11,7 +11,7 @@ PASS  every villager turns to face the hero:
 PASS  every villager greets the hero out loud: 
 PASS  villagers are solid for the hero
 PASS  walking straight at a villager does not pass through them
-PASS  villagers go about their day (17 of 18 moved)
+PASS  villagers go about their day (15 of 18 moved)
 PASS  no villager is standing inside a building: 
 PASS  at night villagers walk home and go indoors (5 did)
 PASS  quest givers, guards and shopkeepers stay available at night
@@ -129,3 +129,11 @@ PASS  the NPC shows the ready-quest marker (? visible)
 PASS  turning in through the NPC succeeds
 PASS  turning in grants the quest gold reward
 PASS  the quest is marked completed
+
+== Problem 8 - physics: walls, trees, ground block the player
+PASS  player sits on the PLAYER collision layer
+PASS  player collides with the solid environment
+PASS  world builds solid colliders (98 found)
+PASS  walls block the player (4/4)
+PASS  tree trunks block the player (4/4)
+PASS  player lands on the terrain instead of falling through (y=0.00 ground=0.00)

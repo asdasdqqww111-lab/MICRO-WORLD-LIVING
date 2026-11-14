@@ -65,6 +65,7 @@ func _run_all() -> void:
 	await _test_p5_materials()
 	await _test_p6_finance()
 	await _test_p7_quests()
+	await _test_p8_physics()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -709,6 +710,108 @@ func _test_p7_quests() -> void:
 		_check(GameManager.gold > q_gold, "turning in grants the quest gold reward")
 		_check(GameManager.quest_log.state_of(qid) == QuestLog.STATE_COMPLETED, "the quest is marked completed")
 
+
+# --- Problem 8: physics & collision (walls, trees, ground) -----------------------
+
+func _test_p8_physics() -> void:
+	_section("Problem 8 - physics: walls, trees, ground block the player")
+	_check(int(player.collision_layer) == CollisionLayers.PLAYER, "player sits on the PLAYER collision layer")
+	_check((int(player.collision_mask) & CollisionLayers.ENVIRONMENT) != 0, "player collides with the solid environment")
+
+	var solids: Array = []
+	_collect_solids(world, solids)
+	_check(solids.size() >= 50, "world builds solid colliders (%d found)" % solids.size())
+
+	var boxes: Array = []
+	var cylinders: Array = []
+	for s: Node in solids:
+		var cs := _find_shape(s)
+		if cs == null:
+			continue
+		if cs.shape is BoxShape3D:
+			boxes.append(s)
+		elif cs.shape is CylinderShape3D:
+			cylinders.append(s)
+
+	var walls_blocked := 0
+	var wall_total := 0
+	for wall: StaticBody3D in boxes:
+		if wall_total >= 4:
+			break
+		if await _push_into_box(wall):
+			walls_blocked += 1
+		wall_total += 1
+	_check(walls_blocked == wall_total and wall_total > 0, "walls block the player (%d/%d)" % [walls_blocked, wall_total])
+
+	var trees_blocked := 0
+	var tree_total := 0
+	for tree: StaticBody3D in cylinders:
+		if tree_total >= 4:
+			break
+		if await _push_into_cylinder(tree):
+			trees_blocked += 1
+		tree_total += 1
+	_check(trees_blocked == tree_total and tree_total > 0, "tree trunks block the player (%d/%d)" % [trees_blocked, tree_total])
+
+	# ground: drop the player above terrain, it must land on the surface
+	var spawn_pos := Vector3(4.5, 0.0, -10.0)
+	if world.terrain != null:
+		spawn_pos.y = world.terrain.height_at(spawn_pos.x, spawn_pos.z)
+	player.global_position = Vector3(spawn_pos.x, spawn_pos.y + 6.0, spawn_pos.z)
+	player.velocity = Vector3.ZERO
+	await _physics(2)
+	for i in 120:
+		player.velocity = Vector3(0.0, -20.0, 0.0)
+		player.move_and_slide()
+		await _physics(1)
+	_check(player.global_position.y < spawn_pos.y + 2.0 and player.global_position.y > spawn_pos.y - 2.0,
+		"player lands on the terrain instead of falling through (y=%.2f ground=%.2f)" % [player.global_position.y, spawn_pos.y])
+
+
+func _push_into_box(wall: StaticBody3D) -> bool:
+	var cs := _find_shape(wall) as CollisionShape3D
+	var box := cs.shape as BoxShape3D
+	var half := box.size * 0.5
+	var face_x: float = wall.global_position.x + half.x
+	player.global_position = Vector3(face_x + 1.2, 1.0, wall.global_position.z)
+	player.velocity = Vector3.ZERO
+	await _physics(1)
+	for i in 20:
+		player.velocity = Vector3(-8.0, 0.0, 0.0)
+		player.move_and_slide()
+		await _physics(1)
+	return player.global_position.x > face_x - 0.05
+
+func _push_into_cylinder(tree: StaticBody3D) -> bool:
+	var cs := _find_shape(tree) as CollisionShape3D
+	var cyl := cs.shape as CylinderShape3D
+	var tx: float = tree.global_position.x
+	var tz: float = tree.global_position.z
+	player.global_position = Vector3(tx + cyl.radius + 1.2, 1.0, tz)
+	player.velocity = Vector3.ZERO
+	await _physics(1)
+	for i in 20:
+		var to_tree := Vector3(tx, 0.0, tz) - player.global_position
+		to_tree.y = 0.0
+		to_tree = to_tree.normalized() * 8.0
+		player.velocity = to_tree
+		player.move_and_slide()
+		await _physics(1)
+	return player.global_position.distance_to(Vector3(tx, 0.0, tz)) > cyl.radius - 0.05
+
+func _collect_solids(node: Node, out: Array) -> void:
+	if node is StaticBody3D and (int(node.get("collision_layer")) & 1) != 0:
+		var cs := _find_shape(node)
+		if cs != null and cs.shape != null:
+			out.append(node)
+	for child: Node in node.get_children():
+		_collect_solids(child, out)
+
+func _find_shape(body: Node) -> CollisionShape3D:
+	for child: Node in body.get_children():
+		if child is CollisionShape3D:
+			return child as CollisionShape3D
+	return null
 
 # --- report -------------------------------------------------------------------
 
