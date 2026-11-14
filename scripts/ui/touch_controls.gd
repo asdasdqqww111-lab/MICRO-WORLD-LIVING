@@ -4,20 +4,33 @@ extends Control
 ##   - Bottom-Left: Transparent Dual-Ring Joystick + Pill-shaped "ركض" (Sprint) Button
 ##   - Bottom-Right: Large Ornate Bronze/Gold "هجوم" Button (crossed swords),
 ##     curved arc of 8 bronze/gold RPG buttons (>= 46px clear gap), & 5 Quick-Slot squares.
+##
+## Input model (multi-touch correct): the joystick, the camera drag area and
+## every action button own the index of the finger that pressed them
+## (TouchPointer / TouchActionButton). Any combination of fingers therefore
+## works at the same time: move + attack, move + block + dodge, move + orbit.
+## Stock Buttons cannot do this because the engine emulates the mouse from a
+## single finger only.
 
 signal look_dragged(relative: Vector2)
 signal zoom_requested(factor: float)
 signal menu_action(action_name: String)
 
+## Consumables the quick-potion button can use (mirrors Player.try_quick_potion).
+const POTION_IDS: Array[String] = ["health_potion", "mana_elixir", "venison", "bread"]
+## Largest share of a screen edge the safe-area inset may claim.
+const MAX_SAFE_INSET_RATIO := 0.12
+
 var joystick: MobileVirtualJoystick
 var drag_area: CameraDragArea
-var sprint_button: Button
-var block_button: Button
-var attack_button: Button
+var sprint_button: TouchActionButton
+var block_button: TouchActionButton
+var attack_button: TouchActionButton
 var _sprint_label: Label
 var _attack_label: Label
 var _quick_slots: Array[PanelContainer] = []
 var _combat_specs: Array[Dictionary] = []
+var _action_buttons: Dictionary = {}
 var _built := false
 
 var _move: Vector2 = Vector2.ZERO
@@ -34,9 +47,11 @@ func _ready() -> void:
 	_refresh_labels()
 	visible = SettingsManager.show_touch_controls
 	EventBus.graphics_settings_changed.connect(func() -> void:
-		visible = SettingsManager.show_touch_controls)
+		visible = SettingsManager.show_touch_controls
+		_layout_responsive())
 	EventBus.language_changed.connect(func(_l: String) -> void:
 		_refresh_labels())
+	_connect_context_feedback()
 
 func _refresh_labels() -> void:
 	var ar := Localization.is_arabic()
@@ -81,15 +96,16 @@ func _build() -> void:
 	joystick.offset_right = 198
 	joystick.offset_bottom = -20
 	add_child(joystick)
-	# Compatibility guard for stale imported class metadata from older builds.
-	if joystick.has_signal("moved"):
-		joystick.moved.connect(func(vector: Vector2) -> void: _move = vector)
+	joystick.moved.connect(func(vector: Vector2) -> void: _move = vector)
 
 	# Pill-shaped "ركض" (Sprint) Button with circular running badge on left
-	sprint_button = Button.new()
+	sprint_button = TouchActionButton.new()
 	sprint_button.name = "Btn_sprint"
 	sprint_button.text = ""
 	sprint_button.focus_mode = Control.FOCUS_NONE
+	sprint_button.press_mode = TouchActionButton.PressMode.TOGGLE
+	sprint_button.circular_hit = false
+	sprint_button.hit_padding = 10.0
 	sprint_button.anchor_left = 0.0
 	sprint_button.anchor_top = 1.0
 	sprint_button.anchor_right = 0.0
@@ -100,9 +116,10 @@ func _build() -> void:
 	sprint_button.offset_bottom = -24
 	var pill_sb := _make_bronze_circle_style(20, Color(0.10, 0.12, 0.12, 0.76), Color(0.68, 0.62, 0.44, 0.72), 1)
 	var pill_pr := _make_bronze_circle_style(20, Color(0.24, 0.22, 0.14, 0.88), Color(0.96, 0.82, 0.42, 0.95), 2)
-	for st: String in ["normal", "hover", "focus"]:
+	for st: String in ["normal", "hover", "focus", "disabled"]:
 		sprint_button.add_theme_stylebox_override(st, pill_sb)
-	sprint_button.add_theme_stylebox_override("pressed", pill_pr)
+	for st: String in ["pressed", "hover_pressed"]:
+		sprint_button.add_theme_stylebox_override(st, pill_pr)
 
 	var sp_hbox := HBoxContainer.new()
 	sp_hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -128,9 +145,7 @@ func _build() -> void:
 	_sprint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sp_hbox.add_child(_sprint_label)
 
-	sprint_button.button_down.connect(func() -> void:
-		_sprint = not _sprint
-		sprint_button.modulate = Color(1.0, 0.95, 0.72, 1.0) if _sprint else Color(1, 1, 1, 0.92))
+	sprint_button.activated.connect(func() -> void: _sprint = sprint_button.toggled_on)
 	add_child(sprint_button)
 
 	# 5 Quick-Slot Squares along bottom-right edge (matching reference image!)
@@ -170,14 +185,14 @@ func _build() -> void:
 	_place_rpg_button("quick_potion", "potion", 418.0, 40.0, 54.0, false)
 
 	block_button = _place_rpg_button("block", "swords", 56.0, 311.0, 54.0, false)
-	block_button.button_down.connect(func() -> void: _blocking = true)
-	block_button.button_up.connect(func() -> void: _blocking = false)
+	block_button.press_mode = TouchActionButton.PressMode.HOLD
+	block_button.held_changed.connect(func(held: bool) -> void: _blocking = held)
 	_built = true
 	_layout_responsive()
 
 func _place_rpg_button(action: String, icon_kind: String, right_margin: float, bottom_margin: float,
-		btn_size: float, is_main_attack: bool) -> Button:
-	var b := Button.new()
+		btn_size: float, is_main_attack: bool) -> TouchActionButton:
+	var b := TouchActionButton.new()
 	b.name = "Btn_" + action
 	b.text = ""
 	b.focus_mode = Control.FOCUS_NONE
@@ -193,9 +208,11 @@ func _place_rpg_button(action: String, icon_kind: String, right_margin: float, b
 	var tex_key := "btn_attack" if is_main_attack else "btn_circle"
 	var sb_n := RpgIcon.shared_stylebox(tex_key)
 	var sb_p := RpgIcon.shared_stylebox(tex_key, 0, Color(1.22, 1.18, 1.05, 1.0))
-	for st: String in ["normal", "hover", "focus"]:
+	for st: String in ["normal", "hover", "focus", "disabled"]:
 		b.add_theme_stylebox_override(st, sb_n)
-	b.add_theme_stylebox_override("pressed", sb_p)
+	for st: String in ["pressed", "hover_pressed"]:
+		b.add_theme_stylebox_override(st, sb_p)
+	b.haptic_ms = 18 if is_main_attack else 12
 
 	if is_main_attack:
 		var vbox := VBoxContainer.new()
@@ -218,44 +235,133 @@ func _place_rpg_button(action: String, icon_kind: String, right_margin: float, b
 		center.add_child(RpgIcon.new().setup(icon_kind, Vector2(btn_size * 0.54, btn_size * 0.54)))
 		b.add_child(center)
 
-	b.button_down.connect(func() -> void:
-		b.modulate = Color(1.20, 1.16, 1.04, 1.0)
-		if action != "block":
-			_pressed[action] = true)
-	b.button_up.connect(func() -> void:
-		b.modulate = Color(1, 1, 1, 1.0))
+	# TAP buttons queue one action per touch-down; Player consumes the queue on
+	# its next physics tick. Block is switched to HOLD by the caller, and HOLD
+	# buttons never emit `activated`, so they do not enter the queue.
+	b.activated.connect(func() -> void: _pressed[action] = true)
 	add_child(b)
+	_action_buttons[action] = b
 	_combat_specs.append({"button": b, "right": right_margin, "bottom": bottom_margin, "size": btn_size})
 	return b
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_RESIZED and _built:
-		_layout_responsive()
+	match what:
+		NOTIFICATION_RESIZED:
+			if _built:
+				_layout_responsive()
+		NOTIFICATION_VISIBILITY_CHANGED:
+			if _built and not is_visible_in_tree():
+				release_all()
+		NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+			# A finger that is down while the app goes to the background never
+			# reports its release, so drop every held input explicitly.
+			if _built:
+				release_all()
+
+## Display cut-out / rounded-corner insets as (left, top, right, bottom) in
+## this control's coordinate space. Zero on desktop and in headless runs.
+func _safe_area_insets() -> Vector4:
+	if not SettingsManager.is_mobile() or size.x <= 1.0 or size.y <= 1.0:
+		return Vector4.ZERO
+	var window_size := Vector2(DisplayServer.window_get_size())
+	if window_size.x <= 1.0 or window_size.y <= 1.0:
+		return Vector4.ZERO
+	var safe := DisplayServer.get_display_safe_area()
+	if safe.size.x <= 0 or safe.size.y <= 0:
+		return Vector4.ZERO
+	var to_local := Vector2(size.x / window_size.x, size.y / window_size.y)
+	var max_x := size.x * MAX_SAFE_INSET_RATIO
+	var max_y := size.y * MAX_SAFE_INSET_RATIO
+	return Vector4(
+		clampf(float(safe.position.x) * to_local.x, 0.0, max_x),
+		clampf(float(safe.position.y) * to_local.y, 0.0, max_y),
+		clampf((window_size.x - float(safe.end.x)) * to_local.x, 0.0, max_x),
+		clampf((window_size.y - float(safe.end.y)) * to_local.y, 0.0, max_y))
 
 func _layout_responsive() -> void:
 	if size.x <= 1.0 or size.y <= 1.0:
 		return
+	var insets := _safe_area_insets()
 	var fit := clampf(minf(size.x / 900.0, size.y / 600.0), 0.78, 1.0)
 	fit *= clampf(SettingsManager.touch_scale, 0.85, 1.18)
 	for spec: Dictionary in _combat_specs:
 		var b := spec["button"] as Button
 		var s := float(spec["size"]) * fit
-		var r := float(spec["right"]) * fit + maxf(10.0, size.x * 0.014)
-		var bot := float(spec["bottom"]) * fit + maxf(10.0, size.y * 0.014)
+		var r := float(spec["right"]) * fit + maxf(10.0, size.x * 0.014) + insets.z
+		var bot := float(spec["bottom"]) * fit + maxf(10.0, size.y * 0.014) + insets.w
 		b.offset_left = -(r + s)
 		b.offset_top = -(bot + s)
 		b.offset_right = -r
 		b.offset_bottom = -bot
 	if joystick != null:
 		var joy_size := clampf(minf(size.x * 0.24, size.y * 0.30), 172.0, 218.0)
-		joystick.offset_left = maxf(12.0, size.x * 0.025)
-		joystick.offset_top = -(joy_size + maxf(16.0, size.y * 0.035))
+		var joy_bottom := maxf(16.0, size.y * 0.035) + insets.w
+		joystick.offset_left = maxf(12.0, size.x * 0.025) + insets.x
+		joystick.offset_top = -(joy_size + joy_bottom)
 		joystick.offset_right = joystick.offset_left + joy_size
-		joystick.offset_bottom = -maxf(16.0, size.y * 0.035)
+		joystick.offset_bottom = -joy_bottom
+		if sprint_button != null:
+			# Keep the sprint pill clear of the stick on every screen size.
+			var pill_w := 108.0
+			var pill_h := 40.0
+			sprint_button.offset_left = joystick.offset_right + 10.0
+			sprint_button.offset_right = sprint_button.offset_left + pill_w
+			sprint_button.offset_bottom = -(joy_bottom + 4.0)
+			sprint_button.offset_top = sprint_button.offset_bottom - pill_h
 
-func _process(_delta: float) -> void:
-	if joystick != null and not joystick.has_signal("moved"):
-		_move = joystick.vector()
+# --- Contextual feedback -------------------------------------------------------
+
+func _connect_context_feedback() -> void:
+	EventBus.interact_prompt_changed.connect(_on_interact_prompt_changed)
+	EventBus.target_locked_changed.connect(_on_target_locked_changed)
+	EventBus.player_stamina_changed.connect(_on_stamina_changed)
+	EventBus.player_mana_changed.connect(_on_mana_changed)
+	EventBus.inventory_changed.connect(_refresh_potion_state)
+	_refresh_potion_state()
+
+## The button registered for `action`, or null (e.g. "attack", "block").
+func action_button(action: String) -> TouchActionButton:
+	return _action_buttons.get(action) as TouchActionButton
+
+func _on_interact_prompt_changed(text: String) -> void:
+	var b := action_button("interact")
+	if b != null:
+		b.set_highlighted(not text.is_empty())
+
+func _on_target_locked_changed(target: Node) -> void:
+	var b := action_button("lock_target")
+	if b != null:
+		b.set_highlighted(target != null)
+
+func _on_stamina_changed(current: float, _maximum: float) -> void:
+	_set_dimmed("attack", current < Player.ATTACK_COST)
+	_set_dimmed("attack_heavy", current < Player.HEAVY_COST)
+	var dodge_cost := Player.DODGE_COST
+	if GameManager.skills != null:
+		dodge_cost *= GameManager.skills.dodge_cost_multiplier()
+	_set_dimmed("dodge", current < dodge_cost)
+
+func _on_mana_changed(current: float, _maximum: float) -> void:
+	var spell_cost := Player.BASE_SPELL_MANA
+	if GameManager.skills != null:
+		spell_cost *= GameManager.skills.mana_cost_multiplier()
+	_set_dimmed("cast_spell", current < spell_cost)
+
+func _refresh_potion_state() -> void:
+	var has_any := false
+	if GameManager.inventory != null:
+		for item_id: String in POTION_IDS:
+			if GameManager.inventory.count_item(item_id) > 0:
+				has_any = true
+				break
+	_set_dimmed("quick_potion", not has_any)
+
+func _set_dimmed(action: String, value: bool) -> void:
+	var b := action_button(action)
+	if b != null:
+		b.set_dimmed(value)
+
+# --- Input API consumed by PlayerInput ----------------------------------------
 
 func get_move_vector() -> Vector2:
 	return _move
@@ -277,10 +383,23 @@ func consume_pressed(action: String) -> bool:
 func set_controls_visible(value: bool) -> void:
 	visible = value
 
-func reset_state() -> void:
-	_move = Vector2.ZERO
-	_pressed.clear()
-	_sprint = false
-	_blocking = false
+## Releases every finger-owned control without touching latched state such as
+## the sprint toggle. Used when the controls are hidden or the app loses focus.
+func release_all() -> void:
+	if joystick != null:
+		joystick.release()
+	if drag_area != null:
+		drag_area.release()
+	for action: String in _action_buttons:
+		(_action_buttons[action] as TouchActionButton).force_release()
 	if sprint_button != null:
-		sprint_button.modulate = Color(1, 1, 1, 0.92)
+		sprint_button.force_release()
+	_move = Vector2.ZERO
+	_blocking = false
+	_pressed.clear()
+
+func reset_state() -> void:
+	release_all()
+	_sprint = false
+	if sprint_button != null:
+		sprint_button.set_toggled(false)

@@ -467,6 +467,7 @@ func _test_game_scene() -> void:
 	_check(world != null, "world root created")
 	_check(player != null, "player created")
 	_check(ui != null, "ui root created")
+	_check(game.get("tower") != null, "Celestial Tower manager created in the game scene")
 	_check(ui.hud != null and ui.touch != null and ui.skills_screen != null and ui.guild_screen != null,
 		"HUD, TouchControls, SkillTreeScreen, and GuildScreen built")
 	_check(world.landmarks.size() >= 10, "Eldoria landmarks built (%d)" % world.landmarks.size())
@@ -541,6 +542,8 @@ func _test_game_scene() -> void:
 			min_btn_gap = minf(min_btn_gap, c1.distance_to(c2) - (r1 + r2))
 	_check(right_btns.size() == 9 and min_btn_gap >= 44.0,
 		"Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=%.1fpx)" % min_btn_gap)
+
+	_test_touch_input(ui)
 
 	# Verify Polished Stylized/Chibi PBR Mobile Overhaul (Phases 1-5)
 	_check(String(ProjectSettings.get_setting("rendering/renderer/rendering_method")) == "mobile",
@@ -728,6 +731,133 @@ func _test_game_scene() -> void:
 	SaveManager.delete_save(SAVE_SLOT)
 
 # --- report ------------------------------------------------------------------
+
+func _touch_event(index: int, pos: Vector2, is_pressed: bool) -> InputEventScreenTouch:
+	var ev := InputEventScreenTouch.new()
+	ev.index = index
+	ev.position = pos
+	ev.pressed = is_pressed
+	return ev
+
+func _drag_event(index: int, pos: Vector2, relative: Vector2) -> InputEventScreenDrag:
+	var ev := InputEventScreenDrag.new()
+	ev.index = index
+	ev.position = pos
+	ev.relative = relative
+	return ev
+
+## Multi-touch contract of the on-screen controls: every control is owned by
+## the finger index that pressed it, so simultaneous fingers never interfere.
+func _test_touch_input(ui: UIRoot) -> void:
+	var touch := ui.touch
+	var was_visible := touch.visible
+	touch.visible = true
+	touch.reset_state()
+
+	# Rescaled radial dead zone.
+	_check(TouchPointer.apply_radial_dead_zone(Vector2(0.10, 0.0), 0.15) == Vector2.ZERO,
+		"touch: stick deflection inside the dead zone outputs zero")
+	var mid := TouchPointer.apply_radial_dead_zone(Vector2(0.575, 0.0), 0.15)
+	_check(absf(mid.x - 0.5) < 0.001 and absf(mid.y) < 0.001,
+		"touch: dead zone is rescaled (0.575 raw -> %.3f)" % mid.x)
+	_check(absf(TouchPointer.apply_radial_dead_zone(Vector2(0.0, -1.0), 0.15).y + 1.0) < 0.001,
+		"touch: full deflection outputs magnitude 1.0")
+
+	var joy := touch.joystick
+	var attack := touch.action_button("attack")
+	var block := touch.action_button("block")
+	var interact := touch.action_button("interact")
+	_check(joy != null and attack != null and block != null and interact != null and touch.sprint_button != null,
+		"touch: joystick and TouchActionButton controls are registered")
+	if joy == null or attack == null or block == null or interact == null or touch.sprint_button == null:
+		touch.visible = was_visible
+		return
+
+	# Finger 0 owns the joystick.
+	var joy_center := joy.size * 0.5
+	joy._gui_input(_touch_event(0, joy_center, true))
+	joy._gui_input(_drag_event(0, joy_center + Vector2(joy.radius, 0.0), Vector2(joy.radius, 0.0)))
+	_check(joy.active_pointer() == 0 and touch.get_move_vector().x > 0.95,
+		"touch: finger 0 drives the joystick (x=%.2f)" % touch.get_move_vector().x)
+
+	# Finger 1 attacks while finger 0 keeps moving.
+	attack._gui_input(_touch_event(1, attack.size * 0.5, true))
+	_check(attack.is_held() and attack.active_pointer() == 1,
+		"touch: attack button is pressed by a second finger while the joystick is held")
+	_check(touch.consume_pressed("attack"), "touch: attack press is queued for the player")
+	_check(not touch.consume_pressed("attack"), "touch: one touch-down queues exactly one attack")
+	attack._gui_input(_touch_event(1, attack.size * 0.5, false))
+	_check(not attack.is_held() and joy.active_pointer() == 0 and touch.get_move_vector().x > 0.95,
+		"touch: releasing the attack finger does not release the joystick")
+
+	# A foreign finger must not steal or release the joystick.
+	joy._gui_input(_touch_event(5, joy_center, true))
+	joy._gui_input(_drag_event(5, joy_center - Vector2(joy.radius, 0.0), Vector2(-joy.radius, 0.0)))
+	joy._gui_input(_touch_event(5, joy_center, false))
+	_check(joy.active_pointer() == 0 and touch.get_move_vector().x > 0.95,
+		"touch: a foreign finger cannot steal or release the joystick")
+
+	# Block is hold-to-block and never enters the tap queue.
+	block._gui_input(_touch_event(2, block.size * 0.5, true))
+	_check(touch.is_blocking() and not touch.consume_pressed("block"),
+		"touch: block is held (not queued) while its finger is down")
+	block._gui_input(_touch_event(2, block.size * 0.5, false))
+	_check(not touch.is_blocking(), "touch: block ends when its finger lifts")
+
+	# Sprint is a latched toggle.
+	var sprint := touch.sprint_button
+	sprint._gui_input(_touch_event(3, sprint.size * 0.5, true))
+	sprint._gui_input(_touch_event(3, sprint.size * 0.5, false))
+	var sprint_on := touch.is_sprinting()
+	sprint._gui_input(_touch_event(3, sprint.size * 0.5, true))
+	sprint._gui_input(_touch_event(3, sprint.size * 0.5, false))
+	_check(sprint_on and not touch.is_sprinting(), "touch: sprint toggles on and off per tap")
+
+	# Camera area: one finger orbits, two fingers pinch.
+	var look_total: Array[Vector2] = [Vector2.ZERO]
+	var zoom_factors: Array[float] = []
+	var on_look := func(relative: Vector2) -> void: look_total[0] += relative
+	var on_zoom := func(factor: float) -> void: zoom_factors.append(factor)
+	touch.look_dragged.connect(on_look)
+	touch.zoom_requested.connect(on_zoom)
+	var area := touch.drag_area
+	area._gui_input(_touch_event(6, Vector2(200.0, 100.0), true))
+	area._gui_input(_drag_event(6, Vector2(240.0, 100.0), Vector2(40.0, 0.0)))
+	_check(absf(look_total[0].x - 40.0) < 0.01 and zoom_factors.is_empty(),
+		"touch: one finger on the camera area orbits (dx=%.1f)" % look_total[0].x)
+	area._gui_input(_touch_event(7, Vector2(340.0, 100.0), true))
+	area._gui_input(_drag_event(7, Vector2(440.0, 100.0), Vector2(100.0, 0.0)))
+	var spread: float = zoom_factors[0] if not zoom_factors.is_empty() else 0.0
+	_check(absf(spread - 2.0) < 0.01 and absf(look_total[0].x - 40.0) < 0.01,
+		"touch: two fingers spreading pinch-zoom without orbiting (factor=%.2f)" % spread)
+	area._gui_input(_touch_event(7, Vector2(440.0, 100.0), false))
+	area._gui_input(_touch_event(6, Vector2(240.0, 100.0), false))
+	_check(area.pointer_count() == 0 and joy.active_pointer() == 0,
+		"touch: camera fingers release independently of the joystick")
+	touch.look_dragged.disconnect(on_look)
+	touch.zoom_requested.disconnect(on_zoom)
+
+	# Contextual feedback.
+	EventBus.interact_prompt_changed.emit("probe")
+	var lit := interact.is_highlighted()
+	EventBus.interact_prompt_changed.emit("")
+	_check(lit and not interact.is_highlighted(), "touch: interact button highlights while a prompt is shown")
+	EventBus.player_stamina_changed.emit(0.0, 100.0)
+	var dim := attack.is_dimmed()
+	EventBus.player_stamina_changed.emit(100.0, 100.0)
+	_check(dim and not attack.is_dimmed(), "touch: attack button dims when stamina is insufficient")
+
+	# Hiding the controls (menus, pause) must drop every held input.
+	block._gui_input(_touch_event(2, block.size * 0.5, true))
+	touch.visible = false
+	_check(touch.get_move_vector() == Vector2.ZERO and not touch.is_blocking()
+			and joy.active_pointer() == TouchPointer.NONE and not block.is_held(),
+		"touch: hiding the controls releases the joystick and held buttons")
+	touch.visible = true
+	_check("haptics_enabled" in SettingsManager, "settings expose the haptics toggle")
+
+	touch.reset_state()
+	touch.visible = was_visible
 
 func _report() -> void:
 	_finished = true

@@ -15,6 +15,8 @@ var show_performance_overlay: bool = false
 var developer_mode: bool = false
 var show_touch_controls: bool = true
 var touch_scale: float = 1.0
+## Short vibration on touch-button presses (Android only; needs VIBRATE).
+var haptics_enabled: bool = true
 var autosave_enabled: bool = true
 var language: String = "ar"
 
@@ -39,6 +41,7 @@ func load_settings() -> void:
 	show_performance_overlay = bool(cfg.get_value("debug", "show_performance", false)) and developer_mode
 	show_touch_controls = bool(cfg.get_value("input", "show_touch_controls", true))
 	touch_scale = clampf(float(cfg.get_value("input", "touch_scale", 1.0)), 0.8, 1.3)
+	haptics_enabled = bool(cfg.get_value("input", "haptics_enabled", true))
 	autosave_enabled = bool(cfg.get_value("game", "autosave", true))
 	language = String(cfg.get_value("game", "language", "ar"))
 	if language != "en" and language != "ar":
@@ -56,6 +59,7 @@ func save_settings() -> void:
 	cfg.set_value("debug", "show_performance", show_performance_overlay)
 	cfg.set_value("input", "show_touch_controls", show_touch_controls)
 	cfg.set_value("input", "touch_scale", touch_scale)
+	cfg.set_value("input", "haptics_enabled", haptics_enabled)
 	cfg.set_value("game", "autosave", autosave_enabled)
 	cfg.set_value("game", "language", language)
 	cfg.save(SETTINGS_PATH)
