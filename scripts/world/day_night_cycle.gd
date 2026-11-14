@@ -9,6 +9,9 @@ extends Node
 const TIME_SCALE := 60.0
 const SUNRISE_HOUR := 6.0
 const SUNSET_HOUR := 19.5
+# Lighting changes slowly (one game minute per real second); 10 updates/s
+# avoids repeatedly rebuilding light/environment state every rendered frame.
+const ATMOSPHERE_UPDATE_INTERVAL := 0.25
 
 var sun: DirectionalLight3D
 var moon: DirectionalLight3D
@@ -23,6 +26,7 @@ var _last_hour: int = -1
 var _weather_darkness: float = 0.0
 var _time_scale_multiplier: float = 1.0
 var _lanterns_lit: bool = false
+var _atmosphere_accum: float = 0.0
 
 func setup(sun_light: DirectionalLight3D, env: Environment, moon_light: DirectionalLight3D = null, cloud_layer: CloudLayer = null) -> void:
 	sun = sun_light
@@ -48,7 +52,10 @@ func _process(delta: float) -> void:
 			for node: Node in get_tree().get_nodes_in_group("resource_node"):
 				if node.has_method("refresh_state"):
 					node.call("refresh_state")
-	apply_now()
+	_atmosphere_accum += delta
+	if _atmosphere_accum >= ATMOSPHERE_UPDATE_INTERVAL:
+		_atmosphere_accum = fmod(_atmosphere_accum, ATMOSPHERE_UPDATE_INTERVAL)
+		apply_now()
 	var h := GameManager.world.hour()
 	var minute := GameManager.world.minute()
 	if h != _last_hour:
@@ -100,7 +107,12 @@ func apply_now() -> void:
 			top = top.lerp(rain_grey, _weather_darkness * 0.68)
 			horizon = horizon.lerp(rain_grey, _weather_darkness * 0.68)
 		if panorama_sky_material != null:
-			panorama_sky_material.energy_multiplier = lerpf(0.16, 0.96, daylight) * (1.0 - late_dusk * 0.14) * weather_factor
+			# Changing the sky material forces the radiance cubemap to be
+			# re-rendered, so the brightness moves in 2 % steps: a few dozen
+			# updates per in-game day instead of ten every second.
+			var sky_energy := snappedf(lerpf(0.16, 0.96, daylight) * (1.0 - late_dusk * 0.14) * weather_factor, 0.02)
+			if not is_equal_approx(sky_energy, panorama_sky_material.energy_multiplier):
+				panorama_sky_material.energy_multiplier = sky_energy
 		elif sky_shader_material != null:
 			sky_shader_material.set_shader_parameter("sky_top", Vector3(top.r, top.g, top.b))
 			sky_shader_material.set_shader_parameter("sky_horizon", Vector3(horizon.r, horizon.g, horizon.b))
@@ -129,7 +141,10 @@ func apply_now() -> void:
 				(lnode as Light3D).visible = want_lanterns
 
 func set_weather_darkness(value: float) -> void:
-	_weather_darkness = clampf(value, 0.0, 1.0)
+	var darkness := clampf(value, 0.0, 1.0)
+	if is_equal_approx(_weather_darkness, darkness):
+		return
+	_weather_darkness = darkness
 	apply_now()
 
 func sync_from_state() -> void:

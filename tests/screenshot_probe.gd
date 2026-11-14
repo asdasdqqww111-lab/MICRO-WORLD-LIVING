@@ -29,7 +29,7 @@ const WORLD_SHOTS := [
 	{"name": "05_forest_exploration", "zone": "village", "time": 10.0,
 		"pos": Vector3(-52.0, 1.5, -12.0), "yaw": 125.0, "pitch": -14.0, "dist": 10.5, "hud": false},
 	{"name": "06_river_lake_bridge", "zone": "village", "time": 14.5,
-		"pos": Vector3(38.0, 1.2, 4.0), "yaw": -115.0, "pitch": -16.0, "dist": 10.5, "hud": false},
+		"pos": Vector3(57.0, 1.2, 6.5), "yaw": 60.0, "pitch": -14.0, "dist": 11.0, "hud": false},
 	{"name": "07_mountains_sunset", "zone": "village", "time": 17.7,
 		"pos": Vector3(-2.0, 1.2, 46.0), "yaw": 0.0, "pitch": -12.0, "dist": 16.0, "hud": false},
 	{"name": "12_sunken_crypt_dungeon", "zone": "dungeon", "time": 12.0,
@@ -103,9 +103,9 @@ func _run() -> void:
 	GameManager.world.time_of_day = 10.2 * 3600.0
 	if _world.day_night != null:
 		_world.day_night.sync_from_state()
-	_player.teleport(Vector3(4.0, 0.6, 8.0), "village")
-	var combat_mob := _world.spawn_creature("forest_goblin", "shot_goblin", Vector3(3.2, 0.6, 4.2))
-	var combat_skel := _world.spawn_creature("skeleton_forest", "shot_skel", Vector3(5.6, 0.6, 4.8))
+	_player.teleport(Vector3(0.6, 0.6, 9.4), "village")
+	var combat_mob := _world.spawn_creature("forest_goblin", "shot_goblin", Vector3(-0.8, 0.6, 6.0))
+	var combat_skel := _world.spawn_creature("skeleton_forest", "shot_skel", Vector3(1.6, 0.6, 6.4))
 	if combat_mob != null:
 		combat_mob.take_hit(14.0, _player, true)
 	GameManager.start_quest("main_guild_call")
@@ -122,6 +122,9 @@ func _run() -> void:
 		combat_mob.queue_free()
 	if combat_skel != null and is_instance_valid(combat_skel):
 		combat_skel.queue_free()
+
+	# 14. Top-down plan of the walled town (free orthographic camera).
+	await _capture_city_overview()
 
 	# Populate rich RPG state for UI inspection screenshots
 	GameManager.gain_gold(340)
@@ -168,7 +171,7 @@ func _run() -> void:
 	await _save("13_world_map_cartography")
 
 	_ui.close_current_screen()
-	_note("all 13 screenshots captured successfully")
+	_note("all 14 screenshots captured successfully")
 	_finished = true
 	get_tree().quit(0)
 
@@ -196,6 +199,56 @@ func _capture_world_shot(shot: Dictionary) -> void:
 	await _save(String(shot["name"]))
 	if _ui != null:
 		_ui.visible = true
+
+## North is up, east is right: the same orientation as the world map, so the
+## two can be compared directly.
+func _capture_city_overview() -> void:
+	GameManager.world.time_of_day = 12.5 * 3600.0
+	if _world.day_night != null:
+		_world.day_night.sync_from_state()
+	_player.teleport(Vector3(0.0, 0.6, 14.0), "village")
+	var cam := Camera3D.new()
+	cam.name = "CityOverviewCamera"
+	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	cam.size = 86.0
+	cam.near = 1.0
+	cam.far = 220.0
+	_world.add_child(cam)
+	cam.global_position = Vector3(0.0, 64.0, 0.0)
+	cam.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	var previous := get_viewport().get_camera_3d()
+	cam.make_current()
+	var env: Environment = _world.environment
+	var fog_was := env.fog_enabled if env != null else false
+	if env != null:
+		env.fog_enabled = false
+	if _ui != null:
+		_ui.visible = false
+	# Distance culling is tuned for the third-person camera; from 64 m up it
+	# would hide every house, so lift it for this one capture.
+	var ranges: Array = []
+	var stack: Array[Node] = [_world]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		for child: Node in node.get_children():
+			stack.append(child)
+		var gi := node as GeometryInstance3D
+		if gi != null and gi.visibility_range_end > 0.0:
+			ranges.append([gi, gi.visibility_range_end])
+			gi.visibility_range_end = 0.0
+	await _frames(6)
+	await _save("14_city_overview")
+	for entry: Array in ranges:
+		if is_instance_valid(entry[0]):
+			(entry[0] as GeometryInstance3D).visibility_range_end = float(entry[1])
+	if env != null:
+		env.fog_enabled = fog_was
+	if previous != null and is_instance_valid(previous):
+		previous.make_current()
+	cam.queue_free()
+	if _ui != null:
+		_ui.visible = true
+	await _frames(2)
 
 func _set_cam(yaw_deg: float, pitch_deg: float, dist: float) -> void:
 	var rig := _player.camera_rig

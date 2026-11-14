@@ -165,7 +165,26 @@ func _run() -> void:
 
 	tm.ascend(fp)
 	_check("Ascending after defeat loads floor 2", tm.active_floor() == 2)
-	_check("Only ONE floor loaded at a time (single root child)", tm.floor_container.get_child_count() == 1)
+	# floor_container owns the floor geometry root ("Floor<N>") plus that floor's
+	# portals and creatures as siblings (the portal checks above rely on this),
+	# so "one floor at a time" means: exactly one geometry root, the new one,
+	# and nothing left over from the previous floor.
+	var floor_roots := 0
+	var stale_nodes := 0
+	var exit_portals := 0
+	for child: Node in tm.floor_container.get_children():
+		var child_name := String(child.name)
+		if child_name.begins_with("Floor"):
+			floor_roots += 1
+		if child_name == "Floor1" or child_name.begins_with("Creature_tower_1_"):
+			stale_nodes += 1
+		if child_name.begins_with("TowerExitPortal"):
+			exit_portals += 1
+	_check("Only ONE floor loaded at a time (single floor root, nothing left from floor 1)",
+		floor_roots == 1 and stale_nodes == 0 and exit_portals == 1
+			and tm.floor_container.get_node_or_null("Floor2") != null,
+		"floor_roots=%d stale=%d exit_portals=%d children=%d" % [
+			floor_roots, stale_nodes, exit_portals, tm.floor_container.get_child_count()])
 
 	tm._load_floor(100, fp)
 	_check("Floor 100 loads", tm.active_floor() == 100)

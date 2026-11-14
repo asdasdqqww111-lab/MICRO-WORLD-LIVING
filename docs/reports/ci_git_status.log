@@ -1,0 +1,300 @@
+ M assets/models/characters/Skeleton_Mage.glb.import
+ M assets/models/characters/Skeleton_Minion.glb.import
+ M assets/models/characters/Skeleton_Warrior.glb.import
+ M assets/models/dungeon/candle_lit.glb.import
+ M assets/models/dungeon/chest.glb.import
+ M assets/models/dungeon/floor_tile_big_spikes.glb.import
+ M assets/models/dungeon/floor_tile_large.glb.import
+ M assets/models/dungeon/pillar.glb.import
+ M assets/models/dungeon/stairs.glb.import
+ M assets/models/dungeon/torch_lit.glb.import
+ M assets/models/dungeon/wall.glb.import
+ M assets/models/dungeon/wall_doorway.glb.import
+ M assets/models/furniture/bed_single_A.gltf.import
+ M assets/models/furniture/book_set.gltf.import
+ M assets/models/furniture/cabinet_small.gltf.import
+ M assets/models/furniture/chair_A_wood.gltf.import
+ M assets/models/furniture/chair_stool_wood.gltf.import
+ M assets/models/furniture/lamp_table.gltf.import
+ M assets/models/furniture/rug_rectangle_A.gltf.import
+ M assets/models/furniture/shelf_A_small.gltf.import
+ M assets/models/furniture/table_small.gltf.import
+ M assets/models/hexagon/barrel.gltf.import
+ M assets/models/hexagon/building_home_A_green.gltf.import
+ M assets/models/hexagon/building_lumbermill_green.gltf.import
+ M assets/models/hexagon/building_tower_A_green.gltf.import
+ M assets/models/hexagon/building_well_green.gltf.import
+ M assets/models/hexagon/crate_A_big.gltf.import
+ M assets/models/hexagon/crate_A_small.gltf.import
+ M assets/models/hexagon/sack.gltf.import
+ M assets/models/hexagon/target.gltf.import
+ M assets/models/hexagon/tent.gltf.import
+ M assets/models/hexagon/trees_A_medium.gltf.import
+ M assets/models/hexagon/wall_straight.gltf.import
+ M assets/models/hexagon/weaponrack.gltf.import
+ M assets/models/hexagon/wheelbarrow.gltf.import
+?? assets/characters/npcs/Barbarian.glb.import
+?? assets/characters/npcs/Barbarian_barbarian_texture.png
+?? assets/characters/npcs/Barbarian_barbarian_texture.png.import
+?? assets/characters/npcs/Mage.glb.import
+?? assets/characters/npcs/Mage_mage_texture.png
+?? assets/characters/npcs/Mage_mage_texture.png.import
+?? assets/characters/npcs/Rogue.glb.import
+?? assets/characters/npcs/Rogue_Hooded.glb.import
+?? assets/characters/npcs/Rogue_Hooded_rogue_texture.png
+?? assets/characters/npcs/Rogue_Hooded_rogue_texture.png.import
+?? assets/characters/npcs/Rogue_rogue_texture.png
+?? assets/characters/npcs/Rogue_rogue_texture.png.import
+?? assets/creatures/elites/character-ghost.glb.import
+?? assets/creatures/elites/character-ghost_colormap.png
+?? assets/creatures/elites/character-ghost_colormap.png.import
+?? assets/creatures/elites/minion-c01.glb.import
+?? assets/creatures/elites/minion-c01_0.png
+?? assets/creatures/elites/minion-c01_0.png.import
+?? assets/creatures/monsters/Bat.glb.import
+?? assets/creatures/monsters/Bat_0.png
+?? assets/creatures/monsters/Bat_0.png.import
+?? assets/creatures/monsters/minion-a01.glb.import
+?? assets/creatures/monsters/minion-a01_0.png
+?? assets/creatures/monsters/minion-a01_0.png.import
+?? assets/creatures/monsters/minion-b01.glb.import
+?? assets/creatures/monsters/minion-b01_0.png
+?? assets/creatures/monsters/minion-b01_0.png.import
+?? assets/environments/crypt_bits/arch.gltf.import
+?? assets/environments/crypt_bits/crypt.gltf.import
+?? assets/environments/crypt_bits/halloweenbits_texture.png.import
+?? assets/environments/crypt_bits/pillar.gltf.import
+?? assets/environments/crypt_bits/post_lantern.gltf.import
+?? assets/environments/dungeons/banner_blue.glb.import
+?? assets/environments/dungeons/banner_blue_dungeon_texture.png
+?? assets/environments/dungeons/banner_blue_dungeon_texture.png.import
+?? assets/environments/dungeons/banner_red.glb.import
+?? assets/environments/dungeons/banner_red_dungeon_texture.png
+?? assets/environments/dungeons/banner_red_dungeon_texture.png.import
+?? assets/environments/dungeons/column.glb.import
+?? assets/environments/dungeons/column_dungeon_texture.png
+?? assets/environments/dungeons/column_dungeon_texture.png.import
+?? assets/environments/dungeons/statue-columndamaged.glb.import
+?? assets/environments/dungeons/statue-obelisk.glb.import
+?? assets/environments/forests/flower-purplea.glb.import
+?? assets/environments/forests/flower-reda.glb.import
+?? assets/environments/forests/log-large.glb.import
+?? assets/environments/forests/mushroom-redgroup.glb.import
+?? assets/environments/forests/stump-old.glb.import
+?? assets/environments/medieval_megakit/T_WoodTrim_BaseColor.png.import
+?? assets/environments/medieval_megakit/T_WoodTrim_Normal.png.import
+?? assets/environments/medieval_megakit/T_WoodTrim_Roughness.png.import
+?? assets/environments/medieval_megakit/Wall_Arch.gltf.import
+?? assets/environments/mountains/cliff-cave-rock.glb.import
+?? assets/environments/mountains/cliff-steps-rock.glb.import
+?? assets/environments/mountains/rock-largeb.glb.import
+?? assets/environments/mountains/rock-talla.glb.import
+?? assets/environments/rivers/lily-large.glb.import
+?? assets/environments/tinytreats_house/house.gltf.import
+?? assets/environments/tinytreats_house/tiny_treats_texture_1.png.import
+?? assets/environments/tinytreats_house/tree.gltf.import
+?? assets/environments/tinytreats_park/bench.gltf.import
+?? assets/environments/tinytreats_park/bush.gltf.import
+?? assets/environments/tinytreats_park/fountain.gltf.import
+?? assets/environments/tinytreats_park/street_lantern.gltf.import
+?? assets/environments/tinytreats_park/tiny_treats_texture_1.png.import
+?? assets/environments/tinytreats_park/tree.gltf.import
+?? assets/environments/villages/campfire-stones.glb.import
+?? assets/environments/villages/crop-pumpkin.glb.import
+?? assets/environments/villages/crops-wheatstagea.glb.import
+?? assets/environments/villages/sign.glb.import
+?? assets/environments/villages/tent-detailedopen.glb.import
+?? assets/kaykit_adventurers/Knight.glb.import
+?? assets/kaykit_adventurers/Knight_knight_texture.png
+?? assets/kaykit_adventurers/Knight_knight_texture.png.import
+?? assets/kaykit_adventurers/knight_texture.png.import
+?? assets/models/hexagon/building_barracks_blue.gltf.import
+?? assets/models/hexagon/building_blacksmith_red.gltf.import
+?? assets/models/hexagon/building_bridge_A.gltf.import
+?? assets/models/hexagon/building_castle_blue.gltf.import
+?? assets/models/hexagon/building_church_blue.gltf.import
+?? assets/models/hexagon/building_home_A_blue.gltf.import
+?? assets/models/hexagon/building_home_A_red.gltf.import
+?? assets/models/hexagon/building_home_B_blue.gltf.import
+?? assets/models/hexagon/building_home_B_red.gltf.import
+?? assets/models/hexagon/building_home_B_yellow.gltf.import
+?? assets/models/hexagon/building_market_red.gltf.import
+?? assets/models/hexagon/building_stage_C.gltf.import
+?? assets/models/hexagon/building_tavern_red.gltf.import
+?? assets/models/hexagon/building_tower_B_blue.gltf.import
+?? assets/models/hexagon/building_watermill_blue.gltf.import
+?? assets/models/hexagon/building_windmill_yellow.gltf.import
+?? assets/models/hexagon/flag_blue.gltf.import
+?? assets/models/hexagon/trees_B_medium.gltf.import
+?? assets/music/ambient_forest_birds.wav.import
+?? assets/music/ambient_royal_city.wav.import
+?? assets/music/ambient_wind_river.wav.import
+?? assets/music/music_dungeon_crypt.wav.import
+?? assets/music/music_eldoria_village.wav.import
+?? assets/sounds/bow_shoot.wav.import
+?? assets/sounds/chest_open.wav.import
+?? assets/sounds/combo_finisher.wav.import
+?? assets/sounds/craft_anvil.wav.import
+?? assets/sounds/crit_hit.wav.import
+?? assets/sounds/dodge_whoosh.wav.import
+?? assets/sounds/footstep_grass.wav.import
+?? assets/sounds/footstep_stone.wav.import
+?? assets/sounds/heavy_swing.wav.import
+?? assets/sounds/hit_impact.wav.import
+?? assets/sounds/level_up.wav.import
+?? assets/sounds/pickup_item.wav.import
+?? assets/sounds/quest_complete.wav.import
+?? assets/sounds/rpg/belt_handle_1.ogg.import
+?? assets/sounds/rpg/book_flip_1.ogg.import
+?? assets/sounds/rpg/book_flip_2.ogg.import
+?? assets/sounds/rpg/book_flip_3.ogg.import
+?? assets/sounds/rpg/book_open.ogg.import
+?? assets/sounds/rpg/chop.ogg.import
+?? assets/sounds/rpg/cloth_1.ogg.import
+?? assets/sounds/rpg/cloth_2.ogg.import
+?? assets/sounds/rpg/cloth_3.ogg.import
+?? assets/sounds/rpg/cloth_belt.ogg.import
+?? assets/sounds/rpg/creak_1.ogg.import
+?? assets/sounds/rpg/door_close_1.ogg.import
+?? assets/sounds/rpg/door_open_1.ogg.import
+?? assets/sounds/rpg/door_open_2.ogg.import
+?? assets/sounds/rpg/draw_knife_1.ogg.import
+?? assets/sounds/rpg/footstep_0.ogg.import
+?? assets/sounds/rpg/footstep_1.ogg.import
+?? assets/sounds/rpg/footstep_2.ogg.import
+?? assets/sounds/rpg/footstep_3.ogg.import
+?? assets/sounds/rpg/footstep_4.ogg.import
+?? assets/sounds/rpg/footstep_5.ogg.import
+?? assets/sounds/rpg/footstep_6.ogg.import
+?? assets/sounds/rpg/footstep_7.ogg.import
+?? assets/sounds/rpg/footstep_8.ogg.import
+?? assets/sounds/rpg/footstep_9.ogg.import
+?? assets/sounds/rpg/handle_coins.ogg.import
+?? assets/sounds/rpg/handle_coins_2.ogg.import
+?? assets/sounds/rpg/knife_slice.ogg.import
+?? assets/sounds/rpg/knife_slice_2.ogg.import
+?? assets/sounds/rpg/metal_click.ogg.import
+?? assets/sounds/rpg/metal_pot_1.ogg.import
+?? assets/sounds/shield_block.wav.import
+?? assets/sounds/spell_fire.wav.import
+?? assets/sounds/spell_ice.wav.import
+?? assets/sounds/spell_lightning.wav.import
+?? assets/sounds/sword_swing.wav.import
+?? assets/sounds/ui_click.wav.import
+?? assets/stylized_nature/foliage/Bush_2.glb.import
+?? assets/stylized_nature/foliage/Flower_2.glb.import
+?? assets/stylized_nature/foliage/Flowers.glb.import
+?? assets/stylized_nature/foliage/Grass.glb.import
+?? assets/stylized_nature/rocks/Rock_1.glb.import
+?? assets/stylized_nature/stylized_meadow_sky_1k.hdr.import
+?? assets/stylized_nature/trees/BirchTree_2.glb.import
+?? assets/stylized_nature/trees/PineTree_1.glb.import
+?? assets/ui/fonts/Cairo-Variable.ttf.import
+?? assets/ui/fonts/NotoSans-Bold.ttf.import
+?? assets/ui/fonts/NotoSans-Medium.ttf.import
+?? assets/ui/fonts/NotoSansArabic-Medium.ttf.import
+?? assets/weapons/barbarian_texture.png.import
+?? assets/weapons/dagger.gltf.import
+?? assets/weapons/mage_texture.png.import
+?? assets/weapons/mug_full.gltf.import
+?? assets/weapons/rogue_texture.png.import
+?? assets/weapons/staff.gltf.import
+?? assets/weapons/wand.gltf.import
+?? assets_realistic/models/nature/ancient_ruins_01.glb.import
+?? assets_realistic/models/nature/ancient_ruins_01_Rock_02_Albedo.png
+?? assets_realistic/models/nature/ancient_ruins_01_Rock_02_Albedo.png.import
+?? assets_realistic/models/nature/ancient_ruins_02.glb.import
+?? assets_realistic/models/nature/ancient_ruins_02_Statue_Lion_Albedo.png
+?? assets_realistic/models/nature/ancient_ruins_02_Statue_Lion_Albedo.png.import
+?? assets_realistic/models/weapons/claymore_greatsword.glb.import
+?? assets_realistic/models/weapons/heater_shield.glb.import
+?? assets_realistic/models/weapons/knight_longsword.glb.import
+?? assets_realistic/models/weapons/war_bow.glb.import
+?? assets_realistic/textures/armor_metal_normal.jpg.import
+?? assets_realistic/textures/cobble_albedo.jpg.import
+?? assets_realistic/textures/grass_albedo.jpg.import
+?? assets_realistic/textures/grass_normal.jpg.import
+?? assets_realistic/textures/grass_roughness.jpg.import
+?? assets_realistic/textures/plaster_albedo.jpg.import
+?? assets_realistic/textures/plaster_normal.jpg.import
+?? assets_realistic/textures/plaster_roughness.jpg.import
+?? assets_realistic/textures/roof_tiles_albedo.jpg.import
+?? assets_realistic/textures/roof_tiles_normal.jpg.import
+?? assets_realistic/textures/roof_tiles_roughness.jpg.import
+?? assets_realistic/textures/stone_wall_albedo.jpg.import
+?? assets_realistic/textures/stone_wall_normal.jpg.import
+?? assets_realistic/textures/stone_wall_roughness.jpg.import
+?? assets_realistic/textures/water_normal_1.jpg.import
+?? assets_realistic/textures/water_normal_2.jpg.import
+?? assets_realistic/textures/wood_albedo.jpg.import
+?? assets_realistic/textures/wood_normal.jpg.import
+?? assets_realistic/textures/wood_roughness.jpg.import
+?? scripts/camera/camera_rig.gd.uid
+?? scripts/combat/combat.gd.uid
+?? scripts/combat/health_component.gd.uid
+?? scripts/core/art_direction.gd.uid
+?? scripts/core/asset_library.gd.uid
+?? scripts/core/audio_manager.gd.uid
+?? scripts/core/character_visual.gd.uid
+?? scripts/core/event_bus.gd.uid
+?? scripts/core/game.gd.uid
+?? scripts/core/game_manager.gd.uid
+?? scripts/core/input_setup.gd.uid
+?? scripts/core/localization.gd.uid
+?? scripts/core/save_manager.gd.uid
+?? scripts/core/scene_manager.gd.uid
+?? scripts/core/settings_manager.gd.uid
+?? scripts/creatures/creature.gd.uid
+?? scripts/creatures/procedural_models.gd.uid
+?? scripts/data/character_stats.gd.uid
+?? scripts/data/crafting_db.gd.uid
+?? scripts/data/creature_data.gd.uid
+?? scripts/data/creature_db.gd.uid
+?? scripts/data/guild_system.gd.uid
+?? scripts/data/hero_class_db.gd.uid
+?? scripts/data/item_data.gd.uid
+?? scripts/data/item_db.gd.uid
+?? scripts/data/progression.gd.uid
+?? scripts/data/quest_data.gd.uid
+?? scripts/data/quest_db.gd.uid
+?? scripts/data/quest_log.gd.uid
+?? scripts/data/skill_data.gd.uid
+?? scripts/data/skill_db.gd.uid
+?? scripts/data/skill_tree.gd.uid
+?? scripts/inventory/inventory.gd.uid
+?? scripts/physics/collision_layers.gd.uid
+?? scripts/player/player.gd.uid
+?? scripts/player/player_input.gd.uid
+?? scripts/player/player_state_machine.gd.uid
+?? scripts/quests/quest_manager.gd.uid
+?? scripts/ui/camera_drag_area.gd.uid
+?? scripts/ui/character_screen.gd.uid
+?? scripts/ui/class_select_screen.gd.uid
+?? scripts/ui/crafting_screen.gd.uid
+?? scripts/ui/dialog_screen.gd.uid
+?? scripts/ui/guild_screen.gd.uid
+?? scripts/ui/hud.gd.uid
+?? scripts/ui/inventory_screen.gd.uid
+?? scripts/ui/journal_screen.gd.uid
+?? scripts/ui/main_menu.gd.uid
+?? scripts/ui/menu_screen.gd.uid
+?? scripts/ui/minimap_control.gd.uid
+?? scripts/ui/pause_screen.gd.uid
+?? scripts/ui/rpg_icon.gd.uid
+?? scripts/ui/shop_screen.gd.uid
+?? scripts/ui/skill_tree_screen.gd.uid
+?? scripts/ui/stat_bar.gd.uid
+?? scripts/ui/story_intro_overlay.gd.uid
+?? scripts/ui/touch_action_button.gd.uid
+?? scripts/ui/touch_controls.gd.uid
+?? scripts/ui/touch_pointer.gd.uid
+?? scripts/ui/ui_factory.gd.uid
+?? scripts/ui/ui_root.gd.uid
+?? scripts/ui/virtual_joystick.gd.uid
+?? scripts/ui/world_map_screen.gd.uid
+?? scripts/vfx/vfx_manager.gd.uid
+?? scripts/world/city_plan.gd.uid
+?? scripts/world/cloud_layer.gd.uid
+?? scripts/world/crafting_station.gd.uid
+?? scripts/world/day_night_cycle.gd.uid
+?? scripts/world/dungeon_trap.gd.uid

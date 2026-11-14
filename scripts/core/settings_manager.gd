@@ -15,6 +15,8 @@ var show_performance_overlay: bool = false
 var developer_mode: bool = false
 var show_touch_controls: bool = true
 var touch_scale: float = 1.0
+## Short vibration on touch-button presses (Android only; needs VIBRATE).
+var haptics_enabled: bool = true
 var autosave_enabled: bool = true
 var language: String = "ar"
 
@@ -39,6 +41,7 @@ func load_settings() -> void:
 	show_performance_overlay = bool(cfg.get_value("debug", "show_performance", false)) and developer_mode
 	show_touch_controls = bool(cfg.get_value("input", "show_touch_controls", true))
 	touch_scale = clampf(float(cfg.get_value("input", "touch_scale", 1.0)), 0.8, 1.3)
+	haptics_enabled = bool(cfg.get_value("input", "haptics_enabled", true))
 	autosave_enabled = bool(cfg.get_value("game", "autosave", true))
 	language = String(cfg.get_value("game", "language", "ar"))
 	if language != "en" and language != "ar":
@@ -56,6 +59,7 @@ func save_settings() -> void:
 	cfg.set_value("debug", "show_performance", show_performance_overlay)
 	cfg.set_value("input", "show_touch_controls", show_touch_controls)
 	cfg.set_value("input", "touch_scale", touch_scale)
+	cfg.set_value("input", "haptics_enabled", haptics_enabled)
 	cfg.set_value("game", "autosave", autosave_enabled)
 	cfg.set_value("game", "language", language)
 	cfg.save(SETTINGS_PATH)
@@ -84,22 +88,59 @@ func _set_bus_volume(bus_name: String, linear: float) -> void:
 	var db := -80.0 if linear <= 0.001 else linear_to_db(clampf(linear, 0.0, 1.6))
 	AudioServer.set_bus_volume_db(idx, db)
 
-## Applies Stylized/Chibi PBR Mobile Vulkan rendering settings (4x MSAA + FXAA).
+## Applies the active preset to the root viewport (MSAA, FXAA, 3D render
+## scale) and notifies listeners. This is the only place that sets viewport
+## anti-aliasing; scene code must not override it.
 func apply_graphics() -> void:
 	var viewport := get_viewport()
 	if viewport != null:
-		viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
-		match graphics_preset:
-			GraphicsPreset.LOW:
-				viewport.msaa_3d = Viewport.MSAA_2X
-				viewport.scaling_3d_scale = 0.82
-			GraphicsPreset.MEDIUM:
-				viewport.msaa_3d = Viewport.MSAA_4X
-				viewport.scaling_3d_scale = 0.95 if is_mobile() else 1.0
-			_:
-				viewport.msaa_3d = Viewport.MSAA_4X
-				viewport.scaling_3d_scale = 1.0
+		# MSAA already resolves geometry edges; FXAA on top of it is one more
+		# full-screen pass for no visible gain on a phone screen.
+		viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
+		viewport.msaa_3d = msaa_3d_level()
+		viewport.scaling_3d_scale = render_scale_3d()
 	EventBus.graphics_settings_changed.emit()
+
+## 3D MSAA level of the active preset.
+func msaa_3d_level() -> Viewport.MSAA:
+	if graphics_preset == GraphicsPreset.LOW:
+		return Viewport.MSAA_2X
+	if graphics_preset == GraphicsPreset.MEDIUM and is_mobile():
+		return Viewport.MSAA_2X
+	return Viewport.MSAA_4X
+
+## 3D resolution scale of the active preset (1.0 = native).
+##
+## Phones render 3D at the panel's native resolution, and a 1080p or 1440p
+## panel is far more pixels than a mid-range mobile GPU can shade at 60 FPS.
+## On mobile the scale is therefore also capped so the 3D image is never taller
+## than MOBILE_3D_HEIGHT pixels for the preset; the 2D HUD stays native and sharp.
+const MOBILE_3D_HEIGHT := {
+	GraphicsPreset.LOW: 720.0,
+	GraphicsPreset.MEDIUM: 900.0,
+	GraphicsPreset.HIGH: 1080.0,
+}
+const MOBILE_MIN_SCALE := 0.5
+
+func render_scale_3d() -> float:
+	var base := 1.0
+	match graphics_preset:
+		GraphicsPreset.LOW:
+			base = 0.82
+		GraphicsPreset.MEDIUM:
+			base = 0.90 if is_mobile() else 1.0
+	if not is_mobile():
+		return base
+	var window := DisplayServer.window_get_size()
+	var short_edge := float(mini(window.x, window.y))
+	if short_edge <= 1.0:
+		return base
+	var cap := float(MOBILE_3D_HEIGHT.get(graphics_preset, 900.0)) / short_edge
+	return clampf(minf(base, cap), MOBILE_MIN_SCALE, 1.0)
+
+## Whether the glow post-process runs on the active preset.
+func glow_enabled() -> bool:
+	return graphics_preset != GraphicsPreset.LOW
 
 func shadow_quality() -> int:
 	match graphics_preset:

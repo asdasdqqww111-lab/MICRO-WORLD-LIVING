@@ -78,10 +78,9 @@ func _build_environment() -> void:
 	sky.sky_material = pano
 	environment.sky = sky
 
-	var vp := get_viewport()
-	if vp != null:
-		vp.msaa_3d = Viewport.MSAA_4X
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+	# Viewport anti-aliasing and 3D render scale belong to the graphics preset
+	# (SettingsManager.apply_graphics). Forcing MSAA 4X here used to override
+	# the LOW preset every time the world was built.
 
 	# Phase 1 Stylized/Chibi PBR Mobile Lighting:
 	# ACES Tonemap (1.1), Softlight Glow (0.4 / 0.1), Depth Fog (30..150m), Low-Res SSAO (1.0 / 1.5)
@@ -237,7 +236,8 @@ func _optimize_static_props() -> void:
 		if node is MultiMeshInstance3D:
 			var mmi := node as MultiMeshInstance3D
 			var mname := String(mmi.name)
-			if mname != "ForestOaks" and mname != "StylizedPines":
+			# Only the big silhouettes cast shadows: forest, town wall and garden trees.
+			if mname != "ForestOaks" and mname != "RoyalCityWalls" and mname != "CityGardenTrees":
 				mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			continue
 		var mi := node as MeshInstance3D
@@ -298,7 +298,7 @@ func _build_zone_doors() -> void:
 
 	var house_exit := ZoneDoor.new()
 	house_exit.name = "HouseExit"
-	house_exit.setup(Vector3(-16.0, 0.6, -1.2), "village", "Step Outside to Eldoria")
+	house_exit.setup(CityPlan.HOUSE_DOOR + Vector3(0.0, 0.6, 1.8), "village", "Step Outside to Eldoria")
 	house_exit.transition_text = "Back in Eldoria Square"
 	house_root.add_child(house_exit)
 	house_exit.global_position = interior.get("exit", Vector3.ZERO) as Vector3
@@ -310,12 +310,12 @@ func _build_zone_doors() -> void:
 	guild_door.setup(guild_interior.get("spawn", Vector3.ZERO) as Vector3, "guild", "Enter Adventurers Guild Hall")
 	guild_door.transition_text = "Welcome to the Eldoria Adventurers Guild"
 	overworld_root.add_child(guild_door)
-	guild_door.global_position = landmarks.get("guild_door", Vector3(0.0, 0.0, -18.4)) as Vector3
+	guild_door.global_position = landmarks.get("guild_door", CityPlan.GUILD_DOOR) as Vector3
 	_add_beacon(guild_door, Color(0.38, 0.72, 1.0))
 
 	var guild_exit := ZoneDoor.new()
 	guild_exit.name = "GuildExit"
-	guild_exit.setup(Vector3(0.0, 0.6, -16.8), "village", "Exit to Eldoria Square")
+	guild_exit.setup(CityPlan.GUILD_DOOR + Vector3(0.0, 0.6, 2.2), "village", "Exit to Eldoria Square")
 	guild_exit.transition_text = "Stepping out onto Eldoria Square"
 	guild_root.add_child(guild_exit)
 	guild_exit.global_position = guild_interior.get("exit", Vector3.ZERO) as Vector3
@@ -384,9 +384,15 @@ func _apply_graphics() -> void:
 	sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	sun.directional_shadow_max_distance = 34.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 45.0
 	sun.shadow_blur = 2.0
+	# Each shadow split redraws every caster. Phones get a single split; the
+	# 45 m shadow range is short enough for one map to stay acceptable.
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL if SettingsManager.is_mobile() \
+		else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	RenderingServer.directional_soft_shadow_filter_set_quality(quality)
 	if world_environment != null and world_environment.environment != null:
 		world_environment.environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
+		# Glow costs several full-screen passes on the Mobile renderer.
+		world_environment.environment.glow_enabled = SettingsManager.glow_enabled()
 
 # --- Gathering Nodes, Chests, Living NPCs & Creature Ecosystems --------------
 
@@ -443,7 +449,7 @@ func _spawn_population() -> void:
 	spawn_creature("cave_bat", "cave_bat_0", _pos_on_terrain(-16.0, -56.0), overworld_root)
 	spawn_creature("cave_bat", "cave_bat_1", _pos_on_terrain(-11.0, -58.0), overworld_root)
 	spawn_creature("cave_bat", "cave_bat_2", _pos_on_terrain(-6.0, -61.0), overworld_root)
-	spawn_creature("rock_golem", "east_golem_0", _pos_on_terrain(58.0, -2.0), overworld_root)
+	spawn_creature("rock_golem", "east_golem_0", _pos_on_terrain(59.0, -9.5), overworld_root)
 	spawn_creature("rock_golem", "east_golem_1", _pos_on_terrain(68.0, 6.0), overworld_root)
 
 	# 4. Overworld Elites: Ruins Wraith & Sacred Grove Warden!
@@ -461,7 +467,7 @@ func _spawn_population() -> void:
 		(landmarks.get("monster_camp", Vector3(-62, 2, -24)) as Vector3) + Vector3(-1.8, 0.0, -2.2),
 		[{"id": "iron_ore", "count": 3}, {"id": "venison", "count": 2}])
 	_place_chest(overworld_root, "CitadelGardenChest", "citadel_chest_0",
-		Vector3(-22.5, 0.0, -26.5),
+		Vector3(-24.0, 0.0, -17.6),
 		[{"id": "health_potion", "count": 2}, {"id": "bread", "count": 3}])
 
 	# 6. Sunken Crypt Dungeon: Guards, Secret Chest, Relic Chest & Boss Malakor!
@@ -501,7 +507,7 @@ func _spawn_npcs() -> void:
 	# 1. Blacksmith (Grim — preserved id "blacksmith")
 	var smith := _make_npc(overworld_root, "blacksmith", "Grim", "blacksmith", "Master Blacksmith",
 		k_barb,
-		{"work": landmarks["blacksmith_pos"], "rest": Vector3(-11.0, 0.0, -14.0), "sleep": landmarks["blacksmith_sleep"]},
+		{"work": landmarks["blacksmith_pos"], "rest": Vector3(7.2, 0.0, -3.4), "sleep": landmarks["blacksmith_sleep"]},
 		["My anvil rings from dawn till dusk. Bring highland ore or use my forge!",
 		 "A good shield and tempered blade will save your life in the Sunken Crypt."],
 		["axe"])
@@ -515,22 +521,22 @@ func _spawn_npcs() -> void:
 		["Skeletons crept out of the western woods again last night!",
 		 "Our golden wheat feeds all of Eldoria — help us keep the roads safe."],
 		[])
-	farmer.patrol_points = [Vector3(-12.0, 0.0, 18.0), Vector3(-15.5, 0.0, 22.0), Vector3(-9.5, 0.0, 21.0)]
+	farmer.patrol_points = [Vector3(-13.6, 0.0, 21.0), Vector3(-14.8, 0.0, 26.3), Vector3(-12.6, 0.0, 17.4)]
 
 	# 3. East Gate Guard (Osk — preserved id "guard")
 	var guard := _make_npc(overworld_root, "guard", "Osk", "guard", "Captain of the Watch",
 		k_knight,
-		{"work": landmarks["guard_pos"], "rest": Vector3(20.0, 0.0, 6.0), "sleep": landmarks["guard_sleep"]},
+		{"work": landmarks["guard_pos"], "rest": CityPlan.lot_front("Barracks", 0.9), "sleep": landmarks["guard_sleep"]},
 		["Beyond the stone bridge lies the Sunken Crypt and the Ancient Ruins.",
 		 "My patrol lost an Ancient Relic down in those vaults — recover it if you dare."],
 		["1h_sword", "rectangle_shield", "helmet"])
 	guard.always_awake = true
-	guard.patrol_points = [Vector3(24.0, 0.0, 8.0), Vector3(25.0, 0.0, -3.5), Vector3(18.0, 0.0, 2.0)]
+	guard.patrol_points = [Vector3(31.5, 0.0, -3.4), Vector3(31.5, 0.0, 3.4), Vector3(24.0, 0.0, 3.4)]
 
 	# 4. Village Elder (Elder Theron — Main Quest giver!)
 	_make_npc(overworld_root, "elder", "Elder Theron", "elder", "Village Elder",
 		k_mage,
-		{"work": Vector3(-4.6, 0.0, -15.5), "rest": Vector3(-8.0, 0.0, -15.0), "sleep": Vector3(15.0, 0.0, -16.5)},
+		{"work": Vector3(-3.6, 0.0, -4.6), "rest": Vector3(-5.2, 0.0, -3.5), "sleep": CityPlan.lot_center("HouseB")},
 		["Welcome to Eldoria, young traveler. Dark tremors stir beneath the eastern hills.",
 		 "Visit the Grand Adventurers Guild to the north and register your name."],
 		["staff", "hat"])
@@ -538,7 +544,7 @@ func _spawn_npcs() -> void:
 	# 5. Merchant (Tariq — Market Trader)
 	var merch := _make_npc(overworld_root, "merchant", "Tariq", "merchant", "Caravan Merchant",
 		k_rogue,
-		{"work": Vector3(14.5, 0.0, 7.8), "rest": Vector3(-10.0, 0.0, -15.5), "sleep": Vector3(16.5, 0.0, -16.5)},
+		{"work": CityPlan.lot_front("Market", 0.8, 0.0), "rest": Vector3(11.8, 0.0, -3.4), "sleep": CityPlan.lot_center("Market")},
 		["Finest potions, elixirs, and trail rations in the valley! Guild members earn a discount.",
 		 "Prices shift slightly with each passing day's caravan."],
 		[])
@@ -547,7 +553,7 @@ func _spawn_npcs() -> void:
 	# 6. Chapel Healer (Sister Sera)
 	var healer := _make_npc(overworld_root, "healer", "Sister Sera", "healer", "Chapel Healer",
 		k_mage,
-		{"work": Vector3(19.5, 0.0, -16.5), "rest": Vector3(14.0, 0.0, -15.0), "sleep": Vector3(21.0, 0.0, -18.5)},
+		{"work": CityPlan.lot_front("Chapel", 0.8), "rest": Vector3(17.6, 0.0, -3.5), "sleep": CityPlan.lot_center("Chapel")},
 		["Step into the Chapel's warmth if you are wounded or drained of Mana.",
 		 "Redcap mushrooms and Moonpetals make potent restorative draughts."],
 		["wand"])
@@ -556,7 +562,7 @@ func _spawn_npcs() -> void:
 	# 7. Innkeeper (Marta — Barrel Tavern)
 	var inn := _make_npc(overworld_root, "innkeeper", "Marta", "innkeeper", "Hearthstone Innkeeper",
 		k_rogue,
-		{"work": Vector3(5.2, 0.0, -15.2), "rest": Vector3(4.0, 0.0, -14.5), "sleep": Vector3(2.2, 0.0, -16.5)},
+		{"work": CityPlan.lot_front("Tavern", 0.7, 0.5), "rest": CityPlan.lot_front("Tavern", 0.7, -1.2), "sleep": CityPlan.lot_center("Tavern")},
 		["Warm stew, foaming cider, and a soft featherbed for ten gold coins!",
 		 "Hunters say a spectral Wraith haunts the Eastern Ruins past the bridge."],
 		["mug"])
@@ -565,26 +571,26 @@ func _spawn_npcs() -> void:
 	# 8. South Gate Guard (Varek — Night & Day Patrol)
 	var sguard := _make_npc(overworld_root, "south_guard", "Varek", "guard", "South Gate Sentinel",
 		k_knight,
-		{"work": Vector3(-10.5, 0.0, 26.5), "rest": Vector3(-8.5, 0.0, 25.5), "sleep": Vector3(22.0, 0.0, 14.0)},
+		{"work": Vector3(3.5, 0.0, 31.5), "rest": Vector3(3.5, 0.0, 29.0), "sleep": CityPlan.lot_center("Barracks") + Vector3(1.2, 0.0, 0.8)},
 		["South Meadow stands secure! Watch for Highland Stags by Crystal Lake.",
 		 "Every third night, undead raiders test our perimeter — stay ready."],
 		["1h_sword", "round_shield", "helmet"])
 	sguard.always_awake = true
-	sguard.patrol_points = [Vector3(-10.5, 0.0, 26.5), Vector3(-6.5, 0.0, 28.5), Vector3(-13.0, 0.0, 24.0)]
+	sguard.patrol_points = [Vector3(3.5, 0.0, 31.5), Vector3(-3.5, 0.0, 31.5), Vector3(-3.5, 0.0, 24.0)]
 
 	# 9. Woodland Ranger / Hunter (Rowan)
 	var ranger := _make_npc(overworld_root, "hunter", "Rowan", "hunter", "Woodland Ranger",
 		k_hood,
-		{"work": Vector3(-24.5, 0.0, 3.5), "rest": Vector3(-12.0, 0.0, -14.0), "sleep": Vector3(-24.0, 0.0, -3.0)},
+		{"work": Vector3(-31.5, 0.0, 3.4), "rest": Vector3(6.6, 0.0, -3.4), "sleep": CityPlan.lot_center("HouseC")},
 		["Keep your eyes peeled in the western timber. Bramble Stalkers move in pairs.",
 		 "Southwest of the woods lies a hidden Sacred Grove blessed with Moonpetals."],
 		["crossbow"])
-	ranger.patrol_points = [Vector3(-24.5, 0.0, 3.5), Vector3(-31.0, 0.0, 1.5), Vector3(-20.0, 0.0, 7.0)]
+	ranger.patrol_points = [Vector3(-31.5, 0.0, 3.4), Vector3(-33.0, 0.0, 0.8), Vector3(-25.0, 0.0, 3.4)]
 
 	# 10. Forge Apprentice (Toma)
 	_make_npc(overworld_root, "apprentice", "Toma", "apprentice", "Smith's Apprentice",
 		k_barb,
-		{"work": Vector3(-13.2, 0.0, 8.8), "rest": Vector3(-12.5, 0.0, 6.5), "sleep": Vector3(-18.5, 0.0, 9.5)},
+		{"work": Vector3(-4.1, 0.0, 11.0), "rest": Vector3(-5.0, 0.0, 14.0), "sleep": CityPlan.lot_center("Blacksmith") + Vector3(-1.4, 0.0, 0.8)},
 		["Master Grim lets me tend the bellows! Two Iron Ore and Wood smelt an Iron Ingot.",
 		 "Someday I'll forge a Mythic Sunblade worthy of Rank S heroes."],
 		[])
@@ -592,17 +598,17 @@ func _spawn_npcs() -> void:
 	# 11. Village Child (Pip — playful cottage runner, scaled 0.74x!)
 	var child := _make_npc(overworld_root, "child", "Pip", "child", "Village Youth",
 		k_rogue,
-		{"work": Vector3(11.5, 0.0, -14.5), "rest": Vector3(-13.0, 0.0, -6.0), "sleep": Vector3(-16.0, 0.0, -7.0)},
+		{"work": Vector3(3.6, 0.0, 3.9), "rest": Vector3(-17.2, 0.0, -3.5), "sleep": CityPlan.lot_center("HouseA")},
 		["Whoa, real knight armor! Are you going to join the Adventurers Guild?",
 		 "I saw glowing blue flowers down by Crystal Lake!"],
 		[])
 	child.model_scale = 0.74
-	child.patrol_points = [Vector3(11.5, 0.0, -14.5), Vector3(15.0, 0.0, -14.0), Vector3(9.0, 0.0, -14.8)]
+	child.patrol_points = [Vector3(3.6, 0.0, 3.9), Vector3(-3.8, 0.0, 4.0), Vector3(-3.6, 0.0, -3.8), Vector3(3.8, 0.0, -3.6)]
 
 	# 12. Wayfaring Traveler (Vane — near East Stone Bridge!)
 	_make_npc(overworld_root, "traveler", "Vane", "traveler", "Wayfaring Scholar",
 		k_mage,
-		{"work": Vector3(33.5, 0.0, -3.2), "rest": Vector3(-9.5, 0.0, -15.0), "sleep": Vector3(-14.5, 0.0, -18.5)},
+		{"work": Vector3(39.4, 0.0, 2.2), "rest": Vector3(12.8, 0.0, -3.4), "sleep": CityPlan.lot_center("RedCottageEastA")},
 		["Look how clear the Eldoria River runs beneath this stone arch bridge!",
 		 "Shadowfang Bats near the northern cave forced my caravan to turn back."],
 		["spellbook"])
@@ -610,7 +616,7 @@ func _spawn_npcs() -> void:
 	# --- 6 OUTER CITADEL & HAMLET STYLIZED CHIBI NPCS (Total 24 Living Citizens!) ---
 	var cmd := _make_npc(overworld_root, "citadel_commander", "Commander Vaelen", "guard", "Royal Citadel Commander",
 		k_knight,
-		{"work": Vector3(-16.0, 0.0, -18.5), "rest": Vector3(-14.5, 0.0, -16.5), "sleep": Vector3(-18.0, 0.0, -21.0)},
+		{"work": Vector3(-3.3, 0.0, -11.6), "rest": Vector3(-4.2, 0.0, -10.4), "sleep": CityPlan.CASTLE_CENTER},
 		["The Sovereign Citadel stands watch over every hamlet and meadow of Eldoria.",
 		 "Clear the Western Monster Camp and the Granite Golems to earn the Crown's favor!"],
 		["2h_sword", "cape", "helmet"])
@@ -618,7 +624,7 @@ func _spawn_npcs() -> void:
 
 	var alch := _make_npc(overworld_root, "alchemist_master", "Master Zenia", "healer", "Royal Alchemist",
 		k_mage,
-		{"work": Vector3(24.0, 0.0, -16.0), "rest": Vector3(21.0, 0.0, -15.0), "sleep": Vector3(26.0, 0.0, -17.0)},
+		{"work": Vector3(20.2, 0.0, -15.8), "rest": Vector3(22.6, 0.0, -15.0), "sleep": CityPlan.lot_center("RedCottageEastA") + Vector3(1.0, 0.0, -1.0)},
 		["Slime Gel and Moonpetals distill into the purest Arcane Elixirs in the realm.",
 		 "Bring me specimens from Crystal Lake and I will reward your scholarship handsomely!"],
 		["staff", "spellbook", "hat"])
@@ -626,7 +632,7 @@ func _spawn_npcs() -> void:
 
 	var jeweler := _make_npc(overworld_root, "bazaar_jeweler", "Nader", "merchant", "Bazaar Jeweler",
 		k_rogue,
-		{"work": Vector3(20.0, 0.0, 2.5), "rest": Vector3(16.5, 0.0, 6.0), "sleep": Vector3(22.5, 0.0, 4.0)},
+		{"work": CityPlan.lot_front("Market", 0.8, -3.4), "rest": Vector3(15.6, 0.0, 3.4), "sleep": CityPlan.lot_center("Market") + Vector3(2.4, 0.0, 0.0)},
 		["Welcome to the East Trade Post! Fine rings, ingots, and relics pass through my counter.",
 		 "Bring Wolf Pelts or Iron Ingots if you wish to fulfill royal trade commissions!"],
 		["dagger"])
@@ -634,15 +640,15 @@ func _spawn_npcs() -> void:
 
 	var arch_cap := _make_npc(overworld_root, "archery_captain", "Captain Selene", "hunter", "Garrison Archery Captain",
 		k_hood,
-		{"work": Vector3(18.0, 0.0, 20.5), "rest": Vector3(19.0, 0.0, 16.0), "sleep": Vector3(23.0, 0.0, 15.0)},
+		{"work": Vector3(12.9, 0.0, 19.6), "rest": Vector3(17.9, 0.0, 15.0), "sleep": CityPlan.lot_center("Barracks") + Vector3(-1.2, 0.0, -0.6)},
 		["Steady breath, keen eyes! Our garrison rangers patrol from Crystal Lake to the Alpine Rim.",
 		 "Hunt the grey wolves stalking the northern timberline and report back to me."],
 		["crossbow"])
-	arch_cap.patrol_points = [Vector3(18.0, 0.0, 20.5), Vector3(21.5, 0.0, 18.0), Vector3(15.5, 0.0, 21.5)]
+	arch_cap.patrol_points = [Vector3(12.9, 0.0, 19.6), Vector3(12.9, 0.0, 25.4), Vector3(15.2, 0.0, 26.4)]
 
 	var ng := _make_npc(overworld_root, "north_sentinel", "Rakan", "guard", "North Pass Sentinel",
 		k_knight,
-		{"work": Vector3(-8.5, 0.0, -33.5), "rest": Vector3(-6.0, 0.0, -32.5), "sleep": Vector3(22.0, 0.0, 14.0)},
+		{"work": Vector3(3.3, 0.0, -11.6), "rest": Vector3(4.4, 0.0, -9.2), "sleep": CityPlan.lot_center("Barracks")},
 		["Beyond the North Pass rise the Pine Highlands and Shadowfang Cave.",
 		 "Keep your blade drawn if you venture toward the snow peaks!"],
 		["1h_sword", "spike_shield", "helmet"])
@@ -650,7 +656,7 @@ func _spawn_npcs() -> void:
 
 	var wg := _make_npc(overworld_root, "west_warden", "Layan", "guard", "West Woods Warden",
 		k_hood,
-		{"work": Vector3(-33.5, 0.0, 4.2), "rest": Vector3(-31.5, 0.0, -0.5), "sleep": Vector3(-28.0, 0.0, 10.0)},
+		{"work": Vector3(-31.5, 0.0, -3.4), "rest": Vector3(-29.0, 0.0, -3.4), "sleep": CityPlan.lot_center("ArtisanHouse")},
 		["The West Trail opens onto the Whispering Woods and Sacred Grove.",
 		 "Watch for Bramble Stalkers and forest undead beyond the timberline!"],
 		["dagger", "crossbow"])
@@ -725,7 +731,10 @@ func _make_npc(parent_zone: Node3D, npc_id: String, display_name: String, role: 
 	npc.setup(npc_id, display_name, role, model_path, schedule)
 	npc.dialog_lines = lines
 	parent_zone.add_child(npc)
-	npc.global_position = schedule.get("work", Vector3.ZERO) as Vector3
+	var start := schedule.get("work", Vector3.ZERO) as Vector3
+	if parent_zone == overworld_root and terrain != null:
+		start.y = terrain.height_at(start.x, start.z)
+	npc.global_position = start
 	_npcs[npc_id] = npc
 	return npc
 
@@ -738,6 +747,12 @@ func spawn_creature(creature_id: String, uid: String, position: Vector3, zone_pa
 	var data := CreatureDB.get_creature(creature_id)
 	if data == null:
 		push_warning("WorldRoot: unknown creature '%s'" % creature_id)
+		return null
+	return spawn_creature_data(data, uid, position, zone_parent)
+
+# Tower floors supply scaled copies of CreatureData, not database IDs.
+func spawn_creature_data(data: CreatureData, uid: String, position: Vector3, zone_parent: Node3D = null) -> Node:
+	if data == null:
 		return null
 	if _creatures.has(uid):
 		return _creatures[uid] as Node

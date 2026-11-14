@@ -9,7 +9,7 @@ extends CharacterBody3D
 signal zone_changed(zone_id: String)
 
 const MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
-const FALLBACK_MODEL_PATH := "res://assets/characters/player/Knight.glb"
+const FALLBACK_MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
 const MODEL_YAW_OFFSET := PI
 const MODEL_SCALE := 0.76
 
@@ -32,6 +32,16 @@ const ATTACK_COST := 12.0
 const HEAVY_COST := 22.0
 const DODGE_COST := 18.0
 const BASE_SPELL_MANA := 16.0
+## Seconds between landmark-visit scans.
+const LANDMARK_SCAN_INTERVAL := 0.25
+const LANDMARK_VISIT_RADIUS := 11.5
+## Overworld landmarks that report a quest "visit" event (first match wins).
+const LANDMARK_VISITS: Array[Dictionary] = [
+	{"id": "ruins", "center": Vector2(66.0, -18.0)},
+	{"id": "monster_camp", "center": Vector2(-62.0, -24.0)},
+	{"id": "sacred_grove", "center": Vector2(-56.0, 44.0)},
+	{"id": "cave", "center": Vector2(-14.0, -60.0)},
+]
 const ATTACK_DURATION := 0.44
 const HEAVY_DURATION := 0.72
 const SPELL_DURATION := 0.65
@@ -69,6 +79,8 @@ var _was_on_floor: bool = true
 var _nearest: Interactable = null
 var _spawn_position := Vector3(0.0, 1.2, 16.0)
 var _interactable_scan_timer: float = 0.0
+var _visit_scan_timer: float = 0.0
+var _world_root_cache: WorldRoot
 
 func _ready() -> void:
 	add_to_group("player")
@@ -260,6 +272,10 @@ func _physics_process(delta: float) -> void:
 		camera_rig.recenter_behind(rotation.y)
 
 	_enforce_anti_clip_safety()
+	_visit_scan_timer -= delta
+	if _visit_scan_timer <= 0.0:
+		_visit_scan_timer = LANDMARK_SCAN_INTERVAL
+		_scan_landmark_visits()
 	_update_target_lock(delta)
 	_update_vitals_regen(delta)
 	_interactable_scan_timer -= delta
@@ -273,26 +289,36 @@ func _enforce_anti_clip_safety() -> void:
 	if zone == "village":
 		global_position.x = clampf(global_position.x, -114.5, 114.5)
 		global_position.z = clampf(global_position.z, -114.5, 114.5)
-		var wr := get_tree().get_first_node_in_group("world_root") as WorldRoot
+		var wr := _world_root()
 		if wr != null and wr.terrain != null:
 			var min_y := wr.terrain.height_at(global_position.x, global_position.z) - 0.85
 			if global_position.y < min_y:
 				global_position.y = min_y + 0.90
 				velocity.y = maxf(0.0, velocity.y)
-		# Check outdoor landmark visit triggers for Exploration & Story Quests
-		var p2 := Vector2(global_position.x, global_position.z)
-		if p2.distance_to(Vector2(66.0, -18.0)) < 11.5:
-			GameManager.report_visit("ruins")
-		elif p2.distance_to(Vector2(-62.0, -24.0)) < 11.5:
-			GameManager.report_visit("monster_camp")
-		elif p2.distance_to(Vector2(-56.0, 44.0)) < 11.5:
-			GameManager.report_visit("sacred_grove")
-		elif p2.distance_to(Vector2(-14.0, -60.0)) < 11.5:
-			GameManager.report_visit("cave")
 	else:
 		if global_position.y < -3.5:
 			global_position.y = 0.25
 			velocity.y = 0.0
+
+## WorldRoot lookup, cached so the physics tick does not query the group.
+func _world_root() -> WorldRoot:
+	if not is_instance_valid(_world_root_cache):
+		_world_root_cache = get_tree().get_first_node_in_group("world_root") as WorldRoot
+	return _world_root_cache
+
+## Outdoor landmark visit triggers for exploration and story quests. Runs at
+## LANDMARK_SCAN_INTERVAL instead of every physics tick: reporting a visit
+## walks the whole quest log, and standing inside a radius used to do that
+## 60 times per second.
+func _scan_landmark_visits() -> void:
+	if zone != "village":
+		return
+	var p2 := Vector2(global_position.x, global_position.z)
+	for landmark: Dictionary in LANDMARK_VISITS:
+		var center: Vector2 = landmark["center"]
+		if p2.distance_to(center) < LANDMARK_VISIT_RADIUS:
+			GameManager.report_visit(String(landmark["id"]))
+			return
 
 func toggle_target_lock() -> Node3D:
 	var candidates: Array[Node3D] = []
@@ -386,7 +412,7 @@ func _detect_surface() -> String:
 		return "wood"
 	if zone == "guild" or zone == "dungeon":
 		return "stone"
-	var wr := get_tree().get_first_node_in_group("world_root") as WorldRoot
+	var wr := _world_root()
 	if wr != null and wr.terrain != null:
 		var gx := global_position.x
 		var gz := global_position.z
@@ -394,7 +420,7 @@ func _detect_surface() -> String:
 			AudioManager.update_biome_ambience(zone, wr.terrain.biome_at(gx, gz))
 		if wr.terrain.is_water_at(gx, gz):
 			return "water"
-		if wr.terrain.is_road_at(gx, gz) or Vector2(gx, gz).length() <= Terrain.VILLAGE_RADIUS:
+		if wr.terrain.is_road_at(gx, gz):
 			return "stone"
 	return "grass"
 

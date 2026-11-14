@@ -71,6 +71,9 @@ func _run() -> void:
 	await _teleport_and_measure("Zone 6 · Hero Cottage Interior", Vector3(500.0, 0.6, 2.2), "house")
 	await _teleport_and_measure("Zone 7 · Sunken Crypt Dungeon & Boss Sanctum", Vector3(-496.0, 0.6, 28.5), "dungeon")
 
+	# Attribute the per-frame draw calls to their source (UI layers vs 3D).
+	await _ui_draw_call_breakdown(ui as UIRoot)
+
 	# Return to village before structural audit so overworld counts are visible
 	_player.teleport(Vector3(0.0, 0.6, 12.0), "village")
 	await _frames(6)
@@ -126,6 +129,103 @@ func _measure(label: String) -> void:
 	_lines.append("  objects:          %d" % int(max_objects))
 	_lines.append("  static memory:    %.1f MB" % (max_mem / 1048576.0))
 	_lines.append("  fps (min, this driver): %.1f" % min_fps)
+	_flush()
+
+## Peak draw calls / objects over SAMPLE_FRAMES, after letting the render
+## statistics catch up with a visibility change (they lag by one frame).
+func _sample_draws() -> Dictionary:
+	await _frames(4)
+	var vp_rid := get_viewport().get_viewport_rid()
+	var total := 0.0
+	var objects := 0.0
+	var scene_3d := 0
+	for i in SAMPLE_FRAMES:
+		await get_tree().process_frame
+		total = maxf(total, Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
+		objects = maxf(objects, Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))
+		var d_vis := RenderingServer.viewport_get_render_info(vp_rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME)
+		var d_shd := RenderingServer.viewport_get_render_info(vp_rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME)
+		scene_3d = maxi(scene_3d, d_vis + d_shd)
+	return {"total": int(total), "objects": int(objects), "scene_3d": scene_3d}
+
+## Hides UI layers one at a time in a cheap 3D zone and records how many draw
+## calls each one accounts for. Everything is restored afterwards.
+func _ui_draw_call_breakdown(ui: UIRoot) -> void:
+	_lines.append("")
+	_lines.append("UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)")
+	if ui == null or ui.hud == null or ui.touch == null:
+		_lines.append("  skipped: UI root, HUD or touch controls missing")
+		_flush()
+		return
+	_player.teleport(Vector3(500.0, 0.6, 2.2), "house")
+	await _frames(5)
+	var hud_was := ui.hud.visible
+	var touch_was := ui.touch.visible
+	var layer_was := ui.visible
+	ui.hud.visible = true
+	ui.touch.visible = true
+	ui.visible = true
+
+	var full: Dictionary = await _sample_draws()
+	ui.touch.visible = false
+	var no_touch: Dictionary = await _sample_draws()
+	ui.touch.visible = true
+	ui.hud.visible = false
+	var no_hud: Dictionary = await _sample_draws()
+	ui.touch.visible = false
+	var no_hud_touch: Dictionary = await _sample_draws()
+	ui.visible = false
+	var no_ui: Dictionary = await _sample_draws()
+
+	# Per-panel attribution inside the HUD (each panel hidden on its own).
+	ui.visible = true
+	ui.hud.visible = true
+	ui.touch.visible = false
+	var hud_base: Dictionary = await _sample_draws()
+	var hud := ui.hud
+	var panels: Array = [
+		["vitals panel (StatsGlassPanel)", hud.find_child("StatsGlassPanel", true, false)],
+		["quest tracker", hud.quest_panel],
+		["top-centre action dock", hud.find_child("TopCenterActionDock", true, false)],
+		["minimap", hud.minimap],
+		["clock + weather pill", hud.find_child("DayWeatherPanel", true, false)],
+		["city district pill", hud.find_child("RoyalCityDistrictPanel", true, false)],
+		["notifications", hud.notifications],
+	]
+	var panel_lines: PackedStringArray = []
+	for entry: Array in panels:
+		var panel := entry[1] as CanvasItem
+		if panel == null or not panel.visible:
+			panel_lines.append("  HUD %-32s not visible" % String(entry[0]))
+			continue
+		panel.visible = false
+		var without: Dictionary = await _sample_draws()
+		panel.visible = true
+		panel_lines.append("  HUD %-32s %4d draw calls" % [
+			String(entry[0]), int(hud_base["total"]) - int(without["total"])])
+
+	ui.visible = layer_was
+	ui.hud.visible = hud_was
+	ui.touch.visible = touch_was
+	await _frames(2)
+
+	var rows := [
+		["all UI visible", full],
+		["touch controls hidden", no_touch],
+		["HUD hidden", no_hud],
+		["HUD + touch hidden", no_hud_touch],
+		["entire UI layer hidden", no_ui],
+	]
+	for row: Array in rows:
+		var sample: Dictionary = row[1]
+		_lines.append("  %-24s total %4d | 3D (visible+shadow) %4d | objects %4d" % [
+			String(row[0]), int(sample["total"]), int(sample["scene_3d"]), int(sample["objects"])])
+	_lines.append("  => touch controls: %d draw calls" % (int(full["total"]) - int(no_touch["total"])))
+	_lines.append("  => HUD:            %d draw calls" % (int(full["total"]) - int(no_hud["total"])))
+	_lines.append("  => other UI nodes: %d draw calls" % (int(no_hud_touch["total"]) - int(no_ui["total"])))
+	_lines.append("  => non-UI (3D):    %d draw calls" % int(no_ui["total"]))
+	_lines.append("  HUD per panel (touch hidden, HUD total %d):" % (int(hud_base["total"]) - int(no_ui["total"])))
+	_lines.append_array(panel_lines)
 	_flush()
 
 func _frames(count: int) -> void:

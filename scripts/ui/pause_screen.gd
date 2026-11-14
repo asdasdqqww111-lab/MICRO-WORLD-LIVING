@@ -110,6 +110,15 @@ func refresh() -> void:
 		refresh())
 	toggles.add_child(touch_toggle)
 
+	var haptics_toggle := UIFactory.button("%s: %s" % [Localization.tr_key("haptics"), on_txt if SettingsManager.haptics_enabled else off_txt], 42)
+	haptics_toggle.name = "HapticsToggle"
+	haptics_toggle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	haptics_toggle.pressed.connect(func() -> void:
+		SettingsManager.haptics_enabled = not SettingsManager.haptics_enabled
+		SettingsManager.save_settings()
+		refresh())
+	toggles.add_child(haptics_toggle)
+
 	var overlay := UIFactory.button(("%s: %s" % ["تشخيص الأداء (F3)" if ar else "Dev Diagnostics (F3)", on_txt if SettingsManager.show_performance_overlay else off_txt]), 42)
 	overlay.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	overlay.pressed.connect(func() -> void:

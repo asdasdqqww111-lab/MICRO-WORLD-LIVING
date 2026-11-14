@@ -12,6 +12,10 @@ const KINDS := [
 	"sprint", "sparkle", "stone", "book",
 	"burst", "hand", "potion", "default",
 	"btn_circle", "btn_attack", "btn_dock", "slot_box",
+	"heavy", "dodge", "jump", "spell",
+	"shield", "target", "talk", "gear",
+	"potion_blue", "food", "btn_blue", "btn_green",
+	"joy_base", "joy_knob", "btn_pill", "default2",
 ]
 
 static var _atlas_tex: ImageTexture = null
@@ -201,11 +205,96 @@ static func _rasterize_icon(img: Image, ox: int, oy: int, k: String) -> void:
 			_ring(img, ox, oy, 32.0, 38.0, 14.2, 2.0, Color(0.86, 0.92, 0.96, 1.0))
 			_box(img, ox, oy, 27, 13, 10, 12, Color(0.86, 0.92, 0.96, 1.0))
 		"btn_circle":
-			_disc(img, ox, oy, 32.0, 32.0, 29.0, Color(0.14, 0.15, 0.14, 0.80))
-			_ring(img, ox, oy, 32.0, 32.0, 28.0, 1.8, Color(0.76, 0.68, 0.44, 0.86))
+			_disc(img, ox, oy, 32.0, 32.0, 29.0, Color(0.07, 0.09, 0.12, 0.62))
+			_ring(img, ox, oy, 32.0, 32.0, 28.0, 1.7, Color(0.93, 0.92, 0.86, 0.80))
 		"btn_attack":
-			_disc(img, ox, oy, 32.0, 32.0, 29.5, Color(0.16, 0.14, 0.11, 0.86))
-			_ring(img, ox, oy, 32.0, 32.0, 28.2, 2.3, Color(0.88, 0.74, 0.40, 0.95))
+			_disc(img, ox, oy, 32.0, 32.0, 29.5, Color(0.58, 0.13, 0.12, 0.84))
+			_disc(img, ox, oy, 32.0, 32.0, 23.0, Color(0.74, 0.20, 0.16, 0.86))
+			_ring(img, ox, oy, 32.0, 32.0, 28.2, 2.3, Color(0.98, 0.84, 0.46, 0.96))
+		"btn_blue":
+			_disc(img, ox, oy, 32.0, 32.0, 29.0, Color(0.10, 0.22, 0.46, 0.74))
+			_ring(img, ox, oy, 32.0, 32.0, 28.0, 1.8, Color(0.62, 0.84, 1.0, 0.90))
+		"btn_green":
+			_disc(img, ox, oy, 32.0, 32.0, 29.0, Color(0.10, 0.36, 0.20, 0.78))
+			_ring(img, ox, oy, 32.0, 32.0, 28.0, 2.0, Color(0.66, 1.0, 0.72, 0.94))
+		"btn_pill":
+			_box(img, ox, oy, 2, 2, 60, 60, Color(0.66, 1.0, 0.72, 0.90))
+			_box(img, ox, oy, 4, 4, 56, 56, Color(0.07, 0.20, 0.13, 0.88))
+		"joy_base":
+			_disc(img, ox, oy, 32.0, 32.0, 30.0, Color(0.86, 0.90, 0.92, 0.13))
+			_ring(img, ox, oy, 32.0, 32.0, 29.4, 0.9, Color(0.95, 0.96, 0.94, 0.55))
+			for jd: Vector2 in [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]:
+				var jt := Vector2(32.0, 32.0) + jd * 25.0
+				var jp := Vector2(-jd.y, jd.x) * 2.6
+				_seg(img, ox, oy, jt, jt - jd * 3.0 + jp, 0.7, Color(0.96, 0.97, 0.94, 0.62))
+				_seg(img, ox, oy, jt, jt - jd * 3.0 - jp, 0.7, Color(0.96, 0.97, 0.94, 0.62))
+		"joy_knob":
+			_disc(img, ox, oy, 32.0, 32.0, 28.0, Color(0.90, 0.92, 0.92, 0.62))
+			_ring(img, ox, oy, 32.0, 32.0, 27.6, 1.6, Color(1.0, 1.0, 1.0, 0.86))
+		"heavy":
+			# War hammer: heavy strike.
+			_seg(img, ox, oy, Vector2(18, 50), Vector2(38, 26), 2.8, Color(0.74, 0.54, 0.32, 1.0))
+			_seg(img, ox, oy, Vector2(30, 14), Vector2(50, 32), 7.0, cream)
+			_seg(img, ox, oy, Vector2(27, 11), Vector2(33, 17), 7.6, gold)
+		"dodge":
+			# Double chevron: dash.
+			_seg(img, ox, oy, Vector2(14, 16), Vector2(30, 32), 3.0, cream)
+			_seg(img, ox, oy, Vector2(30, 32), Vector2(14, 48), 3.0, cream)
+			_seg(img, ox, oy, Vector2(32, 16), Vector2(48, 32), 3.0, Color(0.68, 0.94, 1.0, 1.0))
+			_seg(img, ox, oy, Vector2(48, 32), Vector2(32, 48), 3.0, Color(0.68, 0.94, 1.0, 1.0))
+		"jump":
+			# Up arrow.
+			_seg(img, ox, oy, Vector2(32, 50), Vector2(32, 18), 3.6, cream)
+			_seg(img, ox, oy, Vector2(32, 13), Vector2(17, 29), 3.4, cream)
+			_seg(img, ox, oy, Vector2(32, 13), Vector2(47, 29), 3.4, cream)
+		"spell":
+			# Flame orb.
+			_disc(img, ox, oy, 32.0, 37.0, 14.0, Color(0.42, 0.74, 1.0, 1.0))
+			_seg(img, ox, oy, Vector2(32, 34), Vector2(34, 11), 6.0, Color(0.42, 0.74, 1.0, 1.0))
+			_disc(img, ox, oy, 32.0, 39.0, 7.0, Color(0.92, 0.98, 1.0, 1.0))
+		"shield":
+			var sh := PackedVector2Array([Vector2(13, 13), Vector2(51, 13), Vector2(51, 32), Vector2(32, 54), Vector2(13, 32)])
+			var sh_in := PackedVector2Array([Vector2(18, 18), Vector2(46, 18), Vector2(46, 31), Vector2(32, 47), Vector2(18, 31)])
+			for spy in range(10, 56):
+				for spx in range(10, 54):
+					var sp := Vector2(float(spx) + 0.5, float(spy) + 0.5)
+					if Geometry2D.is_point_in_polygon(sp, sh_in):
+						_put(img, ox + spx, oy + spy, Color(0.36, 0.56, 0.88, 1.0))
+					elif Geometry2D.is_point_in_polygon(sp, sh):
+						_put(img, ox + spx, oy + spy, cream)
+			_seg(img, ox, oy, Vector2(32, 21), Vector2(32, 42), 1.8, cream)
+			_seg(img, ox, oy, Vector2(22, 28), Vector2(42, 28), 1.8, cream)
+		"target":
+			_ring(img, ox, oy, 32.0, 32.0, 15.0, 2.4, cream)
+			_disc(img, ox, oy, 32.0, 32.0, 4.2, Color(0.98, 0.42, 0.34, 1.0))
+			for td: Vector2 in [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]:
+				_seg(img, ox, oy, Vector2(32, 32) + td * 12.0, Vector2(32, 32) + td * 23.0, 2.2, cream)
+		"talk":
+			# Open hand: use / talk / pick up.
+			var skin := Color(0.99, 0.93, 0.80, 1.0)
+			_seg(img, ox, oy, Vector2(22, 32), Vector2(42, 32), 6.0, skin)
+			_seg(img, ox, oy, Vector2(24, 42), Vector2(40, 42), 7.0, skin)
+			for hf in 4:
+				var hx := 21.0 + float(hf) * 7.0
+				_seg(img, ox, oy, Vector2(hx, 30), Vector2(hx, 13.0 + absf(float(hf) - 1.5) * 2.4), 2.7, skin)
+			_seg(img, ox, oy, Vector2(20, 40), Vector2(11, 30), 2.8, skin)
+		"gear":
+			_ring(img, ox, oy, 32.0, 32.0, 12.5, 5.0, cream)
+			for gi in 8:
+				var ga := float(gi) / 8.0 * TAU
+				var gv := Vector2(cos(ga), sin(ga))
+				_seg(img, ox, oy, Vector2(32, 32) + gv * 17.0, Vector2(32, 32) + gv * 22.0, 3.2, cream)
+		"potion_blue":
+			_disc(img, ox, oy, 32.0, 38.0, 14.0, Color(0.26, 0.56, 1.0, 1.0))
+			_ring(img, ox, oy, 32.0, 38.0, 14.2, 2.0, Color(0.86, 0.92, 0.96, 1.0))
+			_box(img, ox, oy, 27, 13, 10, 12, Color(0.86, 0.92, 0.96, 1.0))
+		"food":
+			# Drumstick.
+			_disc(img, ox, oy, 38.0, 25.0, 13.5, Color(0.82, 0.48, 0.24, 1.0))
+			_disc(img, ox, oy, 34.0, 22.0, 5.0, Color(0.94, 0.66, 0.38, 1.0))
+			_seg(img, ox, oy, Vector2(29, 35), Vector2(17, 47), 3.0, cream)
+			_disc(img, ox, oy, 15.0, 46.0, 3.6, cream)
+			_disc(img, ox, oy, 19.0, 50.0, 3.6, cream)
 		"btn_dock":
 			_box(img, ox, oy, 3, 3, 58, 58, Color(0.76, 0.72, 0.56, 0.44))
 			_box(img, ox, oy, 5, 5, 54, 54, Color(0.13, 0.17, 0.23, 0.78))
@@ -227,6 +316,16 @@ static func shared_stylebox(kind_key: String, margin: int = 0, mod: Color = Colo
 		sb.content_margin_top = margin
 		sb.content_margin_bottom = margin
 	return sb
+
+## The shared atlas texture and the pixel region of one kind inside it, for
+## controls that draw their own art (joystick) in a single draw call each.
+static func atlas() -> ImageTexture:
+	_ensure_atlas()
+	return _atlas_tex
+
+static func region(kind_key: String) -> Rect2:
+	_ensure_atlas()
+	return _kind_uv.get(kind_key, _kind_uv["default"])
 
 func _draw() -> void:
 	_ensure_atlas()

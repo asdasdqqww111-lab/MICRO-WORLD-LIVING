@@ -70,6 +70,10 @@ func _build_meshes() -> void:
 	_label.position = Vector3(0.0, 3.45, 0.0)
 	add_child(_label)
 
+var _label_dist: int = -1
+var _label_title: String = ""
+var _player_ref: Player
+
 func _process(delta: float) -> void:
 	_time += delta
 	_refresh_accum += delta
@@ -79,7 +83,9 @@ func _process(delta: float) -> void:
 	if not has_waypoint:
 		visible = false
 		return
-	var player := get_tree().get_first_node_in_group("player") as Player
+	if not is_instance_valid(_player_ref):
+		_player_ref = get_tree().get_first_node_in_group("player") as Player
+	var player := _player_ref
 	if player == null:
 		visible = false
 		return
@@ -92,9 +98,13 @@ func _process(delta: float) -> void:
 	_diamond_top.position.y = 2.75 + bob
 	_diamond_top.rotation.y = _time * 1.9
 	_ring.rotation.y = -_time * 1.2
-	if _label != null:
+	# Rebuild the label text only when the rounded distance or title changes.
+	var whole := int(round(dist))
+	if _label != null and (whole != _label_dist or target_title != _label_title):
+		_label_dist = whole
+		_label_title = target_title
 		var m_unit := "م" if Localization.is_arabic() else "m"
-		_label.text = "◆ %s (%d%s)" % [target_title, int(round(dist)), m_unit]
+		_label.text = "◆ %s (%d%s)" % [target_title, whole, m_unit]
 
 func set_custom_pin(world_pos: Vector3, pin_label: String) -> void:
 	custom_pin_active = true
@@ -176,7 +186,7 @@ func _resolve_npc_or_door(npc_id: String, pzone: String) -> Vector3:
 	var guild_npcs := ["guild_receptionist", "guild_master", "quartermaster", "combat_trainer", "veteran_lyra", "recruit_finn"]
 	var npc_in_guild := guild_npcs.has(npc_id)
 	if npc_in_guild and pzone != "guild":
-		return world_root.landmarks.get("guild_door", Vector3(0.0, 0.0, -18.4)) as Vector3
+		return world_root.landmarks.get("guild_door", CityPlan.GUILD_DOOR) as Vector3
 	if not npc_in_guild and pzone == "guild":
 		return world_root.guild_interior.get("exit", Vector3(500.0, 0.0, 211.4)) as Vector3
 	if not npc_in_guild and pzone == "dungeon":
@@ -184,7 +194,7 @@ func _resolve_npc_or_door(npc_id: String, pzone: String) -> Vector3:
 	var npc := world_root.find_npc(npc_id)
 	if npc != null:
 		return npc.global_position
-	return Vector3(0.0, 0.2, 2.0)
+	return CityPlan.PLAZA + Vector3(0.0, 0.2, 3.0)
 
 func _terrain_pos(x: float, z: float) -> Vector3:
 	var y := world_root.terrain.height_at(x, z) if world_root.terrain != null else 0.0
@@ -195,7 +205,7 @@ func _resolve_quest_objective_pos(quest_id: String, pzone: String) -> Vector3:
 		"main_guild_call":
 			if pzone == "guild":
 				return _resolve_npc_or_door("guild_receptionist", pzone)
-			return world_root.landmarks.get("guild_door", Vector3(0.0, 0.0, -18.4)) as Vector3
+			return world_root.landmarks.get("guild_door", CityPlan.GUILD_DOOR) as Vector3
 		"skeleton_menace", "contract_forest_cull", "healer_herbs", "city_west_timber_aid":
 			if pzone != "village":
 				return _resolve_npc_or_door("farmer", pzone)
@@ -211,7 +221,7 @@ func _resolve_quest_objective_pos(quest_id: String, pzone: String) -> Vector3:
 		"smith_ore_supply", "city_scholar_golem", "contract_rank_b_golem":
 			return _terrain_pos(58.0, -6.0)
 		"city_apprentice_ingots":
-			return Vector3(13.8, 0.0, -6.2)
+			return Vector3(-4.2, 0.0, 9.4)   # Blacksmith forge
 		"city_innkeeper_feast":
 			return _terrain_pos(-20.0, 44.0)
 		"city_ranger_grove":
@@ -223,4 +233,4 @@ func _resolve_quest_objective_pos(quest_id: String, pzone: String) -> Vector3:
 				return world_root.dungeon.get("boss_spawn", Vector3(-496.0, 0.4, 34.0)) as Vector3
 			return world_root.landmarks.get("dungeon_entrance", Vector3(58.0, 0.2, 22.0)) as Vector3
 		_:
-			return Vector3(0.0, 0.2, 2.0)
+			return CityPlan.PLAZA + Vector3(0.0, 0.2, 3.0)

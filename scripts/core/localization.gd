@@ -40,6 +40,7 @@ const STRINGS := {
 	"music_vol": {"en": "Music Volume", "ar": "صوت الموسيقى"},
 	"sfx_vol": {"en": "SFX Volume", "ar": "المؤثرات الصوتية"},
 	"touch_controls": {"en": "Touch Controls", "ar": "أزرار اللمس"},
+	"haptics": {"en": "Vibration", "ar": "الاهتزاز"},
 	"no_save": {"en": "Begin your adventure in Eldoria", "ar": "ابدأ مغامرتك في ربوع إلدوريا"},
 	"gold": {"en": "Gold", "ar": "الذهب"},
 	"hud_level": {"en": "Level", "ar": "المستوى"},
