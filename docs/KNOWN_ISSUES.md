@@ -58,6 +58,17 @@
 ### Open
 - **Triangle budget** is still exceeded in the plaza (about 212k in Village Square, 228k in Active Combat, against 180k) on the MEDIUM preset with shadows. Each character rig is 5-7k triangles and the compact town puts more buildings in view. LOW (the phone default) draws no shadow pass.
 - **No on-device measurements exist.** Draw-call and triangle counts come from a software rasteriser in CI. Frame rate, frame time and heat on Android hardware are unmeasured, and the mobile-only settings (resolution cap, single shadow split, 1024 px shadow map) are not exercised by CI.
-- About 45 MB of the APK is the Godot engine library for two CPU architectures. Shipping `arm64-v8a` only would save roughly 20 MB but drops 32-bit phones.
-- Shader compilation hitches the first time a material appears are a Godot 4.3 Mobile limitation; Godot 4.4 addresses it and would need a planned engine upgrade.
 - `TouchControls.menu_action` is still never emitted (the menu button lives in the HUD dock).
+
+## Engine upgrade and 64-bit only build (same branch, third round)
+
+### Done
+- **Godot 4.3 -> 4.4.1.** Both workflows install 4.4.1 and its export templates (version set once in the workflow `env` block). Acceptance 215/0 and tower 62/0 on the new engine; no script errors or new engine warnings in the CI logs; all 14 screenshots render.
+- **2D batching arrives with 4.4.** CI probe, Hero Cottage Interior: 119 -> 75 draw calls per frame (HUD 44 -> 24, touch controls 57 -> 30). Village Square total 271 -> 171.
+- **`arm64-v8a` only.** The Android preset no longer ships `armeabi-v7a`; debug APK about 69.5 MB -> 47.1 MB. 32-bit phones cannot install this build.
+- **Engine-generated files.** Godot 4.4 writes a `.uid` file next to every script and shader and refreshes `.import` files. The probe workflow commits them with the evidence so the working tree stays clean.
+
+### Open
+- **Not verified on a phone.** The 4.4.1 build has only run on CI (headless and a software Vulkan rasteriser). Start-up, frame rate and the expected reduction in first-appearance shader hitches on Android hardware are unmeasured.
+- The probe reports more 3D draw calls in the plaza on 4.4.1 (72 -> 117) while the total fell; whether the engine counts differently or draws more was not investigated.
+- Every CI build is signed with a freshly generated debug key, so a new APK cannot be installed over an older one; the old app has to be removed first (its save data goes with it). A fixed keystore stored as a repository secret would fix this.
