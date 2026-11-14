@@ -24,7 +24,7 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T00:27:23
+run at: 2026-11-14T00:34:44
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -44,10 +44,10 @@ Zone 2 · Active Combat (Village + 3 Skeletons)
   static memory:    214.9 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    43  [OK]
-  total draw calls: 321  [WARN]
-  triangles (max):  88399  [OK]
-  objects:          321
+  3D draw calls:    29  [OK]
+  total draw calls: 307  [WARN]
+  triangles (max):  85699  [OK]
+  objects:          307
   static memory:    214.7 MB
   fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
@@ -63,21 +63,21 @@ Zone 5 · Adventurers Guild Grand Hall Interior
   triangles (max):  45371  [OK]
   objects:          339
   static memory:    215.0 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 3.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    17  [OK]
   total draw calls: 324  [WARN]
   triangles (max):  12830  [OK]
   objects:          324
-  static memory:    215.3 MB
-  fps (min, this driver): 3.0
+  static memory:    215.4 MB
+  fps (min, this driver): 4.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    45  [OK]
   total draw calls: 349  [WARN]
   triangles (max):  74804  [OK]
   objects:          349
-  static memory:    215.9 MB
-  fps (min, this driver): 1.0
+  static memory:    216.0 MB
+  fps (min, this driver): 2.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
   all UI visible           total  324 | 3D (visible+shadow)   17 | objects  324
@@ -100,8 +100,8 @@ UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2095
-  MeshInstance3D:       635
+  nodes total:          2094
+  MeshInstance3D:       634
   MultiMeshInstance3D:  21 (batches) / 2801 instances
   GPUParticles3D:       2
   omni lights:          20
@@ -126,9 +126,7 @@ TOP TRIANGLE CONSUMERS (whole world)
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
 
-SHADOW / LOD: casters=37  shadow_off=598  with_visibility_range=594
+SHADOW / LOD: casters=37  shadow_off=597  with_visibility_range=594
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:604)

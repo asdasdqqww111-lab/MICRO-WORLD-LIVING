@@ -39,3 +39,5 @@ WARNING: Target object freed before starting, aborting Tweener.
 [shot] all 13 screenshots captured successfully
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:604)
