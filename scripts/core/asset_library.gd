@@ -21,7 +21,7 @@ const STYLIZED_ROCKS_DIR := "res://assets/stylized_nature/rocks/"
 const STYLIZED_FOLIAGE_DIR := "res://assets/stylized_nature/foliage/"
 
 const CHARACTER_DIR := "res://assets/models/characters/"
-const PLAYER_DIR := "res://assets/characters/player/"
+const PLAYER_DIR := "res://assets/kaykit_adventurers/"
 const NPC_DIR := "res://assets/characters/npcs/"
 const GEAR_DIR := "res://assets/characters/gear/"
 const HEX_DIR := "res://assets/models/hexagon/"

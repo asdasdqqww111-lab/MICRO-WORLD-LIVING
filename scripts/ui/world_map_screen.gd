@@ -48,15 +48,15 @@ static func _ensure_relief_texture(terrain: Terrain) -> ImageTexture:
 			else:
 				var biome := terrain.biome_at(wx, wz)
 				match biome:
-					"village": col = Color(0.62, 0.57, 0.46)
-					"meadow": col = Color(0.43, 0.57, 0.30)
+					"city", "village": col = Color(0.62, 0.57, 0.46)
+					"meadow", "temperate_meadow": col = Color(0.43, 0.57, 0.30)
 					"lakeside_birch": col = Color(0.38, 0.55, 0.34)
 					"dense_woodland", "ancient_grove": col = Color(0.22, 0.39, 0.21)
 					"rocky_hills": col = Color(0.48, 0.45, 0.39)
 					"pine_highlands": col = Color(0.27, 0.38, 0.28)
 					"alpine": col = Color(0.84, 0.86, 0.90)
 				# Inside Royal City walls: warm parchment-stone districts
-				if r < 37.0:
+				if r < CityPlan.WALL_RADIUS:
 					col = col.lerp(Color(0.68, 0.62, 0.50), 0.65)
 				if terrain.is_road_at(wx, wz):
 					col = Color(0.78, 0.70, 0.54) if r < 38.5 else Color(0.68, 0.56, 0.39)
@@ -179,9 +179,9 @@ func refresh() -> void:
 	legend.add_child(UIFactory.hsep())
 	legend.add_child(UIFactory.label("انتقال التوجيه السريع" if ar else "Quick Waypoint Focus", 15, UIFactory.GOLD))
 	var quick_spots := [
-		[Vector3(0.0, 0.0, -18.5), "نقابة المغامرين" if ar else "Adventurers Guild"],
-		[Vector3(-23.0, 0.0, -19.5), "القلعة الملكية" if ar else "Royal Citadel"],
-		[Vector3(14.5, 0.0, -5.5), "الحدادة الملكية" if ar else "Royal Forge"],
+		[CityPlan.GUILD_DOOR + Vector3(0.0, 0.0, 2.0), "نقابة المغامرين" if ar else "Adventurers Guild"],
+		[CityPlan.lot_front("Market", 1.4), "السوق الملكي" if ar else "Royal Market"],
+		[Vector3(-4.2, 0.0, 7.6), "الحدادة الملكية" if ar else "Royal Forge"],
 		[Vector3(58.0, 0.2, 22.0), "مدخل السرداب الغارق" if ar else "Sunken Crypt"],
 		[Vector3(66.0, 1.0, -18.0), "الأطلال القديمة" if ar else "Ancient Ruins"],
 		[Vector3(-56.0, 1.0, 44.0), "الأجمة المقدسة" if ar else "Sacred Grove"],
@@ -293,53 +293,45 @@ func _draw_map() -> void:
 
 	var px_per_m := rect.size.x / (230.0 / _zoom)
 
-	# 2. Architectural Vector Layer: Walled Royal Capital City (Walls, Bastions, 4 Gates & 17 Buildings!)
+	# 2. Architectural vector layer: drawn straight from CityPlan, so the map
+	# always shows the real wall ring, gates and building lots.
 	var city_center := _world_to_map(0.0, 0.0, rect)
-	var wall_r_px := 37.2 * px_per_m
-	# 4 Gate gaps at N (-PI/2), E (0), S (PI/2), W (PI)
-	var gate_gap := 0.11
-	for arc_seg: Array in [[gate_gap, PI * 0.5 - gate_gap], [PI * 0.5 + gate_gap, PI - gate_gap], [PI + gate_gap, PI * 1.5 - gate_gap], [-PI * 0.5 + gate_gap, -gate_gap]]:
-		_canvas.draw_arc(city_center, wall_r_px, float(arc_seg[0]), float(arc_seg[1]), 24, Color(0.20, 0.16, 0.12, 0.95), maxf(3.0, 1.8 * px_per_m))
-		_canvas.draw_arc(city_center, wall_r_px, float(arc_seg[0]), float(arc_seg[1]), 24, Color(0.88, 0.82, 0.70, 0.96), maxf(1.6, 1.0 * px_per_m))
+	var wall_r_px := CityPlan.WALL_RADIUS * px_per_m
+	# Gate gaps at E (0), S (PI/2) and W (PI); the citadel closes the north side.
+	var gate_gap := 0.09
+	for arc_seg: Array in [[gate_gap, PI * 0.5 - gate_gap], [PI * 0.5 + gate_gap, PI - gate_gap], [PI + gate_gap, TAU - gate_gap]]:
+		_canvas.draw_arc(city_center, wall_r_px, float(arc_seg[0]), float(arc_seg[1]), 32, Color(0.20, 0.16, 0.12, 0.95), maxf(3.0, 1.8 * px_per_m))
+		_canvas.draw_arc(city_center, wall_r_px, float(arc_seg[0]), float(arc_seg[1]), 32, Color(0.88, 0.82, 0.70, 0.96), maxf(1.6, 1.0 * px_per_m))
 
-	# 12 Bastion Watchtowers along City Ramparts
-	for bi: int in 12:
-		var bang := float(bi) / 12.0 * TAU + 0.26
-		var bp := _world_to_map(cos(bang) * 37.2, sin(bang) * 37.2, rect)
-		if rect.has_point(bp):
-			_canvas.draw_circle(bp, maxf(2.6, 1.5 * px_per_m), Color(0.92, 0.86, 0.74))
-			_canvas.draw_arc(bp, maxf(2.6, 1.5 * px_per_m), 0.0, TAU, 10, Color(0.18, 0.14, 0.10), 1.2)
+	# Gate towers flanking each gate.
+	for gi: int in CityPlan.GATE_BEARINGS.size():
+		var gb := deg_to_rad(float(CityPlan.GATE_BEARINGS[gi]))
+		var gate_c := CityPlan.gate_position(gi)
+		var gate_t := Vector3(cos(gb), 0.0, sin(gb)) * (CityPlan.GATE_HALF_OPENING + 2.3)
+		for gside: float in [-1.0, 1.0]:
+			var tp := gate_c + gate_t * gside
+			var bp := _world_to_map(tp.x, tp.z, rect)
+			if rect.has_point(bp):
+				_canvas.draw_circle(bp, maxf(2.6, 1.9 * px_per_m), Color(0.92, 0.86, 0.74))
+				_canvas.draw_arc(bp, maxf(2.6, 1.9 * px_per_m), 0.0, TAU, 10, Color(0.18, 0.14, 0.10), 1.2)
 
-	# 17 Hero City Buildings (Colored Architectural Roof Footprints!)
-	var buildings := [
-		[0.0, -23.5, 9.0, 7.0, Color(0.28, 0.48, 0.78)],   # Adventurers Guild Keep
-		[-25.0, -22.0, 8.5, 8.0, Color(0.32, 0.52, 0.84)], # Royal Sovereign Citadel
-		[15.5, -23.0, 7.5, 6.5, Color(0.82, 0.72, 0.42)],  # Royal Cathedral
-		[26.5, -14.0, 6.5, 6.5, Color(0.56, 0.38, 0.76)],  # Arcane Conservatory
-		[-16.0, -6.0, 5.5, 5.0, Color(0.76, 0.42, 0.28)],  # Hero's Cottage
-		[15.5, -5.5, 6.0, 5.5, Color(0.72, 0.34, 0.24)],   # Grand Royal Forge
-		[-13.5, -17.5, 6.5, 5.5, Color(0.78, 0.48, 0.26)], # Hearthstone Inn
-		[12.5, 10.5, 5.5, 5.0, Color(0.36, 0.66, 0.52)],   # Royal Apothecary
-		[23.5, 4.0, 6.5, 5.5, Color(0.80, 0.62, 0.28)],    # East Trade Exchange
-		[23.0, 16.0, 6.5, 6.0, Color(0.54, 0.56, 0.62)],   # Garrison Barracks
-		[-14.5, 11.5, 5.5, 5.5, Color(0.74, 0.62, 0.40)],  # Royal Granary Mill
-		[-25.5, -3.5, 5.5, 5.0, Color(0.78, 0.52, 0.32)],  # Artisan Bakery
-		[-23.5, 19.5, 5.5, 5.0, Color(0.68, 0.46, 0.32)],  # Timber Guildhall
-	]
-	for b: Array in buildings:
-		var bc := _world_to_map(float(b[0]), float(b[1]), rect)
+	# Building lots (roof colours).
+	for lot_entry: Dictionary in CityPlan.lots():
+		var lpos: Vector3 = lot_entry["pos"]
+		var lhalf: Vector2 = lot_entry["half"]
+		var bc := _world_to_map(lpos.x, lpos.z, rect)
 		if not rect.has_point(bc):
 			continue
-		var bw := maxf(4.0, float(b[2]) * px_per_m)
-		var bh := maxf(3.5, float(b[3]) * px_per_m)
+		var bw := maxf(3.0, lhalf.x * 2.0 * px_per_m)
+		var bh := maxf(3.0, lhalf.y * 2.0 * px_per_m)
 		var br := Rect2(bc - Vector2(bw * 0.5, bh * 0.5), Vector2(bw, bh))
-		_canvas.draw_rect(br, b[4] as Color, true)
+		_canvas.draw_rect(br, lot_entry["roof"] as Color, true)
 		_canvas.draw_rect(br, Color(0.14, 0.11, 0.08, 0.9), false, 1.1)
 
-	# East Stone Bridge across River
-	var bridge_p := _world_to_map(45.5, 2.0, rect)
+	# East Stone Bridge: carries the East Avenue across the river.
+	var bridge_p := _world_to_map(45.5, CityPlan.BRIDGE_Z, rect)
 	if rect.has_point(bridge_p):
-		var br_rect := Rect2(bridge_p - Vector2(4.5 * px_per_m, 2.2 * px_per_m), Vector2(9.0 * px_per_m, 4.4 * px_per_m))
+		var br_rect := Rect2(bridge_p - Vector2(7.8 * px_per_m, 2.4 * px_per_m), Vector2(15.6 * px_per_m, 4.8 * px_per_m))
 		_canvas.draw_rect(br_rect, Color(0.86, 0.80, 0.68), true)
 		_canvas.draw_rect(br_rect, Color(0.20, 0.16, 0.12), false, 1.2)
 
@@ -355,9 +347,9 @@ func _draw_map() -> void:
 
 	# 4. Named World & City Landmarks
 	var marks := [
-		["city", Vector2(0.0, 2.0), "ساحة إلدوريا الملكية" if ar else "Royal Plaza"],
-		["guild", Vector2(0.0, -24.0), "نقابة المغامرين" if ar else "Adventurers Guild"],
-		["citadel", Vector2(-25.0, -22.0), "القلعة الملكية" if ar else "Royal Citadel"],
+		["city", Vector2(0.0, 0.0), "ساحة إلدوريا الملكية" if ar else "Royal Plaza"],
+		["guild", Vector2(0.0, -23.5), "نقابة المغامرين" if ar else "Adventurers Guild"],
+		["bridge", Vector2(45.5, CityPlan.BRIDGE_Z), "الجسر الحجري" if ar else "Stone Bridge"],
 		["ruins", Vector2(66.0, -18.0), "الأطلال القديمة" if ar else "Ancient Ruins"],
 		["crypt", Vector2(58.0, 22.0), "السرداب الغارق" if ar else "Sunken Crypt"],
 		["lake", Vector2(16.0, 54.0), "بحيرة الكريستال" if ar else "Crystal Lake"],

@@ -94,7 +94,9 @@ func _set_bus_volume(bus_name: String, linear: float) -> void:
 func apply_graphics() -> void:
 	var viewport := get_viewport()
 	if viewport != null:
-		viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+		# MSAA already resolves geometry edges; FXAA on top of it is one more
+		# full-screen pass for no visible gain on a phone screen.
+		viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 		viewport.msaa_3d = msaa_3d_level()
 		viewport.scaling_3d_scale = render_scale_3d()
 	EventBus.graphics_settings_changed.emit()
@@ -102,6 +104,8 @@ func apply_graphics() -> void:
 ## 3D MSAA level of the active preset.
 func msaa_3d_level() -> Viewport.MSAA:
 	if graphics_preset == GraphicsPreset.LOW:
+		return Viewport.MSAA_2X
+	if graphics_preset == GraphicsPreset.MEDIUM and is_mobile():
 		return Viewport.MSAA_2X
 	return Viewport.MSAA_4X
 
@@ -111,7 +115,7 @@ func render_scale_3d() -> float:
 		GraphicsPreset.LOW:
 			return 0.82
 		GraphicsPreset.MEDIUM:
-			return 0.95 if is_mobile() else 1.0
+			return 0.90 if is_mobile() else 1.0
 		_:
 			return 1.0
 

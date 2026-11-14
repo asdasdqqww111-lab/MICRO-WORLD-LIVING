@@ -11,7 +11,7 @@ const SUNRISE_HOUR := 6.0
 const SUNSET_HOUR := 19.5
 # Lighting changes slowly (one game minute per real second); 10 updates/s
 # avoids repeatedly rebuilding light/environment state every rendered frame.
-const ATMOSPHERE_UPDATE_INTERVAL := 0.1
+const ATMOSPHERE_UPDATE_INTERVAL := 0.25
 
 var sun: DirectionalLight3D
 var moon: DirectionalLight3D
@@ -107,7 +107,12 @@ func apply_now() -> void:
 			top = top.lerp(rain_grey, _weather_darkness * 0.68)
 			horizon = horizon.lerp(rain_grey, _weather_darkness * 0.68)
 		if panorama_sky_material != null:
-			panorama_sky_material.energy_multiplier = lerpf(0.16, 0.96, daylight) * (1.0 - late_dusk * 0.14) * weather_factor
+			# Changing the sky material forces the radiance cubemap to be
+			# re-rendered, so the brightness moves in 2 % steps: a few dozen
+			# updates per in-game day instead of ten every second.
+			var sky_energy := snappedf(lerpf(0.16, 0.96, daylight) * (1.0 - late_dusk * 0.14) * weather_factor, 0.02)
+			if not is_equal_approx(sky_energy, panorama_sky_material.energy_multiplier):
+				panorama_sky_material.energy_multiplier = sky_energy
 		elif sky_shader_material != null:
 			sky_shader_material.set_shader_parameter("sky_top", Vector3(top.r, top.g, top.b))
 			sky_shader_material.set_shader_parameter("sky_horizon", Vector3(horizon.r, horizon.g, horizon.b))

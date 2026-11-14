@@ -193,7 +193,7 @@ func open_screen(screen_name: String) -> void:
 		current_screen.visible = false
 	current_screen = screen
 	screen.open()
-	touch.reset_state()
+	touch.release_all()   # keeps the sprint latch across menus
 	_refresh_pause_state()
 	EventBus.screen_changed.emit(screen_name)
 
@@ -226,7 +226,7 @@ func _on_shop_requested(npc: Node) -> void:
 		dialog.close()
 	shop.open_for(npc)
 	current_screen = shop
-	touch.reset_state()
+	touch.release_all()   # keeps the sprint latch across menus
 	_refresh_pause_state()
 	EventBus.screen_changed.emit("shop")
 

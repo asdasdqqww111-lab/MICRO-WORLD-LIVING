@@ -7,6 +7,15 @@ extends Interactable
 ## Blacksmith forge access, Chapel blessing, Inn rest, and Merchant shops.
 
 const SPEED := 1.85
+## Characters are drawn up to this distance from the camera and animated a
+## little further out, so nobody is seen frozen.
+const DRAW_DISTANCE := 22.0
+const ANIMATE_DISTANCE := 27.0
+## Obstacle probing runs at 5 Hz, not every frame.
+const STEER_INTERVAL := 0.2
+
+static var _shared_player: Node3D = null
+static var _shared_terrain: Terrain = null
 
 var npc_id: String = ""
 var display_name: String = ""
@@ -31,6 +40,8 @@ var _target: Vector3 = Vector3.ZERO
 var _patrol_idx: int = 0
 var _patrol_pause: float = 0.0
 var _distant_accum: float = 0.0
+var _steer_accum: float = 1.0
+var _steer_dir: Vector3 = Vector3.ZERO
 var _nameplate: Label3D
 var _quest_marker: Label3D
 
@@ -71,7 +82,7 @@ func _build_visual() -> void:
 		visual.configure_gear(visible_gear, hidden_gear)
 		visual.play("idle")
 	add_child(ArtDirection.make_contact_ao(0.52, 0.34))
-	_apply_lod_recursive(visual, 16.0)
+	_apply_lod_recursive(visual, DRAW_DISTANCE)
 
 func _apply_lod_recursive(node: Node, dist: float) -> void:
 	if node is GeometryInstance3D:
@@ -125,12 +136,17 @@ func _process(delta: float) -> void:
 	if not is_visible_in_tree():
 		return
 
-	var player := get_tree().get_first_node_in_group("player") as Node3D
+	if not is_instance_valid(_shared_player):
+		_shared_player = get_tree().get_first_node_in_group("player") as Node3D
+	var player := _shared_player
 	if player != null:
 		var d2 := global_position.distance_squared_to(player.global_position)
 		if _nameplate != null:
-			_nameplate.visible = d2 < 24.0 * 24.0
-		if d2 > 44.0 * 44.0:
+			_nameplate.visible = d2 < 18.0 * 18.0
+		if visual != null:
+			visual.set_lod_active(d2 < ANIMATE_DISTANCE * ANIMATE_DISTANCE)
+		# Out of sight: think and move four times a second instead of every frame.
+		if d2 > ANIMATE_DISTANCE * ANIMATE_DISTANCE:
 			_distant_accum += delta
 			if _distant_accum < 0.25:
 				return
@@ -156,18 +172,24 @@ func _process(delta: float) -> void:
 	var to_target := _target - global_position
 	to_target.y = 0.0
 	if to_target.length() > 0.38:
-		var dir := _steer(to_target.normalized())
+		_steer_accum += delta
+		if _steer_accum >= STEER_INTERVAL or _steer_dir == Vector3.ZERO:
+			_steer_accum = 0.0
+			_steer_dir = _steer(to_target.normalized())
+		var dir := _steer_dir
 		var next_pos := global_position + dir * minf(SPEED * delta, to_target.length())
-		var world_root := get_tree().get_first_node_in_group("world_root")
-		if world_root != null and world_root.get("terrain") != null and next_pos.distance_to(Vector3.ZERO) < 118.0:
-			var terr: Terrain = world_root.get("terrain") as Terrain
-			if terr != null:
-				next_pos.y = terr.height_at(next_pos.x, next_pos.z)
+		if next_pos.length() < 118.0:
+			if not is_instance_valid(_shared_terrain):
+				var world_root := get_tree().get_first_node_in_group("world_root")
+				_shared_terrain = (world_root.get("terrain") as Terrain) if world_root != null else null
+			if _shared_terrain != null:
+				next_pos.y = _shared_terrain.height_at(next_pos.x, next_pos.z)
 		global_position = next_pos
 		rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), 0.14)
 		if visual != null:
 			visual.play("walk")
 	else:
+		_steer_dir = Vector3.ZERO
 		if activity == "work" and patrol_points.size() > 1:
 			_patrol_idx = (_patrol_idx + 1) % patrol_points.size()
 			_patrol_pause = 2.5

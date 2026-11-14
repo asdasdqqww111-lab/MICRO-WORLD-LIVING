@@ -34,6 +34,9 @@ var _slow_mult: float = 1.0
 var _time: float = 0.0
 var _speed_now: float = 0.0
 var _distant_accum: float = 0.0
+var _boss_hp_sent: float = -1.0
+var _boss_phase_sent: int = -1
+var _boss_emit_timer: float = 0.0
 var _steer_timer: float = 0.0
 var _steered_dir: Vector3 = Vector3.ZERO
 var _hp_label: Label3D
@@ -175,7 +178,10 @@ func _physics_process(delta: float) -> void:
 	var distance := INF
 	if player != null and player.is_visible_in_tree():
 		distance = global_position.distance_to(player.global_position)
-		if distance > 56.0 and not data.is_boss:
+		# Animation LOD: nothing is drawn or animated beyond ~46 m.
+		if anim != null:
+			anim.set_lod_active(distance < 46.0 or data.is_boss)
+		if distance > 40.0 and not data.is_boss and not aggro:
 			_distant_accum += delta
 			if _distant_accum < 0.30:
 				return
@@ -199,6 +205,7 @@ func _physics_process(delta: float) -> void:
 			or global_position.distance_to(home) > data.leash_radius):
 		aggro = false
 		if data.is_boss:
+			_boss_hp_sent = -1.0
 			EventBus.boss_health_changed.emit(data.display_name, health.current_health, health.max_health, _boss_phase, false)
 
 	if data.is_boss and aggro and player != null:
@@ -237,7 +244,15 @@ func _physics_process(delta: float) -> void:
 
 func _tick_boss_phase(delta: float, player: Player, distance: float) -> void:
 	var cname := Localization.creature_name(data)
-	EventBus.boss_health_changed.emit(cname, health.current_health, health.max_health, _boss_phase, true)
+	# Only tell the HUD when the bar would actually change (this used to fire
+	# sixty times a second for the whole fight).
+	var hp_now := health.current_health
+	_boss_emit_timer += delta
+	if not is_equal_approx(hp_now, _boss_hp_sent) or _boss_phase != _boss_phase_sent or _boss_emit_timer >= 0.5:
+		_boss_emit_timer = 0.0
+		_boss_hp_sent = hp_now
+		_boss_phase_sent = _boss_phase
+		EventBus.boss_health_changed.emit(cname, hp_now, health.max_health, _boss_phase, true)
 	if _boss_phase == 1 and health.ratio() <= 0.55:
 		_boss_phase = 2
 		EventBus.notify.emit(("%s يدخل المرحلة الثانية — غضب السرداب القرمزي!" % cname) if Localization.is_arabic() else ("%s enters Phase II — Crimson Dread!" % cname))

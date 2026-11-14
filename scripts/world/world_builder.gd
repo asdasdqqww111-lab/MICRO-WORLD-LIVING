@@ -165,183 +165,52 @@ static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array
 # --- 1. Eldoria Village & Outer Landmarks ------------------------------------
 
 static func build_city(parent: Node3D, terrain: Terrain = null) -> Dictionary:
-	var hex := AssetLibrary.HEXAGON_DIR
-	var vdir := AssetLibrary.HEXAGON_DIR
-	var vprop := AssetLibrary.HEXAGON_DIR
-	var rbuild := AssetLibrary.REALISTIC_BUILDINGS_DIR
-	var rnat := AssetLibrary.REALISTIC_NATURE_DIR
-	var nprop := "res://assets/environments/villages/"
-	var b := AssetLibrary.SCALE_BUILDING
+	# The whole town layout (lots, streets, wall ring) lives in CityPlan.
+	_build_city_buildings(parent)
+	_build_city_streets(parent)
+	_build_city_walls(parent)
+	_build_city_furniture(parent)
 
-	# Stylized Storybook Castle-Valley Architecture (KayKit Stylized PBR — 1 surface per building!):
-	var buildings: Array = [
-		# Central Stone Castle Keep + Pointed Blue-Roofed Turret (Guild Castle Anchor, rising proudly above Tavern!)
-		{"path": hex + "building_castle_blue.gltf", "fallback": vdir + "building_castle_blue.gltf",
-			"pos": Vector3(-0.6, 1.4, -25.8), "rot": 0.0, "scale": 10.6,
-			"collider": Vector3(11.5, 14.0, 10.5), "name": "AdventurersGuildExterior"},
-		# Soaring Upper Castle Keep Tower (matches the tall square stone keep silhouette!)
-		{"path": hex + "building_tower_A_green.gltf", "fallback": hex + "building_tower_B_blue.gltf",
-			"pos": Vector3(-1.4, 4.6, -27.2), "rot": 0.0, "scale": 9.8,
-			"collider": Vector3.ZERO, "name": "CastleHighKeepTower"},
-		# Pointed Blue-Roofed Side Turret flanking Castle Keep
-		{"path": hex + "building_tower_B_blue.gltf", "fallback": hex + "building_tower_B_blue.gltf",
-			"pos": Vector3(3.4, 1.5, -23.4), "rot": deg_to_rad(-20.0), "scale": 8.6,
-			"collider": Vector3(4.8, 12.0, 4.8), "name": "CastleBlueTurret"},
-		# Giant Wooden Barrel Tavern / Mill House nestled at the foot of the Castle!
-		{"path": hex + "building_tavern_red.gltf", "fallback": vdir + "building_tavern_yellow.gltf",
-			"pos": Vector3(2.8, 0.0, -17.6), "rot": deg_to_rad(-12.0), "scale": 6.6,
-			"collider": Vector3(6.2, 6.8, 6.2), "name": "Tavern"},
-		# Red-Tiled Medieval Cottages & Round Watchtower on the right flank (matching reference vista!)
-		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
-			"pos": Vector3(9.6, 0.0, -17.6), "rot": deg_to_rad(-8.0), "scale": 8.2,
-			"collider": Vector3(5.8, 6.8, 5.8), "name": "RedCottageEastA"},
-		{"path": hex + "building_home_B_red.gltf", "fallback": hex + "building_home_B_green.gltf",
-			"pos": Vector3(14.6, 0.0, -17.8), "rot": deg_to_rad(-16.0), "scale": 8.2,
-			"collider": Vector3(6.2, 6.8, 6.0), "name": "HouseB"},
-		{"path": hex + "building_tower_B_red.gltf", "fallback": hex + "building_tower_B_blue.gltf",
-			"pos": Vector3(9.8, 0.0, -22.8), "rot": 0.0, "scale": 8.6,
-			"collider": Vector3(4.8, 11.0, 4.8), "name": "EastRedWatchtower"},
-		# Sanctuary Chapel (Northeast)
-		{"path": hex + "building_church_blue.gltf", "fallback": hex + "building_church_green.gltf",
-			"pos": Vector3(22.5, 0.0, -19.5), "rot": deg_to_rad(-148.0), "scale": 8.4,
-			"collider": Vector3(7.6, 10.0, 8.4), "name": "Chapel"},
-		# Player's Cottage (Preserved at (-16, 0, -8) with door at (-16, 0, -2.4))
-		{"path": hex + "building_home_A_red.gltf", "fallback": hex + "building_home_A_green.gltf",
-			"pos": Vector3(-16.0, 0.0, -8.0), "rot": 0.0, "scale": 8.4,
-			"collider": Vector3(6.8, 7.2, 6.8), "name": "HouseA"},
-		# West Timber Cottage
-		{"path": hex + "building_home_B_red.gltf", "fallback": hex + "building_home_A_green.gltf",
-			"pos": Vector3(-25.5, 0.0, -4.2), "rot": deg_to_rad(75.0), "scale": 8.2,
-			"collider": Vector3(6.6, 6.9, 6.8), "name": "HouseC"},
-		# Ironforge Blacksmith (Southwest)
-		{"path": hex + "building_blacksmith_red.gltf", "fallback": hex + "building_blacksmith_green.gltf",
-			"pos": Vector3(-19.0, 0.0, 11.0), "rot": deg_to_rad(-18.0), "scale": 8.4,
-			"collider": Vector3(8.5, 7.6, 8.2), "name": "Blacksmith"},
-		# Village Market Stalls (Southeast)
-		{"path": hex + "building_market_red.gltf", "fallback": hex + "building_market_blue.gltf",
-			"pos": Vector3(16.5, 0.0, 8.5), "rot": deg_to_rad(14.0), "scale": 8.2,
-			"collider": Vector3(7.8, 6.8, 7.6), "name": "Market"},
-		# Guard Barracks & Archery Range (East)
-		{"path": hex + "building_barracks_blue.gltf", "fallback": hex + "building_barracks_red.gltf",
-			"pos": Vector3(25.5, 0.0, 14.0), "rot": deg_to_rad(-65.0), "scale": 8.2,
-			"collider": Vector3(7.8, 7.6, 7.8), "name": "Barracks"},
-		# Farming District Windmill & Lumbermill (Southwest)
-		{"path": hex + "building_windmill_yellow.gltf", "fallback": vdir + "building_windmill_green.gltf",
-			"pos": Vector3(-18.5, 0.0, 23.5), "rot": deg_to_rad(25.0), "scale": 8.4,
-			"collider": Vector3(7.0, 11.5, 7.0), "name": "Windmill"},
-		{"path": hex + "building_lumbermill_green.gltf", "fallback": hex + "building_grain.gltf",
-			"pos": Vector3(-27.5, 0.0, 22.5), "rot": deg_to_rad(38.0), "scale": 8.0,
-			"collider": Vector3(7.4, 7.2, 7.4), "name": "CityGranary"},
-	]
-	for entry: Dictionary in buildings:
-		var chosen := String(entry["path"]) if AssetLibrary.has_model(String(entry["path"])) else String(entry["fallback"])
-		place_model(parent, chosen, entry["pos"] as Vector3, float(entry["rot"]),
-			float(entry["scale"]), entry["collider"] as Vector3, String(entry["name"]))
-
-	# Preserve every legacy anchor above for quests/NPC IDs, then build the larger city around it.
-	_build_city_expansion(parent, terrain)
-
-	# Left-Hillside Ancient Stone Arch Ruin silhouetted against the pine hills & snowy mountains!
+	# Ancient stone arch on the northern hillside, outside the walls.
 	var arch_hill_y := terrain.height_at(-19.0, -47.0) if terrain != null else 3.2
 	if AssetLibrary.has_model("res://assets/environments/medieval_megakit/Wall_Arch.gltf"):
 		place_model(parent, "res://assets/environments/medieval_megakit/Wall_Arch.gltf",
 			Vector3(-19.0, arch_hill_y - 0.15, -47.0), deg_to_rad(18.0), 2.35, Vector3.ZERO, "HillsideStoneArch")
 
-	# Village Well tucked beside the Castle Forecourt (leaving the Southern Meadow vista wide open!)
-	place_model(parent, hex + "building_well_green.gltf", Vector3(-6.5, 0.0, -14.5), 0.0, 7.5,
-		Vector3(2.2, 2.4, 2.2), "CentralWell")
-
-	# Outer Valley Anti-Out-of-Bounds Physics Perimeter Colliders (±116m)
+	# Outer valley out-of-bounds perimeter colliders (+/-116 m).
 	add_box_body(parent, Vector3(0.0, -4.0, -116.0), Vector3(240.0, 38.0, 2.0), "NorthValleyWall")
 	add_box_body(parent, Vector3(0.0, -4.0, 116.0), Vector3(240.0, 38.0, 2.0), "SouthValleyWall")
 	add_box_body(parent, Vector3(-116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "WestValleyWall")
 	add_box_body(parent, Vector3(116.0, -4.0, 0.0), Vector3(2.0, 38.0, 240.0), "EastValleyWall")
 
-	# Town Lanterns tucked beside Castle Forecourt, Cottages & Market (keeping meadow vista pure!)
-	var lantern_spots := [
-		Vector3(-4.2, 0.0, -15.5), Vector3(6.8, 0.0, -15.5),
-		Vector3(-12.5, 0.0, -5.0), Vector3(13.5, 0.0, -14.5),
-		Vector3(-14.5, 0.0, 7.5), Vector3(13.5, 0.0, 6.5),
-		Vector3(-22.0, 0.0, -16.5), Vector3(21.5, 0.0, -14.5),
-	]
-	var lantern_xforms: Array = []
-	for lp: Vector3 in lantern_spots:
-		lantern_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.80), lp))
-	if AssetLibrary.has_model("res://assets/environments/tinytreats_park/street_lantern.gltf"):
-		build_multimesh(parent, "res://assets/environments/tinytreats_park/street_lantern.gltf", lantern_xforms, "CityStreetLanternPosts", false, 68.0)
-	for i: int in lantern_spots.size():
-		if i < 6:
-			_build_street_lantern_light_only(parent, lantern_spots[i])
-
-	# Heraldic Royal Banners flanking Castle Keep & Forecourt (1 MultiMesh!)
-	var flag_xforms: Array = []
-	for fp: Vector3 in [
-		Vector3(-2.8, 0.0, -18.5), Vector3(6.4, 0.0, -18.5),
-		Vector3(19.0, 0.0, -16.5), Vector3(-13.0, 0.0, -5.5),
-	]:
-		flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * (AssetLibrary.SCALE_PROP * 1.18)), fp))
-	build_multimesh(parent, vprop + "flag_blue.gltf", flag_xforms, "CityRoyalBanners", false, 68.0)
-
-	# Village Props & Farm Crop Rows
-	var prop_scale := AssetLibrary.SCALE_PROP
-	var props: Array = [
-		{"model": hex + "barrel.gltf", "pos": Vector3(-15.0, 0.0, 6.5), "s": prop_scale},
-		{"model": hex + "barrel.gltf", "pos": Vector3(-14.0, 0.0, 5.4), "s": prop_scale},
-		{"model": hex + "crate_A_big.gltf", "pos": Vector3(-12.6, 0.0, 7.2), "s": prop_scale},
-		{"model": hex + "crate_A_small.gltf", "pos": Vector3(14.6, 0.0, 5.2), "s": prop_scale},
-		{"model": hex + "sack.gltf", "pos": Vector3(15.4, 0.0, 6.0), "s": prop_scale},
-		{"model": hex + "weaponrack.gltf", "pos": Vector3(-17.4, 0.0, 6.2), "s": prop_scale},
-		{"model": hex + "target.gltf", "pos": Vector3(26.0, 0.0, 10.0), "s": prop_scale},
-		{"model": hex + "tent.gltf", "pos": Vector3(20.5, 0.0, 13.0), "s": prop_scale},
-		{"model": hex + "wheelbarrow.gltf", "pos": Vector3(-16.0, 0.0, 17.5), "s": prop_scale},
-		{"model": nprop + "sign.glb", "pos": Vector3(-12.2, 0.0, -2.5), "s": 2.2},
-	]
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 901
-	for prop: Dictionary in props:
-		if AssetLibrary.has_model(String(prop["model"])):
-			place_model(parent, String(prop["model"]), prop["pos"] as Vector3, rng.randf_range(0.0, TAU), float(prop["s"]))
-
-	# Farming District Wheat & Pumpkin Rows beside Granary Mill (batched MultiMesh)
-	var wheat_xforms: Array = []
-	var pumpkin_xforms: Array = []
-	for rx: int in 2:
-		for rz: int in 3:
-			var fx := -20.5 + float(rx) * 2.1
-			var fz := 16.2 + float(rz) * 1.9
-			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.55), Vector3(fx, 0.0, fz)))
-	for px: int in 4:
-		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.0), Vector3(-20.0 + float(px) * 1.5, 0.0, 23.2)))
-	build_multimesh(parent, "res://assets/environments/villages/crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 42.0)
-	build_multimesh(parent, "res://assets/environments/villages/crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 42.0)
-
-	# Interactive World Stations in Village: Quest Board, Blacksmith Forge, Alchemy Table
+	# Interactive stations: each one stands next to the building it belongs to.
 	var ext_board := QuestBoardProp.new()
 	ext_board.name = "VillageQuestBoard"
 	ext_board.setup("Inspect Adventurers Guild Quest Board")
 	parent.add_child(ext_board)
-	ext_board.global_position = Vector3(5.6, 0.0, -17.2)
+	ext_board.global_position = Vector3(4.3, 0.0, -10.9)
 
 	var forge := CraftingStation.new()
 	forge.name = "BlacksmithForge"
 	forge.setup("forge", "Blacksmith Anvil Forge")
 	parent.add_child(forge)
-	forge.global_position = Vector3(-13.8, 0.0, 10.2)
+	forge.global_position = Vector3(-4.2, 0.0, 9.4)
 
 	var alchemy := CraftingStation.new()
 	alchemy.name = "ChapelAlchemyBench"
 	alchemy.setup("alchemy", "Alchemist's Workbench")
 	parent.add_child(alchemy)
-	alchemy.global_position = Vector3(13.2, 0.0, -14.0)
+	alchemy.global_position = Vector3(19.0, 0.0, -16.6)
 
-	# River, Crystal Lake, East Stone Bridge, Waterfall, Ruins, Cave, Camp, Sacred Grove & Dungeon Entrance!
+	# River, Crystal Lake, stone bridge, ruins, cave, camp, sacred grove and crypt entrance.
 	var outer := _build_water_and_outer_landmarks(parent, terrain)
 
+	var raid_y := terrain.height_at(0.0, 41.0) if terrain != null else 0.0
 	return {
-		"spawn": Vector3(0.0, 0.6, 14.0),
-		"plaza": Vector3(0.0, 0.0, 2.0),
-		"guild_door": Vector3(0.0, 0.0, -18.4),
-		"house_door": Vector3(-16.0, 0.0, -2.4),
+		"spawn": CityPlan.SPAWN,
+		"plaza": CityPlan.PLAZA,
+		"guild_door": CityPlan.GUILD_DOOR,
+		"house_door": CityPlan.HOUSE_DOOR,
 		"dungeon_entrance": outer["dungeon_entrance"],
 		"dungeon_stairs": outer["dungeon_stairs"],
 		"ruins": outer["ruins"],
@@ -350,89 +219,251 @@ static func build_city(parent: Node3D, terrain: Terrain = null) -> Dictionary:
 		"sacred_grove": outer["sacred_grove"],
 		"bridge": outer["bridge"],
 		"lake": Vector3(16.0, 0.0, 54.0),
-		"raid_spawn": Vector3(0.0, 0.5, 41.0),
-		"blacksmith_pos": Vector3(-15.0, 0.0, 10.5),
-		"blacksmith_sleep": Vector3(-19.0, 0.0, 8.0),
-		"farmer_pos": Vector3(-6.0, 0.0, 18.0),
-		"farmer_rest": Vector3(-4.0, 0.0, 12.0),
-		"farmer_sleep": Vector3(-16.0, 0.0, -4.0),
-		"guard_pos": Vector3(31.5, 0.0, -2.5),
-		"guard_sleep": Vector3(25.0, 0.0, 12.0),
+		"raid_spawn": Vector3(0.0, raid_y + 0.5, 41.0),
+		"blacksmith_pos": Vector3(-4.5, 0.0, 7.4),
+		"blacksmith_sleep": CityPlan.lot_center("Blacksmith"),
+		"farmer_pos": Vector3(-13.6, 0.0, 21.0),
+		"farmer_rest": Vector3(-5.0, 0.0, 15.0),
+		"farmer_sleep": CityPlan.lot_center("SouthHouseWestA"),
+		"guard_pos": Vector3(31.5, 0.0, -3.4),
+		"guard_sleep": CityPlan.lot_center("Barracks"),
 	}
 
 # Compatibility entry point for old save data, tests and external callers.
 static func build_village(parent: Node3D, terrain: Terrain = null) -> Dictionary:
 	return build_city(parent, terrain)
 
-static func _build_city_expansion(parent: Node3D, terrain: Terrain) -> void:
+static func _build_city_buildings(parent: Node3D) -> void:
+	for entry: Dictionary in CityPlan.lots():
+		var node_name := String(entry["name"])
+		var size: Vector3 = entry["size"]
+		var pos: Vector3 = entry["pos"]
+		var is_castle := node_name == "AdventurersGuildExterior"
+		# The hexagonal citadel gets three boxes below; everything else is one
+		# box slightly inside its visual footprint so corners are not sticky.
+		var collider := Vector3.ZERO if is_castle else Vector3(size.x * 0.9, size.y, size.z * 0.9)
+		var node := place_model(parent, String(entry["path"]), pos, float(entry["yaw"]),
+			float(entry["scale"]), collider, node_name)
+		if is_castle and node != null:
+			_apply_model_lod(node, 0.0, true)
+			var gi := node as GeometryInstance3D
+			if gi != null:
+				gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	var c := CityPlan.CASTLE_CENTER
+	var k := CityPlan.CASTLE_SCALE
+	add_box_body(parent, c, Vector3(1.90 * k, 14.0, 1.16 * k), "CitadelBodyMid")
+	add_box_body(parent, c + Vector3(0.0, 0.0, 0.83 * k), Vector3(1.00 * k, 14.0, 0.56 * k), "CitadelBodyFront")
+	add_box_body(parent, c + Vector3(0.0, 0.0, -0.83 * k), Vector3(1.00 * k, 14.0, 0.56 * k), "CitadelBodyRear")
+
+## Paved streets as one mesh (one draw call). The terrain grid is 4 m, far too
+## coarse to paint a 5 m street, so the streets are real geometry laid 5 cm
+## above the level town plateau.
+static func _build_city_streets(parent: Node3D) -> void:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var paved := Color(0.88, 0.83, 0.76)
+	var earth := Color(0.66, 0.54, 0.40)
+	var layer := 0
+	for rect: Array in CityPlan.street_rects():
+		var col := paved if int(rect[4]) == 0 else earth
+		var y := 0.05 + float(layer) * 0.004
+		layer += 1
+		_street_quad(st, float(rect[0]), float(rect[1]), float(rect[2]), float(rect[3]), y, col)
+	# Royal Plaza disc.
+	var plaza_y := 0.09
+	var steps := 28
+	for i: int in steps:
+		var a0 := float(i) / float(steps) * TAU
+		var a1 := float(i + 1) / float(steps) * TAU
+		var p0 := Vector3(cos(a0), 0.0, sin(a0)) * CityPlan.PLAZA_RADIUS
+		var p1 := Vector3(cos(a1), 0.0, sin(a1)) * CityPlan.PLAZA_RADIUS
+		for v: Vector3 in [Vector3.ZERO, p0, p1]:
+			st.set_normal(Vector3.UP)
+			st.set_color(Color(0.93, 0.89, 0.82))
+			st.set_uv(Vector2(v.x, v.z) * 0.25)
+			st.add_vertex(Vector3(v.x, plaza_y, v.z))
+	var mesh := st.commit()
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.albedo_texture = ArtDirection.get_realistic_tex("cobble_albedo.jpg")
+	mat.roughness = 0.92
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
+	mesh.surface_set_material(0, mat)
+	var mi := MeshInstance3D.new()
+	mi.name = "CityStreets"
+	mi.mesh = mesh
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(mi)
+
+static func _street_quad(st: SurfaceTool, x0: float, z0: float, x1: float, z1: float, y: float, col: Color) -> void:
+	var corners := [Vector3(x0, y, z0), Vector3(x1, y, z0), Vector3(x1, y, z1),
+		Vector3(x0, y, z0), Vector3(x1, y, z1), Vector3(x0, y, z1)]
+	for v: Vector3 in corners:
+		st.set_normal(Vector3.UP)
+		st.set_color(col)
+		st.set_uv(Vector2(v.x, v.z) * 0.25)
+		st.add_vertex(v)
+
+## Closed wall ring with three open gates. Straight segments are one MultiMesh;
+## every segment and gate tower has a collider, so the wall really keeps the
+## wilderness out and the only ways in are the three gates.
+static func _build_city_walls(parent: Node3D) -> void:
+	var hex := AssetLibrary.HEXAGON_DIR
+	var apothem := CityPlan.wall_apothem()
+	var seg_len := CityPlan.wall_segment_length()
+	var wall_scale := seg_len * 0.5           # wall_straight.gltf is 2 units long
+	var wall_height := 1.10 * wall_scale
+	var wall_xforms: Array = []
+	var body := StaticBody3D.new()
+	body.name = "RoyalWallColliders"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	parent.add_child(body)
+	var seg_shape := BoxShape3D.new()
+	seg_shape.size = Vector3(seg_len + 0.3, wall_height, 0.62 * wall_scale)
+	for i: int in CityPlan.WALL_SEGMENTS:
+		if CityPlan.is_gate_segment(i):
+			continue
+		var bearing := float(i) * 360.0 / float(CityPlan.WALL_SEGMENTS)
+		var pos := CityPlan.bearing_point(bearing, apothem)
+		var yaw := -deg_to_rad(bearing)
+		wall_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * wall_scale), pos))
+		var cs := CollisionShape3D.new()
+		cs.shape = seg_shape
+		cs.position = pos + Vector3(0.0, wall_height * 0.5, 0.0)
+		cs.rotation.y = yaw
+		body.add_child(cs)
+	build_multimesh(parent, hex + "wall_straight.gltf", wall_xforms, "RoyalCityWalls", true, 150.0)
+
+	# Gate towers: two per gate, flanking a 5.6 m wide opening on the avenue.
+	var tower_scale := 4.6
+	var tower_size := Vector3(1.00, 2.19, 1.15) * tower_scale
+	var tower_shape := BoxShape3D.new()
+	tower_shape.size = Vector3(tower_size.x * 0.94, tower_size.y, tower_size.z * 0.94)
+	var tower_xforms: Array = []
+	var offset := CityPlan.GATE_HALF_OPENING + tower_size.x * 0.5
+	for g: int in CityPlan.GATE_BEARINGS.size():
+		var b := deg_to_rad(float(CityPlan.GATE_BEARINGS[g]))
+		var centre := CityPlan.gate_position(g)
+		var tangent := Vector3(cos(b), 0.0, sin(b))
+		var outward := Vector3(sin(b), 0.0, -cos(b))
+		var tower_yaw := atan2(outward.x, outward.z)
+		for side: float in [-1.0, 1.0]:
+			var tpos := centre + tangent * (offset * side)
+			tower_xforms.append(Transform3D(Basis(Vector3.UP, tower_yaw).scaled(Vector3.ONE * tower_scale), tpos))
+			var tcs := CollisionShape3D.new()
+			tcs.shape = tower_shape
+			tcs.position = tpos + Vector3(0.0, tower_size.y * 0.5, 0.0)
+			tcs.rotation.y = tower_yaw
+			body.add_child(tcs)
+	build_multimesh(parent, hex + "building_tower_A_green.gltf", tower_xforms, "RoyalGateTowers", true, 150.0)
+
+## Street furniture, garden trees, farm plots and yard props. Everything is
+## either on a pavement edge or inside a garden rectangle from CityPlan.
+static func _build_city_furniture(parent: Node3D) -> void:
 	var hex := AssetLibrary.HEXAGON_DIR
 	var park := "res://assets/environments/tinytreats_park/"
-	var house_paths := [
-		hex + "building_home_A_green.gltf", hex + "building_home_B_blue.gltf",
-		hex + "building_home_A_red.gltf", hex + "building_home_B_yellow.gltf"]
-	var districts := [
-		{"name": "ResidentialWardWest", "center": Vector2(-36.0, -4.0)},
-		{"name": "ResidentialWardSouth", "center": Vector2(-22.0, 37.0)},
-		{"name": "MarketWard", "center": Vector2(29.0, 25.0)},
-		{"name": "AcademyWard", "center": Vector2(30.0, -30.0)},
-		{"name": "ArtisanWard", "center": Vector2(-36.0, 29.0)}]
-	var building_index := 0
-	for district: Dictionary in districts:
-		var center: Vector2 = district["center"]
-		for row: int in 2:
-			for col: int in 3:
-				var p := center + Vector2((float(col) - 1.0) * 7.4, (float(row) - 0.5) * 7.1)
-				var on_boulevard := absf(p.x) < 3.0 or absf(p.y) < 3.0 or absf(p.x - p.y) < 2.5 or absf(p.x + p.y) < 2.5
-				if Vector2(p.x, p.y).length() > 53.0 or on_boulevard:
-					continue
-				var y := terrain.height_at(p.x, p.y) if terrain != null else 0.0
-				var path: String = house_paths[building_index % house_paths.size()]
-				place_model(parent, path, Vector3(p.x, y, p.y), deg_to_rad(float((building_index % 4) * 18)),
-					7.25, Vector3.ZERO, String(district["name"]) + "House" + str(building_index))
-				building_index += 1
+	var nprop := "res://assets/environments/villages/"
 
-	# Signature public buildings define the Academy, Bazaar and Artisan districts.
-	var civic := [
-		{"path": hex + "building_church_green.gltf", "pos": Vector3(31.0, 0.0, -30.0), "name": "AcademySanctum"},
-		{"path": hex + "building_stage_C.gltf", "pos": Vector3(32.0, 0.0, 25.0), "name": "MoonlightStage"},
-		{"path": hex + "building_blacksmith_green.gltf", "pos": Vector3(-36.0, 0.0, 29.0), "name": "ArtisanForge"},
-		{"path": hex + "building_market_blue.gltf", "pos": Vector3(29.0, 0.0, 38.0), "name": "GrandBazaar"}]
-	for entry: Dictionary in civic:
-		var p: Vector3 = entry["pos"]
-		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
-		place_model(parent, String(entry["path"]), Vector3(p.x, y, p.z), 0.0, 7.8, Vector3.ZERO, String(entry["name"]))
+	# Fountain in the middle of the Royal Plaza.
+	place_model(parent, park + "fountain.gltf", CityPlan.PLAZA, 0.0, 1.1, Vector3(3.8, 1.3, 3.8), "DistrictFountain")
 
-	# Four open gates and a light polygonal wall ring make the city read as one protected capital.
-	var wall_path := hex + "wall_straight.gltf"
-	var gate_path := hex + "wall_straight_gate.gltf"
-	var gate_points := [Vector3(0.0, 0.0, -60.0), Vector3(60.0, 0.0, 0.0), Vector3(0.0, 0.0, 60.0), Vector3(-60.0, 0.0, 0.0)]
-	for i: int in 4:
-		var gate_pos: Vector3 = gate_points[i]
-		var gate_y := terrain.height_at(gate_pos.x, gate_pos.z) if terrain != null else 0.0
-		place_model(parent, gate_path, Vector3(gate_pos.x, gate_y, gate_pos.z), deg_to_rad(float(i * 90)), 7.6, Vector3.ZERO, "RoyalGate" + str(i))
-	for i: int in 12:
-		var angle := deg_to_rad(float(i) * 30.0 + 15.0)
-		var p := Vector3(cos(angle) * 60.0, 0.0, sin(angle) * 60.0)
-		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
-		place_model(parent, wall_path, Vector3(p.x, y, p.z), angle + PI * 0.5, 6.8, Vector3.ZERO, "RoyalWall" + str(i))
-		if i % 3 == 1:
-			place_model(parent, hex + "building_tower_A_green.gltf", Vector3(p.x, y, p.z), angle, 6.4, Vector3(4.0, 9.0, 4.0), "RoyalWatchtower" + str(i))
-
-	# MultiMesh furniture gives the new districts visual life without one node per prop.
+	# Lantern posts on the pavement edge, alternating sides along each avenue.
+	# The first six also carry a real light (switched on at dusk).
+	var e := CityPlan.AVENUE_HALF + 0.8
+	var lantern_spots := [
+		Vector3(-8.0, 0.0, -e), Vector3(8.0, 0.0, e), Vector3(e, 0.0, 10.0),
+		Vector3(-4.4, 0.0, -7.6), Vector3(17.5, 0.0, -e), Vector3(-17.5, 0.0, e),
+		Vector3(4.4, 0.0, -7.6), Vector3(-25.0, 0.0, -e), Vector3(25.0, 0.0, e),
+		Vector3(-32.0, 0.0, e), Vector3(32.0, 0.0, -e), Vector3(-e, 0.0, 18.0),
+		Vector3(e, 0.0, 25.6), Vector3(-e, 0.0, 32.0),
+	]
 	var lantern_xforms: Array = []
+	for lp: Vector3 in lantern_spots:
+		lantern_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.80), lp))
+	build_multimesh(parent, park + "street_lantern.gltf", lantern_xforms, "CityStreetLanternPosts", false, 64.0)
+	for i: int in mini(6, lantern_spots.size()):
+		_build_street_lantern_light_only(parent, lantern_spots[i])
+
+	# Benches around the fountain, facing it.
 	var bench_xforms: Array = []
-	for i: int in 24:
-		var angle := deg_to_rad(float(i) * 15.0)
-		var p := Vector3(cos(angle) * 31.0, 0.0, sin(angle) * 31.0)
-		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
-		lantern_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.78), Vector3(p.x, y, p.z)))
-		if i % 3 == 0:
-			bench_xforms.append(Transform3D(Basis(Vector3.UP, angle).scaled(Vector3.ONE * 0.9), Vector3(p.x, y, p.z)))
-	build_multimesh(parent, park + "street_lantern.gltf", lantern_xforms, "RoyalCityLanterns", false, 72.0)
-	build_multimesh(parent, park + "bench.gltf", bench_xforms, "RoyalCityBenches", false, 58.0)
-	for p: Vector3 in [Vector3(0.0, 0.0, 2.0), Vector3(29.0, 0.0, 25.0), Vector3(-35.0, 0.0, 27.0)]:
-		var y := terrain.height_at(p.x, p.z) if terrain != null else 0.0
-		place_model(parent, park + "fountain.gltf", Vector3(p.x, y, p.z), 0.0, 1.8, Vector3.ZERO, "DistrictFountain")
+	for i: int in 4:
+		var ang := deg_to_rad(45.0 + 90.0 * float(i))
+		var bp := Vector3(cos(ang), 0.0, sin(ang)) * (CityPlan.PLAZA_RADIUS - 1.5)
+		bench_xforms.append(Transform3D(Basis(Vector3.UP, atan2(-bp.x, -bp.z)).scaled(Vector3.ONE * 0.9), bp))
+	build_multimesh(parent, park + "bench.gltf", bench_xforms, "RoyalCityBenches", false, 48.0)
+
+	# Royal banners: citadel forecourt and the town side of every gate.
+	var flag_xforms: Array = []
+	var flag_scale := AssetLibrary.SCALE_PROP * 1.18
+	for fp: Vector3 in [Vector3(-5.6, 0.0, -11.6), Vector3(5.6, 0.0, -11.6)]:
+		flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * flag_scale), fp))
+	for g: int in CityPlan.GATE_BEARINGS.size():
+		var b := deg_to_rad(float(CityPlan.GATE_BEARINGS[g]))
+		var inward := Vector3(-sin(b), 0.0, cos(b))
+		var tangent := Vector3(cos(b), 0.0, sin(b))
+		for side: float in [-1.0, 1.0]:
+			var fpos := CityPlan.gate_position(g) + inward * 3.6 + tangent * (3.5 * side)
+			flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * flag_scale), fpos))
+	build_multimesh(parent, hex + "flag_blue.gltf", flag_xforms, "CityRoyalBanners", false, 64.0)
+
+	# Garden trees (Royal Garden, chapel herb garden, training yard).
+	var tree_spots := [
+		Vector3(-24.0, 1.9, -15.0), Vector3(-17.6, 1.7, -19.4), Vector3(-24.2, 2.0, -19.8),
+		Vector3(18.6, 1.8, -19.6), Vector3(24.0, 1.7, -16.0), Vector3(23.4, 2.0, -20.2),
+		Vector3(17.2, 1.8, 26.6),
+	]
+	var tree_xforms: Array = []
+	var trunks := StaticBody3D.new()
+	trunks.name = "CityGardenTrunks"
+	trunks.collision_layer = 1
+	trunks.collision_mask = 0
+	parent.add_child(trunks)
+	var trunk_shape := CylinderShape3D.new()
+	trunk_shape.radius = 0.45
+	trunk_shape.height = 3.0
+	for ts: Vector3 in tree_spots:
+		var tpos := Vector3(ts.x, 0.0, ts.z)
+		tree_xforms.append(Transform3D(Basis(Vector3.UP, ts.x * 0.7).scaled(Vector3.ONE * ts.y), tpos))
+		var tc := CollisionShape3D.new()
+		tc.shape = trunk_shape
+		tc.position = tpos + Vector3(0.0, 1.5, 0.0)
+		trunks.add_child(tc)
+	build_multimesh(parent, park + "tree.gltf", tree_xforms, "CityGardenTrees", true, 70.0)
+
+	# Farm plots behind the south-west houses, next to the windmill.
+	var wheat_xforms: Array = []
+	var pumpkin_xforms: Array = []
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 901
+	for rx: int in 2:
+		for rz: int in 4:
+			var fx := -14.6 + float(rx) * 1.6
+			var fz := 18.5 + float(rz) * 1.7
+			wheat_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * 2.55), Vector3(fx, 0.0, fz)))
+	for pp: Vector2 in [Vector2(-16.4, 25.6), Vector2(-14.9, 25.6), Vector2(-13.4, 25.6), Vector2(-15.5, 27.0), Vector2(-14.0, 27.0)]:
+		pumpkin_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 2.0), Vector3(pp.x, 0.0, pp.y)))
+	build_multimesh(parent, nprop + "crops-wheatstagea.glb", wheat_xforms, "FarmWheat", false, 42.0)
+	build_multimesh(parent, nprop + "crop-pumpkin.glb", pumpkin_xforms, "FarmPumpkins", false, 42.0)
+
+	# A handful of working props beside the buildings that use them.
+	var prop_scale := AssetLibrary.SCALE_PROP
+	var props: Array = [
+		{"model": hex + "barrel.gltf", "pos": Vector3(-5.0, 0.0, 12.4), "s": prop_scale},      # smithy
+		{"model": hex + "barrel.gltf", "pos": Vector3(-4.4, 0.0, 11.4), "s": prop_scale},
+		{"model": hex + "crate_A_big.gltf", "pos": Vector3(-5.0, 0.0, 5.3), "s": prop_scale},
+		{"model": hex + "crate_A_small.gltf", "pos": Vector3(8.0, 0.0, 13.0), "s": prop_scale},  # market back door
+		{"model": hex + "sack.gltf", "pos": Vector3(9.1, 0.0, 13.0), "s": prop_scale},
+		{"model": hex + "weaponrack.gltf", "pos": Vector3(13.4, 0.0, 17.4), "s": prop_scale},   # training yard
+		{"model": hex + "target.gltf", "pos": Vector3(13.2, 0.0, 21.5), "s": prop_scale},
+		{"model": hex + "target.gltf", "pos": Vector3(13.2, 0.0, 24.0), "s": prop_scale},
+		{"model": hex + "wheelbarrow.gltf", "pos": Vector3(-13.4, 0.0, 17.3), "s": prop_scale},  # farm
+		{"model": nprop + "sign.glb", "pos": Vector3(-22.7, 0.0, -3.7), "s": 2.2},               # hero cottage
+	]
+	for prop: Dictionary in props:
+		if AssetLibrary.has_model(String(prop["model"])):
+			place_model(parent, String(prop["model"]), prop["pos"] as Vector3, rng.randf_range(0.0, TAU), float(prop["s"]))
 
 static func _build_street_lantern_light_only(parent: Node3D, pos: Vector3) -> void:
 	var light := OmniLight3D.new()
@@ -445,11 +476,34 @@ static func _build_street_lantern_light_only(parent: Node3D, pos: Vector3) -> vo
 	parent.add_child(light)
 	light.global_position = pos + Vector3(0.0, 3.05, 0.0)
 
-static func _build_street_lantern(parent: Node3D, pos: Vector3) -> void:
-	var lantern_gltf := "res://assets/environments/tinytreats_park/street_lantern.gltf"
-	if AssetLibrary.has_model(lantern_gltf):
-		place_model(parent, lantern_gltf, pos, 0.0, 0.78, Vector3(0.32, 3.2, 0.32), "VillageLanternPost")
-	_build_street_lantern_light_only(parent, pos)
+## Exact (triangle mesh) static collider for a placed model. Used where a box
+## would be wrong, e.g. the humped deck of the stone bridge.
+static func add_mesh_collider(parent: Node3D, path: String, position: Vector3, rotation_y: float,
+		model_scale: float, node_name: String) -> StaticBody3D:
+	var mesh := AssetLibrary.first_mesh(path)
+	if mesh == null:
+		return null
+	var faces := mesh.get_faces()
+	if faces.is_empty():
+		return null
+	var centre := mesh.get_aabb().get_center()
+	var xf := Transform3D(Basis(Vector3.UP, rotation_y).scaled(Vector3.ONE * model_scale), Vector3.ZERO)
+	var offset := Vector3(centre.x, 0.0, centre.z)
+	for i: int in faces.size():
+		faces[i] = xf * (faces[i] - offset)
+	var shape := ConcavePolygonShape3D.new()
+	shape.backface_collision = true
+	shape.set_faces(faces)
+	var body := StaticBody3D.new()
+	body.name = node_name
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var cs := CollisionShape3D.new()
+	cs.shape = shape
+	body.add_child(cs)
+	parent.add_child(body)
+	body.global_position = position
+	return body
 
 static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -> Dictionary:
 	var y_at := func(x: float, z: float) -> float:
@@ -466,16 +520,22 @@ static func _build_water_and_outer_landmarks(parent: Node3D, terrain: Terrain) -
 	river_mesh.position = Vector3(31.0, Terrain.WATER_LEVEL, -2.0)
 	parent.add_child(river_mesh)
 
-	# 2. East Stone Arch Bridge across Eldoria River + Solid Walkable Deck Collider
-	var bridge_x := terrain.river_center_x(-4.0) if terrain != null else 45.0
-	var bridge_pos := Vector3(bridge_x, 0.0, -4.0)
-	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_bridge_A.gltf", bridge_pos, 0.0, 7.8,
+	# 2. East Stone Arch Bridge: it carries the East Avenue across the river,
+	# so it lies on the avenue axis and spans east-west. The deck is humped,
+	# so it gets an exact mesh collider instead of a flat box.
+	var bridge_z := CityPlan.BRIDGE_Z
+	var bridge_x := terrain.river_center_x(bridge_z) if terrain != null else 45.5
+	var bridge_pos := Vector3(bridge_x, 0.0, bridge_z)
+	var bridge_path := AssetLibrary.HEXAGON_DIR + "building_bridge_A.gltf"
+	var bridge_node := place_model(parent, bridge_path, bridge_pos, deg_to_rad(90.0), 7.8,
 		Vector3.ZERO, "EastStoneBridge")
-	add_box_body(parent, bridge_pos + Vector3(0.0, -0.35, 0.0), Vector3(15.5, 0.55, 4.6), "BridgeDeckCollider")
+	if bridge_node != null:
+		_apply_model_lod(bridge_node, 90.0, false)
+	add_mesh_collider(parent, bridge_path, bridge_pos, deg_to_rad(90.0), 7.8, "BridgeDeckCollider")
 
-	# Riverside Watermill & Northern Waterfall Cliff
-	var mill_z := -18.0
-	var mill_x := (terrain.river_center_x(mill_z) - 5.2) if terrain != null else 39.5
+	# Riverside watermill on the west bank, north-east of the walls.
+	var mill_z := -30.0
+	var mill_x := (terrain.river_center_x(mill_z) - 5.2) if terrain != null else 35.8
 	place_model(parent, AssetLibrary.HEXAGON_DIR + "building_watermill_blue.gltf",
 		Vector3(mill_x, maxf(0.0, float(y_at.call(mill_x, mill_z))), mill_z), deg_to_rad(90.0), 7.0,
 		Vector3(6.8, 7.5, 6.8), "RiversideWatermill")
@@ -576,7 +636,7 @@ static func _add_golden_meadow_motes(parent: Node3D) -> void:
 	motes.lifetime = 5.5
 	motes.preprocess = 2.0
 	motes.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	motes.position = Vector3(0.0, 1.4, 4.0)
+	motes.position = Vector3(0.0, 2.0, 50.0)   # south meadow, between the gate and the lake
 	var pmat := ParticleProcessMaterial.new()
 	pmat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 	pmat.emission_box_extents = Vector3(18.0, 1.8, 18.0)
@@ -599,27 +659,6 @@ static func _add_golden_meadow_motes(parent: Node3D) -> void:
 	motes.draw_pass_1 = q
 	parent.add_child(motes)
 
-static func _overlaps_town_building(x: float, z: float) -> bool:
-	var footprints := [
-		Vector3(1.8, -24.5, 7.2),
-		Vector3(2.2, -16.8, 5.2),
-		Vector3(9.6, -17.6, 4.8),
-		Vector3(14.6, -17.8, 4.8),
-		Vector3(9.8, -22.8, 4.2),
-		Vector3(22.5, -19.5, 5.8),
-		Vector3(-16.0, -8.0, 5.4),
-		Vector3(-25.5, -4.2, 5.2),
-		Vector3(-19.0, 11.0, 6.2),
-		Vector3(16.5, 8.5, 5.8),
-		Vector3(25.5, 14.0, 5.8),
-		Vector3(-18.5, 23.5, 5.6),
-		Vector3(-27.5, 22.5, 5.6),
-	]
-	for fp: Vector3 in footprints:
-		if Vector2(x - fp.x, z - fp.y).length() < fp.z:
-			return true
-	return false
-
 static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: int = 1337) -> Array:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -629,49 +668,35 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	var pine_xforms: Array = []
 	var birch_xforms: Array = []
 	var rock_xforms: Array = []
-	var rock_big_xforms: Array = []
 	var bush_xforms: Array = []
 	var flower_xforms: Array = []
 	var reed_xforms: Array = []
 	var trunk_positions: Array[Vector3] = []
 	var rock_positions: Array[Vector3] = []
 
-	# 1. Curated Hero Stylized Layered Pine Trees framing the Castle-Meadow Vista (matching reference!)
-	var hero_pine_xforms: Array = []
-	var hero_pines := [
-		Vector3(6.2, 7.4, 2.55),     # Large pine framing right foreground!
-		Vector3(4.9, -11.8, 1.85),   # Pine between barrel tavern & red cottages
-		Vector3(2.4, -12.4, 1.55),   # Pine beside barrel tavern
-		Vector3(-1.3, -10.2, 2.10),  # Tall pine directly behind Chibi Knight's head/left!
-		Vector3(-2.6, -8.8, 1.65),   # Companion pine left-center
-		Vector3(-4.4, -4.8, 1.85),   # Midground left pine on meadow slope
-		Vector3(-8.2, -9.5, 1.95),
-		Vector3(-11.8, -15.5, 1.95),
-	]
-	for hp: Vector3 in hero_pines:
-		var hy := terrain.height_at(hp.x, hp.y) if terrain != null else 0.0
-		var hpos := Vector3(hp.x, hy - 0.08, hp.y)
-		hero_pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf_range(0.0, TAU)).scaled(Vector3.ONE * hp.z), hpos))
-		trunk_positions.append(hpos)
-
-	# Dense left-hillside pine groves (x = -46..-9, z = -44..4) matching left pine forest in reference!
-	for i: int in 16:
-		var lx := rng.randf_range(-44.0, -8.5)
-		var lz := rng.randf_range(-44.0, 4.0)
-		if _overlaps_town_building(lx, lz) or (terrain != null and terrain.is_road_at(lx, lz)):
+	# 1. Western woodland: a real forest belt outside the west gate. Nothing
+	# is scattered inside the town walls any more (trees there are planted in
+	# the gardens by the city builder).
+	for i: int in 24:
+		var lx := rng.randf_range(-74.0, -40.0)
+		var lz := rng.randf_range(-46.0, 26.0)
+		if CityPlan.inside_walls(lx, lz, 5.0) or (terrain != null and terrain.is_road_at(lx, lz)):
+			continue
+		if Vector2(lx + 62.0, lz + 24.0).length() < 10.0 or Vector2(lx + 52.0, lz - 34.0).length() < 9.0:
 			continue
 		var ly := terrain.height_at(lx, lz) if terrain != null else 0.0
+		if ly > 15.0:
+			continue
 		var lpos := Vector3(lx, ly - 0.08, lz)
 		var ls := rng.randf_range(3.6, 4.8)
 		pine_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * ls), lpos))
 		trunk_positions.append(lpos)
 
 	# Outer Valley Multi-Biome Stylized Trees (natural 7.5-10m forest scale, <160k total triangles!)
-	for i: int in 52:
+	for i: int in 80:
 		var x := rng.randf_range(-108.0, 108.0)
 		var z := rng.randf_range(-108.0, 108.0)
-		var r := Vector2(x, z).length()
-		if r < 34.0:
+		if CityPlan.inside_walls(x, z, 6.0):
 			continue
 		if terrain != null:
 			if terrain.is_road_at(x, z) or terrain.is_water_at(x, z):
@@ -685,6 +710,8 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 		if Vector2(x + 62.0, z + 24.0).length() < 10.0 or Vector2(x + 56.0, z - 44.0).length() < 8.5:
 			continue
 		if Vector2(x + 14.0, z + 64.0).length() < 9.5 or Vector2(x + 19.0, z + 47.0).length() < 5.5:
+			continue
+		if Vector2(x + 52.0, z - 34.0).length() < 9.0 or Vector2(x - 55.0, z - CityPlan.BRIDGE_Z).length() < 7.0:
 			continue
 
 		var y := terrain.height_at(x, z) if terrain != null else 0.0
@@ -705,27 +732,11 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 				pine_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * sp), pos))
 		trunk_positions.append(pos)
 
-	# 2. Curated Foreground & Valley Stylized Faceted Grey Boulders (Quaternius Rock_1 & Rock_4)
-	var hero_rocks := [
-		Vector3(-4.2, 11.8, 1.55),   # Left foreground flat boulder cluster
-		Vector3(-3.4, 12.6, 1.15),
-		Vector3(-1.4, 10.2, 0.92),   # Pointed meadow stone left of Chibi Knight
-		Vector3(3.6, 12.2, 1.85),    # Right foreground sculpted grey boulder under pine!
-		Vector3(4.5, -2.5, 1.10),
-		Vector3(-7.2, 2.5, 1.35),
-	]
-	for hr: Vector3 in hero_rocks:
-		var hry := terrain.height_at(hr.x, hr.y) if terrain != null else 0.0
-		var hrpos := Vector3(hr.x, hry - 0.08, hr.y)
-		rock_big_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hr.z), hrpos))
-		rock_positions.append(hrpos)
-
+	# 2. Valley boulders and bushes (outside the walls only).
 	for i: int in 80:
 		var rx := rng.randf_range(-96.0, 96.0)
 		var rz := rng.randf_range(-96.0, 96.0)
-		if _overlaps_town_building(rx, rz):
-			continue
-		if Vector2(rx, rz + 14.0).length() < 9.0:
+		if CityPlan.inside_walls(rx, rz, 4.0):
 			continue
 		if terrain != null and (terrain.is_road_at(rx, rz) or terrain.is_water_at(rx, rz) or terrain.slope_at(rx, rz) > 0.65):
 			continue
@@ -740,39 +751,44 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 			var bs := rng.randf_range(0.85, 1.30)
 			bush_xforms.append(Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * bs), Vector3(rx, ry - 0.04, rz)))
 
-	# 3. Lush GPU Wind-Animated 3D Meadow Grass (3,200 tufts concentrated in hero meadow = 12.8k tris, 1 Draw Call!)
+	# 3. Wind-animated meadow grass (one draw call). It grows on the meadows
+	# outside the walls - densest on the south meadow between the south gate
+	# and Crystal Lake - and never on a street, a lot or the paved plaza.
 	var wind_grass_xforms: Array = []
 	var hero_flower_xforms: Array = []
-	for i: int in 3200:
+	for i: int in 2000:
 		var gx: float
 		var gz: float
-		if i < 2500:
-			gx = rng.randf_range(-20.0, 20.0)
-			gz = rng.randf_range(-16.0, 22.0)
+		if i < 1300:
+			gx = rng.randf_range(-34.0, 34.0)
+			gz = rng.randf_range(38.0, 66.0)
 		else:
-			gx = rng.randf_range(-58.0, 58.0)
-			gz = rng.randf_range(-58.0, 58.0)
-		if _overlaps_town_building(gx, gz):
+			var g_ang := rng.randf() * TAU
+			var g_rad := rng.randf_range(39.0, 78.0)
+			gx = cos(g_ang) * g_rad
+			gz = sin(g_ang) * g_rad
+		if CityPlan.inside_walls(gx, gz, 2.6):
 			continue
 		if terrain != null:
 			if terrain.is_water_at(gx, gz) or terrain.slope_at(gx, gz) > 0.52 or terrain.height_at(gx, gz) > 12.5:
 				continue
-			if gz >= -18.0 and gz <= 46.0:
-				var trail_x := -2.0 - 3.2 * smoothstep(-10.0, 18.0, gz) + sin(gz * 0.14) * 1.25
-				if absf(gx - trail_x) < 1.15:
-					continue
-			elif terrain.is_road_at(gx, gz):
+			if terrain.is_road_at(gx, gz):
 				continue
 		var gy := terrain.height_at(gx, gz) if terrain != null else 0.0
 		var gyaw := rng.randf_range(0.0, TAU)
 		var gscale := rng.randf_range(0.85, 1.42)
 		wind_grass_xforms.append(Transform3D(Basis(Vector3.UP, gyaw).scaled(Vector3(gscale, gscale * rng.randf_range(0.90, 1.28), gscale)), Vector3(gx, gy, gz)))
-		if absf(gx) < 14.0 and gz > -12.0 and gz < 18.0 and hero_flower_xforms.size() < 18 and i % 32 == 0:
-			var hfs := rng.randf_range(0.90, 1.35)
-			hero_flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * hfs), Vector3(gx, gy - 0.02, gz)))
-		elif i % 15 == 0 and flower_xforms.size() < 110:
+		if i % 15 == 0 and flower_xforms.size() < 110:
 			var fs := rng.randf_range(0.95, 1.45)
 			flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * fs), Vector3(gx, gy - 0.02, gz)))
+	# Flower beds inside the town gardens.
+	for garden: Array in CityPlan.gardens():
+		for i: int in 5:
+			var fx := rng.randf_range(float(garden[0]), float(garden[2]))
+			var fz := rng.randf_range(float(garden[1]), float(garden[3]))
+			if CityPlan.on_lot(fx, fz, 0.8) or CityPlan.is_street(fx, fz):
+				continue
+			hero_flower_xforms.append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * rng.randf_range(0.9, 1.3)), Vector3(fx, -0.02, fz)))
 
 	# Shoreline Reeds around Crystal Lake
 	for i: int in 18:
@@ -786,11 +802,9 @@ static func build_forest(parent: Node3D, terrain: Terrain = null, seed_value: in
 	var srock := AssetLibrary.STYLIZED_ROCKS_DIR
 	var sfol := AssetLibrary.STYLIZED_FOLIAGE_DIR
 	var hex_dir := AssetLibrary.HEXAGON_DIR
-	build_multimesh(parent, stree + "PineTree_5.glb", hero_pine_xforms, "StylizedPines", true, 90.0)
 	build_multimesh(parent, hex_dir + "trees_A_medium.gltf", pine_xforms, "ValleyStylizedPines", false, 88.0)
 	build_multimesh(parent, hex_dir + "trees_B_medium.gltf", oak_xforms, "ForestOaks", false, 82.0)
 	build_multimesh(parent, stree + "BirchTree_2.glb", birch_xforms, "LakesideBirches", false, 72.0)
-	build_multimesh(parent, srock + "Rock_4.glb", rock_big_xforms, "HeroMeadowRocks", false, 68.0)
 	build_multimesh(parent, srock + "Rock_1.glb", rock_xforms, "WorldRocks", false, 64.0)
 	build_multimesh(parent, sfol + "Bush_2.glb", bush_xforms, "ForestBushes", false, 44.0)
 	build_multimesh(parent, sfol + "Flowers.glb", hero_flower_xforms, "MeadowFlowers", false, 38.0)

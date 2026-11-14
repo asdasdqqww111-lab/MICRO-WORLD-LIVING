@@ -128,4 +128,4 @@ static func all_class_ids() -> Array[String]:
 
 static func model_for(class_id: String) -> String:
 	var def := get_class_def(class_id)
-	return String(def.get("model_path", "res://assets/characters/player/Knight.glb"))
+	return String(def.get("model_path", "res://assets/kaykit_adventurers/Knight.glb"))

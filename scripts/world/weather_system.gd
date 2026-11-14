@@ -54,6 +54,8 @@ func _on_graphics_changed() -> void:
 	if particles != null:
 		particles.amount = _rain_budget()
 
+var _player_ref: Player
+
 func _process(delta: float) -> void:
 	if not GameManager.is_playing or get_tree().paused:
 		return
@@ -61,13 +63,20 @@ func _process(delta: float) -> void:
 	world.weather_remaining -= delta * DayNightCycle.TIME_SCALE / 60.0
 	if world.weather_remaining <= 0.0:
 		_roll_weather()
-	var player := get_tree().get_first_node_in_group("player") as Player
+	if not is_instance_valid(_player_ref):
+		_player_ref = get_tree().get_first_node_in_group("player") as Player
+	var player := _player_ref
+	var raining := world.weather == "rain"
 	var outdoors := player == null or player.zone == "village"
 	if player != null and particles != null:
-		particles.global_position = player.global_position + Vector3(0.0, 16.0, 0.0)
-		particles.emitting = (world.weather == "rain") and outdoors
+		var emit := raining and outdoors
+		if particles.emitting != emit:
+			particles.emitting = emit
+		# The rain volume only has to follow the player while it is raining.
+		if emit:
+			particles.global_position = player.global_position + Vector3(0.0, 16.0, 0.0)
 	if day_night != null:
-		day_night.set_weather_darkness(0.52 if world.weather == "rain" else 0.0)
+		day_night.set_weather_darkness(0.52 if raining else 0.0)
 
 func _roll_weather() -> void:
 	var world := GameManager.world

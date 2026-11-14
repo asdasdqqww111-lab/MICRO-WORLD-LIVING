@@ -61,6 +61,8 @@ var _shield_socket: BoneAttachment3D
 var _equipped_weapon_node: Node3D
 var _equipped_shield_node: Node3D
 var _model_path: String = ""
+var _tree_wanted: bool = true
+var _lod_active: bool = true
 
 func setup(model_path: String, model_scale: float = 1.0) -> bool:
 	_model_path = model_path
@@ -394,6 +396,7 @@ func play_once(state_name: String) -> void:
 	var clip: String = available_states.get(state_name, "")
 	if clip.is_empty():
 		return
+	_tree_wanted = false
 	if tree != null:
 		tree.active = false
 	var anim := anim_player.get_animation(clip)
@@ -403,9 +406,20 @@ func play_once(state_name: String) -> void:
 	current_state = state_name
 
 func resume_tree() -> void:
+	_tree_wanted = true
 	if tree != null:
-		tree.active = true
+		tree.active = _lod_active
 	current_state = ""
+
+## Animation level of detail. A character that is too far away to be drawn
+## stops evaluating its AnimationTree (and therefore stops re-skinning its
+## mesh every frame); it resumes in the same state when it comes back in range.
+func set_lod_active(value: bool) -> void:
+	if _lod_active == value:
+		return
+	_lod_active = value
+	if tree != null:
+		tree.active = value and _tree_wanted
 
 func tint(color: Color) -> void:
 	if model == null:

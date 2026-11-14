@@ -108,21 +108,12 @@ func active_pointer() -> int:
 	return _pointer_id
 
 func _draw() -> void:
-	# Subtle translucent outer ring + faint inner glass disc
-	var ring_alpha := 0.20 if _active else 0.12
-	draw_circle(_center, radius, Color(0.86, 0.90, 0.88, ring_alpha))
-	draw_arc(_center, radius, 0.0, TAU, 56, Color(0.92, 0.94, 0.92, 0.34), 2.0, true)
-	draw_arc(_center, radius - 5.0, 0.0, TAU, 48, Color(0.92, 0.94, 0.92, 0.12), 1.0, true)
-
-	# Four subtle cardinal chevrons around outer ring
-	var chev_col := Color(0.94, 0.95, 0.92, 0.38)
-	var cr := radius - 11.0
-	for dir: Vector2 in [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]:
-		var tip := _center + dir * (cr + 4.0)
-		var perp := Vector2(-dir.y, dir.x) * 4.5
-		draw_colored_polygon(PackedVector2Array([tip, _center + dir * (cr - 2.0) + perp, _center + dir * (cr - 2.0) - perp]), chev_col)
-
-	# Frosted translucent inner thumb knob (brighter while held)
-	var knob_r := radius * 0.36
-	draw_circle(_knob, knob_r, Color(0.84, 0.87, 0.86, 0.62 if _active else 0.48))
-	draw_arc(_knob, knob_r, 0.0, TAU, 36, Color(0.98, 0.99, 0.98, 0.72), 2.2, true)
+	# Two draw calls (base + knob) from the shared icon atlas instead of nine
+	# separate circle / arc / polygon commands.
+	var tex := RpgIcon.atlas()
+	var base_alpha := 1.0 if _active else 0.72
+	draw_texture_rect_region(tex, Rect2(_center - Vector2(radius, radius), Vector2(radius, radius) * 2.0),
+		RpgIcon.region("joy_base"), Color(1, 1, 1, base_alpha))
+	var knob_r := radius * 0.40
+	draw_texture_rect_region(tex, Rect2(_knob - Vector2(knob_r, knob_r), Vector2(knob_r, knob_r) * 2.0),
+		RpgIcon.region("joy_knob"), Color(1, 1, 1, 1.0 if _active else 0.80))

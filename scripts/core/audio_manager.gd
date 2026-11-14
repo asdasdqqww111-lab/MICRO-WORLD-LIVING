@@ -247,7 +247,7 @@ func update_biome_ambience(zone_id: String, biome: String) -> void:
 		set_ambience_active(false)
 		return
 	var target_key := "river"
-	if biome == "village":
+	if biome == "village" or biome == "city":
 		target_key = "city"
 	elif biome == "dense_woodland" or biome == "ancient_grove" or biome == "pine_highlands":
 		target_key = "forest"

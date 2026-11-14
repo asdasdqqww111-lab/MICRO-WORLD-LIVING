@@ -9,7 +9,7 @@ extends CharacterBody3D
 signal zone_changed(zone_id: String)
 
 const MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
-const FALLBACK_MODEL_PATH := "res://assets/characters/player/Knight.glb"
+const FALLBACK_MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
 const MODEL_YAW_OFFSET := PI
 const MODEL_SCALE := 0.76
 
@@ -420,7 +420,7 @@ func _detect_surface() -> String:
 			AudioManager.update_biome_ambience(zone, wr.terrain.biome_at(gx, gz))
 		if wr.terrain.is_water_at(gx, gz):
 			return "water"
-		if wr.terrain.is_road_at(gx, gz) or Vector2(gx, gz).length() <= Terrain.VILLAGE_RADIUS:
+		if wr.terrain.is_road_at(gx, gz):
 			return "stone"
 	return "grass"
 

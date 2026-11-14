@@ -2,15 +2,18 @@ class_name Terrain
 extends StaticBody3D
 ## Seeded procedural multi-biome terrain for the Eldoria Valley (240m x 240m).
 ## Features:
-##   - Level Royal City plateau + boulevard/district road network
+##   - Level town plateau sized to the walled town described by CityPlan
 ##   - Carved Eldoria River channel + southern Crystal Lake basin
 ##   - Rolling meadows, western/southern forests, eastern rocky crags
 ##   - Full 360-degree alpine perimeter ring (no flat horizon cutoff)
 ##   - Smooth slope-and-altitude vertex splat blending across 9 surface tones
 
 const WATER_LEVEL := -0.35
-const CITY_RADIUS := 58.0
-const CITY_BLEND := 68.0
+## The plateau only has to carry the walled town (CityPlan.WALL_RADIUS = 36 m).
+## It used to be 58 m, which swallowed the river, half of Crystal Lake and the
+## western woods: the bridge stood on dry land and monsters spawned "in town".
+const CITY_RADIUS := 38.0
+const CITY_BLEND := 46.0
 ## Compatibility aliases retained for quest/save data and older callers.
 const VILLAGE_RADIUS := CITY_RADIUS
 const VILLAGE_BLEND := CITY_BLEND
@@ -77,33 +80,11 @@ func is_water_at(x: float, z: float) -> bool:
 	return height_at(x, z) < WATER_LEVEL - 0.08
 
 func is_road_at(x: float, z: float) -> bool:
-	# Royal City boulevards: radial avenues plus a ring road make every district legible.
-	if Vector2(x, z).length() < 56.0:
-		if absf(x) < 2.8 or absf(z) < 2.8:
-			return true
-		if absf(x - z) < 2.2 or absf(x + z) < 2.2:
-			return true
-		var city_radius := Vector2(x, z).length()
-		if city_radius > 23.0 and city_radius < 27.0:
-			return true
-		if city_radius < 11.0:
-			return true
-	# Winding country dirt trail across the Southern Meadow toward the Blue-Turret Castle
-	if z >= -18.0 and z <= 48.0:
-		var trail_x := -4.8 * smoothstep(-10.0, 26.0, z) + sin(z * 0.14) * 1.65
-		if absf(x - trail_x) < 2.25:
-			return true
-	# East path toward Stone Bridge (x=0..60)
-	var bridge_z := -4.0 * clampf(x / 36.0, 0.0, 1.0)
-	if x >= -2.0 and x <= 60.0 and absf(z - bridge_z) < 2.3:
+	# Town streets and country roads both come from CityPlan, so the terrain
+	# paint, the scatter rules and the maps always agree with the buildings.
+	if CityPlan.is_street(x, z):
 		return true
-	# West path through Cottages & Barrel Tavern toward Pine Woods (x=-54..2)
-	if x >= -54.0 and x <= 2.0 and absf(z - 2.0) < 2.2:
-		return true
-	# Castle & Guild Forecourt path
-	if absf(z + 18.0) < 2.4 and x >= -24.0 and x <= 22.0:
-		return true
-	return false
+	return CityPlan.country_road_distance(x, z) < 2.3
 
 func height_at(x: float, z: float) -> float:
 	_setup_noise()
@@ -137,6 +118,17 @@ func height_at(x: float, z: float) -> float:
 		if d < 13.0:
 			var w := 1.0 - smoothstep(6.0, 13.0, d)
 			h = lerpf(h, c.y, w * 0.78)
+
+	# Level pads for structures that are authored at a fixed height: the far
+	# landing of the stone bridge and the Tower of Trials gate.
+	var pads := [
+		Vector3(55.0, 0.25, CityPlan.BRIDGE_Z),
+		Vector3(-52.0, 0.0, 34.0),
+	]
+	for pad: Vector3 in pads:
+		var pd := Vector2(x - pad.x, z - pad.z).length()
+		if pd < 12.0:
+			h = lerpf(h, pad.y, 1.0 - smoothstep(5.0, 12.0, pd))
 
 	# Carve Eldoria River & Crystal Lake (outside the Walled Royal City)
 	var r_dist := river_distance(x, z)
@@ -256,17 +248,11 @@ func _splat_weights_for(wx: float, wz: float, h: float, slope: float) -> Color:
 	if h < WATER_LEVEL + 0.35:
 		dirt_w = 1.0 - smoothstep(WATER_LEVEL - 0.15, WATER_LEVEL + 0.35, h)
 
-	# Smoothly feathered country dirt trail curving gently left of the hero meadow!
-	if wz >= -18.0 and wz <= 48.0:
-		var trail_x := -2.0 - 3.2 * smoothstep(-10.0, 18.0, wz) + sin(wz * 0.14) * 1.25
-		dirt_w = maxf(dirt_w, 1.0 - smoothstep(0.75, 2.25, absf(wx - trail_x)))
-	var bridge_z := -4.0 * clampf(wx / 36.0, 0.0, 1.0)
-	if wx >= -2.0 and wx <= 60.0:
-		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.2, 3.2, absf(wz - bridge_z)))
-	if wx >= -54.0 and wx <= 2.0:
-		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.1, 3.0, absf(wz - 2.0)))
-	if wx >= -24.0 and wx <= 22.0:
-		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.3, 3.4, absf(wz + 18.0)))
+	# Packed earth under the town streets and along the three country roads.
+	if CityPlan.is_street(wx, wz):
+		dirt_w = 1.0
+	else:
+		dirt_w = maxf(dirt_w, 1.0 - smoothstep(1.2, 3.4, CityPlan.country_road_distance(wx, wz)))
 
 	var rock_w := clampf((slope - 0.36) * 2.2, 0.0, 1.0)
 	rock_w = maxf(rock_w, smoothstep(8.2, 14.5, h) * 0.88)
