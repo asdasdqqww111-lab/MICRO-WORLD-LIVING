@@ -15,94 +15,90 @@ ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
 WARNING: All audio drivers failed, falling back to the dummy driver.
      at: initialize (servers/audio_server.cpp:247)
 
-WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
-     at: set_radiance_size (servers/rendering/renderer_rd/environment/sky.cpp:620)
-WARNING: Realtime Skies can only use a radiance size of 256. Radiance size will be set to 256 internally.
-     at: set_radiance_size (servers/rendering/renderer_rd/environment/sky.cpp:620)
 MICRO WORLD: LIVING — Polished Stylized/Chibi PBR Mobile Vulkan Probe
 engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T00:34:44
+run at: 2026-11-14T14:27:33
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  3D draw calls:    51  [OK]
-  total draw calls: 448  [FAIL]
-  triangles (max):  182654  [OVER]
-  objects:          452
-  static memory:    206.4 MB
+  3D draw calls:    69  [OK]
+  total draw calls: 268  [OK]
+  triangles (max):  206595  [OVER]
+  objects:          269
+  static memory:    205.8 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    55  [OK]
-  total draw calls: 334  [WARN]
-  triangles (max):  200474  [OVER]
-  objects:          338
-  static memory:    214.9 MB
+  3D draw calls:    72  [OK]
+  total draw calls: 153  [OK]
+  triangles (max):  222277  [OVER]
+  objects:          154
+  static memory:    214.1 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    29  [OK]
-  total draw calls: 307  [WARN]
-  triangles (max):  85699  [OK]
-  objects:          307
-  static memory:    214.7 MB
-  fps (min, this driver): 1.0
+  3D draw calls:    21  [OK]
+  total draw calls: 103  [OK]
+  triangles (max):  97123  [OK]
+  objects:          103
+  static memory:    214.0 MB
+  fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  3D draw calls:    62  [OK]
-  total draw calls: 340  [WARN]
-  triangles (max):  175453  [OK]
-  objects:          343
-  static memory:    214.8 MB
-  fps (min, this driver): 1.0
+  3D draw calls:    43  [OK]
+  total draw calls: 120  [OK]
+  triangles (max):  151469  [OK]
+  objects:          120
+  static memory:    214.1 MB
+  fps (min, this driver): 2.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   3D draw calls:    52  [OK]
-  total draw calls: 330  [WARN]
-  triangles (max):  45371  [OK]
-  objects:          339
-  static memory:    215.0 MB
+  total draw calls: 132  [OK]
+  triangles (max):  42538  [OK]
+  objects:          141
+  static memory:    214.3 MB
   fps (min, this driver): 3.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    17  [OK]
-  total draw calls: 324  [WARN]
-  triangles (max):  12830  [OK]
-  objects:          324
-  static memory:    215.4 MB
+  total draw calls: 119  [OK]
+  triangles (max):  9983  [OK]
+  objects:          119
+  static memory:    214.5 MB
   fps (min, this driver): 4.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    45  [OK]
-  total draw calls: 349  [WARN]
-  triangles (max):  74804  [OK]
-  objects:          349
-  static memory:    216.0 MB
+  total draw calls: 146  [OK]
+  triangles (max):  71961  [OK]
+  objects:          146
+  static memory:    215.1 MB
   fps (min, this driver): 2.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
-  all UI visible           total  324 | 3D (visible+shadow)   17 | objects  324
-  touch controls hidden    total  276 | 3D (visible+shadow)   17 | objects  276
-  HUD hidden               total   66 | 3D (visible+shadow)   17 | objects   66
+  all UI visible           total  119 | 3D (visible+shadow)   17 | objects  119
+  touch controls hidden    total   62 | 3D (visible+shadow)   17 | objects   62
+  HUD hidden               total   75 | 3D (visible+shadow)   17 | objects   75
   HUD + touch hidden       total   18 | 3D (visible+shadow)   17 | objects   18
   entire UI layer hidden   total   18 | 3D (visible+shadow)   17 | objects   18
-  => touch controls: 48 draw calls
-  => HUD:            258 draw calls
+  => touch controls: 57 draw calls
+  => HUD:            44 draw calls
   => other UI nodes: 0 draw calls
   => non-UI (3D):    18 draw calls
-  HUD per panel (touch hidden, HUD total 258):
-  HUD vitals panel (StatsGlassPanel)    102 draw calls
+  HUD per panel (touch hidden, HUD total 44):
+  HUD vitals panel (StatsGlassPanel)     17 draw calls
   HUD quest tracker                    not visible
-  HUD top-centre action dock             60 draw calls
+  HUD top-centre action dock              8 draw calls
   HUD minimap                             4 draw calls
-  HUD clock + weather pill               25 draw calls
-  HUD city district pill                 37 draw calls
+  HUD clock + weather pill                9 draw calls
+  HUD city district pill                  5 draw calls
   HUD notifications                       0 draw calls
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2094
-  MeshInstance3D:       634
-  MultiMeshInstance3D:  21 (batches) / 2801 instances
+  nodes total:          2009
+  MeshInstance3D:       590
+  MultiMeshInstance3D:  21 (batches) / 1479 instances
   GPUParticles3D:       2
   omni lights:          20
   shadow casting dir:   1
@@ -112,21 +108,23 @@ SCENE AUDIT (renderer independent)
 
 TOP TRIANGLE CONSUMERS (whole world)
     18772 tris |  1 surf | World/DungeonZone/DungeonWalls [x38]
-    12528 tris |  2 surf | World/OverworldZone/StylizedPines [x8]
-    10176 tris |  1 surf | World/OverworldZone/RoyalCityLanterns [x24]
-    10080 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x21]
-     9692 tris |  1 surf | World/OverworldZone/MeadowWindGrass [x2423]
-     8800 tris |  1 surf | World/OverworldZone/ForestOaks [x8]
-     7448 tris |  1 surf | World/OverworldZone/ForestBushes [x28]
-     7344 tris |  3 surf | World/OverworldZone/MeadowFlowers [x18]
+    17280 tris |  1 surf | World/OverworldZone/ValleyStylizedPines [x36]
+    12828 tris |  1 surf | World/OverworldZone/RoyalGateTowers [x6]
+    11000 tris |  1 surf | World/OverworldZone/ForestOaks [x10]
+     8568 tris |  1 surf | World/OverworldZone/RoyalCityWalls [x17]
      7200 tris |  1 surf | World/OverworldZone/Terrain/TerrainMesh
      6268 tris |  3 surf | World/OverworldZone/LakesideBirches [x4]
-     5659 tris |  1 surf | World/OverworldZone/AdventurersGuildExteriorBody/AdventurersGuildExterior
-     5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
+     6120 tris |  3 surf | World/OverworldZone/MeadowFlowers [x15]
+     5936 tris |  1 surf | World/OverworldZone/CityStreetLanternPosts [x14]
+     5760 tris |  1 surf | World/OverworldZone/FarmWheat [x8]
+     5659 tris |  1 surf | World/OverworldZone/AdventurersGuildExterior/AdventurersGuildExterior
+     5586 tris |  1 surf | World/OverworldZone/ForestBushes [x21]
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
 
-SHADOW / LOD: casters=37  shadow_off=597  with_visibility_range=594
+SHADOW / LOD: casters=30  shadow_off=560  with_visibility_range=549
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:604)

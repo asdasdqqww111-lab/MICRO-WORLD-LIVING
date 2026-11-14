@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.3-stable (official) stable
 rendering method: mobile
-run at: 2026-11-14T00:33:55
+run at: 2026-11-14T14:27:22
 checks passed: 215
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 43.0
+  fps: 6.0
   draw calls: 0
   triangles: 0
-  nodes: 2461
+  nodes: 2377
 
 checks:
 
@@ -187,7 +187,7 @@ PASS  camera yaw responds to drag
 PASS  camera zoom changes distance
 PASS  UI screens open and refresh without error
 PASS  Mobile TouchControls includes Target-Lock button (Btn_lock_target)
-PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=51.6px)
+PASS  Thumb-Zone circular Glassmorphism buttons maintain >= 44px gap (min=47.0px)
 PASS  touch: stick deflection inside the dead zone outputs zero
 PASS  touch: dead zone is rescaled (0.575 raw -> 0.500)
 PASS  touch: full deflection outputs magnitude 1.0
@@ -230,7 +230,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.3)
+PASS  skeleton takes damage (46.0 -> 32.1)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective

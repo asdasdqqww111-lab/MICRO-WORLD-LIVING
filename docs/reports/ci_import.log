@@ -4,4 +4,4 @@ WARNING: Ignoring face with non-finite normal in LOD generation.
      at: generate_lods (scene/resources/3d/importer_mesh.cpp:521)
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
-[VerifyStylizedImport] Imported 35 / 35 stylized PBR assets & shaders (failed=0)
+[VerifyStylizedImport] Imported 14 / 14 stylized PBR assets & shaders (failed=0)
