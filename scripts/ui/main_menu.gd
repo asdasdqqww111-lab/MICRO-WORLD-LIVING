@@ -107,7 +107,7 @@ func _build() -> void:
 	_info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	center.add_child(_info_label)
 
-	var version := UIFactory.label("Eldoria Royal Capital Edition v3.0  ·  Godot 4.3 Mobile Compatibility  ·  العربية (RTL) & EN", 13, UIFactory.TEXT_DIM)
+	var version := UIFactory.label("Eldoria Royal Capital Edition v3.0  ·  Godot 4.4 Mobile  ·  العربية (RTL) & EN", 13, UIFactory.TEXT_DIM)
 	version.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	version.position = Vector2(18, -30)
 	add_child(version)

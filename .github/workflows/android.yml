@@ -17,6 +17,13 @@ concurrency:
 permissions:
   contents: write
 
+# One place to change the engine version. The export templates directory and
+# the editor settings file are named after it.
+env:
+  GODOT_VERSION: 4.4.1-stable
+  GODOT_TEMPLATES_DIR: 4.4.1.stable
+  GODOT_SETTINGS_VERSION: "4.4"
+
 jobs:
   apk:
     name: Export debug APK
@@ -26,25 +33,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Godot 4.3 stable
+      - name: Install Godot ${{ env.GODOT_VERSION }}
         run: |
           set -euo pipefail
           curl -fsSL -o /tmp/godot.zip \
-            https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+            https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip
           unzip -q /tmp/godot.zip -d /tmp/godot
-          chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
-          sudo mv /tmp/godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+          chmod +x /tmp/godot/Godot_v${GODOT_VERSION}_linux.x86_64
+          sudo mv /tmp/godot/Godot_v${GODOT_VERSION}_linux.x86_64 /usr/local/bin/godot
           godot --version
 
       - name: Install export templates
         run: |
           set -euo pipefail
           curl -fsSL -o /tmp/templates.tpz \
-            https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+            https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
           mkdir -p ~/.local/share/godot/export_templates
           unzip -q /tmp/templates.tpz -d /tmp/tpl
-          mv /tmp/tpl/templates ~/.local/share/godot/export_templates/4.3.stable
-          ls ~/.local/share/godot/export_templates/4.3.stable/android*
+          mv /tmp/tpl/templates ~/.local/share/godot/export_templates/${GODOT_TEMPLATES_DIR}
+          ls ~/.local/share/godot/export_templates/${GODOT_TEMPLATES_DIR}/android*
 
       - name: Point Godot at the Android + Java SDKs
         run: |
@@ -52,19 +59,23 @@ jobs:
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           echo "JAVA_HOME=$JAVA_HOME"
           mkdir -p ~/.config/godot
-          cat > ~/.config/godot/editor_settings-4.3.tres <<EOF
+          cat > ~/.config/godot/editor_settings-${GODOT_SETTINGS_VERSION}.tres <<EOF
           [gd_resource type="EditorSettings" format=3]
 
           [resource]
           export/android/android_sdk_path = "$ANDROID_SDK_ROOT"
           export/android/java_sdk_path = "$JAVA_HOME"
           EOF
-          cat ~/.config/godot/editor_settings-4.3.tres
+          cat ~/.config/godot/editor_settings-${GODOT_SETTINGS_VERSION}.tres
 
       - name: Import project
         run: |
-          godot --headless --path . --import
-          godot --headless --path . --script res://tools/verify_realistic_import.gd
+          set -o pipefail
+          # First pass builds the script class cache and .uid files on a clean
+          # checkout; the second pass must then be clean.
+          godot --headless --path . --import > /tmp/import_first.log 2>&1 || true
+          godot --headless --path . --import 2>&1 | tee /tmp/import.log
+          godot --headless --path . --script res://tools/verify_realistic_import.gd 2>&1 | tee -a /tmp/import.log
 
       - name: Headless acceptance tests
         run: |
@@ -79,10 +90,10 @@ jobs:
       - name: Annotate test failures
         if: failure()
         run: |
-          for log in /tmp/acceptance.log /tmp/tower.log; do
+          for log in /tmp/import.log /tmp/acceptance.log /tmp/tower.log; do
             if [ -f "$log" ]; then
-              grep -E 'SCRIPT ERROR|Parse Error|FAIL|failed|Failed' "$log" | head -40 | while IFS= read -r line; do
-                echo "::error::$line"
+              grep -E 'SCRIPT ERROR|Parse Error|ERROR:|FAIL|failed|Failed' "$log" | sort -u | head -40 | while IFS= read -r line; do
+                echo "::error::$(basename "$log"): $line"
               done
             fi
           done
@@ -117,7 +128,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/android
-          godot --headless --path . --export-debug "Android" build/android/micro_world_living.apk
+          godot --headless --path . --export-debug "Android" build/android/micro_world_living.apk 2>&1 | tee /tmp/export.log
           ls -lh build/android
           python3 - <<'PY'
           import zipfile
@@ -127,9 +138,22 @@ jobs:
           print("entries:", len(names))
           print("native libs:", libs)
           assert any("arm64-v8a" in n for n in libs), "no arm64-v8a native libs in APK"
+          assert not any("armeabi-v7a" in n for n in libs), "32-bit libs were meant to be dropped"
           assert "assets/_cl_" in " ".join(names) or any(n.startswith("assets/") for n in names), "no game data in APK"
           print("APK looks well formed")
           PY
+
+      - name: Annotate export failure
+        if: failure()
+        run: |
+          if [ -f /tmp/export.log ]; then
+            grep -E 'ERROR|error|Cannot|not found|invalid|Invalid' /tmp/export.log | sort -u | head -30 | while IFS= read -r line; do
+              echo "::error::export: $line"
+            done
+            tail -5 /tmp/export.log | while IFS= read -r line; do
+              echo "::warning::export tail: $line"
+            done
+          fi
 
       - name: Verify APK (signature + manifest + contents)
         run: |
@@ -167,7 +191,7 @@ jobs:
             echo "2. على الهاتف: الإعدادات ← التطبيقات ← تثبيت تطبيقات غير معروفة ← اسمح للمتصفح/مدير الملفات."
             echo "3. افتح ملف الـ APK واضغط **تثبيت / Install**."
             echo ""
-            echo "**جهاز مطلوب:** Android (\`arm64-v8a\` أو \`armeabi-v7a\`) مع دعم Vulkan Mobile."
+            echo "**جهاز مطلوب:** Android 64-bit (\`arm64-v8a\`) مع دعم Vulkan."
             echo ""
             echo "**أبرز محتوى إصدار Eldoria v1.0**"
             echo "- قرية إلدوريا الحية (18 شخصية NPC بجدول يومي + طاحونة + سوق + حداد + كنيسة + قلعة نقابة المغامرين)."
@@ -183,9 +207,9 @@ jobs:
             echo "| الحجم | $SIZE |"
             echo "| SHA-256 | \`$SHA\` |"
             echo "| فحوص القبول الآلية | $PASSED نجحت / $FAILED فشلت |"
-            echo "| المحرك | Godot 4.3 stable — Vulkan Mobile |"
+            echo "| المحرك | Godot ${GODOT_VERSION} — Vulkan Mobile |"
             echo "| الحزمة | com.microworldliving.game |"
-            echo "| المعماريات | arm64-v8a + armeabi-v7a |"
+            echo "| المعماريات | arm64-v8a |"
             echo "| التوقيع | debug keystore (للاختبار المباشر) |"
             echo "| commit | \`${GITHUB_SHA}\` |"
             echo ""

@@ -1,13 +1,13 @@
 ; Micro World: Living — vertical slice
-; Godot 4.3+ / GDScript (typed) / Compatibility (GLES3) renderer
+; Godot 4.4 / GDScript (typed) / Mobile (Vulkan) renderer
 config_version=5
 
 [application]
 
 config/name="Micro World: Living"
-config/description="Polished Stylized/Chibi PBR Mobile 3D fantasy open-world RPG in Eldoria. Godot 4.3 Vulkan Mobile, offline-first."
+config/description="Polished Stylized/Chibi PBR Mobile 3D fantasy open-world RPG in Eldoria. Godot 4.4 Vulkan Mobile, offline-first."
 run/main_scene="res://scenes/main_menu/main_menu.tscn"
-config/features=PackedStringArray("4.3", "Mobile")
+config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 boot_splash/bg_color=Color(0.07, 0.09, 0.12, 1)
 config/version="3.0.0"
