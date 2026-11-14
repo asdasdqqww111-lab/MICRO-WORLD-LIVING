@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 120
+checks passed: 140
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -11,7 +11,7 @@ PASS  every villager turns to face the hero:
 PASS  every villager greets the hero out loud: 
 PASS  villagers are solid for the hero
 PASS  walking straight at a villager does not pass through them
-PASS  villagers go about their day (17 of 18 moved)
+PASS  villagers go about their day (16 of 18 moved)
 PASS  no villager is standing inside a building: 
 PASS  at night villagers walk home and go indoors (5 did)
 PASS  quest givers, guards and shopkeepers stay available at night
@@ -137,3 +137,25 @@ PASS  world builds solid colliders (98 found)
 PASS  walls block the player (4/4)
 PASS  tree trunks block the player (4/4)
 PASS  player lands on the terrain instead of falling through (y=0.00 ground=0.00)
+
+== Problem 9 - UI design: localization, cards, indicators
+PASS  localization key 'settings' resolves
+PASS  localization key 'language' resolves
+PASS  localization key 'graphics' resolves
+PASS  localization key 'camera_sensitivity' resolves
+PASS  localization key 'touch_controls' resolves
+PASS  localization key 'haptics' resolves
+PASS  localization key 'dev_diagnostics' resolves
+PASS  localization key 'select_skill' resolves
+PASS  localization key 'saved_adventure' resolves
+PASS  localization key 'no_save' resolves
+PASS  localization key 'on_txt' resolves
+PASS  localization key 'off_txt' resolves
+PASS  localization key has Arabic text
+PASS  main menu settings labels resolve through Localization
+PASS  crafting screen builds cards
+PASS  HUD has the boss indicator panel
+PASS  HUD has the target indicator panel
+PASS  HUD has the interact prompt panel
+PASS  VFX manager spawns floating damage numbers
+PASS  a floating damage number is visible after a hit (3)

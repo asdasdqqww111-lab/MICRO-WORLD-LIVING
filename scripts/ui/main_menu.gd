@@ -132,9 +132,9 @@ func _build_settings_panel() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 10)
 	_settings_panel.add_child(box)
-	box.add_child(UIFactory.label("✦  Settings", 24, UIFactory.GOLD))
+	box.add_child(UIFactory.label("✦  " + Localization.tr_key("settings"), 24, UIFactory.GOLD))
 
-	box.add_child(UIFactory.label("Language / اللغة", 16, UIFactory.TEXT_DIM))
+	box.add_child(UIFactory.label(Localization.tr_key("language"), 16, UIFactory.TEXT_DIM))
 	var lang_row := HBoxContainer.new()
 	lang_row.add_theme_constant_override("separation", 8)
 	box.add_child(lang_row)
@@ -149,7 +149,7 @@ func _build_settings_panel() -> void:
 			_refresh_save_state())
 		lang_row.add_child(lb)
 
-	box.add_child(UIFactory.label("Graphics Quality", 16, UIFactory.TEXT_DIM))
+	box.add_child(UIFactory.label(Localization.tr_key("graphics"), 16, UIFactory.TEXT_DIM))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	box.add_child(row)
@@ -173,7 +173,7 @@ func _build_settings_panel() -> void:
 		_refresh_save_state())
 	box.add_child(touch_toggle)
 
-	box.add_child(UIFactory.label("Camera Sensitivity", 16, UIFactory.TEXT_DIM))
+	box.add_child(UIFactory.label(Localization.tr_key("camera_sensitivity"), 16, UIFactory.TEXT_DIM))
 	var sensitivity := HSlider.new()
 	sensitivity.min_value = 0.4
 	sensitivity.max_value = 2.2
@@ -204,10 +204,11 @@ func _refresh_save_state() -> void:
 	var has_save := SaveManager.has_save(SaveManager.DEFAULT_SLOT)
 	_continue_button.disabled = not has_save
 	_save_button.visible = has_save
-	_info_label.text = ("Saved Adventure: %s" % _save_timestamp()) if has_save else Localization.tr_key("no_save")
+	_info_label.text = (Localization.tr_key("saved_adventure") % _save_timestamp()) if has_save else Localization.tr_key("no_save")
 	var touch_toggle := _settings_panel.find_child("TouchToggle", true, false) as Button
 	if touch_toggle != null:
-		touch_toggle.text = "Touch Controls: %s" % ("ON" if SettingsManager.show_touch_controls else "OFF")
+		touch_toggle.text = "%s: %s" % [Localization.tr_key("touch_controls"),
+			Localization.tr_key("on_txt") if SettingsManager.show_touch_controls else Localization.tr_key("off_txt")]
 
 func _save_timestamp() -> String:
 	var path := SaveManager.path_for(SaveManager.DEFAULT_SLOT)

@@ -195,6 +195,7 @@ func _build_top_bar_and_boss() -> void:
 
 	# Dynamic Boss Health Bar right beneath the dock
 	boss_panel = UIFactory.card_panel(Color(0.88, 0.28, 0.34))
+	boss_panel.name = "BossPanel"
 	boss_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	boss_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	boss_panel.position = Vector2(0, 70)
@@ -213,6 +214,7 @@ func _build_top_bar_and_boss() -> void:
 
 	# Target Lock-On Enemy Card
 	target_panel = UIFactory.card_panel(UIFactory.GOLD)
+	target_panel.name = "TargetPanel"
 	target_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	target_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	target_panel.position = Vector2(0, 70)
@@ -289,6 +291,7 @@ func _build_quest_tracker() -> void:
 
 func _build_prompt() -> void:
 	interact_panel = UIFactory.card_panel(UIFactory.GOLD, Color(0.08, 0.11, 0.16, 0.90))
+	interact_panel.name = "InteractPanel"
 	interact_panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	interact_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	interact_panel.position = Vector2(0, -96)
@@ -442,10 +445,7 @@ func _on_time_changed(hour: int, minute: int, _day: int) -> void:
 	clock_label.text = "%02d:%02d" % [hour, minute]
 
 func _on_weather_changed(weather: String) -> void:
-	if Localization.is_arabic():
-		weather_label.text = "ممطر" if weather == "rain" else "صحو"
-	else:
-		weather_label.text = "Rain" if weather == "rain" else "Clear"
+	weather_label.text = Localization.tr_key("hud_weather_rain" if weather == "rain" else "hud_weather_clear")
 
 func _on_boss_health(boss_name: String, current: float, maximum: float, phase: int, vis: bool) -> void:
 	if boss_panel == null:

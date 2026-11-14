@@ -12,6 +12,9 @@ var _rain_splash: CPUParticles3D
 var _sun_motes: CPUParticles3D
 var _spark_pool: Array[CPUParticles3D] = []
 var _spark_idx: int = 0
+var _dmg_pool: Array[Label3D] = []
+var _dmg_idx: int = 0
+var _dmg_font: Label3D = null
 
 static var _soft_quad: QuadMesh
 static var _slash_arc_mesh: ArrayMesh
@@ -60,6 +63,7 @@ func _ready() -> void:
 	_build_rain_splashes()
 	_build_sun_motes()
 	_build_spark_pool()
+	_build_damage_numbers()
 	EventBus.damage_dealt.connect(_on_damage_dealt)
 	EventBus.player_level_up.connect(func(_lv: int) -> void:
 		if _player != null and is_instance_valid(_player):
@@ -221,13 +225,42 @@ func spawn_burst(world_pos: Vector3, tint: Color = Color(1.0, 0.82, 0.36, 0.95))
 	sp.restart()
 	sp.emitting = true
 
-func _on_damage_dealt(target: Node, _amount: float, is_crit: bool) -> void:
+func _build_damage_numbers() -> void:
+	# Floating damage indicators (2D billboards). Reused pool so the cost stays flat.
+	for i in 12:
+		var lbl := Label3D.new()
+		lbl.name = "DamageNumber_%d" % i
+		lbl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		lbl.font_size = 34
+		lbl.outline_size = 8
+		lbl.modulate = Color(1.0, 0.86, 0.42)
+		lbl.visible = false
+		add_child(lbl)
+		_dmg_pool.append(lbl)
+
+func _spawn_damage_number(world_pos: Vector3, amount: float, is_crit: bool) -> void:
+	if _dmg_pool.is_empty():
+		return
+	var lbl := _dmg_pool[_dmg_idx % _dmg_pool.size()]
+	_dmg_idx += 1
+	lbl.global_position = world_pos
+	lbl.text = "-%d" % int(round(amount))
+	var col := Color(1.0, 0.30, 0.28) if is_crit else Color(1.0, 0.86, 0.42)
+	lbl.modulate = col
+	lbl.scale = Vector3(0.7, 0.7, 0.7) if is_crit else Vector3.ONE
+	lbl.visible = true
+	lbl.set_meta("dmg_life", 0.0)
+	lbl.set_meta("dmg_crit", is_crit)
+
+func _on_damage_dealt(target: Node, amount: float, is_crit: bool) -> void:
 	if target is Node3D:
 		var pos := (target as Node3D).global_position + Vector3(0.0, 1.0, 0.0)
 		var col := Color(1.0, 0.46, 0.20, 1.0) if is_crit else Color(1.0, 0.84, 0.38, 0.92)
 		spawn_burst(pos, col)
+		_spawn_damage_number(pos, amount, is_crit)
 
 func _process(_delta: float) -> void:
+	_update_damage_numbers(_delta)
 	if _player == null or not is_instance_valid(_player):
 		if _dust_particles != null:
 			_dust_particles.emitting = false
@@ -244,3 +277,22 @@ func _process(_delta: float) -> void:
 	if _sun_motes != null and GameManager != null:
 		_sun_motes.global_position = _player.global_position + Vector3(0.0, 1.8, 0.0)
 		_sun_motes.emitting = (GameManager.world.weather != "rain" and _player.zone == "village")
+
+func _update_damage_numbers(delta: float) -> void:
+	const LIFE: float = 0.85
+	for lbl: Label3D in _dmg_pool:
+		if not lbl.visible:
+			continue
+		var life := float(lbl.get_meta("dmg_life", 0.0)) + delta
+		lbl.set_meta("dmg_life", life)
+		if life >= LIFE:
+			lbl.visible = false
+			continue
+		var t := life / LIFE
+		# rise, grow, then fade
+		lbl.position.y = 0.55 + t * 1.1
+		var s := 1.0 + (0.35 if lbl.get_meta("dmg_crit", false) else 0.0) * (1.0 - t)
+		lbl.scale = Vector3(s, s, s)
+		var alpha := clampf(1.0 - pow(t, 2.2), 0.0, 1.0)
+		var c := lbl.modulate
+		lbl.modulate = Color(c.r, c.g, c.b, alpha)

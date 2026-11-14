@@ -231,7 +231,7 @@ func _populate_inspector() -> void:
 		c.queue_free()
 	var skill := SkillDB.get_skill(selected_skill_id)
 	if skill == null:
-		_inspector_box.add_child(UIFactory.label("Select a skill node", 16, UIFactory.TEXT_DIM))
+		_inspector_box.add_child(UIFactory.label(Localization.tr_key("select_skill"), 16, UIFactory.TEXT_DIM))
 		return
 
 	var meta: Dictionary = BRANCH_META.get(skill.branch, BRANCH_META["warrior"])

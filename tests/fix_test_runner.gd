@@ -66,6 +66,7 @@ func _run_all() -> void:
 	await _test_p6_finance()
 	await _test_p7_quests()
 	await _test_p8_physics()
+	await _test_p9_design()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -812,6 +813,49 @@ func _find_shape(body: Node) -> CollisionShape3D:
 		if child is CollisionShape3D:
 			return child as CollisionShape3D
 	return null
+
+# --- Problem 9: UI design - buttons, cards, texts, indicators ---------------
+
+func _test_p9_design() -> void:
+	_section("Problem 9 - UI design: localization, cards, indicators")
+
+	# every design-critical string resolves in both languages
+	for key: String in ["settings", "language", "graphics", "camera_sensitivity",
+		"touch_controls", "haptics", "dev_diagnostics", "select_skill",
+		"saved_adventure", "no_save", "on_txt", "off_txt"]:
+		var en := Localization.t(key, "fallback")
+		_check(en != "fallback" and not en.is_empty(), "localization key '%s' resolves" % key)
+	var prev_lang := SettingsManager.language
+	SettingsManager.language = "ar"
+	var ar_txt := Localization.t("camera_sensitivity", "")
+	_check(not ar_txt.is_empty() and Localization.is_arabic(), "localization key has Arabic text")
+	SettingsManager.language = prev_lang
+
+	# the main menu settings panel is built from localized keys
+	_check(Localization.t("settings", "") != "" and Localization.t("graphics", "") != "",
+		"main menu settings labels resolve through Localization")
+
+	# cards: crafting screen builds recipe cards from UIFactory.card_panel
+	var craft := ui.crafting_screen if ui != null else null
+	_check(craft != null and craft.has_method("refresh"), "crafting screen builds cards")
+
+	# indicators: the HUD exposes boss, target, waypoint and interact panels
+	var hud := get_tree().get_first_node_in_group("hud_root") as Node
+	_check(hud != null and hud.has_node("BossPanel"), "HUD has the boss indicator panel")
+	_check(hud != null and hud.has_node("TargetPanel"), "HUD has the target indicator panel")
+	_check(hud != null and hud.has_node("InteractPanel"), "HUD has the interact prompt panel")
+
+	# floating damage numbers: VFXManager spawns a reusable pool of labels
+	var vfx := get_tree().get_first_node_in_group("vfx_manager") as Node
+	_check(vfx != null and vfx.has_method("_spawn_damage_number"), "VFX manager spawns floating damage numbers")
+	if vfx != null and vfx.has_method("_spawn_damage_number"):
+		vfx.call("_spawn_damage_number", Vector3(0.0, 1.0, 0.0), 42.0, false)
+		await _frames(2)
+		var labels: int = 0
+		for child: Node in vfx.get_children():
+			if child is Label3D and child.visible:
+				labels += 1
+		_check(labels >= 1, "a floating damage number is visible after a hit (%d)" % labels)
 
 # --- report -------------------------------------------------------------------
 

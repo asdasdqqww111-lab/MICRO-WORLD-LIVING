@@ -119,7 +119,7 @@ func refresh() -> void:
 		refresh())
 	toggles.add_child(haptics_toggle)
 
-	var overlay := UIFactory.button(("%s: %s" % ["تشخيص الأداء (F3)" if ar else "Dev Diagnostics (F3)", on_txt if SettingsManager.show_performance_overlay else off_txt]), 42)
+	var overlay := UIFactory.button(("%s: %s" % [Localization.tr_key("dev_diagnostics"), on_txt if SettingsManager.show_performance_overlay else off_txt]), 42)
 	overlay.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	overlay.pressed.connect(func() -> void:
 		SettingsManager.show_performance_overlay = not SettingsManager.show_performance_overlay
