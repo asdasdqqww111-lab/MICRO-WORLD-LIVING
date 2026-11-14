@@ -177,6 +177,33 @@ func _ui_draw_call_breakdown(ui: UIRoot) -> void:
 	ui.visible = false
 	var no_ui: Dictionary = await _sample_draws()
 
+	# Per-panel attribution inside the HUD (each panel hidden on its own).
+	ui.visible = true
+	ui.hud.visible = true
+	ui.touch.visible = false
+	var hud_base: Dictionary = await _sample_draws()
+	var hud := ui.hud
+	var panels: Array = [
+		["vitals panel (StatsGlassPanel)", hud.find_child("StatsGlassPanel", true, false)],
+		["quest tracker", hud.quest_panel],
+		["top-centre action dock", hud.find_child("TopCenterActionDock", true, false)],
+		["minimap", hud.minimap],
+		["clock + weather pill", hud.find_child("DayWeatherPanel", true, false)],
+		["city district pill", hud.find_child("RoyalCityDistrictPanel", true, false)],
+		["notifications", hud.notifications],
+	]
+	var panel_lines: PackedStringArray = []
+	for entry: Array in panels:
+		var panel := entry[1] as CanvasItem
+		if panel == null or not panel.visible:
+			panel_lines.append("  HUD %-32s not visible" % String(entry[0]))
+			continue
+		panel.visible = false
+		var without: Dictionary = await _sample_draws()
+		panel.visible = true
+		panel_lines.append("  HUD %-32s %4d draw calls" % [
+			String(entry[0]), int(hud_base["total"]) - int(without["total"])])
+
 	ui.visible = layer_was
 	ui.hud.visible = hud_was
 	ui.touch.visible = touch_was
@@ -197,6 +224,8 @@ func _ui_draw_call_breakdown(ui: UIRoot) -> void:
 	_lines.append("  => HUD:            %d draw calls" % (int(full["total"]) - int(no_hud["total"])))
 	_lines.append("  => other UI nodes: %d draw calls" % (int(no_hud_touch["total"]) - int(no_ui["total"])))
 	_lines.append("  => non-UI (3D):    %d draw calls" % int(no_ui["total"]))
+	_lines.append("  HUD per panel (touch hidden, HUD total %d):" % (int(hud_base["total"]) - int(no_ui["total"])))
+	_lines.append_array(panel_lines)
 	_flush()
 
 func _frames(count: int) -> void:
