@@ -565,8 +565,8 @@ func _test_game_scene() -> void:
 		"Phase 3: Player character uses Stylized Chibi Knight (%s)" % (player.visual._model_path if player.visual != null else ""))
 	_check(player.camera_rig != null and player.camera_rig.camera != null
 		and is_equal_approx(player.camera_rig.camera.fov, 55.0)
-		and is_equal_approx(player.camera_rig.distance, 4.0),
-		"Phase 3: CameraRig configured with FOV=55 and spring_arm=4.0")
+		and is_equal_approx(player.camera_rig.distance, 3.6),
+		"Phase 3: CameraRig configured with FOV=55 and spring_arm=3.6")
 	var env_res: Environment = world.environment
 	var sky_pano: PanoramaSkyMaterial = env_res.sky.sky_material as PanoramaSkyMaterial if (env_res != null and env_res.sky != null) else null
 	_check(env_res != null

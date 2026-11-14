@@ -1,18 +1,48 @@
 class_name VillageNPC
 extends Interactable
-## Living Eldoria Villager & Adventurers Guild NPC.
-## Preserves 100% of v0.1 contracts (setup, activity_for_hour, dialog_payload,
-## execute_action, visual, activity) while adding human KayKit rigs + role gear,
-## patrol routes, obstacle steering, quest markers, Guild registration/promotion,
-## Blacksmith forge access, Chapel blessing, Inn rest, and Merchant shops.
+## A townsperson of Eldoria.
+##
+## Daily life (hours from WorldState):
+##   06-18  work   - stay at the workplace, moving between a few nearby spots
+##                   and doing the job's animation there
+##   18-22  rest   - walk to the evening spot and stand around with neighbours
+##   22-06  sleep  - walk home and go indoors (hidden until morning)
+## Guards, shopkeepers and anybody the player currently needs for a quest stay
+## at their post through the night, so nothing the player has to do is ever
+## locked behind the clock.
+##
+## Awareness: a villager stops and turns towards the player when approached,
+## greets once, and goes back to what they were doing when the player leaves.
+## Walking is checked against the world's colliders, so nobody walks through
+## buildings, stalls or trees; a villager who cannot reach a spot picks another.
 
-const SPEED := 1.85
+const SPEED := 1.3
 ## Characters are drawn up to this distance from the camera and animated a
 ## little further out, so nobody is seen frozen.
 const DRAW_DISTANCE := 22.0
 const ANIMATE_DISTANCE := 27.0
 ## Obstacle probing runs at 5 Hz, not every frame.
 const STEER_INTERVAL := 0.2
+const NOTICE_RADIUS := 3.2
+const FORGET_RADIUS := 4.4
+const GREET_COOLDOWN := 22.0
+const BODY_RADIUS := 0.26
+const BODY_HEIGHT := 1.25
+const ARRIVE_DISTANCE := 0.32
+
+## Short lines said out loud (speech bubble) - [arabic, english] per role.
+const GREETINGS := {
+	"blacksmith": [["أهلاً! النار جاهزة.", "السندان بانتظارك."], ["Welcome! The forge is hot.", "Need steel?"]],
+	"merchant": [["بضائع طازجة اليوم!", "تفضّل، انظر بنفسك."], ["Fresh goods today!", "Have a look."]],
+	"guard": [["الطرق آمنة اليوم.", "ابقَ حذراً خارج الأسوار."], ["Roads are quiet today.", "Stay sharp outside the walls."]],
+	"healer": [["النور يحفظك.", "هل أنت مصاب؟"], ["Light keep you.", "Are you hurt?"]],
+	"farmer": [["صباح الخير!", "المحصول جيد هذا العام."], ["Good day!", "The harvest looks fine."]],
+	"child": [["هل أنت بطل حقيقي؟", "انظر إليّ!"], ["Are you a real hero?", "Look at me!"]],
+	"guild": [["النقابة ترحب بك.", "عقود جديدة على اللوحة."], ["The Guild welcomes you.", "New contracts on the board."]],
+	"default": [["مرحباً أيها المغامر.", "يوم جميل، أليس كذلك؟"], ["Hello, adventurer.", "Fine day, isn't it?"]],
+}
+
+enum Mode { IDLE, WALK, ATTEND, INDOORS }
 
 static var _shared_player: Node3D = null
 static var _shared_terrain: Terrain = null
@@ -35,15 +65,28 @@ var always_awake: bool = false
 
 var visual: CharacterVisual
 var activity: String = "work"
+var mode: Mode = Mode.IDLE
 
 var _target: Vector3 = Vector3.ZERO
-var _patrol_idx: int = 0
-var _patrol_pause: float = 0.0
+var _spots: Array[Vector3] = []
+var _spot_idx: int = 0
+var _pause: float = 0.0
 var _distant_accum: float = 0.0
 var _steer_accum: float = 1.0
 var _steer_dir: Vector3 = Vector3.ZERO
+var _stuck_time: float = 0.0
+var _stuck_from: Vector3 = Vector3.ZERO
+var _greet_cooldown: float = 0.0
+var _bubble_time: float = 0.0
+var _idle_action: String = "idle"
+var _indoor: bool = false
+var _wants_marker: bool = false
+var _needed_now: bool = false
+var _rng := RandomNumberGenerator.new()
 var _nameplate: Label3D
 var _quest_marker: Label3D
+var _bubble: Label3D
+var _body: AnimatableBody3D
 
 func setup(id: String, npc_name: String, npc_role: String, path: String, positions: Dictionary) -> void:
 	npc_id = id
@@ -57,8 +100,11 @@ func setup(id: String, npc_name: String, npc_role: String, path: String, positio
 func _ready() -> void:
 	super._ready()
 	add_to_group("npc")
-	interaction_radius = 2.8
+	interaction_radius = 2.4
+	_rng.seed = hash(npc_id) + 77
+	_indoor = global_position.length() > 200.0
 	_build_visual()
+	_build_body()
 	_build_labels()
 	if schedule.is_empty():
 		schedule = {"work": global_position, "rest": global_position, "sleep": global_position}
@@ -67,6 +113,7 @@ func _ready() -> void:
 	EventBus.language_changed.connect(func(_l: String) -> void: _refresh_nameplate())
 	_refresh_nameplate()
 	_refresh_marker()
+	_pause = _rng.randf_range(0.5, 4.0)
 
 func _build_visual() -> void:
 	visual = CharacterVisual.new()
@@ -75,14 +122,30 @@ func _build_visual() -> void:
 	add_child(visual)
 	var fallback_human := "res://assets/characters/npcs/Rogue.glb"
 	var chosen := model_path if (not model_path.is_empty() and AssetLibrary.has_model(model_path)) else fallback_human
-	if not visual.setup(chosen, model_scale * 0.76):
+	if not visual.setup(chosen, model_scale * CharacterVisual.HUMAN_SCALE):
 		var fb := ProceduralModels.build("slime")
 		add_child(fb)
 	else:
 		visual.configure_gear(visible_gear, hidden_gear)
 		visual.play("idle")
-	add_child(ArtDirection.make_contact_ao(0.52, 0.34))
+	add_child(ArtDirection.make_contact_ao(0.40 * model_scale, 0.30))
 	_apply_lod_recursive(visual, DRAW_DISTANCE)
+
+## A solid body so the player and monsters cannot walk through a villager.
+func _build_body() -> void:
+	_body = AnimatableBody3D.new()
+	_body.name = "Body"
+	_body.sync_to_physics = false
+	_body.collision_layer = CollisionLayers.NPC
+	_body.collision_mask = 0
+	var shape := CollisionShape3D.new()
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = BODY_RADIUS * model_scale
+	capsule.height = BODY_HEIGHT * model_scale
+	shape.shape = capsule
+	shape.position = Vector3(0.0, capsule.height * 0.5, 0.0)
+	_body.add_child(shape)
+	add_child(_body)
 
 func _apply_lod_recursive(node: Node, dist: float) -> void:
 	if node is GeometryInstance3D:
@@ -93,28 +156,47 @@ func _apply_lod_recursive(node: Node, dist: float) -> void:
 	for c: Node in node.get_children():
 		_apply_lod_recursive(c, dist)
 
+func _head_height() -> float:
+	var hat := 0.36 if (visible_gear.has("hat") or model_path.contains("Mage")) else 0.0
+	return (1.36 + hat) * model_scale
+
 func _build_labels() -> void:
 	_nameplate = Label3D.new()
-	_nameplate.font_size = 20
-	_nameplate.outline_size = 6
-	_nameplate.modulate = Color(0.96, 0.92, 0.80)
-	_nameplate.visibility_range_end = 18.0
+	_nameplate.name = "Nameplate"
+	_nameplate.font_size = 22
+	_nameplate.outline_size = 7
+	_nameplate.pixel_size = 0.0036
+	_nameplate.modulate = Color(0.97, 0.93, 0.82)
 	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_nameplate.position = Vector3(0.0, 2.22 * model_scale, 0.0)
-	_nameplate.visibility_range_end = 26.0
+	_nameplate.no_depth_test = false
+	_nameplate.position = Vector3(0.0, _head_height() + 0.26, 0.0)
+	_nameplate.visibility_range_end = 16.0
 	add_child(_nameplate)
-	_refresh_nameplate()
 
 	_quest_marker = Label3D.new()
+	_quest_marker.name = "QuestMarker"
 	_quest_marker.text = "!"
-	_quest_marker.font_size = 42
-	_quest_marker.outline_size = 8
+	_quest_marker.font_size = 56
+	_quest_marker.outline_size = 12
+	_quest_marker.pixel_size = 0.0046
 	_quest_marker.modulate = Color(1.0, 0.84, 0.22)
 	_quest_marker.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_quest_marker.position = Vector3(0.0, 2.68 * model_scale, 0.0)
+	_quest_marker.position = Vector3(0.0, _head_height() + 0.62, 0.0)
 	_quest_marker.visibility_range_end = 34.0
 	_quest_marker.visible = false
 	add_child(_quest_marker)
+
+	_bubble = Label3D.new()
+	_bubble.name = "SpeechBubble"
+	_bubble.font_size = 22
+	_bubble.outline_size = 8
+	_bubble.pixel_size = 0.0042
+	_bubble.modulate = Color(1.0, 1.0, 1.0)
+	_bubble.outline_modulate = Color(0.10, 0.12, 0.18, 0.95)
+	_bubble.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_bubble.position = Vector3(0.0, _head_height() + 0.62, 0.0)
+	_bubble.visible = false
+	add_child(_bubble)
 
 func _refresh_nameplate() -> void:
 	if _nameplate == null:
@@ -122,7 +204,7 @@ func _refresh_nameplate() -> void:
 	var nm := Localization.npc_name(npc_id, display_name)
 	var sub_fb := role_title if not role_title.is_empty() else role.capitalize()
 	var subtitle := Localization.npc_title(npc_id, sub_fb)
-	_nameplate.text = "%s\n<%s>" % [nm, subtitle]
+	_nameplate.text = "%s\n%s" % [nm, subtitle] if not subtitle.is_empty() else nm
 
 ## Schedule: work 06-18, rest 18-22, sleep 22-06 (preserved for unit tests).
 static func activity_for_hour(hour: int) -> String:
@@ -132,6 +214,13 @@ static func activity_for_hour(hour: int) -> String:
 		return "rest"
 	return "work"
 
+## Villagers the player needs right now do not go to bed.
+func _stays_available() -> bool:
+	return always_awake or has_shop or _needed_now or not service_type.is_empty() or not guild_role.is_empty() or role == "guard"
+
+func is_indoors_asleep() -> bool:
+	return mode == Mode.INDOORS
+
 func _process(delta: float) -> void:
 	if not is_visible_in_tree():
 		return
@@ -139,10 +228,9 @@ func _process(delta: float) -> void:
 	if not is_instance_valid(_shared_player):
 		_shared_player = get_tree().get_first_node_in_group("player") as Node3D
 	var player := _shared_player
+	var d2 := INF
 	if player != null:
-		var d2 := global_position.distance_squared_to(player.global_position)
-		if _nameplate != null:
-			_nameplate.visible = d2 < 18.0 * 18.0
+		d2 = global_position.distance_squared_to(player.global_position)
 		if visual != null:
 			visual.set_lod_active(d2 < ANIMATE_DISTANCE * ANIMATE_DISTANCE)
 		# Out of sight: think and move four times a second instead of every frame.
@@ -153,84 +241,307 @@ func _process(delta: float) -> void:
 			delta = _distant_accum
 			_distant_accum = 0.0
 
-	var new_activity := "work" if always_awake else activity_for_hour(GameManager.world.hour())
-	if new_activity != activity:
-		activity = new_activity
-		_target = schedule.get(activity, global_position) as Vector3
+	_greet_cooldown = maxf(0.0, _greet_cooldown - delta)
+	if _bubble_time > 0.0:
+		_bubble_time -= delta
+		if _bubble_time <= 0.0 and _bubble != null:
+			_bubble.visible = false
+
+	_update_activity()
+	if mode == Mode.INDOORS:
+		return
+
+	# --- Awareness of the player -------------------------------------------
+	if player != null and activity != "sleep":
+		if mode != Mode.ATTEND and d2 < NOTICE_RADIUS * NOTICE_RADIUS:
+			_begin_attend()
+		elif mode == Mode.ATTEND and d2 > FORGET_RADIUS * FORGET_RADIUS:
+			mode = Mode.IDLE
+			_pause = _rng.randf_range(0.6, 1.6)
+	if mode == Mode.ATTEND:
+		if player != null:
+			_face(player.global_position, delta, 7.0)
+		_play_idle("idle")
+		return
+
+	# --- Routine --------------------------------------------------------------
+	if mode == Mode.IDLE:
+		_pause -= delta
+		_play_idle(_idle_action)
+		if _pause <= 0.0:
+			_choose_next_target()
+		return
+	_walk(delta)
+
+func _update_activity() -> void:
+	var wanted := "work"
+	if not always_awake:
+		wanted = activity_for_hour(GameManager.world.hour())
+		if wanted == "sleep" and _stays_available():
+			wanted = "rest" if role != "guard" else "work"
+	if wanted != activity:
+		activity = wanted
 		GameManager.world.npc_overrides[npc_id] = activity
-	if not GameManager.world.npc_overrides.has(npc_id):
+		_spots.clear()
+		if mode == Mode.INDOORS:
+			_come_outside()
+		mode = Mode.IDLE
+		_pause = _rng.randf_range(0.2, 2.5)
+	elif not GameManager.world.npc_overrides.has(npc_id):
 		GameManager.world.npc_overrides[npc_id] = activity
 
+## The few places this villager moves between for the current activity.
+func _activity_spots() -> Array[Vector3]:
+	if not _spots.is_empty():
+		return _spots
+	var anchor := schedule.get(activity, global_position) as Vector3
 	if activity == "work" and patrol_points.size() > 1:
-		if _patrol_pause > 0.0:
-			_patrol_pause -= delta
-			if visual != null:
-				visual.play("idle")
-			return
-		_target = patrol_points[_patrol_idx % patrol_points.size()]
+		_spots.assign(patrol_points)
+		return _spots
+	if activity == "sleep":
+		_spots = [anchor]
+		return _spots
+	_spots = [anchor]
+	# Shopkeepers and craftsmen stay within a step or two of their post;
+	# everybody else has a slightly larger beat.
+	var stays_put := has_shop or not service_type.is_empty() or not guild_role.is_empty() or role == "guard"
+	var reach := 1.5 if stays_put else 3.4
+	var start_angle := _rng.randf() * TAU
+	for i in 8:
+		if _spots.size() >= (2 if stays_put else 4):
+			break
+		var ang := start_angle + float(i) * (TAU / 8.0) * 3.0
+		var cand := anchor + Vector3(cos(ang), 0.0, sin(ang)) * reach * _rng.randf_range(0.7, 1.0)
+		if _spot_is_free(anchor, cand):
+			_spots.append(cand)
+	return _spots
 
+func _spot_is_free(from_pos: Vector3, cand: Vector3) -> bool:
+	if not _indoor:
+		if CityPlan.on_lot(cand.x, cand.z, 0.5):
+			return false
+		var terrain := _terrain()
+		if terrain != null and terrain.is_water_at(cand.x, cand.z):
+			return false
+	return not _segment_blocked(from_pos, cand)
+
+func _choose_next_target() -> void:
+	var spots := _activity_spots()
+	if spots.is_empty():
+		_pause = 2.0
+		return
+	if spots.size() == 1:
+		_spot_idx = 0
+	elif activity == "work" and patrol_points.size() > 1:
+		_spot_idx = (_spot_idx + 1) % spots.size()
+	else:
+		var next := _rng.randi_range(0, spots.size() - 1)
+		if next == _spot_idx:
+			next = (next + 1) % spots.size()
+		_spot_idx = next
+	_target = spots[_spot_idx]
+	var flat := _target - global_position
+	flat.y = 0.0
+	if flat.length() <= ARRIVE_DISTANCE:
+		_arrive()
+		return
+	mode = Mode.WALK
+	_steer_dir = Vector3.ZERO
+	_stuck_time = 0.0
+	_stuck_from = global_position
+
+func _arrive() -> void:
+	mode = Mode.IDLE
+	_steer_dir = Vector3.ZERO
+	if activity == "sleep":
+		_go_indoors()
+		return
+	_idle_action = _action_at_spot()
+	_pause = _rng.randf_range(3.5, 8.0) if _idle_action != "idle" else _rng.randf_range(2.0, 5.0)
+	if activity == "rest":
+		_pause = _rng.randf_range(5.0, 11.0)
+		_face_nearest_neighbour()
+
+## What the villager does while standing at a spot.
+func _action_at_spot() -> String:
+	if activity != "work":
+		return "idle"
+	var at_post := _spot_idx == 0
+	if (role == "blacksmith" or service_type == "forge") and at_post:
+		return "work_hammer"
+	if service_type == "healer" and at_post:
+		return "work_pray"
+	if role == "guard" or guild_role == "master" or guild_role == "trainer":
+		return "idle_combat" if at_post else "idle"
+	if role == "farmer" and not at_post:
+		return "interact"
+	return "idle"
+
+func _play_idle(action: String) -> void:
+	if visual == null:
+		return
+	if action != "idle" and not visual.has_state(action):
+		action = "idle"
+	visual.play(action)
+
+func _walk(delta: float) -> void:
 	var to_target := _target - global_position
 	to_target.y = 0.0
-	if to_target.length() > 0.38:
-		_steer_accum += delta
-		if _steer_accum >= STEER_INTERVAL or _steer_dir == Vector3.ZERO:
-			_steer_accum = 0.0
-			_steer_dir = _steer(to_target.normalized())
-		var dir := _steer_dir
-		var next_pos := global_position + dir * minf(SPEED * delta, to_target.length())
-		if next_pos.length() < 118.0:
-			if not is_instance_valid(_shared_terrain):
-				var world_root := get_tree().get_first_node_in_group("world_root")
-				_shared_terrain = (world_root.get("terrain") as Terrain) if world_root != null else null
-			if _shared_terrain != null:
-				next_pos.y = _shared_terrain.height_at(next_pos.x, next_pos.z)
-		global_position = next_pos
-		rotation.y = lerp_angle(rotation.y, atan2(-dir.x, -dir.z), 0.14)
-		if visual != null:
-			visual.play("walk")
-	else:
-		_steer_dir = Vector3.ZERO
-		if activity == "work" and patrol_points.size() > 1:
-			_patrol_idx = (_patrol_idx + 1) % patrol_points.size()
-			_patrol_pause = 2.5
-		if visual != null:
-			match activity:
-				"sleep":
-					visual.play("lie")
-				"rest":
-					visual.play("sit")
-				_:
-					if role == "blacksmith" or service_type == "forge":
-						visual.play("work_hammer")
-					elif service_type == "healer":
-						visual.play("work_pray")
-					elif role == "guard" or guild_role == "master" or guild_role == "trainer":
-						visual.play("idle_combat")
-					else:
-						visual.play("idle")
+	var dist := to_target.length()
+	if dist <= ARRIVE_DISTANCE:
+		_arrive()
+		return
+	_steer_accum += delta
+	if _steer_accum >= STEER_INTERVAL or _steer_dir == Vector3.ZERO:
+		_steer_accum = 0.0
+		_steer_dir = _steer(to_target / dist)
+		if _steer_dir == Vector3.ZERO:
+			# Boxed in: stand a moment, then try somewhere else.
+			mode = Mode.IDLE
+			_idle_action = "idle"
+			_pause = _rng.randf_range(1.0, 2.5)
+			if activity == "sleep":
+				_go_indoors()
+			return
+	var step := minf(SPEED * model_scale * delta, dist)
+	var next_pos := global_position + _steer_dir * step
+	if not _indoor:
+		var terrain := _terrain()
+		if terrain != null:
+			next_pos.y = terrain.height_at(next_pos.x, next_pos.z)
+	global_position = next_pos
+	_face(global_position + _steer_dir, delta, 9.0)
+	if visual != null:
+		visual.play("walk")
+	# Not getting anywhere (walking round an obstacle forever): give up on it.
+	_stuck_time += delta
+	if _stuck_time >= 2.0:
+		if global_position.distance_to(_stuck_from) < 0.6:
+			mode = Mode.IDLE
+			_idle_action = "idle"
+			_pause = _rng.randf_range(0.8, 2.0)
+			if activity == "sleep":
+				_go_indoors()
+		_stuck_time = 0.0
+		_stuck_from = global_position
 
-func _steer(desired: Vector3) -> Vector3:
+func _face(point: Vector3, delta: float, speed: float) -> void:
+	var to := point - global_position
+	to.y = 0.0
+	if to.length_squared() < 0.0004:
+		return
+	rotation.y = lerp_angle(rotation.y, atan2(-to.x, -to.z), clampf(speed * delta, 0.0, 1.0))
+
+func _face_nearest_neighbour() -> void:
+	var best: Node3D = null
+	var best_d := 5.0 * 5.0
+	for n: Node in get_tree().get_nodes_in_group("npc"):
+		if n == self or not (n is Node3D):
+			continue
+		var d := global_position.distance_squared_to((n as Node3D).global_position)
+		if d < best_d:
+			best_d = d
+			best = n as Node3D
+	if best != null:
+		var to := best.global_position - global_position
+		rotation.y = atan2(-to.x, -to.z)
+
+func _begin_attend() -> void:
+	mode = Mode.ATTEND
+	_steer_dir = Vector3.ZERO
+	if _greet_cooldown <= 0.0:
+		_greet_cooldown = GREET_COOLDOWN
+		say(_pick_greeting())
+		if visual != null and visual.has_state("cheer") and _rng.randf() < 0.6:
+			visual.play("cheer", true)
+
+func _pick_greeting() -> String:
+	var key := role
+	if not guild_role.is_empty():
+		key = "guild"
+	elif has_shop and role != "blacksmith":
+		key = "merchant"
+	elif service_type == "healer":
+		key = "healer"
+	var entry: Array = GREETINGS.get(key, GREETINGS["default"])
+	var lines: Array = entry[0] if Localization.is_arabic() else entry[1]
+	return String(lines[_rng.randi_range(0, lines.size() - 1)])
+
+## Shows a short line above the villager's head for a few seconds.
+func say(text: String, seconds: float = 2.8) -> void:
+	if _bubble == null or text.is_empty():
+		return
+	_bubble.text = text
+	_bubble.visible = true
+	_bubble_time = seconds
+
+func _go_indoors() -> void:
+	mode = Mode.INDOORS
+	if visual != null:
+		visual.visible = false
+	if _nameplate != null:
+		_nameplate.visible = false
+	if _quest_marker != null:
+		_quest_marker.visible = false
+	if _body != null:
+		_body.collision_layer = 0
+	enabled = false
+
+func _come_outside() -> void:
+	if visual != null:
+		visual.visible = true
+	if _nameplate != null:
+		_nameplate.visible = true
+	if _body != null:
+		_body.collision_layer = CollisionLayers.NPC
+	enabled = true
+	_refresh_marker()
+
+func _terrain() -> Terrain:
+	if not is_instance_valid(_shared_terrain):
+		var world_root := get_tree().get_first_node_in_group("world_root")
+		_shared_terrain = (world_root.get("terrain") as Terrain) if world_root != null else null
+	return _shared_terrain
+
+func _ray_blocked(from_pos: Vector3, to_pos: Vector3) -> bool:
 	var w3d := get_world_3d()
 	if w3d == null or w3d.direct_space_state == null:
+		return false
+	var q := PhysicsRayQueryParameters3D.create(from_pos, to_pos, CollisionLayers.ENVIRONMENT | CollisionLayers.NPC)
+	if _body != null:
+		q.exclude = [_body.get_rid()]
+	return not w3d.direct_space_state.intersect_ray(q).is_empty()
+
+## True when something solid stands between two ground points. The ray runs at
+## knee height above the terrain at each end, so slopes do not count as walls.
+func _segment_blocked(from_pos: Vector3, to_pos: Vector3) -> bool:
+	var a := from_pos
+	var b := to_pos
+	if not _indoor:
+		var terrain := _terrain()
+		if terrain != null:
+			a.y = terrain.height_at(a.x, a.z)
+			b.y = terrain.height_at(b.x, b.z)
+	return _ray_blocked(a + Vector3(0.0, 0.45, 0.0), b + Vector3(0.0, 0.45, 0.0))
+
+## Direction to walk this instant: straight at the target when the way is
+## clear, otherwise the first open direction to either side. Vector3.ZERO
+## means every direction is blocked.
+func _steer(desired: Vector3) -> Vector3:
+	var look := 0.9
+	if not _segment_blocked(global_position, global_position + desired * look):
 		return desired
-	var origin := global_position + Vector3(0.0, 0.8, 0.0)
-	var q := PhysicsRayQueryParameters3D.create(origin, origin + desired * 1.2, 1)
-	if w3d.direct_space_state.intersect_ray(q).is_empty():
-		return desired
-	for ang: float in [0.7, -0.7, 1.35, -1.35]:
+	for ang: float in [0.6, -0.6, 1.2, -1.2, 1.8, -1.8]:
 		var alt := desired.rotated(Vector3.UP, ang)
-		var q2 := PhysicsRayQueryParameters3D.create(origin, origin + alt * 1.2, 1)
-		if w3d.direct_space_state.intersect_ray(q2).is_empty():
+		if not _segment_blocked(global_position, global_position + alt * look):
 			return alt
-	return desired
+	return Vector3.ZERO
 
 func can_interact(_player: Node) -> bool:
-	return always_awake or activity != "sleep"
+	return enabled and mode != Mode.INDOORS
 
 func prompt_for(_player: Node) -> String:
 	var nm := Localization.npc_name(npc_id, display_name)
-	if not always_awake and activity == "sleep":
-		return ("%s نائم الآن" % nm) if Localization.is_arabic() else ("%s is asleep" % nm)
 	return ("تحدّث مع %s" % nm) if Localization.is_arabic() else ("Talk to %s" % nm)
 
 func interact(player: Node) -> void:
@@ -392,22 +703,34 @@ func _on_guild_changed() -> void:
 func _refresh_marker() -> void:
 	if _quest_marker == null:
 		return
+	_wants_marker = false
+	_needed_now = false
 	for quest: QuestData in QuestDB.quests_involving_npc(npc_id):
 		var st := GameManager.quest_log.state_of(quest.id)
 		if st == QuestLog.STATE_READY and quest.turn_in_npc == npc_id:
-			_quest_marker.text = "?"
-			_quest_marker.modulate = Color(0.42, 0.96, 0.55)
-			_quest_marker.visible = true
+			_needed_now = true
+			_show_marker("?", Color(0.42, 0.96, 0.55))
 			return
+		if st == QuestLog.STATE_ACTIVE and quest.turn_in_npc == npc_id:
+			_needed_now = true
 		if st == QuestLog.STATE_NOT_STARTED and quest.giver_npc == npc_id:
 			if not quest.is_guild_contract or GameManager.guild.meets_rank(quest.required_guild_rank):
-				_quest_marker.text = "!"
-				_quest_marker.modulate = Color(1.0, 0.85, 0.25)
-				_quest_marker.visible = true
+				if quest.is_main_quest:
+					_needed_now = true
+				_show_marker("!", Color(1.0, 0.85, 0.25))
 				return
 	if guild_role == "receptionist" and (not GameManager.guild.registered or GameManager.guild.can_promote(GameManager.progression.level)):
-		_quest_marker.text = "★"
-		_quest_marker.modulate = Color(0.45, 0.82, 1.0)
-		_quest_marker.visible = true
+		_show_marker("★", Color(0.45, 0.82, 1.0))
 		return
 	_quest_marker.visible = false
+
+func _show_marker(symbol: String, color: Color) -> void:
+	_wants_marker = true
+	_quest_marker.text = symbol
+	_quest_marker.modulate = color
+	_quest_marker.visible = mode != Mode.INDOORS
+	if mode == Mode.INDOORS and _needed_now:
+		# Somebody the player needs: come back out.
+		_come_outside()
+		mode = Mode.IDLE
+		_pause = 0.5

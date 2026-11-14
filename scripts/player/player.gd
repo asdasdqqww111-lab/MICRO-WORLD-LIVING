@@ -11,22 +11,22 @@ signal zone_changed(zone_id: String)
 const MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
 const FALLBACK_MODEL_PATH := "res://assets/kaykit_adventurers/Knight.glb"
 const MODEL_YAW_OFFSET := PI
-const MODEL_SCALE := 0.76
+const MODEL_SCALE := CharacterVisual.HUMAN_SCALE
 
-const WALK_SPEED := 4.6
-const RUN_SPEED := 7.4
-const DODGE_SPEED := 9.4
+const WALK_SPEED := 4.0
+const RUN_SPEED := 6.6
+const DODGE_SPEED := 8.6
 const ACCELERATION := 16.0
 const AIR_ACCELERATION := 6.0
 const TURN_SPEED := 13.0
-const JUMP_VELOCITY := 7.4
+const JUMP_VELOCITY := 6.6
 const GRAVITY := 22.0
-const CAPSULE_HEIGHT := 1.75
-const CAPSULE_RADIUS := 0.34
-const EYE_HEIGHT := 1.15
+const CAPSULE_HEIGHT := 1.30
+const CAPSULE_RADIUS := 0.27
+const EYE_HEIGHT := 0.95
 
-const ATTACK_REACH := 2.4
-const HEAVY_REACH := 3.0
+const ATTACK_REACH := 2.1
+const HEAVY_REACH := 2.6
 const ATTACK_ARC := 125.0
 const ATTACK_COST := 12.0
 const HEAVY_COST := 22.0
@@ -88,7 +88,7 @@ func _ready() -> void:
 	CollisionLayers.configure_player_body(self)
 	_build_collision()
 	_build_visual()
-	add_child(ArtDirection.make_contact_ao(0.56, 0.38))
+	add_child(ArtDirection.make_contact_ao(0.42, 0.38))
 	_build_target_ring()
 	_build_camera()
 	_build_health()
@@ -143,8 +143,8 @@ func _build_target_ring() -> void:
 	_target_ring.visible = false
 	_target_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var torus := TorusMesh.new()
-	torus.inner_radius = 0.62
-	torus.outer_radius = 0.78
+	torus.inner_radius = 0.50
+	torus.outer_radius = 0.62
 	torus.rings = 18
 	torus.ring_segments = 8
 	_target_ring.mesh = torus
@@ -438,7 +438,7 @@ func _update_animation(sprinting: bool, planar: float) -> void:
 	if _land_timer > 0.0 and planar < 0.8:
 		visual.play("land")
 		return
-	if sprinting and planar > 4.5:
+	if sprinting and planar > 4.2:
 		visual.play("sprint")
 	elif locked_target != null and is_instance_valid(locked_target) and planar > 0.45:
 		var vel_xz := Vector3(velocity.x, 0.0, velocity.z).normalized()
@@ -451,8 +451,8 @@ func _update_animation(sprinting: bool, planar: float) -> void:
 		elif f_dot < -0.35:
 			visual.play("walk_back")
 		else:
-			visual.play("run" if planar > 5.0 else "walk")
-	elif planar > 5.4:
+			visual.play("run" if planar > 4.6 else "walk")
+	elif planar > 5.0:
 		visual.play("run")
 	elif planar > 0.35:
 		visual.play("walk")
@@ -537,7 +537,7 @@ func try_attack() -> bool:
 	if vfx_mgr != null:
 		var tilt := -22.0 if _attack_index == 0 else (18.0 if _attack_index == 1 else 68.0)
 		var arc_col := Color(1.0, 0.62, 0.24, 0.92) if _attack_index == 2 else Color(0.92, 0.94, 1.0, 0.78)
-		vfx_mgr.spawn_slash_arc(global_position + Vector3(0.0, 1.05, 0.0), rotation.y, tilt, 1.25 if _attack_index == 2 else 1.0, arc_col)
+		vfx_mgr.spawn_slash_arc(global_position + Vector3(0.0, 0.78, 0.0), rotation.y, tilt, 1.25 if _attack_index == 2 else 1.0, arc_col)
 
 	var multiplier := 1.0 if _attack_index == 0 else (1.24 if _attack_index == 1 else (1.58 + GameManager.skills.combo_finisher_bonus()))
 	var reach := ATTACK_REACH * (1.18 if _attack_index == 2 else 1.0)
@@ -567,7 +567,7 @@ func try_heavy_attack() -> bool:
 		AudioManager.play_sfx("sword_heavy")
 	var vfx_mgr := get_tree().get_first_node_in_group("vfx_manager") as VFXManager
 	if vfx_mgr != null:
-		vfx_mgr.spawn_slash_arc(global_position + Vector3(0.0, 1.0, 0.0), rotation.y, 6.0, 1.55, Color(1.0, 0.52, 0.18, 0.95))
+		vfx_mgr.spawn_slash_arc(global_position + Vector3(0.0, 0.75, 0.0), rotation.y, 6.0, 1.55, Color(1.0, 0.52, 0.18, 0.95))
 	var mult := GameManager.skills.heavy_damage_multiplier()
 	var targets := Combat.melee_targets(self, HEAVY_REACH, 250.0, [get_rid()])
 	for target: Node in targets:
@@ -608,7 +608,7 @@ func try_cast_spell() -> bool:
 
 	_face_locked_target()
 	var fwd := (-global_transform.basis.z).normalized()
-	var origin := global_position + Vector3(0.0, 1.15, 0.0) + fwd * 0.7
+	var origin := global_position + Vector3(0.0, 0.85, 0.0) + fwd * 0.6
 	var best_t: Node3D = locked_target if (locked_target != null and is_instance_valid(locked_target)) else null
 	var best_d := 13.5
 	if best_t == null:
@@ -616,11 +616,11 @@ func try_cast_spell() -> bool:
 			if n == self or not (n is Node3D) or not (n as Node3D).is_visible_in_tree():
 				continue
 			var t := n as Node3D
-			var dv := (t.global_position + Vector3.UP * 0.9) - origin
+			var dv := (t.global_position + Vector3.UP * 0.65) - origin
 			if dv.length() < best_d and fwd.dot(dv.normalized()) > 0.32:
 				best_d = dv.length()
 				best_t = t
-	var hit_pos := (best_t.global_position + Vector3.UP * 0.9) if best_t != null else (origin + fwd * 10.0)
+	var hit_pos := (best_t.global_position + Vector3.UP * 0.65) if best_t != null else (origin + fwd * 10.0)
 	_spawn_spell_orb(origin, hit_pos, col)
 	var blast_r := 2.8 + GameManager.skills.bonus_total(SkillData.Effect.ELEMENTAL_MASTERY) * 2.5
 	var sp := GameManager.spell_power() * 1.45

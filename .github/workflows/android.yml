@@ -87,10 +87,15 @@ jobs:
           set -o pipefail
           timeout 180 godot --headless --path . tests/tower_test_runner.tscn 2>&1 | tee /tmp/tower.log
 
+      - name: Gameplay acceptance tests (reported problem list)
+        run: |
+          set -o pipefail
+          timeout 300 godot --headless --path . tests/fix_test_runner.tscn 2>&1 | tee /tmp/fix.log
+
       - name: Annotate test failures
         if: failure()
         run: |
-          for log in /tmp/import.log /tmp/acceptance.log /tmp/tower.log; do
+          for log in /tmp/import.log /tmp/acceptance.log /tmp/tower.log /tmp/fix.log; do
             if [ -f "$log" ]; then
               grep -E 'SCRIPT ERROR|Parse Error|ERROR:|FAIL|failed|Failed' "$log" | sort -u | head -40 | while IFS= read -r line; do
                 echo "::error::$(basename "$log"): $line"
@@ -98,13 +103,13 @@ jobs:
             fi
           done
 
-      - name: Create debug keystore and wire it into the preset
+      - name: Wire the debug keystore into the preset
         run: |
           set -euo pipefail
-          keytool -genkeypair -v -keystore "$GITHUB_WORKSPACE/debug.keystore" \
-            -storepass android -keypass android -alias androiddebugkey \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
+          # One fixed debug key for every build, kept in the repository, so a
+          # new APK installs over the previous one and the save file survives.
+          cp tools/ci/debug.keystore "$GITHUB_WORKSPACE/debug.keystore"
+          keytool -list -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android | head -8
           python3 - <<'PY'
           import os, pathlib
           p = pathlib.Path("export_presets.cfg")

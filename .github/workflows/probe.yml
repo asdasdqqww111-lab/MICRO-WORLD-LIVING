@@ -76,17 +76,23 @@ jobs:
           if ! vulkaninfo --summary >/dev/null 2>&1; then
             DRIVER="opengl3"
           fi
-          echo "selected_driver=$DRIVER" >> docs/reports/ci_renderer.log
+          # Without an explicit method the engine picks Forward+ whenever a
+          # driver is named on the command line, which is not what phones run.
+          METHOD="--rendering-method mobile"
+          if [ "$DRIVER" = "opengl3" ]; then
+            METHOD="--rendering-method gl_compatibility"
+          fi
+          echo "selected_driver=$DRIVER $METHOD" >> docs/reports/ci_renderer.log
 
           echo "=== perf probe ===" >> docs/reports/ci_renderer.log
           timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-            godot --path . --rendering-driver "$DRIVER" --resolution 1280x720 \
+            godot --path . --rendering-driver "$DRIVER" $METHOD --resolution 1280x720 \
             tests/perf_probe.tscn > docs/reports/ci_perf_probe.log 2>&1
           echo "perf exit=$?" >> docs/reports/ci_renderer.log
 
           echo "=== screenshot probe ===" >> docs/reports/ci_renderer.log
           timeout 420 xvfb-run -a --server-args="-screen 0 1280x720x24" \
-            godot --path . --rendering-driver "$DRIVER" --resolution 1280x720 \
+            godot --path . --rendering-driver "$DRIVER" $METHOD --resolution 1280x720 \
             tests/screenshot_probe.tscn > docs/reports/ci_screenshot_gl.log 2>&1
           echo "screenshot exit=$?" >> docs/reports/ci_renderer.log
 
@@ -100,6 +106,12 @@ jobs:
           set -o pipefail
           mkdir -p docs/reports
           timeout 180 godot --headless --path . tests/tower_test_runner.tscn 2>&1 | tee docs/reports/ci_tower_stdout.log
+
+      - name: Gameplay acceptance tests (reported problem list)
+        if: success() || failure()
+        run: |
+          set -o pipefail
+          timeout 300 godot --headless --path . tests/fix_test_runner.tscn 2>&1 | tee docs/reports/ci_fix_stdout.log
 
       - name: Upload screenshots and reports artifact
         if: always()

@@ -13,10 +13,10 @@ const CREATURE    := 1 << 2   # 4
 const NPC         := 1 << 3   # 8
 const TRIGGER     := 1 << 4   # 16
 
-## Player collides physically ONLY with solid environment (terrain/walls/floors/bridges/rocks),
-## never getting snagged on invisible Area3D triggers or UI raycast sensors.
-const MASK_PLAYER_SOLID := ENVIRONMENT
-const MASK_CREATURE_SOLID := ENVIRONMENT | PLAYER
+## The player is stopped by the solid world, by villagers and by monsters, and
+## never by Area3D triggers or sensors.
+const MASK_PLAYER_SOLID := ENVIRONMENT | NPC | CREATURE
+const MASK_CREATURE_SOLID := ENVIRONMENT | PLAYER | NPC | CREATURE
 const MASK_CAMERA_OCCLUSION := ENVIRONMENT
 
 static func configure_player_body(body: CharacterBody3D) -> void:

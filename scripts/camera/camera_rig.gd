@@ -6,10 +6,10 @@ extends Node3D
 const MIN_PITCH := -60.0
 const MAX_PITCH := 52.0
 
-@export var distance: float = 4.0
-@export var min_distance: float = 2.2
-@export var max_distance: float = 8.5
-@export var height_offset: float = 1.15
+@export var distance: float = 3.6
+@export var min_distance: float = 1.8
+@export var max_distance: float = 7.5
+@export var height_offset: float = 0.95
 @export var follow_smoothing: float = 14.0
 @export var rotation_smoothing: float = 16.0
 
@@ -18,7 +18,7 @@ var pitch: float = -5.5
 
 var spring_arm: SpringArm3D
 var camera: Camera3D
-var _target_distance: float = 4.0
+var _target_distance: float = 3.6
 var _smoothed_yaw: float = 0.0
 var _smoothed_pitch: float = -5.5
 var _body: CollisionObject3D

@@ -5,6 +5,11 @@ extends Node3D
 ## (CharacterArmature — 24 clips), and Skeleton Monster rigs, plus real 3D BoneAttachment3D
 ## weapon & shield sockets with PBR metallic/normal materials.
 
+## World scale applied to the chibi adventurer rigs (player, villagers and
+## humanoid monsters): about 1.3 m tall, so doors and furniture tower over them
+## instead of the other way round.
+const HUMAN_SCALE := 0.56
+
 const CLIP_ALIASES := {
 	"idle": ["HumanArmature|Idle_swordRight", "HumanArmature|Idle", "Idle_Sword", "Idle_Neutral", "Idle", "Idle_B", "2H_Melee_Idle", "Unarmed_Idle", "idle", "movement", "clip"],
 	"idle_combat": ["HumanArmature|Idle_swordRight", "Idle_Sword", "Idle_Combat", "2H_Melee_Idle", "Idle", "holding-right"],
@@ -407,9 +412,11 @@ func play_once(state_name: String) -> void:
 
 func resume_tree() -> void:
 	_tree_wanted = true
+	current_state = ""
 	if tree != null:
 		tree.active = _lod_active
-	current_state = ""
+		if tree.active:
+			_restart_state()
 
 ## Animation level of detail. A character that is too far away to be drawn
 ## stops evaluating its AnimationTree (and therefore stops re-skinning its
@@ -420,6 +427,20 @@ func set_lod_active(value: bool) -> void:
 	_lod_active = value
 	if tree != null:
 		tree.active = value and _tree_wanted
+		if tree.active:
+			_restart_state()
+
+## An AnimationTree that is switched off forgets where its state machine was.
+## Without this it comes back parked on the Start node, i.e. in the bind pose
+## (arms straight out), until the character happens to change state.
+func _restart_state() -> void:
+	if playback == null or available_states.is_empty():
+		return
+	var st := current_state
+	if not available_states.has(st):
+		st = "idle" if available_states.has("idle") else String(available_states.keys()[0])
+	current_state = st
+	playback.start(st, true)
 
 func tint(color: Color) -> void:
 	if model == null:
@@ -442,4 +463,4 @@ func _tint_recursive(node: Node, color: Color) -> void:
 		_tint_recursive(child, color)
 
 func head_position() -> Vector3:
-	return global_position + Vector3.UP * 1.88
+	return global_position + Vector3.UP * 1.38

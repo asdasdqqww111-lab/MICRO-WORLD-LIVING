@@ -8,6 +8,8 @@ extends CharacterBody3D
 const GRAVITY := 22.0
 const MODEL_YAW_OFFSET := PI
 const DEATH_FREE_DELAY := 2.8
+## Monsters are sized against the 1.3 m heroes (see CharacterVisual.HUMAN_SCALE).
+const WORLD_SCALE := 0.74
 
 var data: CreatureData
 var uid: String = ""
@@ -49,8 +51,8 @@ var _player_cache: Player
 func _ready() -> void:
 	add_to_group("creature")
 	add_to_group(Combat.DAMAGEABLE_GROUP)
-	collision_layer = 4
-	collision_mask = 1
+	collision_layer = CollisionLayers.CREATURE
+	collision_mask = CollisionLayers.MASK_CREATURE_SOLID
 	if data == null:
 		data = CreatureDB.get_creature("skeleton_forest")
 	_player_cache = get_tree().get_first_node_in_group("player") as Player
@@ -72,6 +74,9 @@ func _build() -> void:
 	else:
 		capsule.radius = 0.44
 		capsule.height = 1.85
+	var size_mult := WORLD_SCALE * (1.25 if data.is_boss else 1.0)
+	capsule.radius *= size_mult
+	capsule.height = maxf(capsule.height * size_mult, capsule.radius * 2.0 + 0.05)
 	var shape := CollisionShape3D.new()
 	shape.name = "CollisionShape3D"
 	shape.shape = capsule
@@ -88,15 +93,15 @@ func _build() -> void:
 		model_root = ProceduralModels.build(data.visual_type)
 		model_root.name = "Visual"
 		model_root.rotation.y = MODEL_YAW_OFFSET
-		model_root.scale = Vector3.ONE * data.body_scale
+		model_root.scale = Vector3.ONE * data.body_scale * WORLD_SCALE
 		add_child(model_root)
 	else:
 		var candidate := CharacterVisual.new()
 		candidate.name = "Visual"
 		candidate.rotation.y = MODEL_YAW_OFFSET
 		add_child(candidate)
-		if candidate.setup(data.model_path, data.body_scale):
-			candidate.position.y = data.model_y_offset
+		if candidate.setup(data.model_path, data.body_scale * WORLD_SCALE):
+			candidate.position.y = data.model_y_offset * WORLD_SCALE
 			if data.tint_color != Color.WHITE:
 				candidate.tint(data.tint_color)
 			if candidate.anim_player != null:
@@ -131,7 +136,7 @@ func _build_aura_and_label() -> void:
 	_hp_label.font_size = 28 if data.is_boss else 22
 	_hp_label.outline_size = 7
 	_hp_label.modulate = Color(1.0, 0.52, 0.52) if data.is_boss else (Color(0.65, 0.88, 1.0) if data.is_elite else Color(0.95, 0.90, 0.84))
-	_hp_label.position = Vector3(0.0, 2.55 if data.is_boss else 2.05, 0.0)
+	_hp_label.position = Vector3(0.0, (2.55 if data.is_boss else 2.05) * WORLD_SCALE + 0.15, 0.0)
 	_hp_label.visible = data.is_boss or data.is_elite
 	add_child(_hp_label)
 	_refresh_hp_label()
@@ -373,7 +378,7 @@ func _animate() -> void:
 		else:
 			anim.play("idle")
 	else:
-		ProceduralModels.animate(model_root, data.visual_type, _time, _speed_now, data.model_y_offset)
+		ProceduralModels.animate(model_root, data.visual_type, _time, _speed_now, data.model_y_offset * WORLD_SCALE)
 
 func take_hit(amount: float, source: Node, is_crit: bool = false) -> void:
 	if _dead:
