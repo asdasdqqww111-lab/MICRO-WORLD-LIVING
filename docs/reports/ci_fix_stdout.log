@@ -71,9 +71,62 @@ PASS  use button consumes the potion
 PASS  potion heals the player (hp > 20 after use, was 20)
 PASS  drop button appears for bag items
 PASS  drop button removes the item from the bag
-checks passed: 64
+== Problem 5 - materials: harvest, craft, upgrades, value
+PASS  world spawns resource nodes (13 found)
+PASS  fresh resource node is harvestable
+PASS  harvesting a node yields its base amount (2 iron_ore)
+PASS  harvested node is depleted until respawn
+PASS  harvested node is marked for the day
+PASS  harvesting grants XP
+PASS  crafting smelt recipe succeeds
+PASS  crafting produces the output item
+PASS  crafting consumes the ingredients
+PASS  crafting grants XP
+PASS  artisan rank 1 adds +1 consumable output (1 -> 2)
+PASS  keen gatherer rank grants +1 harvest yield
+PASS  skill points upgrade a skill to rank 1
+PASS  market prices are positive (buy=47 sell=21)
+PASS  sell price is below buy price
+PASS  market price is deterministic for a given day
+PASS  blacksmith stock is listed with prices (8 items)
+PASS  crafting screen opens from the UI
+PASS  craft button is disabled without materials
+PASS  craft button enables when materials are present
+== Problem 6 - finance: gold, guild ranks, quest rewards, loot
+PASS  player starts with gold (35)
+PASS  gain_gold increases the balance
+PASS  spend_gold deducts when affordable
+PASS  balance reflects the spend
+PASS  spending beyond the balance is blocked
+PASS  registering in the guild succeeds
+PASS  registration grants rank F and starter reputation
+PASS  guild promotion reaches rank E when requirements are met
+PASS  promotion grants bonus gold (+40)
+PASS  promotion grants the rank reward item
+PASS  a quest can be started
+PASS  fulfilling objectives makes the quest ready to turn in
+PASS  turning in the quest succeeds
+PASS  quest turn-in grants gold (+45)
+PASS  quest turn-in grants XP
+PASS  quest turn-in grants guild reputation
+PASS  quest turn-in grants the reward items
+PASS  defeating a creature drops loot gold (+2)
+PASS  guild screen opens from the UI
+== Problem 7 - quests: load, journal, NPC offer/turn-in, markers
+PASS  all 24 quests load (24)
+PASS  every quest has objectives and rewards (24)
+PASS  journal screen opens from the UI
+PASS  accepting a quest from the journal starts it
+PASS  an NPC with a quest offers it in the dialog
+PASS  fulfilling objectives makes the quest ready
+PASS  the NPC shows a turn-in action for the ready quest
+PASS  the NPC shows the ready-quest marker (? visible)
+PASS  turning in through the NPC succeeds
+PASS  turning in grants the quest gold reward
+PASS  the quest is marked completed
+checks passed: 114
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 7 resources still in use at exit (run with --verbose for details).
+ERROR: 6 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:614)
