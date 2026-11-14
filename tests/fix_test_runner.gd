@@ -59,6 +59,7 @@ func _run_all() -> void:
 	world = game.world
 	ui = game.ui
 	await _test_p1_characters()
+	await _test_p2_interiors()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -180,6 +181,84 @@ func _test_p1_characters() -> void:
 		if not npc.is_indoors_asleep() and npc.visual.visible:
 			outside += 1
 	_check(outside == npcs.size(), "everybody is back outside in the morning (%d of %d)" % [outside, npcs.size()])
+
+# --- Problem 2: interiors, tower floors, staff and lighting ------------------------
+
+func _test_p2_interiors() -> void:
+	_section("Problem 2: interiors and tower floors")
+	var env := world.environment
+
+	# --- Cottage: furniture, fire, ceiling, door -------------------------------
+	var house_mesh := world.house_root.get_node_or_null("HouseInterior")
+	_check(house_mesh != null and house_mesh.is_inside_tree(), "the cottage interior is built (HouseInterior mesh)")
+	_check(world.house_root.get_node_or_null("HouseGlow") != null, "the cottage glow batch is built")
+	var house_lights := 0
+	for n: Node in world.house_root.get_children():
+		if n is OmniLight3D:
+			house_lights += 1
+	_check(house_lights >= 2, "the cottage has its own lights (%d)" % house_lights)
+	_check(world.overworld_root.get_node_or_null("HouseDoor") != null,
+		"the cottage entrance door exists in the square")
+
+	# --- Guild hall: furniture, quest board, chandeliers, staff -----------------
+	var guild_mesh := world.guild_root.get_node_or_null("GuildInterior")
+	_check(guild_mesh != null and guild_mesh.is_inside_tree(), "the guild hall interior is built (GuildInterior mesh)")
+	var guild_lights := 0
+	for n: Node in world.guild_root.get_children():
+		if n is OmniLight3D:
+			guild_lights += 1
+	_check(guild_lights >= 4, "the guild hall is lit by its own lights (%d)" % guild_lights)
+	_check(world.guild_root.get_node_or_null("GuildHallQuestBoard") != null, "the guild quest board stands in the hall")
+	var staff_facing := 0
+	var staff_total := 0
+	for n: Node in world.guild_root.get_children():
+		var npc := n as VillageNPC
+		if npc == null or not npc.always_awake:
+			continue
+		staff_total += 1
+		if (npc.post_facing - Vector3.ZERO).length() > 0.01:
+			staff_facing += 1
+	_check(staff_total >= 5, "the guild hall has its staff (%d)" % staff_total)
+	_check(staff_facing == staff_total, "every guild staff member keeps a post and faces it (%d of %d)" % [staff_facing, staff_total])
+
+	# --- Room ambient follows the zone -----------------------------------------
+	player.teleport(world.interior["spawn"] + Vector3(0.0, 0.6, 0.0), "house")
+	await _frames(6)
+	_check(world.house_root.visible and not world.guild_root.visible, "entering the cottage shows the cottage zone")
+	var house_energy := env.ambient_light_energy
+	_check(absf(house_energy - float(world.interior["ambient_energy"])) < 0.02,
+		"the cottage ambient matches its room tone (%.2f)" % house_energy)
+
+	player.teleport(world.guild_interior["spawn"] + Vector3(0.0, 0.6, 0.0), "guild")
+	await _frames(6)
+	_check(world.guild_root.visible and not world.house_root.visible, "entering the guild hall shows the guild zone")
+	var guild_energy := env.ambient_light_energy
+	_check(absf(guild_energy - float(world.guild_interior["ambient_energy"])) < 0.02,
+		"the guild hall ambient matches its room tone (%.2f)" % guild_energy)
+
+	player.teleport(Vector3(0.0, 0.6, 14.0), "village")
+	await _frames(6)
+	_check(not world.house_root.visible and not world.guild_root.visible, "leaving the buildings hides both interiors")
+	_check(absf(env.ambient_light_energy - house_energy) > 0.01 or env.ambient_light_color != world.interior["ambient"],
+		"the overworld ambient is restored outside")
+
+	# --- Tower floor: ceiling, dressing, fire lights ----------------------------
+	var tower := game.tower
+	_check(tower != null, "the celestial tower manager exists")
+	if tower != null:
+		tower.player_entered(player)
+		await _frames(10)
+		var floor_root := tower.floor_container.get_child(0) if tower.floor_container != null and tower.floor_container.get_child_count() > 0 else null
+		_check(floor_root != null and floor_root.name.begins_with("Floor"), "a tower floor is built (%s)" % str(floor_root.name if floor_root else "none"))
+		if floor_root != null:
+			_check(floor_root.get_node_or_null("FloorCeiling") != null, "the tower floor has a ceiling")
+			_check(floor_root.get_node_or_null("FloorDressing") != null, "the tower floor has wall dressing and props")
+			_check(floor_root.get_node_or_null("FloorLight") != null, "the tower floor keeps its central light")
+			var fire_lights := 0
+			for n: Node in floor_root.get_children():
+				if n is FlickerLight:
+					fire_lights += 1
+			_check(fire_lights >= 3, "the tower floor burns with fire lights (%d)" % fire_lights)
 
 # --- report -------------------------------------------------------------------
 

@@ -209,17 +209,25 @@ func _apply_zone_visibility(zone_id: String) -> void:
 			environment.ambient_light_energy = 0.78
 			environment.fog_enabled = false
 		elif not in_overworld:
+			# Rooms are lit by their own fires and lamps; the ambient term only
+			# keeps the corners from going black.
+			var room: Dictionary = interior if zone_id == "house" else (guild_interior if zone_id == "guild" else {})
 			environment.background_mode = Environment.BG_COLOR
-			environment.background_color = Color(0.10, 0.11, 0.15)
+			environment.background_color = Color(0.03, 0.03, 0.04)
 			environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-			environment.ambient_light_color = Color(0.76, 0.74, 0.72)
-			environment.ambient_light_energy = 0.72
+			environment.ambient_light_color = room.get("ambient", Color(0.52, 0.48, 0.46)) as Color
+			environment.ambient_light_energy = float(room.get("ambient_energy", 0.5))
 			environment.fog_enabled = false
 		else:
 			environment.background_mode = Environment.BG_SKY
 			environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 			environment.ambient_light_energy = 0.56
 			environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
+	if day_night != null:
+		day_night.outdoors = in_overworld
+		if in_overworld:
+			day_night.apply_now()
+	InteriorKit.apply_daylight(get_tree(), GameManager.world.hour_float())
 	if house_root != null:
 		house_root.visible = (zone_id == "house")
 	if guild_root != null:
@@ -302,6 +310,7 @@ func _build_zone_doors() -> void:
 	house_exit.transition_text = "Back in Eldoria Square"
 	house_root.add_child(house_exit)
 	house_exit.global_position = interior.get("exit", Vector3.ZERO) as Vector3
+	house_exit.interaction_radius = float(interior.get("exit_radius", 2.6))
 	_add_beacon(house_exit, Color(0.95, 0.82, 0.42))
 
 	# 2. Village <-> Grand Adventurers Guild Hall
@@ -319,6 +328,7 @@ func _build_zone_doors() -> void:
 	guild_exit.transition_text = "Stepping out onto Eldoria Square"
 	guild_root.add_child(guild_exit)
 	guild_exit.global_position = guild_interior.get("exit", Vector3.ZERO) as Vector3
+	guild_exit.interaction_radius = float(guild_interior.get("exit_radius", 2.6))
 	_add_beacon(guild_exit, Color(0.38, 0.72, 1.0))
 
 	# 3. Overworld <-> Sunken Crypt Dungeon
@@ -340,23 +350,41 @@ func _build_zone_doors() -> void:
 	_add_beacon(dungeon_exit, Color(0.55, 0.72, 0.98))
 
 func _add_beacon(parent: Node3D, color: Color) -> void:
-	var marker := MeshInstance3D.new()
+	# A quiet marker that never hides the hero: a ring on the ground and a
+	# small gem floating above head height.
+	var marker := Node3D.new()
 	marker.name = "Beacon"
-	var cylinder := CylinderMesh.new()
-	cylinder.top_radius = 0.18
-	cylinder.bottom_radius = 0.18
-	cylinder.height = 1.05
-	marker.mesh = cylinder
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(color.r, color.g, color.b, 0.82)
-	mat.emission_enabled = true
-	mat.emission = color
-	mat.emission_energy_multiplier = 0.75
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	marker.material_override = mat
-	marker.position = Vector3(0.0, 0.95, 0.0)
-	marker.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(marker)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(color.r, color.g, color.b, 0.75)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	var ring := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.46
+	torus.outer_radius = 0.54
+	torus.rings = 20
+	torus.ring_segments = 4
+	ring.mesh = torus
+	ring.material_override = mat
+	ring.position = Vector3(0.0, 0.04, 0.0)
+	ring.scale = Vector3(1.0, 0.3, 1.0)
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	ring.visibility_range_end = 30.0
+	marker.add_child(ring)
+	var gem := MeshInstance3D.new()
+	var prism := SphereMesh.new()
+	prism.radius = 0.09
+	prism.height = 0.26
+	prism.radial_segments = 4
+	prism.rings = 1
+	gem.mesh = prism
+	gem.material_override = mat
+	gem.position = Vector3(0.0, 2.05, 0.0)
+	gem.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	gem.visibility_range_end = 30.0
+	marker.add_child(gem)
 
 func _build_systems() -> void:
 	day_night = DayNightCycle.new()
@@ -375,6 +403,8 @@ func _build_systems() -> void:
 	raid.setup(self)
 
 	EventBus.graphics_settings_changed.connect(_apply_graphics)
+	EventBus.hour_changed.connect(func(_h: int) -> void:
+		InteriorKit.apply_daylight(get_tree(), GameManager.world.hour_float()))
 
 func _apply_graphics() -> void:
 	if sun == null:
@@ -672,6 +702,7 @@ func _spawn_npcs() -> void:
 		["spellbook"])
 	recep.guild_role = "receptionist"
 	recep.always_awake = true
+	recep.post_facing = Vector3(0.0, 0.0, 1.0)
 
 	# 14. Guild Master (Grandmaster Aldric — Main Storyline!)
 	var gmaster := _make_npc(guild_root, "guild_master", "Grandmaster Aldric", "guild", "Guild Master",
@@ -682,6 +713,7 @@ func _spawn_npcs() -> void:
 		["2h_sword", "cape"])
 	gmaster.guild_role = "master"
 	gmaster.always_awake = true
+	gmaster.post_facing = Vector3(0.0, 0.0, 1.0)
 
 	# 15. Guild Quartermaster (Bram — Guild Armory Shop!)
 	var qm := _make_npc(guild_root, "quartermaster", "Bram", "quartermaster", "Guild Quartermaster",
@@ -693,6 +725,7 @@ func _spawn_npcs() -> void:
 	qm.guild_role = "quartermaster"
 	qm.has_shop = true
 	qm.always_awake = true
+	qm.post_facing = Vector3(1.0, 0.0, 0.0)
 
 	# 16. Combat & Skill Trainer (Master Kael)
 	var trainer := _make_npc(guild_root, "combat_trainer", "Master Kael", "trainer", "Combat & Skill Master",
@@ -703,6 +736,7 @@ func _spawn_npcs() -> void:
 		["1h_sword", "badge_shield"])
 	trainer.guild_role = "trainer"
 	trainer.always_awake = true
+	trainer.post_facing = Vector3(-1.0, 0.0, -0.45)
 
 	# 17. Veteran Adventurer (Lyra — Rank B Ranger)
 	var vet := _make_npc(guild_root, "veteran_lyra", "Lyra", "adventurer", "Rank B Veteran",
@@ -712,6 +746,7 @@ func _spawn_npcs() -> void:
 		 "And don't miss the hidden east wall chamber inside the Sunken Crypt!"],
 		["dagger", "crossbow"])
 	vet.always_awake = true
+	vet.post_facing = Vector3(-1.0, 0.0, 0.35)
 
 	# 18. Rookie Recruit (Finn — Rank F Novice)
 	var rec := _make_npc(guild_root, "recruit_finn", "Finn", "adventurer", "Rank F Recruit",
@@ -721,6 +756,7 @@ func _spawn_npcs() -> void:
 		 "Maybe once I forge an Iron Sword I'll tackle the Bramble Stalker contract!"],
 		["dagger"])
 	rec.always_awake = true
+	rec.post_facing = Vector3(1.0, 0.0, -0.5)
 
 func _make_npc(parent_zone: Node3D, npc_id: String, display_name: String, role: String, title: String,
 		model_path: String, schedule: Dictionary, lines: Array, vis_gear: Array) -> VillageNPC:

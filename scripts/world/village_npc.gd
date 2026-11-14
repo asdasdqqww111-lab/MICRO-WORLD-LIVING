@@ -62,6 +62,8 @@ var guild_role: String = ""       # "", "receptionist", "master", "quartermaster
 var service_type: String = ""     # "", "healer", "innkeeper", "forge"
 var has_shop: bool = false
 var always_awake: bool = false
+## Set for staff who man a desk or counter: they stay on the spot and look this way.
+var post_facing: Vector3 = Vector3.ZERO
 
 var visual: CharacterVisual
 var activity: String = "work"
@@ -268,6 +270,8 @@ func _process(delta: float) -> void:
 	if mode == Mode.IDLE:
 		_pause -= delta
 		_play_idle(_idle_action)
+		if post_facing != Vector3.ZERO:
+			_face(global_position + post_facing, delta, 4.0)
 		if _pause <= 0.0:
 			_choose_next_target()
 		return
@@ -298,7 +302,7 @@ func _activity_spots() -> Array[Vector3]:
 	if activity == "work" and patrol_points.size() > 1:
 		_spots.assign(patrol_points)
 		return _spots
-	if activity == "sleep":
+	if activity == "sleep" or post_facing != Vector3.ZERO:
 		_spots = [anchor]
 		return _spots
 	_spots = [anchor]

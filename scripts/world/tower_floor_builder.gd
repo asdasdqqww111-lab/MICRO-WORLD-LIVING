@@ -36,6 +36,10 @@ static func build_floor(parent: Node3D, floor_num: int) -> Dictionary:
 	# --- Local light so dark floors stay readable on mobile -------------------
 	_light(root, accent)
 
+	# --- Ceiling, fires and region dressing ----------------------------------
+	_ceiling(root, half, palette[1])
+	_dressing(root, half, palette[1], accent, region_key, floor_num)
+
 	# --- Floor sign ------------------------------------------------------------
 	_sign(root, floor_num, region_key, origin)
 
@@ -222,6 +226,62 @@ static func _light(root: Node3D, accent: Color) -> void:
 	lamp.shadow_enabled = false
 	lamp.position = Vector3(0.0, WALL_HEIGHT - 0.4, 0.0)
 	root.add_child(lamp)
+
+## Flat slab across the top of the floor. The next floor sits FLOOR_STRIDE
+## higher, so the ceiling leaves a clear gap to the platform above.
+static func _ceiling(root: Node3D, half: float, wall_color: Color) -> void:
+	var cy := WALL_HEIGHT + 0.4
+	var size := Vector3(half * 2.0 + 0.4, 0.4, half * 2.0 + 0.4)
+	var b := InteriorKit.Batch.new()
+	b.box(Vector3(0.0, cy, 0.0), size, InteriorKit.tone(wall_color, 0.92), 0.0, 0.34)
+	# Underside darker so the room reads as a closed shell.
+	b.box(Vector3(0.0, cy - 0.40, 0.0), size * Vector3(1.0, 0.1, 1.0),
+		InteriorKit.tone(wall_color, 0.55), 0.0, 0.1)
+	b.commit(root, "FloorCeiling")
+	InteriorKit.solid(root, Vector3(0.0, cy, 0.0), size, "CeilingBody", 0.0)
+
+## Fires and per-region props around the walls. The middle stays clear: the
+## mobs ring the boss arena at radius 7.5 and the portals sit at z = ±11.5.
+static func _dressing(root: Node3D, half: float, stone: Color, accent: Color, region_key: String, floor_num: int) -> void:
+	var b := InteriorKit.Batch.new()
+	var edge := half - 2.2
+	# --- Braziers with live fire in three corners ---------------------------
+	var braziers := [Vector3(-edge, 0.0, -edge), Vector3(edge, 0.0, -edge), Vector3(-edge, 0.0, edge)]
+	for i in braziers.size():
+		var tip := InteriorKit.brazier(b, root, braziers[i], accent, stone)
+		InteriorKit.flicker_light(root, tip + Vector3(0.0, 0.4, 0.0), accent,
+			1.15, 14.0, 0.2, "FloorBrazierLight%d" % i)
+	# --- Wall torches (flames, no extra lights) -------------------------------
+	var wall := half - 0.25
+	for tz in [-4.5, 4.5]:
+		InteriorKit.torch(b, root, Vector3(-wall, 1.7, float(tz)), Vector3(1.0, 0.0, 0.0), accent)
+		InteriorKit.torch(b, root, Vector3(wall, 1.7, float(tz)), Vector3(-1.0, 0.0, 0.0), accent)
+	InteriorKit.torch(b, root, Vector3(float(-4.5), 1.7, -wall), Vector3(0.0, 0.0, 1.0), accent)
+	InteriorKit.torch(b, root, Vector3(float(4.5), 1.7, -wall), Vector3(0.0, 0.0, 1.0), accent)
+	# --- Wall hangings and shields -------------------------------------------
+	InteriorKit.banner(b, Vector3(-wall, 3.3, -6.0), Vector3(1.0, 0.0, 0.0), 2.2, 1.4,
+		InteriorKit.tone(stone, 1.0), accent)
+	InteriorKit.banner(b, Vector3(wall, 3.3, -6.0), Vector3(-1.0, 0.0, 0.0), 2.2, 1.4,
+		InteriorKit.tone(stone, 1.0), accent)
+	InteriorKit.wall_shield(b, Vector3(-wall, 1.9, 6.0), Vector3(1.0, 0.0, 0.0), 0.55, accent, stone)
+	InteriorKit.wall_shield(b, Vector3(wall, 1.9, 6.0), Vector3(-1.0, 0.0, 0.0), 0.55, accent, stone)
+	# --- Storage along the east wall ------------------------------------------
+	var shelf_wood := InteriorKit.tone(stone, 1.08)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7919 * floor_num + 104729
+	InteriorKit.shelf(b, Vector3(edge * 0.55, 0.0, -6.4), 2.2, 2.0, shelf_wood, 0.0, rng)
+	InteriorKit.shelf(b, Vector3(edge * 0.55, 0.0, -4.4), 2.2, 2.0, shelf_wood, 0.0, rng)
+	# --- Crates, barrels and sacks near the corners ---------------------------
+	InteriorKit.crate(b, Vector3(-edge * 0.7, 0.0, edge * 0.6), 0.7, InteriorKit.tone(stone, 1.1), 0.3)
+	InteriorKit.crate(b, Vector3(-edge * 0.5, 0.0, edge * 0.8), 0.5, InteriorKit.tone(stone, 1.0), -0.4)
+	InteriorKit.barrel(b, Vector3(edge * 0.7, 0.0, edge * 0.6), InteriorKit.tone(stone, 1.0), 1.1)
+	InteriorKit.barrel(b, Vector3(edge * 0.85, 0.0, edge * 0.3), InteriorKit.tone(stone, 0.95), 0.9)
+	InteriorKit.sack(b, Vector3(-edge * 0.9, 0.0, -edge * 0.55), accent, 1.2)
+	InteriorKit.sack(b, Vector3(-edge * 0.7, 0.0, -edge * 0.8), accent, 0.8)
+	InteriorKit.sack(b, Vector3(edge * 0.5, 0.0, -edge * 0.7), accent, 1.0)
+	b.commit(root, "FloorDressing")
+	InteriorKit.motes(root, Vector3(0.0, 1.6, 0.0), Vector3(half * 0.8, 2.0, half * 0.8),
+		accent, 16, 0.04, "FloorMotes")
 
 static func _sign(root: Node3D, floor_num: int, region_key: String, origin: Vector3) -> void:
 	var label := Label3D.new()
