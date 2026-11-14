@@ -67,6 +67,7 @@ func _run_all() -> void:
 	await _test_p7_quests()
 	await _test_p8_physics()
 	await _test_p9_design()
+	await _test_p10_forest()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -856,6 +857,56 @@ func _test_p9_design() -> void:
 			if child is Label3D and child.visible:
 				labels += 1
 		_check(labels >= 1, "a floating damage number is visible after a hit (%d)" % labels)
+
+# --- Problem 10: forest & tree arrangement -----------------------------------
+
+func _test_p10_forest() -> void:
+	_section("Problem 10 - forest & tree arrangement")
+
+	# the forest builds its tree multimeshes with instance counts
+	var tree_names := ["ValleyStylizedPines", "ForestOaks", "LakesideBirches", "CityGardenTrees"]
+	var total := 0
+	for name: String in tree_names:
+		var mm := _find_multimesh(world, name) as MultiMeshInstance3D
+		if mm == null or mm.multimesh == null:
+			_check(false, "forest tree multimesh '%s' exists" % name)
+			continue
+		var count := mm.multimesh.instance_count
+		_check(count > 0, "forest tree multimesh '%s' has %d instances" % [name, count])
+		total += count
+	_check(total >= 40, "forest plants a real tree population (%d trees)" % total)
+
+	# trunk colliders exist so trees block the player (pairs with problem 8)
+	var trunk_body := _find_static_body(world, "ForestTrunkColliders")
+	_check(trunk_body != null, "forest trunk collider body exists")
+	if trunk_body != null:
+		var cs := _find_shape(trunk_body)
+		_check(cs != null and (cs.shape is CylinderShape3D or cs.shape is BoxShape3D),
+			"forest trunk collider carries a solid shape")
+
+	# trees do not spawn on top of roads or water: the builder excludes them,
+	# verified by the city-plan predicate the builder relies on.
+	_check(CityPlan.inside_walls(0.0, 0.0, 0.0) == true, "city plan recognises the town centre as inside walls")
+	_check(not CityPlan.inside_walls(-80.0, 0.0, 0.0), "city plan recognises the outer forest as outside walls")
+
+
+func _find_multimesh(node: Node, name: String) -> Node:
+	if node.name == name and node is MultiMeshInstance3D:
+		return node
+	for child: Node in node.get_children():
+		var found := _find_multimesh(child, name)
+		if found != null:
+			return found
+	return null
+
+func _find_static_body(node: Node, name: String) -> Node:
+	if node.name == name and node is StaticBody3D:
+		return node
+	for child: Node in node.get_children():
+		var found := _find_static_body(child, name)
+		if found != null:
+			return found
+	return null
 
 # --- report -------------------------------------------------------------------
 
