@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING — Celestial Ascent Tower acceptance suite
-run at: 2026-11-14T00:18:24
+run at: 2026-11-14T00:25:01
 
 == TowerDB integrity ==
 PASS  TowerDB.validate() reports no errors
@@ -61,7 +61,7 @@ PASS  Floor 1 master defeat recorded
 PASS  Floor 2 becomes reachable
 PASS  floors_cleared counts 1
 PASS  Ascending after defeat loads floor 2
-FAIL  Only ONE floor loaded at a time (single root child)
+PASS  Only ONE floor loaded at a time (single floor root, nothing left from floor 1)
 PASS  Floor 100 loads
 PASS  Floor 100 has NO ascent portal (final)
 PASS  Floor 100 still has an exit portal
@@ -75,6 +75,6 @@ PASS  Completion flag survives round-trip
 PASS  Exiting hides the tower interior
 PASS  Exit returns the player to the overworld zone
 
-elapsed: 1572 ms
-checks passed: 61
-checks failed: 1
+elapsed: 1724 ms
+checks passed: 62
+checks failed: 0
