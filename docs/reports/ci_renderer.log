@@ -65,4 +65,3 @@ selected_driver=vulkan --rendering-method mobile
 === perf probe ===
 perf exit=0
 === screenshot probe ===
-screenshot exit=0

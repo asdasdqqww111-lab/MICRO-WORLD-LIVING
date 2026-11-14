@@ -28,15 +28,3 @@ WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using th
 [shot] 07_mountains_sunset -> res://docs/screenshots/07_mountains_sunset.png (ok)
 [shot] 12_sunken_crypt_dungeon -> res://docs/screenshots/12_sunken_crypt_dungeon.png (ok)
 [shot] 08_gameplay_combat_hud -> res://docs/screenshots/08_gameplay_combat_hud.png (ok)
-[shot] 14_city_overview -> res://docs/screenshots/14_city_overview.png (ok)
-WARNING: Target object freed before starting, aborting Tweener.
-     at: start (scene/animation/tween.cpp:594)
-[shot] 09_inventory_equipment -> res://docs/screenshots/09_inventory_equipment.png (ok)
-[shot] 10_skill_tree -> res://docs/screenshots/10_skill_tree.png (ok)
-[shot] 11_quest_guild_board -> res://docs/screenshots/11_quest_guild_board.png (ok)
-[shot] 13_world_map_cartography -> res://docs/screenshots/13_world_map_cartography.png (ok)
-[shot] all 14 screenshots captured successfully
-WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
-     at: cleanup (core/object/object.cpp:2378)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)

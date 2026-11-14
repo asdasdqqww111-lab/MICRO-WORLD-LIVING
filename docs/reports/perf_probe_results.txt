@@ -3,7 +3,7 @@ engine: 4.4.1-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T21:57:57
+run at: 2026-11-14T22:05:39
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -13,13 +13,13 @@ Zone 1 · Eldoria Village Square & Guild Exterior
   triangles (max):  215083  [OVER]
   objects:          294
   static memory:    190.8 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    101  [OK]
-  total draw calls: 153  [OK]
-  triangles (max):  230793  [OVER]
-  objects:          182
+  3D draw calls:    100  [OK]
+  total draw calls: 152  [OK]
+  triangles (max):  230999  [OVER]
+  objects:          181
   static memory:    199.3 MB
   fps (min, this driver): 2.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
@@ -27,7 +27,7 @@ Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
   total draw calls: 90  [OK]
   triangles (max):  110293  [OK]
   objects:          121
-  static memory:    199.2 MB
+  static memory:    199.1 MB
   fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
   3D draw calls:    50  [OK]
@@ -41,15 +41,15 @@ Zone 5 · Adventurers Guild Grand Hall Interior
   total draw calls: 103  [OK]
   triangles (max):  47695  [OK]
   objects:          132
-  static memory:    199.5 MB
-  fps (min, this driver): 3.0
+  static memory:    199.4 MB
+  fps (min, this driver): 2.0
 Zone 6 · Hero Cottage Interior
-  3D draw calls:    15  [OK]
-  total draw calls: 70  [OK]
-  triangles (max):  12711  [OK]
-  objects:          118
+  3D draw calls:    14  [OK]
+  total draw calls: 69  [OK]
+  triangles (max):  12667  [OK]
+  objects:          117
   static memory:    199.7 MB
-  fps (min, this driver): 4.0
+  fps (min, this driver): 5.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    52  [OK]
   total draw calls: 109  [OK]
