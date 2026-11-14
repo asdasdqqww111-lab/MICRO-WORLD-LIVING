@@ -1,7 +1,7 @@
 class_name HUD
 extends Control
-## Arabic/EN fantasy RPG HUD, built for the Mobile renderer of Godot 4.3, which
-## issues one draw call per glyph and per stylebox. Text is therefore kept to
+## Arabic/EN fantasy RPG HUD for the Mobile renderer. Glyphs and styleboxes
+## cost draw calls whenever the renderer cannot batch them, so text is kept to
 ## the minimum that carries information:
 ##   - Top-left: level + HP number in one header line, then HP / MP / SP / XP bars.
 ##   - Top-centre: seven icon-only menu buttons (bag, quests, skills, crafting,

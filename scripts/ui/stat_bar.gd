@@ -1,7 +1,7 @@
 class_name StatBar
 extends HBoxContainer
 ## Compact HUD vital bar: a coloured fill on a dark track. No text of its own
-## (every glyph is a separate draw call on the Mobile renderer in Godot 4.3);
+## (glyphs cost draw calls whenever the renderer cannot batch them);
 ## the HUD prints the one number that matters, HP, in the panel header.
 
 var _bar: ProgressBar
