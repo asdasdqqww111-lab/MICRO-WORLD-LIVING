@@ -62,6 +62,7 @@ func _run_all() -> void:
 	await _test_p2_interiors()
 	await _test_p3_enemies()
 	await _test_p4_inventory()
+	await _test_p5_materials()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -493,6 +494,89 @@ func _find_button(root: Node, label_text: String) -> Button:
 		if found != null:
 			return found
 	return null
+
+# --- Problem 5: materials, resources, crafting, upgrades, value ------------------
+
+func _test_p5_materials() -> void:
+	_section("Problem 5 - materials: harvest, craft, upgrades, value")
+	var inv := GameManager.inventory
+
+	# resource nodes exist in the built world
+	var nodes: Array = get_tree().get_nodes_in_group("resource_node")
+	_check(nodes.size() >= 10, "world spawns resource nodes (%d found)" % nodes.size())
+
+	# harvest a fresh node: yield, depletion, daily mark, XP
+	var xp0 := GameManager.progression.xp
+	var node := ResourceNode.new()
+	node.setup("p5_ore_test", "ore", "iron_ore", "Test Vein", 2)
+	world.add_child(node)
+	await _frames(2)
+	_check(node.can_interact(player), "fresh resource node is harvestable")
+	node.interact(player)
+	_check(inv.count_item("iron_ore") == 2, "harvesting a node yields its base amount (2 iron_ore)")
+	_check(not node.can_interact(player), "harvested node is depleted until respawn")
+	_check(GameManager.world.is_harvested_today("p5_ore_test"), "harvested node is marked for the day")
+	_check(GameManager.progression.xp > xp0, "harvesting grants XP")
+
+	# crafting: ingredients consumed, output produced, XP granted
+	inv.clear()
+	inv.add_item("iron_ore", 2)
+	inv.add_item("wood", 1)
+	var xp1 := GameManager.progression.xp
+	var ok := GameManager.craft_recipe("smelt_iron_ingot")
+	_check(ok, "crafting smelt recipe succeeds")
+	_check(inv.count_item("iron_ingot") == 1, "crafting produces the output item")
+	_check(inv.count_item("iron_ore") == 0 and inv.count_item("wood") == 0, "crafting consumes the ingredients")
+	_check(GameManager.progression.xp > xp1, "crafting grants XP")
+
+	# artisan rank upgrade: crafted consumables yield +1 per rank
+	inv.clear()
+	inv.add_item("herb_redcap", 2)
+	inv.add_item("slime_gel", 1)
+	GameManager.skills.ranks["artisan_smith"] = 1
+	GameManager.craft_recipe("brew_health_potion")
+	_check(inv.count_item("health_potion") == 2, "artisan rank 1 adds +1 consumable output (1 -> 2)")
+
+	# gathering upgrade: keen gatherer adds yield
+	GameManager.skills.ranks["keen_gatherer"] = 1
+	_check(GameManager.skills.gather_extra_yield() >= 1, "keen gatherer rank grants +1 harvest yield")
+
+	# skill points + upgrade through the skill tree
+	GameManager.skills.ranks.clear()
+	GameManager.skills.add_points(5)
+	var upgraded := GameManager.skills.upgrade("keen_gatherer")
+	_check(upgraded and GameManager.skills.rank_of("keen_gatherer") == 1, "skill points upgrade a skill to rank 1")
+
+	# market value: deterministic prices, sell below buy, stock priced
+	var day := GameManager.world.day
+	var buy := Market.price("iron_sword", day)
+	var sell := Market.sell_price("iron_sword", day)
+	_check(buy >= 1 and sell >= 1, "market prices are positive (buy=%d sell=%d)" % [buy, sell])
+	_check(sell < buy, "sell price is below buy price")
+	_check(Market.price("iron_sword", day) == buy, "market price is deterministic for a given day")
+	var stock := Market.stock_for(day, "blacksmith")
+	var all_priced: bool = true
+	for e: Dictionary in stock:
+		if int(e.get("price", 0)) < 1:
+			all_priced = false
+	_check(stock.size() > 0 and all_priced, "blacksmith stock is listed with prices (%d items)" % stock.size())
+
+	# crafting screen: opens, craft button follows materials
+	ui.toggle_screen("crafting")
+	await _frames(3)
+	_check(ui.crafting_screen.is_visible_in_tree(), "crafting screen opens from the UI")
+	inv.clear()
+	ui.crafting_screen.refresh()
+	await _frames(2)
+	var btn := _find_button(ui.crafting_screen, Localization.tr_key("craft"))
+	_check(btn != null and btn.disabled, "craft button is disabled without materials")
+	inv.add_item("iron_ore", 2)
+	inv.add_item("wood", 1)
+	ui.crafting_screen.refresh()
+	await _frames(2)
+	btn = _find_button(ui.crafting_screen, Localization.tr_key("craft"))
+	_check(btn != null and not btn.disabled, "craft button enables when materials are present")
+
 
 # --- report -------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 64
+checks passed: 84
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -73,3 +73,25 @@ PASS  use button consumes the potion
 PASS  potion heals the player (hp > 20 after use, was 20)
 PASS  drop button appears for bag items
 PASS  drop button removes the item from the bag
+
+== Problem 5 - materials: harvest, craft, upgrades, value
+PASS  world spawns resource nodes (13 found)
+PASS  fresh resource node is harvestable
+PASS  harvesting a node yields its base amount (2 iron_ore)
+PASS  harvested node is depleted until respawn
+PASS  harvested node is marked for the day
+PASS  harvesting grants XP
+PASS  crafting smelt recipe succeeds
+PASS  crafting produces the output item
+PASS  crafting consumes the ingredients
+PASS  crafting grants XP
+PASS  artisan rank 1 adds +1 consumable output (1 -> 2)
+PASS  keen gatherer rank grants +1 harvest yield
+PASS  skill points upgrade a skill to rank 1
+PASS  market prices are positive (buy=47 sell=21)
+PASS  sell price is below buy price
+PASS  market price is deterministic for a given day
+PASS  blacksmith stock is listed with prices (8 items)
+PASS  crafting screen opens from the UI
+PASS  craft button is disabled without materials
+PASS  craft button enables when materials are present
