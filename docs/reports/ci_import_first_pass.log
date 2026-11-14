@@ -112,7 +112,7 @@ update_scripts_classes: begin: Registering global classes... steps: 102
 	update_scripts_classes: step 100: 
 	update_scripts_classes: step 101: 
 update_scripts_classes: end
-_update_scan_actions: begin: Scanning actions... steps: 239
+_update_scan_actions: begin: Scanning actions... steps: 240
 	_update_scan_actions: step 0: Barbarian.glb
 	_update_scan_actions: step 1: Mage.glb
 	_update_scan_actions: step 2: Rogue.glb
@@ -336,24 +336,25 @@ _update_scan_actions: begin: Scanning actions... steps: 239
 	_update_scan_actions: step 220: wood_albedo.jpg
 	_update_scan_actions: step 221: wood_normal.jpg
 	_update_scan_actions: step 222: wood_roughness.jpg
-	_update_scan_actions: step 223: 00_reference_stylized_hud.png
-	_update_scan_actions: step 224: 01_main_menu.png
-	_update_scan_actions: step 225: 02_village_square.png
-	_update_scan_actions: step 226: 03_guild_exterior.png
-	_update_scan_actions: step 227: 04_guild_interior.png
-	_update_scan_actions: step 228: 05_forest_exploration.png
-	_update_scan_actions: step 229: 06_river_lake_bridge.png
-	_update_scan_actions: step 230: 07_mountains_sunset.png
-	_update_scan_actions: step 231: 08_gameplay_combat_hud.png
-	_update_scan_actions: step 232: 09_inventory_equipment.png
-	_update_scan_actions: step 233: 10_skill_tree.png
-	_update_scan_actions: step 234: 11_quest_guild_board.png
-	_update_scan_actions: step 235: 12_sunken_crypt_dungeon.png
-	_update_scan_actions: step 236: 13_world_map_cartography.png
-	_update_scan_actions: step 237: 14_city_overview.png
-	_update_scan_actions: step 238: icon.svg
+	_update_scan_actions: step 223: inv_open.png
+	_update_scan_actions: step 224: 00_reference_stylized_hud.png
+	_update_scan_actions: step 225: 01_main_menu.png
+	_update_scan_actions: step 226: 02_village_square.png
+	_update_scan_actions: step 227: 03_guild_exterior.png
+	_update_scan_actions: step 228: 04_guild_interior.png
+	_update_scan_actions: step 229: 05_forest_exploration.png
+	_update_scan_actions: step 230: 06_river_lake_bridge.png
+	_update_scan_actions: step 231: 07_mountains_sunset.png
+	_update_scan_actions: step 232: 08_gameplay_combat_hud.png
+	_update_scan_actions: step 233: 09_inventory_equipment.png
+	_update_scan_actions: step 234: 10_skill_tree.png
+	_update_scan_actions: step 235: 11_quest_guild_board.png
+	_update_scan_actions: step 236: 12_sunken_crypt_dungeon.png
+	_update_scan_actions: step 237: 13_world_map_cartography.png
+	_update_scan_actions: step 238: 14_city_overview.png
+	_update_scan_actions: step 239: icon.svg
 _update_scan_actions: end
-reimport: begin: (Re)Importing Assets steps: 239
+reimport: begin: (Re)Importing Assets steps: 240
 	reimport: step 0: Preparing files to reimport...
 	reimport: step 1: Preparing files to reimport...
 	reimport: step 2: Preparing files to reimport...
@@ -593,6 +594,7 @@ reimport: begin: (Re)Importing Assets steps: 239
 	reimport: step 236: Preparing files to reimport...
 	reimport: step 237: Preparing files to reimport...
 	reimport: step 238: Preparing files to reimport...
+	reimport: step 239: Preparing files to reimport...
 	reimport: step 0: Executing pre-reimport operations...
 preload_reimporting_scene: begin: Preparing scenes for reload steps: 1
 	preload_reimporting_scene: step 0: Analyzing scene [empty]
@@ -600,9 +602,11 @@ preload_reimporting_scene: begin: Preparing scenes for reload steps: 1
 preload_reimporting_scene: end
 	reimport: step 0: NotoSansArabic-Medium.ttf
 	reimport: step 1: NotoSans-Medium.ttf
+	reimport: step 2: NotoSans-Bold.ttf
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
 	reimport: step 5: NotoSans-Medium.ttf
+	reimport: step 6: NotoSans-Bold.ttf
 	reimport: step 7: Cairo-Variable.ttf
 	reimport: step 8: footstep_3.ogg
 	reimport: step 10: footstep_5.ogg
@@ -610,26 +614,24 @@ preload_reimporting_scene: end
 	reimport: step 12: footstep_7.ogg
 	reimport: step 13: footstep_8.ogg
 	reimport: step 14: footstep_9.ogg
-	reimport: step 15: handle_coins.ogg
 	reimport: step 16: handle_coins_2.ogg
 	reimport: step 17: knife_slice.ogg
 	reimport: step 18: knife_slice_2.ogg
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
-	reimport: step 21: door_close_1.ogg
+	reimport: step 21: door_open_2.ogg
 	reimport: step 22: door_open_1.ogg
-	reimport: step 23: door_open_2.ogg
-	reimport: step 24: draw_knife_1.ogg
-	reimport: step 25: creak_1.ogg
-	reimport: step 26: cloth_belt.ogg
-	reimport: step 27: cloth_3.ogg
-	reimport: step 28: cloth_2.ogg
-	reimport: step 29: cloth_1.ogg
+	reimport: step 23: draw_knife_1.ogg
+	reimport: step 24: footstep_0.ogg
+	reimport: step 25: door_close_1.ogg
+	reimport: step 26: creak_1.ogg
+	reimport: step 27: cloth_belt.ogg
+	reimport: step 28: cloth_3.ogg
+	reimport: step 29: cloth_2.ogg
 	reimport: step 30: footstep_2.ogg
 	reimport: step 31: footstep_1.ogg
-	reimport: step 32: footstep_0.ogg
-	reimport: step 33: belt_handle_1.ogg
-	reimport: step 34: book_flip_1.ogg
+	reimport: step 33: book_flip_1.ogg
+	reimport: step 34: book_flip_2.ogg
 	reimport: step 35: NotoSansArabic-Medium.ttf
 	reimport: step 36: NotoSans-Medium.ttf
 	reimport: step 37: NotoSans-Bold.ttf
@@ -640,41 +642,45 @@ preload_reimporting_scene: end
 	reimport: step 42: footstep_6.ogg
 	reimport: step 43: footstep_7.ogg
 	reimport: step 44: footstep_8.ogg
+	reimport: step 45: footstep_9.ogg
+	reimport: step 46: handle_coins.ogg
 	reimport: step 47: handle_coins_2.ogg
 	reimport: step 48: knife_slice.ogg
+	reimport: step 49: knife_slice_2.ogg
 	reimport: step 50: metal_click.ogg
 	reimport: step 51: metal_pot_1.ogg
-	reimport: step 52: door_close_1.ogg
+	reimport: step 52: door_open_2.ogg
 	reimport: step 53: door_open_1.ogg
-	reimport: step 55: draw_knife_1.ogg
-	reimport: step 56: creak_1.ogg
-	reimport: step 57: cloth_belt.ogg
-	reimport: step 58: cloth_3.ogg
-	reimport: step 59: cloth_2.ogg
-	reimport: step 60: cloth_1.ogg
+	reimport: step 54: draw_knife_1.ogg
+	reimport: step 55: footstep_0.ogg
+	reimport: step 56: door_close_1.ogg
+	reimport: step 57: creak_1.ogg
+	reimport: step 58: cloth_belt.ogg
+	reimport: step 59: cloth_3.ogg
+	reimport: step 60: cloth_2.ogg
 	reimport: step 61: footstep_2.ogg
 	reimport: step 62: footstep_1.ogg
-	reimport: step 63: footstep_0.ogg
-	reimport: step 64: belt_handle_1.ogg
-	reimport: step 65: book_flip_1.ogg
-	reimport: step 66: book_flip_2.ogg
-	reimport: step 67: book_flip_3.ogg
-	reimport: step 68: book_open.ogg
-	reimport: step 69: chop.ogg
+	reimport: step 63: belt_handle_1.ogg
+	reimport: step 64: book_flip_1.ogg
+	reimport: step 65: book_flip_2.ogg
+	reimport: step 66: book_flip_3.ogg
+	reimport: step 67: book_open.ogg
+	reimport: step 68: chop.ogg
+	reimport: step 69: cloth_1.ogg
 	reimport: step 70: chest_dungeon_texture.png
 	reimport: step 71: chest_gold_dungeon_texture.png
-	reimport: step 72: barbarian_texture.png
-	reimport: step 73: floor_tile_big_spikes_dungeon_texture.png
-	reimport: step 74: candle_lit_dungeon_texture.png
-	reimport: step 75: floor_tile_large_dungeon_texture.png
-	reimport: step 76: pillar_dungeon_texture.png
+	reimport: step 72: floor_tile_big_spikes_dungeon_texture.png
+	reimport: step 73: barbarian_texture.png
+	reimport: step 74: floor_tile_large_dungeon_texture.png
+	reimport: step 75: pillar_dungeon_texture.png
+	reimport: step 76: mage_texture.png
 	reimport: step 77: stairs_dungeon_texture.png
 	reimport: step 78: stairs_wide_dungeon_texture.png
 	reimport: step 79: torch_lit_dungeon_texture.png
-	reimport: step 80: stylized_meadow_sky_1k.hdr
-	reimport: step 81: wall_broken_dungeon_texture.png
-	reimport: step 82: wall_corner_dungeon_texture.png
-	reimport: step 83: wall_corner_small_dungeon_texture.png
+	reimport: step 80: wall_broken_dungeon_texture.png
+	reimport: step 81: wall_corner_dungeon_texture.png
+	reimport: step 82: wall_corner_small_dungeon_texture.png
+	reimport: step 83: stylized_meadow_sky_1k.hdr
 	reimport: step 84: wall_doorway_dungeon_texture.png
 	reimport: step 85: wall_dungeon_texture.png
 	reimport: step 86: wall_endcap_dungeon_texture.png
@@ -682,49 +688,43 @@ preload_reimporting_scene: end
 	reimport: step 88: wall_pillar_dungeon_texture.png
 	reimport: step 89: furniturebits_texture.png
 	reimport: step 90: hexagons_medieval.png
-	reimport: step 91: plaster_roughness.jpg
-	reimport: step 92: roof_tiles_albedo.jpg
-	reimport: step 93: roof_tiles_normal.jpg
-	reimport: step 94: roof_tiles_roughness.jpg
-	reimport: step 95: stone_wall_albedo.jpg
+	reimport: step 91: roof_tiles_albedo.jpg
+	reimport: step 92: roof_tiles_normal.jpg
+	reimport: step 93: roof_tiles_roughness.jpg
+	reimport: step 94: stone_wall_albedo.jpg
+	reimport: step 95: stone_wall_normal.jpg
 	reimport: step 96: T_WoodTrim_Roughness.png
 	reimport: step 97: T_WoodTrim_Normal.png
 	reimport: step 98: T_WoodTrim_BaseColor.png
-	reimport: step 99: stone_wall_normal.jpg
-	reimport: step 100: stone_wall_roughness.jpg
-	reimport: step 101: water_normal_1.jpg
-	reimport: step 102: water_normal_2.jpg
-	reimport: step 103: NotoSansArabic-Medium.ttf
-	reimport: step 106: Cairo-Variable.ttf
-	reimport: step 107: footstep_3.ogg
-	reimport: step 108: footstep_4.ogg
-	reimport: step 109: footstep_5.ogg
-	reimport: step 110: footstep_6.ogg
-	reimport: step 111: footstep_7.ogg
-	reimport: step 112: footstep_8.ogg
-	reimport: step 113: footstep_9.ogg
-	reimport: step 114: handle_coins.ogg
-	reimport: step 115: handle_coins_2.ogg
-	reimport: step 116: knife_slice.ogg
-	reimport: step 117: knife_slice_2.ogg
-	reimport: step 118: metal_click.ogg
-	reimport: step 119: metal_pot_1.ogg
-	reimport: step 120: door_close_1.ogg
-	reimport: step 121: door_open_1.ogg
-	reimport: step 122: door_open_2.ogg
+	reimport: step 99: stone_wall_roughness.jpg
+	reimport: step 100: water_normal_1.jpg
+	reimport: step 101: water_normal_2.jpg
+	reimport: step 102: wood_albedo.jpg
+	reimport: step 103: wood_normal.jpg
+	reimport: step 104: NotoSansArabic-Medium.ttf
+	reimport: step 105: NotoSans-Medium.ttf
+	reimport: step 106: NotoSans-Bold.ttf
+	reimport: step 107: Cairo-Variable.ttf
+	reimport: step 109: footstep_4.ogg
+	reimport: step 110: footstep_5.ogg
+	reimport: step 111: footstep_6.ogg
+	reimport: step 112: footstep_7.ogg
+	reimport: step 113: footstep_8.ogg
+	reimport: step 114: footstep_9.ogg
+	reimport: step 115: handle_coins.ogg
+	reimport: step 116: handle_coins_2.ogg
+	reimport: step 117: knife_slice.ogg
+	reimport: step 118: knife_slice_2.ogg
+	reimport: step 119: metal_click.ogg
+	reimport: step 120: metal_pot_1.ogg
+	reimport: step 121: door_open_2.ogg
+	reimport: step 122: door_open_1.ogg
 	reimport: step 123: draw_knife_1.ogg
-	reimport: step 124: creak_1.ogg
-	reimport: step 125: cloth_belt.ogg
-	reimport: step 126: cloth_3.ogg
-	reimport: step 127: dagger.gltf
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 128: PineTree_1.glb
+	reimport: step 124: footstep_0.ogg
+	reimport: step 125: door_close_1.ogg
+	reimport: step 126: creak_1.ogg
+	reimport: step 127: cloth_belt.ogg
+	reimport: step 128: Bush_2.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -740,7 +740,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 130: Bush_2.glb
+	reimport: step 130: dagger.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -764,7 +764,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 133: ancient_ruins_01.glb
+	reimport: step 133: Flowers.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -772,7 +772,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 134: ancient_ruins_02.glb
+	reimport: step 134: ancient_ruins_01.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -780,7 +780,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 135: claymore_greatsword.glb
+	reimport: step 135: ancient_ruins_02.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -788,7 +788,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 136: heater_shield.glb
+	reimport: step 136: claymore_greatsword.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -796,7 +796,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 137: knight_longsword.glb
+	reimport: step 137: heater_shield.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -804,7 +804,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 138: Flowers.glb
+	reimport: step 138: knight_longsword.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -812,7 +812,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 139: Flower_2.glb
+	reimport: step 139: war_bow.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -820,7 +820,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 140: Grass.glb
+	reimport: step 140: Flower_2.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -828,7 +828,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 141: Rock_1.glb
+	reimport: step 141: Grass.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -836,7 +836,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 142: BirchTree_2.glb
+	reimport: step 142: Rock_1.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -844,7 +844,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 143: war_bow.glb
+	reimport: step 143: BirchTree_2.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -852,7 +852,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 144: cliff-cave-rock.glb
+	reimport: step 144: PineTree_1.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -860,7 +860,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 145: cliff-steps-rock.glb
+	reimport: step 145: cliff-cave-rock.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -868,7 +868,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 146: rock-largeb.glb
+	reimport: step 146: cliff-steps-rock.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -876,7 +876,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 147: rock-talla.glb
+	reimport: step 147: rock-largeb.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -884,7 +884,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 148: lily-large.glb
+	reimport: step 148: rock-talla.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -892,7 +892,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 149: house.gltf
+	reimport: step 149: lily-large.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -900,7 +900,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 150: tree.gltf
+	reimport: step 150: house.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -908,7 +908,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 151: bench.gltf
+	reimport: step 151: tree.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -916,7 +916,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 152: bush.gltf
+	reimport: step 152: bench.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -924,7 +924,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 153: fountain.gltf
+	reimport: step 153: bush.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -932,7 +932,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 154: street_lantern.gltf
+	reimport: step 154: fountain.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -940,7 +940,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 155: tree.gltf
+	reimport: step 155: street_lantern.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -948,7 +948,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 156: campfire-stones.glb
+	reimport: step 156: tree.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -956,7 +956,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 157: crop-pumpkin.glb
+	reimport: step 157: campfire-stones.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -964,7 +964,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 158: crops-wheatstagea.glb
+	reimport: step 158: crop-pumpkin.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -972,7 +972,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 159: sign.glb
+	reimport: step 159: crops-wheatstagea.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -980,7 +980,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 160: tent-detailedopen.glb
+	reimport: step 160: sign.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -988,7 +988,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 161: Knight.glb
+	reimport: step 161: tent-detailedopen.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -996,7 +996,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 162: Skeleton_Mage.glb
+	reimport: step 162: Knight.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1004,7 +1004,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 163: Skeleton_Minion.glb
+	reimport: step 163: Skeleton_Mage.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1012,7 +1012,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 164: Skeleton_Warrior.glb
+	reimport: step 164: Skeleton_Minion.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1020,7 +1020,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 165: candle_lit.glb
+	reimport: step 165: Skeleton_Warrior.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1028,7 +1028,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 166: chest.glb
+	reimport: step 166: candle_lit.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1036,7 +1036,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 167: Barbarian.glb
+	reimport: step 167: chest.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1044,7 +1044,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 168: Mage.glb
+	reimport: step 168: Barbarian.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1052,7 +1052,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 169: Rogue.glb
+	reimport: step 169: Mage.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1060,7 +1060,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 170: Rogue_Hooded.glb
+	reimport: step 170: Rogue.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1068,7 +1068,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 171: character-ghost.glb
+	reimport: step 171: Rogue_Hooded.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1076,7 +1076,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 172: minion-c01.glb
+	reimport: step 172: character-ghost.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1084,7 +1084,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 173: Bat.glb
+	reimport: step 173: minion-c01.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1092,7 +1092,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 174: minion-a01.glb
+	reimport: step 174: Bat.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1100,7 +1100,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 175: minion-b01.glb
+	reimport: step 175: minion-a01.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1108,7 +1108,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 176: arch.gltf
+	reimport: step 176: minion-b01.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1116,7 +1116,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 177: crypt.gltf
+	reimport: step 177: arch.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1124,7 +1124,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 178: pillar.gltf
+	reimport: step 178: crypt.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1132,7 +1132,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 179: post_lantern.gltf
+	reimport: step 179: pillar.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1140,7 +1140,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 180: banner_blue.glb
+	reimport: step 180: post_lantern.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1148,7 +1148,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 181: banner_red.glb
+	reimport: step 181: banner_blue.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1156,7 +1156,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 182: column.glb
+	reimport: step 182: banner_red.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1164,7 +1164,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 183: statue-columndamaged.glb
+	reimport: step 183: column.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1172,7 +1172,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 184: statue-obelisk.glb
+	reimport: step 184: statue-columndamaged.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1180,7 +1180,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 185: flower-purplea.glb
+	reimport: step 185: statue-obelisk.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1188,7 +1188,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 186: flower-reda.glb
+	reimport: step 186: flower-purplea.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1196,7 +1196,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 187: log-large.glb
+	reimport: step 187: flower-reda.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1204,7 +1204,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 188: mushroom-redgroup.glb
+	reimport: step 188: log-large.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1212,7 +1212,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 189: stump-old.glb
+	reimport: step 189: mushroom-redgroup.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1220,7 +1220,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 190: Wall_Arch.gltf
+	reimport: step 190: stump-old.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1228,7 +1228,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 191: building_home_A_red.gltf
+	reimport: step 191: Wall_Arch.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1236,7 +1236,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 192: building_home_B_blue.gltf
+	reimport: step 192: building_home_A_red.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1244,7 +1244,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 193: building_home_B_red.gltf
+	reimport: step 193: building_home_B_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1252,7 +1252,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 194: building_home_B_yellow.gltf
+	reimport: step 194: building_home_B_red.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1260,7 +1260,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 195: building_lumbermill_green.gltf
+	reimport: step 195: building_home_B_yellow.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1268,7 +1268,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 196: building_market_red.gltf
+	reimport: step 196: building_lumbermill_green.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1276,7 +1276,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 197: building_stage_C.gltf
+	reimport: step 197: building_market_red.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1284,7 +1284,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 198: building_tavern_red.gltf
+	reimport: step 198: building_stage_C.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1292,7 +1292,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 199: building_tower_A_green.gltf
+	reimport: step 199: building_tavern_red.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1300,7 +1300,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 200: building_tower_B_blue.gltf
+	reimport: step 200: building_tower_A_green.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1308,7 +1308,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 201: building_watermill_blue.gltf
+	reimport: step 201: building_tower_B_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1316,7 +1316,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 202: building_well_green.gltf
+	reimport: step 202: building_watermill_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1324,7 +1324,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 203: building_windmill_yellow.gltf
+	reimport: step 203: building_well_green.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1332,7 +1332,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 204: crate_A_big.gltf
+	reimport: step 204: building_windmill_yellow.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1340,7 +1340,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 205: crate_A_small.gltf
+	reimport: step 205: crate_A_big.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1348,7 +1348,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 206: flag_blue.gltf
+	reimport: step 206: crate_A_small.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1356,7 +1356,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 207: sack.gltf
+	reimport: step 207: flag_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1364,7 +1364,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 208: target.gltf
+	reimport: step 208: sack.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1372,7 +1372,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 209: tent.gltf
+	reimport: step 209: target.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1380,7 +1380,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 210: trees_A_medium.gltf
+	reimport: step 210: tent.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1388,7 +1388,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 211: trees_B_medium.gltf
+	reimport: step 211: trees_A_medium.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1396,7 +1396,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 212: wall_straight.gltf
+	reimport: step 212: trees_B_medium.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1404,7 +1404,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 213: weaponrack.gltf
+	reimport: step 213: wall_straight.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1412,7 +1412,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 214: wheelbarrow.gltf
+	reimport: step 214: weaponrack.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1420,7 +1420,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 215: floor_tile_big_spikes.glb
+	reimport: step 215: wheelbarrow.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1428,7 +1428,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 216: floor_tile_large.glb
+	reimport: step 216: floor_tile_big_spikes.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1436,7 +1436,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 217: pillar.glb
+	reimport: step 217: floor_tile_large.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1444,7 +1444,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 218: stairs.glb
+	reimport: step 218: pillar.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1452,7 +1452,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 219: torch_lit.glb
+	reimport: step 219: stairs.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1460,7 +1460,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 220: wall.glb
+	reimport: step 220: torch_lit.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1468,7 +1468,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 221: wall_doorway.glb
+	reimport: step 221: wall.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1476,7 +1476,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 222: bed_single_A.gltf
+	reimport: step 222: wall_doorway.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1484,7 +1484,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 223: book_set.gltf
+	reimport: step 223: bed_single_A.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1492,7 +1492,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 224: cabinet_small.gltf
+	reimport: step 224: book_set.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1500,7 +1500,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 225: chair_A_wood.gltf
+	reimport: step 225: cabinet_small.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1508,7 +1508,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 226: chair_stool_wood.gltf
+	reimport: step 226: chair_A_wood.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1516,7 +1516,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 227: lamp_table.gltf
+	reimport: step 227: chair_stool_wood.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1524,7 +1524,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 228: rug_rectangle_A.gltf
+	reimport: step 228: lamp_table.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1532,7 +1532,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 229: shelf_A_small.gltf
+	reimport: step 229: rug_rectangle_A.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1540,7 +1540,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 230: table_small.gltf
+	reimport: step 230: shelf_A_small.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1548,7 +1548,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 231: barrel.gltf
+	reimport: step 231: table_small.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1556,7 +1556,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 232: building_barracks_blue.gltf
+	reimport: step 232: barrel.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1564,7 +1564,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 233: building_blacksmith_red.gltf
+	reimport: step 233: building_barracks_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1572,7 +1572,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 234: building_bridge_A.gltf
+	reimport: step 234: building_blacksmith_red.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1580,7 +1580,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 235: building_castle_blue.gltf
+	reimport: step 235: building_bridge_A.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1588,7 +1588,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 236: building_church_blue.gltf
+	reimport: step 236: building_castle_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1596,7 +1596,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 237: building_home_A_blue.gltf
+	reimport: step 237: building_church_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1604,7 +1604,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 238: building_home_A_green.gltf
+	reimport: step 238: building_home_A_blue.gltf
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1612,7 +1612,15 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 239: Finalizing Asset Import...
+	reimport: step 239: building_home_A_green.gltf
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 240: Finalizing Asset Import...
 reimport: end
 update_script_paths_documentation: begin: Updating scripts documentation steps: 102
 	update_script_paths_documentation: step 0: camera_rig.gd
@@ -1841,7 +1849,7 @@ update_scene_groups: begin: Updating Scene Groups steps: 121
 	update_scene_groups: step 119: knight_longsword.glb
 	update_scene_groups: step 120: war_bow.glb
 update_scene_groups: end
-reimport: begin: (Re)Importing Assets steps: 239
+reimport: begin: (Re)Importing Assets steps: 240
 	reimport: step 0: Executing post-reimport operations...
 reimport: end
 loading_editor_layout: begin: Loading editor steps: 5

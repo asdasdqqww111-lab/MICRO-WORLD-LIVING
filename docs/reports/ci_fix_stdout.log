@@ -50,9 +50,30 @@ PASS  a freshly spawned enemy does not attack instantly
 PASS  the VFX manager can spawn attack arcs
 PASS  aggressive enemies show a hit (HP) indicator
 PASS  hitting an enemy deals damage through take_hit
-checks passed: 44
+== Problem 4 - inventory: add, stack, equip, use, drop
+PASS  inventory screen opens from the UI
+PASS  bag shows 20 slot buttons
+PASS  equipment row shows 5 slot buttons
+PASS  inventory starts empty for the test
+PASS  iron_sword added to bag
+PASS  non-stackable item takes exactly one slot
+PASS  second sword takes a second slot
+PASS  12 potions all stored (stacked 10 + 2)
+PASS  stacked potions occupy two slots (10 + 2)
+PASS  equip button appears in detail panel
+PASS  equip button equips the sword into the weapon slot
+PASS  equipping the sword raises attack power (9.6 -> 18.6)
+PASS  equipped sword leaves the bag
+PASS  unequip button appears for the weapon slot
+PASS  unequip returns the sword to the bag
+PASS  use button appears for consumables
+PASS  use button consumes the potion
+PASS  potion heals the player (hp > 20 after use, was 20)
+PASS  drop button appears for bag items
+PASS  drop button removes the item from the bag
+checks passed: 64
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 4 resources still in use at exit (run with --verbose for details).
+ERROR: 7 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:614)

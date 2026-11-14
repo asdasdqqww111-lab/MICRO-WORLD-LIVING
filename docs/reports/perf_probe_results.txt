@@ -3,7 +3,7 @@ engine: 4.4.1-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T18:49:57
+run at: 2026-11-14T21:57:57
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -13,61 +13,61 @@ Zone 1 · Eldoria Village Square & Guild Exterior
   triangles (max):  215083  [OVER]
   objects:          294
   static memory:    190.8 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    100  [OK]
-  total draw calls: 152  [OK]
-  triangles (max):  230741  [OVER]
-  objects:          181
+  3D draw calls:    101  [OK]
+  total draw calls: 153  [OK]
+  triangles (max):  230793  [OVER]
+  objects:          182
   static memory:    199.3 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
   3D draw calls:    38  [OK]
   total draw calls: 90  [OK]
   triangles (max):  110293  [OK]
   objects:          121
   static memory:    199.2 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
   3D draw calls:    50  [OK]
   total draw calls: 102  [OK]
   triangles (max):  153427  [OK]
   objects:          128
   static memory:    199.3 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 3.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   3D draw calls:    51  [OK]
   total draw calls: 103  [OK]
   triangles (max):  47695  [OK]
   objects:          132
   static memory:    199.5 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 3.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    15  [OK]
   total draw calls: 70  [OK]
   triangles (max):  12711  [OK]
   objects:          118
   static memory:    199.7 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 4.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    52  [OK]
   total draw calls: 109  [OK]
   triangles (max):  71455  [OK]
   objects:          154
   static memory:    199.9 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 4.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
-  all UI visible           total   70 | 3D (visible+shadow)   15 | objects  118
-  touch controls hidden    total   40 | 3D (visible+shadow)   15 | objects   61
-  HUD hidden               total   46 | 3D (visible+shadow)   15 | objects   73
-  HUD + touch hidden       total   16 | 3D (visible+shadow)   15 | objects   16
-  entire UI layer hidden   total   16 | 3D (visible+shadow)   15 | objects   16
+  all UI visible           total   69 | 3D (visible+shadow)   14 | objects  117
+  touch controls hidden    total   39 | 3D (visible+shadow)   14 | objects   60
+  HUD hidden               total   45 | 3D (visible+shadow)   14 | objects   72
+  HUD + touch hidden       total   15 | 3D (visible+shadow)   14 | objects   15
+  entire UI layer hidden   total   15 | 3D (visible+shadow)   14 | objects   15
   => touch controls: 30 draw calls
   => HUD:            24 draw calls
   => other UI nodes: 0 draw calls
-  => non-UI (3D):    16 draw calls
+  => non-UI (3D):    15 draw calls
   HUD per panel (touch hidden, HUD total 24):
   HUD vitals panel (StatsGlassPanel)     12 draw calls
   HUD quest tracker                    not visible
@@ -79,8 +79,8 @@ UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)
-  nodes total:          2150
-  MeshInstance3D:       573
+  nodes total:          2149
+  MeshInstance3D:       572
   MultiMeshInstance3D:  21 (batches) / 1479 instances
   GPUParticles3D:       2
   omni lights:          24
@@ -105,7 +105,7 @@ TOP TRIANGLE CONSUMERS (whole world)
      5586 tris |  1 surf | World/OverworldZone/ForestBushes [x21]
      5288 tris |  1 surf | Model/Rig/Skeleton3D/CombinedBodySkin
 
-SHADOW / LOD: casters=24  shadow_off=549  with_visibility_range=531
+SHADOW / LOD: casters=24  shadow_off=548  with_visibility_range=531
 --- offenders done ---
 
 STATUS: COMPLETE
