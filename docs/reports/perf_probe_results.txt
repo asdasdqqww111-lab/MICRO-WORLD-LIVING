@@ -3,7 +3,7 @@ engine: 4.3-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-14T00:14:02
+run at: 2026-11-14T00:20:33
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -12,7 +12,7 @@ Zone 1 · Eldoria Village Square & Guild Exterior
   total draw calls: 448  [FAIL]
   triangles (max):  182654  [OVER]
   objects:          452
-  static memory:    206.3 MB
+  static memory:    206.4 MB
   fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
@@ -23,40 +23,51 @@ Zone 2 · Active Combat (Village + 3 Skeletons)
   static memory:    214.9 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    23  [OK]
-  total draw calls: 301  [WARN]
-  triangles (max):  76507  [OK]
-  objects:          301
-  static memory:    214.6 MB
+  3D draw calls:    27  [OK]
+  total draw calls: 305  [WARN]
+  triangles (max):  77419  [OK]
+  objects:          305
+  static memory:    214.7 MB
   fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
   3D draw calls:    62  [OK]
   total draw calls: 340  [WARN]
   triangles (max):  175453  [OK]
   objects:          343
-  static memory:    214.7 MB
+  static memory:    214.8 MB
   fps (min, this driver): 1.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   3D draw calls:    52  [OK]
   total draw calls: 330  [WARN]
   triangles (max):  45371  [OK]
   objects:          339
-  static memory:    214.9 MB
+  static memory:    215.0 MB
   fps (min, this driver): 2.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    17  [OK]
   total draw calls: 324  [WARN]
   triangles (max):  12830  [OK]
   objects:          324
-  static memory:    215.3 MB
-  fps (min, this driver): 2.0
+  static memory:    215.4 MB
+  fps (min, this driver): 4.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    45  [OK]
   total draw calls: 349  [WARN]
   triangles (max):  74804  [OK]
   objects:          349
-  static memory:    215.9 MB
+  static memory:    216.0 MB
   fps (min, this driver): 1.0
+
+UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
+  all UI visible           total  324 | 3D (visible+shadow)   17 | objects  324
+  touch controls hidden    total  276 | 3D (visible+shadow)   17 | objects  276
+  HUD hidden               total   66 | 3D (visible+shadow)   17 | objects   66
+  HUD + touch hidden       total   18 | 3D (visible+shadow)   17 | objects   18
+  entire UI layer hidden   total   18 | 3D (visible+shadow)   17 | objects   18
+  => touch controls: 48 draw calls
+  => HUD:            258 draw calls
+  => other UI nodes: 0 draw calls
+  => non-UI (3D):    18 draw calls
 
 --- running structural audit ---
 SCENE AUDIT (renderer independent)

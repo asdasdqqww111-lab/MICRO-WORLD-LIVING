@@ -237,8 +237,7 @@ ERROR: Parameter "m" is null.
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 PASS  Ascending after defeat loads floor 2
-ERROR: FAIL  Only ONE floor loaded at a time (single root child)
-   at: push_error (core/variant/variant_utility.cpp:1092)
+PASS  Only ONE floor loaded at a time (single floor root, nothing left from floor 1)
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 ERROR: Parameter "m" is null.
@@ -988,7 +987,7 @@ ERROR: Parameter "m" is null.
 ERROR: Parameter "m" is null.
    at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:120)
 
-=== TOWER SUITE: 61 passed, 1 failed ===
+=== TOWER SUITE: 62 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2284)
 ERROR: 7 resources still in use at exit (run with --verbose for details).
