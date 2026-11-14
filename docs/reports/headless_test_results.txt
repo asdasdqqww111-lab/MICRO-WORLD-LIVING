@@ -1,12 +1,12 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.4.1-stable (official) stable
 rendering method: mobile
-run at: 2026-11-14T18:02:35
+run at: 2026-11-14T18:49:44
 checks passed: 215
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 76.0
+  fps: 74.0
   draw calls: 0
   triangles: 0
   nodes: 2517
@@ -230,7 +230,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 33.3)
+PASS  skeleton takes damage (46.0 -> 32.0)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective

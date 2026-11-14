@@ -600,14 +600,11 @@ preload_reimporting_scene: begin: Preparing scenes for reload steps: 1
 preload_reimporting_scene: end
 	reimport: step 0: NotoSansArabic-Medium.ttf
 	reimport: step 1: NotoSans-Medium.ttf
-	reimport: step 2: NotoSans-Bold.ttf
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
 	reimport: step 5: NotoSans-Medium.ttf
-	reimport: step 6: NotoSans-Bold.ttf
 	reimport: step 7: Cairo-Variable.ttf
 	reimport: step 8: footstep_3.ogg
-	reimport: step 9: footstep_4.ogg
 	reimport: step 10: footstep_5.ogg
 	reimport: step 11: footstep_6.ogg
 	reimport: step 12: footstep_7.ogg
@@ -616,6 +613,7 @@ preload_reimporting_scene: end
 	reimport: step 15: handle_coins.ogg
 	reimport: step 16: handle_coins_2.ogg
 	reimport: step 17: knife_slice.ogg
+	reimport: step 18: knife_slice_2.ogg
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
 	reimport: step 21: door_close_1.ogg
@@ -642,16 +640,12 @@ preload_reimporting_scene: end
 	reimport: step 42: footstep_6.ogg
 	reimport: step 43: footstep_7.ogg
 	reimport: step 44: footstep_8.ogg
-	reimport: step 45: footstep_9.ogg
-	reimport: step 46: handle_coins.ogg
 	reimport: step 47: handle_coins_2.ogg
 	reimport: step 48: knife_slice.ogg
-	reimport: step 49: knife_slice_2.ogg
 	reimport: step 50: metal_click.ogg
 	reimport: step 51: metal_pot_1.ogg
 	reimport: step 52: door_close_1.ogg
 	reimport: step 53: door_open_1.ogg
-	reimport: step 54: door_open_2.ogg
 	reimport: step 55: draw_knife_1.ogg
 	reimport: step 56: creak_1.ogg
 	reimport: step 57: cloth_belt.ogg
@@ -701,8 +695,6 @@ preload_reimporting_scene: end
 	reimport: step 101: water_normal_1.jpg
 	reimport: step 102: water_normal_2.jpg
 	reimport: step 103: NotoSansArabic-Medium.ttf
-	reimport: step 104: NotoSans-Medium.ttf
-	reimport: step 105: NotoSans-Bold.ttf
 	reimport: step 106: Cairo-Variable.ttf
 	reimport: step 107: footstep_3.ogg
 	reimport: step 108: footstep_4.ogg

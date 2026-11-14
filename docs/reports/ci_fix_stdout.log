@@ -39,9 +39,20 @@ PASS  the tower floor has a ceiling
 PASS  the tower floor has wall dressing and props
 PASS  the tower floor keeps its central light
 PASS  the tower floor burns with fire lights (3)
-checks passed: 34
+== Problem 3: tower enemies and combat feedback
+PASS  the celestial tower manager exists
+PASS  a tower floor is built for the fight
+PASS  the floor has enemies to fight (5)
+PASS  every tower enemy is visible
+PASS  every tower enemy has a rendered model
+PASS  a non-boss enemy is present to test
+PASS  a freshly spawned enemy does not attack instantly
+PASS  the VFX manager can spawn attack arcs
+PASS  aggressive enemies show a hit (HP) indicator
+PASS  hitting an enemy deals damage through take_hit
+checks passed: 44
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 5 resources still in use at exit (run with --verbose for details).
+ERROR: 4 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:614)
