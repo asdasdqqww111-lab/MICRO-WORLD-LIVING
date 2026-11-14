@@ -78,10 +78,9 @@ func _build_environment() -> void:
 	sky.sky_material = pano
 	environment.sky = sky
 
-	var vp := get_viewport()
-	if vp != null:
-		vp.msaa_3d = Viewport.MSAA_4X
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+	# Viewport anti-aliasing and 3D render scale belong to the graphics preset
+	# (SettingsManager.apply_graphics). Forcing MSAA 4X here used to override
+	# the LOW preset every time the world was built.
 
 	# Phase 1 Stylized/Chibi PBR Mobile Lighting:
 	# ACES Tonemap (1.1), Softlight Glow (0.4 / 0.1), Depth Fog (30..150m), Low-Res SSAO (1.0 / 1.5)
@@ -387,6 +386,8 @@ func _apply_graphics() -> void:
 	RenderingServer.directional_soft_shadow_filter_set_quality(quality)
 	if world_environment != null and world_environment.environment != null:
 		world_environment.environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
+		# Glow costs several full-screen passes on the Mobile renderer.
+		world_environment.environment.glow_enabled = SettingsManager.glow_enabled()
 
 # --- Gathering Nodes, Chests, Living NPCs & Creature Ecosystems --------------
 

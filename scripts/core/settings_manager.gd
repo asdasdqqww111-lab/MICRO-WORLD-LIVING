@@ -88,22 +88,36 @@ func _set_bus_volume(bus_name: String, linear: float) -> void:
 	var db := -80.0 if linear <= 0.001 else linear_to_db(clampf(linear, 0.0, 1.6))
 	AudioServer.set_bus_volume_db(idx, db)
 
-## Applies Stylized/Chibi PBR Mobile Vulkan rendering settings (4x MSAA + FXAA).
+## Applies the active preset to the root viewport (MSAA, FXAA, 3D render
+## scale) and notifies listeners. This is the only place that sets viewport
+## anti-aliasing; scene code must not override it.
 func apply_graphics() -> void:
 	var viewport := get_viewport()
 	if viewport != null:
 		viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
-		match graphics_preset:
-			GraphicsPreset.LOW:
-				viewport.msaa_3d = Viewport.MSAA_2X
-				viewport.scaling_3d_scale = 0.82
-			GraphicsPreset.MEDIUM:
-				viewport.msaa_3d = Viewport.MSAA_4X
-				viewport.scaling_3d_scale = 0.95 if is_mobile() else 1.0
-			_:
-				viewport.msaa_3d = Viewport.MSAA_4X
-				viewport.scaling_3d_scale = 1.0
+		viewport.msaa_3d = msaa_3d_level()
+		viewport.scaling_3d_scale = render_scale_3d()
 	EventBus.graphics_settings_changed.emit()
+
+## 3D MSAA level of the active preset.
+func msaa_3d_level() -> Viewport.MSAA:
+	if graphics_preset == GraphicsPreset.LOW:
+		return Viewport.MSAA_2X
+	return Viewport.MSAA_4X
+
+## 3D resolution scale of the active preset (1.0 = native).
+func render_scale_3d() -> float:
+	match graphics_preset:
+		GraphicsPreset.LOW:
+			return 0.82
+		GraphicsPreset.MEDIUM:
+			return 0.95 if is_mobile() else 1.0
+		_:
+			return 1.0
+
+## Whether the glow post-process runs on the active preset.
+func glow_enabled() -> bool:
+	return graphics_preset != GraphicsPreset.LOW
 
 func shadow_quality() -> int:
 	match graphics_preset:

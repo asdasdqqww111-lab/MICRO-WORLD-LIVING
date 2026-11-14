@@ -582,6 +582,29 @@ func _test_game_scene() -> void:
 		"Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial")
 	_check(world.sun != null and world.sun.shadow_enabled and is_equal_approx(world.sun.directional_shadow_max_distance, 45.0) and is_equal_approx(world.sun.shadow_blur, 2.0),
 		"Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 45m max distance")
+
+	# Graphics presets must own viewport anti-aliasing, render scale and the
+	# glow post-process (WorldRoot used to force MSAA 4X on every preset).
+	var root_vp := get_viewport()
+	var preset_before := SettingsManager.graphics_preset
+	_check(root_vp.msaa_3d == SettingsManager.msaa_3d_level()
+			and is_equal_approx(root_vp.scaling_3d_scale, SettingsManager.render_scale_3d()),
+		"graphics: viewport MSAA and 3D scale match the active preset after the world is built")
+	SettingsManager.graphics_preset = SettingsManager.GraphicsPreset.LOW
+	SettingsManager.apply_graphics()
+	_check(root_vp.msaa_3d == Viewport.MSAA_2X and is_equal_approx(root_vp.scaling_3d_scale, 0.82)
+			and not env_res.glow_enabled and not world.sun.shadow_enabled,
+		"graphics: LOW preset applies MSAA 2X, 0.82 render scale, no glow, no sun shadows")
+	SettingsManager.graphics_preset = SettingsManager.GraphicsPreset.HIGH
+	SettingsManager.apply_graphics()
+	_check(root_vp.msaa_3d == Viewport.MSAA_4X and is_equal_approx(root_vp.scaling_3d_scale, 1.0)
+			and env_res.glow_enabled and world.sun.shadow_enabled,
+		"graphics: HIGH preset applies MSAA 4X, native render scale, glow and sun shadows")
+	SettingsManager.graphics_preset = preset_before
+	SettingsManager.apply_graphics()
+	_check(env_res.glow_enabled and world.sun.shadow_enabled
+			and is_equal_approx(world.sun.directional_shadow_max_distance, 45.0),
+		"graphics: restoring the original preset restores glow and shadows")
 	_check(ui.hud != null and ui.hud.find_child("TopCenterActionDock", true, false) != null and ui.touch.find_child("QuickSlotsBar", true, false) != null,
 		"Phase 4: Arabic HUD Top-Center 7-Button Action Dock & 5 Quick-Slots built")
 	_check(game.get("vfx") != null and (game.get("vfx") as Node).get_node_or_null("FootstepDust") != null,
