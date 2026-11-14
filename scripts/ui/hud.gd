@@ -19,6 +19,7 @@ var gold_label: Label
 var weather_label: Label
 var district_label: Label
 var _top_left_stack: VBoxContainer
+var _top_right_stack: VBoxContainer
 var minimap: MinimapControl
 var quest_panel: PanelContainer
 var quest_box: VBoxContainer
@@ -240,6 +241,7 @@ func _build_top_right() -> void:
 	wrap.add_theme_constant_override("separation", 6)
 	wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(wrap)
+	_top_right_stack = wrap
 
 	minimap = MinimapControl.new()
 	minimap.player = _player
@@ -249,6 +251,7 @@ func _build_top_right() -> void:
 	var pill := PanelContainer.new()
 	pill.name = "DayWeatherPanel"
 	pill.custom_minimum_size = Vector2(142, 0)
+	pill.size_flags_horizontal = Control.SIZE_SHRINK_END
 	pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pill.add_theme_stylebox_override("panel", _glass_box(
 		Color(0.06, 0.10, 0.08, 0.76), Color(0.66, 0.68, 0.52, 0.50), 8, 7))
@@ -270,6 +273,7 @@ func _build_top_right() -> void:
 	var city_pill := PanelContainer.new()
 	city_pill.name = "RoyalCityDistrictPanel"
 	city_pill.custom_minimum_size = Vector2(142, 0)
+	city_pill.size_flags_horizontal = Control.SIZE_SHRINK_END
 	city_pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	city_pill.add_theme_stylebox_override("panel", _glass_box(
 		Color(0.16, 0.11, 0.22, 0.82), Color(0.82, 0.60, 0.94, 0.56), 8, 7))
@@ -309,13 +313,14 @@ func _build_prompt() -> void:
 	interact_panel.add_child(interact_label)
 
 func _build_notifications() -> void:
+	# Notifications flow below the minimap / clock / district stack. A fixed
+	# y offset used to draw them on top of the district panel.
 	notifications = VBoxContainer.new()
-	notifications.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	notifications.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	notifications.position = Vector2(-18, 212)
+	notifications.name = "Notifications"
 	notifications.custom_minimum_size = Vector2(300, 0)
+	notifications.size_flags_horizontal = Control.SIZE_SHRINK_END
 	notifications.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(notifications)
+	_top_right_stack.add_child(notifications)
 
 func _build_damage_flash() -> void:
 	damage_flash = ColorRect.new()
