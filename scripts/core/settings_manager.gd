@@ -110,14 +110,33 @@ func msaa_3d_level() -> Viewport.MSAA:
 	return Viewport.MSAA_4X
 
 ## 3D resolution scale of the active preset (1.0 = native).
+##
+## Phones render 3D at the panel's native resolution, and a 1080p or 1440p
+## panel is far more pixels than a mid-range mobile GPU can shade at 60 FPS.
+## On mobile the scale is therefore also capped so the 3D image is never taller
+## than MOBILE_3D_HEIGHT pixels for the preset; the 2D HUD stays native and sharp.
+const MOBILE_3D_HEIGHT := {
+	GraphicsPreset.LOW: 720.0,
+	GraphicsPreset.MEDIUM: 900.0,
+	GraphicsPreset.HIGH: 1080.0,
+}
+const MOBILE_MIN_SCALE := 0.5
+
 func render_scale_3d() -> float:
+	var base := 1.0
 	match graphics_preset:
 		GraphicsPreset.LOW:
-			return 0.82
+			base = 0.82
 		GraphicsPreset.MEDIUM:
-			return 0.90 if is_mobile() else 1.0
-		_:
-			return 1.0
+			base = 0.90 if is_mobile() else 1.0
+	if not is_mobile():
+		return base
+	var window := DisplayServer.window_get_size()
+	var short_edge := float(mini(window.x, window.y))
+	if short_edge <= 1.0:
+		return base
+	var cap := float(MOBILE_3D_HEIGHT.get(graphics_preset, 900.0)) / short_edge
+	return clampf(minf(base, cap), MOBILE_MIN_SCALE, 1.0)
 
 ## Whether the glow post-process runs on the active preset.
 func glow_enabled() -> bool:

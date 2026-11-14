@@ -236,8 +236,8 @@ func _optimize_static_props() -> void:
 		if node is MultiMeshInstance3D:
 			var mmi := node as MultiMeshInstance3D
 			var mname := String(mmi.name)
-			# Only the big silhouettes cast shadows: forest, town wall and gate towers.
-			if mname != "ForestOaks" and mname != "RoyalCityWalls" and mname != "RoyalGateTowers" and mname != "CityGardenTrees":
+			# Only the big silhouettes cast shadows: forest, town wall and garden trees.
+			if mname != "ForestOaks" and mname != "RoyalCityWalls" and mname != "CityGardenTrees":
 				mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			continue
 		var mi := node as MeshInstance3D
@@ -384,6 +384,10 @@ func _apply_graphics() -> void:
 	sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	sun.directional_shadow_max_distance = 34.0 if SettingsManager.graphics_preset == SettingsManager.GraphicsPreset.LOW else 45.0
 	sun.shadow_blur = 2.0
+	# Each shadow split redraws every caster. Phones get a single split; the
+	# 45 m shadow range is short enough for one map to stay acceptable.
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL if SettingsManager.is_mobile() \
+		else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	RenderingServer.directional_soft_shadow_filter_set_quality(quality)
 	if world_environment != null and world_environment.environment != null:
 		world_environment.environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW

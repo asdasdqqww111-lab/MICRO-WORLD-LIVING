@@ -224,8 +224,23 @@ func _capture_city_overview() -> void:
 		env.fog_enabled = false
 	if _ui != null:
 		_ui.visible = false
+	# Distance culling is tuned for the third-person camera; from 64 m up it
+	# would hide every house, so lift it for this one capture.
+	var ranges: Array = []
+	var stack: Array[Node] = [_world]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		for child: Node in node.get_children():
+			stack.append(child)
+		var gi := node as GeometryInstance3D
+		if gi != null and gi.visibility_range_end > 0.0:
+			ranges.append([gi, gi.visibility_range_end])
+			gi.visibility_range_end = 0.0
 	await _frames(6)
 	await _save("14_city_overview")
+	for entry: Array in ranges:
+		if is_instance_valid(entry[0]):
+			(entry[0] as GeometryInstance3D).visibility_range_end = float(entry[1])
 	if env != null:
 		env.fog_enabled = fog_was
 	if previous != null and is_instance_valid(previous):
