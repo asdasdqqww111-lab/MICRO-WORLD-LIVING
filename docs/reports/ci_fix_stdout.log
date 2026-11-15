@@ -162,7 +162,19 @@ PASS  HUD has the target indicator panel
 PASS  HUD has the interact prompt panel
 PASS  VFX manager spawns floating damage numbers
 PASS  a floating damage number is visible after a hit (3)
-checks passed: 140
+== Problem 10 - forest & tree arrangement
+PASS  forest tree multimesh 'ValleyStylizedPines' has 36 instances
+PASS  forest tree multimesh 'ForestOaks' has 10 instances
+PASS  forest tree multimesh 'LakesideBirches' has 4 instances
+PASS  forest tree multimesh 'CityGardenTrees' has 7 instances
+PASS  forest plants a real tree population (57 trees)
+PASS  forest trunk collider body exists
+PASS  forest trunk collider carries a solid shape
+PASS  city plan recognises the town centre as inside walls
+PASS  city plan recognises the outer forest as outside walls
+checks passed: 149
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
