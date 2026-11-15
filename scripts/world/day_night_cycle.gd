@@ -25,6 +25,11 @@ var panorama_sky_material: PanoramaSkyMaterial
 ## room sets its own ambient light and the sky must not overwrite it.
 var outdoors: bool = true
 
+## When false, apply_now() leaves fog_light_color alone so the
+## AdvancedCinematicFog can own the per-zone cinematic fog colour. WorldRoot
+## clears this flag once the fog node is wired up.
+var manage_fog_color: bool = true
+
 var _last_minute: int = -1
 var _last_hour: int = -1
 var _weather_darkness: float = 0.0
@@ -100,7 +105,10 @@ func apply_now() -> void:
 			environment.ambient_light_color = Color(0.24, 0.32, 0.48).lerp(Color(0.74, 0.80, 0.88), daylight)
 		var fog_day := Color(0.6, 0.75, 0.9).lerp(Color(0.84, 0.70, 0.60), late_dusk * 0.50)
 		var fog_night := Color(0.10, 0.14, 0.22)
-		environment.fog_light_color = fog_night.lerp(fog_day, daylight)
+		# AdvancedCinematicFog owns the fog colour in zones it drives; only
+		# overwrite it here when no cinematic fog is wired up.
+		if manage_fog_color:
+			environment.fog_light_color = fog_night.lerp(fog_day, daylight)
 		var top_day := Color(0.14, 0.36, 0.74)
 		var top_night := Color(0.03, 0.05, 0.12)
 		var horizon_day := Color(0.60, 0.76, 0.89).lerp(Color(0.95, 0.64, 0.42), late_dusk * 0.68)

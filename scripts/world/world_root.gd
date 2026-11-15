@@ -201,6 +201,10 @@ func _setup_cinematic_fog() -> void:
 		add_child(fog)
 	# Apply the starting zone immediately so the first frame is never un-fogged.
 	fog.apply_fog_settings(fog.current_zone, 0.0)
+	# AdvancedCinematicFog now owns the fog colour/density, so the day/night
+	# cycle must stop overwriting fog_light_color every frame.
+	if day_night != null:
+		day_night.manage_fog_color = false
 
 	# --- Forest biome trigger ------------------------------------------------
 	# Covers the western woodland where the forest trees and critters live.

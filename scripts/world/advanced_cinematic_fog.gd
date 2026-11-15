@@ -70,10 +70,27 @@ func _ready() -> void:
 	EventBus.zone_entered.connect(_on_zone_entered)
 
 func _setup_environment_node() -> void:
-	# The WorldEnvironment lives on the Game node (this node's grandparent via
-	# the World node's parent). Reuse it so we drive the same environment the
-	# day/night cycle and world builder already configured.
-	world_environment = get_node_or_null("../WorldEnvironment")
+	# The WorldEnvironment that actually renders is the one on the Game node
+	# (this node's grandparent via the World node's parent). The camera is a
+	# child of Player under Game, so only a WorldEnvironment that is an ancestor
+	# of the camera is used for rendering. A WorldEnvironment created as a child
+	# of World would NOT be an ancestor of the camera and would be ignored.
+	#
+	# Resolve it in priority order:
+	#   1. The parent WorldRoot's own world_environment reference (set in
+	#      WorldRoot._build_environment, which reuses the Game-level node).
+	#   2. "../../WorldEnvironment" — the Game node's WorldEnvironment.
+	#   3. "../WorldEnvironment" — a standalone WorldRoot (test scenes).
+	#   4. Create a new one as a last resort.
+	var parent_world := get_parent() as WorldRoot
+	if parent_world != null and parent_world.world_environment != null:
+		world_environment = parent_world.world_environment
+		if world_environment != null and world_environment.environment != null:
+			return
+
+	world_environment = get_node_or_null("../../WorldEnvironment")
+	if not world_environment:
+		world_environment = get_node_or_null("../WorldEnvironment")
 	if not world_environment:
 		world_environment = WorldEnvironment.new()
 		world_environment.name = "WorldEnvironment"
