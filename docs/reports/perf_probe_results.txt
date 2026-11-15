@@ -3,7 +3,7 @@ engine: 4.4.1-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-15T00:26:50
+run at: 2026-11-15T00:32:02
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
@@ -21,12 +21,12 @@ Zone 2 · Active Combat (Village + 3 Skeletons)
   triangles (max):  230735  [OVER]
   objects:          182
   static memory:    199.4 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    19  [OK]
-  total draw calls: 71  [OK]
-  triangles (max):  98651  [OK]
-  objects:          107
+  3D draw calls:    39  [OK]
+  total draw calls: 91  [OK]
+  triangles (max):  110543  [OK]
+  objects:          127
   static memory:    199.2 MB
   fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
@@ -44,18 +44,18 @@ Zone 5 · Adventurers Guild Grand Hall Interior
   static memory:    199.5 MB
   fps (min, this driver): 2.0
 Zone 6 · Hero Cottage Interior
-  3D draw calls:    14  [OK]
-  total draw calls: 69  [OK]
-  triangles (max):  12677  [OK]
-  objects:          122
-  static memory:    199.6 MB
-  fps (min, this driver): 3.0
+  3D draw calls:    15  [OK]
+  total draw calls: 70  [OK]
+  triangles (max):  12721  [OK]
+  objects:          123
+  static memory:    199.7 MB
+  fps (min, this driver): 5.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   3D draw calls:    52  [OK]
   total draw calls: 109  [OK]
   triangles (max):  71465  [OK]
   objects:          159
-  static memory:    199.9 MB
+  static memory:    200.0 MB
   fps (min, this driver): 3.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)

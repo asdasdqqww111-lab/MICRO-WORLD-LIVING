@@ -195,7 +195,17 @@ PASS  the game can be saved
 PASS  the save file exists
 PASS  the game can be loaded
 PASS  loading returns the player to the last saved place ((-28.92046, 0.001735, 17.21567))
-checks passed: 170
+== Problem 13 - ruins, walls & gates outside the city
+PASS  outer landmarks built (8/8)
+PASS  the city wall ring mesh exists
+PASS  the city wall collider body exists
+PASS  the wall has solid colliders (23)
+PASS  the gate towers exist
+PASS  valley perimeter walls built (4/4)
+PASS  the dungeon/crypt entrance is built
+checks passed: 177
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
+ERROR: 4 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
