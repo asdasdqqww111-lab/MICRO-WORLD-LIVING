@@ -70,6 +70,7 @@ func _run_all() -> void:
 	await _test_p10_forest()
 	await _test_p11_logic()
 	await _test_p12_nav()
+	await _test_p13_ruins()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -1013,8 +1014,60 @@ func _test_p12_nav() -> void:
 	add_child(game)
 	await _frames(3)
 	player = game.player
+	world = game.world
 	_check(player.global_position.distance_to(saved_pos) < 0.5 and absf(player.rotation.y - 1.2) < 0.1,
 		"loading returns the player to the last saved place (%s)" % player.global_position)
+
+
+# --- Problem 13: ruins, walls & gates outside the city ------------------------
+
+func _test_p13_ruins() -> void:
+	_section("Problem 13 - ruins, walls & gates outside the city")
+
+	# the outer landmarks (ruins, cave, camp, grove, crypt, bridge, mill, falls)
+	var landmarks := ["AncientRuinsMain", "ShadowfangCave", "CampTentA", "SacredGroveShrine",
+		"CryptMausoleum", "EastStoneBridge", "RiversideWatermill", "NorthernWaterfall"]
+	var found := 0
+	for name: String in landmarks:
+		if _find_named(world, name) != null:
+			found += 1
+	_check(found == landmarks.size(), "outer landmarks built (%d/%d)" % [found, landmarks.size()])
+
+	# the wall ring: a visible multimesh and a solid collider body
+	var walls := _find_named(world, "RoyalCityWalls")
+	var wall_body := _find_named(world, "RoyalWallColliders")
+	_check(walls != null, "the city wall ring mesh exists")
+	_check(wall_body != null, "the city wall collider body exists")
+	if wall_body != null:
+		var shapes := 0
+		for child: Node in wall_body.get_children():
+			if child is CollisionShape3D:
+				shapes += 1
+		_check(shapes > 0, "the wall has solid colliders (%d)" % shapes)
+
+	# gate towers flank the three gates
+	_check(_find_named(world, "RoyalGateTowers") != null, "the gate towers exist")
+
+	# the outer valley perimeter keeps the wilderness out
+	var perimeter := 0
+	for name: String in ["NorthValleyWall", "SouthValleyWall", "WestValleyWall", "EastValleyWall"]:
+		if _find_named(world, name) != null:
+			perimeter += 1
+	_check(perimeter == 4, "valley perimeter walls built (%d/4)" % perimeter)
+
+	# the crypt entrance (main-quest destination) is present
+	_check(_find_named(world, "DungeonStairs") != null and _find_named(world, "DungeonArch") != null,
+		"the dungeon/crypt entrance is built")
+
+
+func _find_named(root: Node, name: String) -> Node:
+	if root.name == name:
+		return root
+	for child: Node in root.get_children():
+		var found := _find_named(child, name)
+		if found != null:
+			return found
+	return null
 
 
 func _find_multimesh(node: Node, name: String) -> Node:
