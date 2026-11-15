@@ -49,6 +49,7 @@ func _ready() -> void:
 	_apply_graphics()
 	EventBus.zone_entered.connect(_on_zone_entered)
 	_apply_zone_visibility(GameManager.pending_zone if not GameManager.pending_zone.is_empty() else "village")
+	_setup_cinematic_fog()
 	if AudioManager != null:
 		AudioManager.play_music_for_zone("village")
 
@@ -188,6 +189,55 @@ func _on_zone_entered(zone_id: String) -> void:
 		AudioManager.play_music_for_zone("city" if zone_id == "city" else zone_id)
 	if zone_id != "dungeon":
 		EventBus.boss_health_changed.emit("", 0.0, 100.0, 1, false)
+
+## Wires up the AdvancedCinematicFog node (a direct child of the World node) and
+## the Area3D biome triggers that call trigger_zone_transition() when the player
+## crosses into the forest or approaches the tower gate.
+func _setup_cinematic_fog() -> void:
+	var fog := find_child("AdvancedCinematicFog", true, false) as AdvancedCinematicFog
+	if fog == null:
+		fog = AdvancedCinematicFog.new()
+		fog.name = "AdvancedCinematicFog"
+		add_child(fog)
+	# Apply the starting zone immediately so the first frame is never un-fogged.
+	fog.apply_fog_settings(fog.current_zone, 0.0)
+
+	# --- Forest biome trigger ------------------------------------------------
+	# Covers the western woodland where the forest trees and critters live.
+	var forest_area := Area3D.new()
+	forest_area.name = "FogTrigger_Forest"
+	var forest_shape := BoxShape3D.new()
+	forest_shape.size = Vector3(48.0, 8.0, 74.0)
+	var forest_cs := CollisionShape3D.new()
+	forest_cs.shape = forest_shape
+	forest_area.add_child(forest_cs)
+	forest_area.global_position = Vector3(-48.0, 4.0, -11.0)
+	forest_area.collision_layer = CollisionLayers.TRIGGER
+	forest_area.collision_mask = CollisionLayers.PLAYER
+	add_child(forest_area)
+	forest_area.area_entered.connect(func(_a: Area3D) -> void:
+		fog.trigger_zone_transition("forest"))
+	forest_area.area_exited.connect(func(_a: Area3D) -> void:
+		fog.trigger_zone_transition("overworld"))
+
+	# --- Tower gate trigger ------------------------------------------------
+	# Sits at the overworld tower gate so the fog shifts to the tower atmosphere
+	# as the player approaches the entrance.
+	var tower_area := Area3D.new()
+	tower_area.name = "FogTrigger_Tower"
+	var tower_shape := BoxShape3D.new()
+	tower_shape.size = Vector3(14.0, 8.0, 14.0)
+	var tower_cs := CollisionShape3D.new()
+	tower_cs.shape = tower_shape
+	tower_area.add_child(tower_cs)
+	tower_area.global_position = Vector3(-52.0, 4.0, 34.0)
+	tower_area.collision_layer = CollisionLayers.TRIGGER
+	tower_area.collision_mask = CollisionLayers.PLAYER
+	add_child(tower_area)
+	tower_area.area_entered.connect(func(_a: Area3D) -> void:
+		fog.trigger_zone_transition("tower"))
+	tower_area.area_exited.connect(func(_a: Area3D) -> void:
+		fog.trigger_zone_transition("forest"))
 
 func _apply_zone_visibility(zone_id: String) -> void:
 	var in_overworld := (zone_id == "" or zone_id == "village" or zone_id == "city")

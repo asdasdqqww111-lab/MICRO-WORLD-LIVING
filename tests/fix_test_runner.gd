@@ -71,6 +71,7 @@ func _run_all() -> void:
 	await _test_p11_logic()
 	await _test_p12_nav()
 	await _test_p13_ruins()
+	await _test_p14_fog()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -1076,6 +1077,58 @@ func _test_p13_ruins() -> void:
 	# the crypt entrance (main-quest destination) is present
 	_check(_find_named(world, "DungeonStairs") != null and _find_named(world, "DungeonArch") != null,
 		"the dungeon/crypt entrance is built")
+
+
+func _test_p14_fog() -> void:
+	_section("Problem 14 - AdvancedCinematicFog (cinematic volumetric fog)")
+
+	var fog := _find_named(world, "AdvancedCinematicFog") as AdvancedCinematicFog
+	_check(fog != null, "AdvancedCinematicFog node exists as child of World")
+
+	if fog == null:
+		return
+
+	var env_node := fog.world_environment
+	_check(env_node != null and env_node.environment != null, "fog drives the shared WorldEnvironment")
+
+	var env := env_node.environment
+	_check(env.fog_enabled, "fog is enabled on the environment")
+	_check(env.volumetric_fog_enabled, "volumetric fog is enabled")
+
+	# No black screen: density and colour must be applied on the first frames.
+	_check(env.fog_density > 0.0, "fog density set on first frame (no black screen)")
+	_check(env.fog_light_color != Color(0, 0, 0), "fog colour set on first frame")
+
+	# Area3D biome triggers
+	_check(_find_named(world, "FogTrigger_Forest") != null, "forest Area3D trigger exists")
+	_check(_find_named(world, "FogTrigger_Tower") != null, "tower Area3D trigger exists")
+
+	# Zone transition tweens the fog to the forest values. Tweens advance on
+	# real time, so wait with a timer (not frame counts) for determinism.
+	var before_density: float = env.fog_density
+	fog.trigger_zone_transition("forest")
+	await _frames(1)
+	_check(env.fog_density != before_density, "forest transition starts tweening density")
+	await get_tree().create_timer(fog.transition_duration + 0.5).timeout
+	var forest_density: float = fog.zone_densities.get(AdvancedCinematicFog.ZoneType.FOREST)
+	_check(absf(env.fog_density - forest_density) < 0.005, "fog reached forest density after tween")
+	var forest_color: Color = fog.zone_colors.get(AdvancedCinematicFog.ZoneType.FOREST)
+	var col_diff := absf(env.fog_light_color.r - forest_color.r) \
+		+ absf(env.fog_light_color.g - forest_color.g) \
+		+ absf(env.fog_light_color.b - forest_color.b)
+	_check(col_diff < 0.06, "fog reached forest colour after tween")
+
+	# Return to overworld
+	fog.trigger_zone_transition("overworld")
+	await get_tree().create_timer(fog.transition_duration + 0.5).timeout
+	var ow_density: float = fog.zone_densities.get(AdvancedCinematicFog.ZoneType.OVERWORLD)
+	_check(absf(env.fog_density - ow_density) < 0.005, "fog returned to overworld density")
+
+	# Dungeon via the zone event path (player.set_zone emits EventBus.zone_entered)
+	fog._on_zone_entered("dungeon")
+	await get_tree().create_timer(fog.transition_duration + 0.5).timeout
+	var dg_density: float = fog.zone_densities.get(AdvancedCinematicFog.ZoneType.DUNGEON)
+	_check(absf(env.fog_density - dg_density) < 0.005, "dungeon zone event transitions fog")
 
 
 func _find_named(root: Node, name: String) -> Node:
