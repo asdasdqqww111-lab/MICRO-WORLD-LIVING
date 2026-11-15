@@ -1,15 +1,15 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.4.1-stable (official) stable
 rendering method: mobile
-run at: 2026-11-15T00:31:51
+run at: 2026-11-15T02:26:44
 checks passed: 215
 checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 7.0
+  fps: 6.0
   draw calls: 0
   triangles: 0
-  nodes: 2529
+  nodes: 2545
 
 checks:
 
@@ -177,7 +177,7 @@ PASS  Eldoria landmarks built (20)
 PASS  village NPCs exist
 PASS  Adventurers Guild NPCs (Elena & Grandmaster Aldric) exist
 PASS  wildlife, monsters & crypt boss spawned (23)
-PASS  MultiMesh biome instancing is real (21 batches, 0 broken)
+PASS  MultiMesh biome instancing is real (37 batches, 0 broken)
 PASS  player Knight character model instantiated
 PASS  animation states resolved from KayKit rig clips
 PASS  player lands on the ground
@@ -230,7 +230,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.4)
+PASS  skeleton takes damage (46.0 -> 32.0)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective

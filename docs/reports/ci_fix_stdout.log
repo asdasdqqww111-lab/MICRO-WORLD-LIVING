@@ -166,7 +166,7 @@ PASS  a floating damage number is visible after a hit (3)
 PASS  forest tree multimesh 'ValleyStylizedPines' has 36 instances
 PASS  forest tree multimesh 'ForestOaks' has 10 instances
 PASS  forest tree multimesh 'LakesideBirches' has 4 instances
-PASS  forest tree multimesh 'CityGardenTrees' has 7 instances
+PASS  city garden tree multimesh exists (7 trees)
 PASS  forest plants a real tree population (57 trees)
 PASS  forest trunk collider body exists
 PASS  forest trunk collider carries a solid shape
@@ -194,7 +194,7 @@ PASS  settings screen exists and refreshes
 PASS  the game can be saved
 PASS  the save file exists
 PASS  the game can be loaded
-PASS  loading returns the player to the last saved place ((-28.92046, 0.001735, 17.21567))
+PASS  loading returns the player to the last saved place ((-28.91438, 0.136918, 17.22343))
 == Problem 13 - ruins, walls & gates outside the city
 PASS  outer landmarks built (8/8)
 PASS  the city wall ring mesh exists

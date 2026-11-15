@@ -1,39 +1,64 @@
+MICRO WORLD: LIVING — Polished Stylized/Chibi PBR Mobile Vulkan Probe
+engine: 4.4.1-stable (official)
+rendering method: mobile
+video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
+driver: 1.4.335
+run at: 2026-11-15T02:26:58
+
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
+
 Zone 1 · Eldoria Village Square & Guild Exterior
-  3D draw calls:    97  [OK]
-  total draw calls: 151  [OK]
+  3D draw calls:    85  [OK]
+  total draw calls: 139  [OK]
   triangles (max):  158117  [OK]
-  objects:          301
+  objects:          289
+  static memory:    191.1 MB
+  fps (min, this driver): 1.0
+  creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    107  [OK]
-  total draw calls: 159  [OK]
-  triangles (max):  173539  [OK]
-  objects:          193
+  3D draw calls:    88  [OK]
+  total draw calls: 140  [OK]
+  triangles (max):  173487  [OK]
+  objects:          174
+  static memory:    199.5 MB
+  fps (min, this driver): 2.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    17  [OK]
-  total draw calls: 69  [OK]
-  triangles (max):  48511  [OK]
-  objects:          105
+  3D draw calls:    33  [OK]
+  total draw calls: 85  [OK]
+  triangles (max):  59923  [OK]
+  objects:          121
+  static memory:    199.4 MB
+  fps (min, this driver): 1.0
 Zone 4 · River, Stone Bridge & Crystal Lake
-  3D draw calls:    42  [OK]
-  total draw calls: 94  [OK]
+  3D draw calls:    41  [OK]
+  total draw calls: 93  [OK]
   triangles (max):  97285  [OK]
-  objects:          125
+  objects:          124
+  static memory:    199.5 MB
+  fps (min, this driver): 3.0
 Zone 5 · Adventurers Guild Grand Hall Interior
-  3D draw calls:    53  [OK]
-  total draw calls: 105  [OK]
+  3D draw calls:    51  [OK]
+  total draw calls: 103  [OK]
   triangles (max):  47705  [OK]
-  objects:          139
+  objects:          137
+  static memory:    199.6 MB
+  fps (min, this driver): 2.0
 Zone 6 · Hero Cottage Interior
   3D draw calls:    15  [OK]
   total draw calls: 70  [OK]
   triangles (max):  12721  [OK]
   objects:          123
+  static memory:    199.8 MB
+  fps (min, this driver): 3.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  3D draw calls:    58  [OK]
-  total draw calls: 115  [OK]
+  3D draw calls:    52  [OK]
+  total draw calls: 109  [OK]
   triangles (max):  71465  [OK]
-  objects:          165
+  objects:          159
+  static memory:    200.0 MB
+  fps (min, this driver): 3.0
+
+UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
   all UI visible           total   69 | 3D (visible+shadow)   14 | objects  122
   touch controls hidden    total   39 | 3D (visible+shadow)   14 | objects   65
   HUD hidden               total   45 | 3D (visible+shadow)   14 | objects   72
@@ -41,24 +66,6 @@ Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
   entire UI layer hidden   total   15 | 3D (visible+shadow)   14 | objects   15
   => touch controls: 30 draw calls
   => HUD:            24 draw calls
-  => other UI nodes: 0 draw calls
-  => non-UI (3D):    15 draw calls
-  HUD per panel (touch hidden, HUD total 24):
-  HUD vitals panel (StatsGlassPanel)     12 draw calls
-  HUD quest tracker                    not visible
-  HUD top-centre action dock              2 draw calls
-  HUD minimap                             4 draw calls
-  HUD clock + weather pill                3 draw calls
-  HUD city district pill                  2 draw calls
-  HUD notifications                       0 draw calls
---- running structural audit ---
-  MeshInstance3D:       572
-  MultiMeshInstance3D:  37 (batches) / 1479 instances
-  GPUParticles3D:       2
-  omni lights:          24
-  shadow casting dir:   1
---- structural audit done ---
-D:            24 draw calls
   => other UI nodes: 0 draw calls
   => non-UI (3D):    15 draw calls
   HUD per panel (touch hidden, HUD total 24):
