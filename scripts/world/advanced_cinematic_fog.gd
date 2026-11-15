@@ -145,7 +145,10 @@ func apply_fog_settings(zone: ZoneType, duration: float) -> void:
 
 	var env: Environment = world_environment.environment
 	env.fog_enabled = true
-	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
+	# Match the depth-fog mode the WorldRoot configured (Phase 1 lighting).
+	# Changing it to exponential would break the depth-fog depth range that
+	# the rest of the art direction relies on.
+	env.fog_mode = Environment.FOG_MODE_DEPTH
 
 	var target_density: float = zone_densities.get(zone, 0.02)
 	var target_color: Color = zone_colors.get(zone, Color(0.1, 0.1, 0.15))
