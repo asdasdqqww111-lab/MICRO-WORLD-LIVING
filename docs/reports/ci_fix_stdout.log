@@ -2,6 +2,12 @@ Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
 WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
      at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
+WARNING: Volumetric fog can only be enabled when using the Forward+ renderer.
+     at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:344)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
 == Problem 1 - villagers: pose, behaviour, size
 PASS  hero is about 1.3 m tall (capsule 1.30 m, model scale 0.56)
 PASS  18 villagers live in the town
@@ -194,6 +200,10 @@ PASS  settings screen exists and refreshes
 PASS  the game can be saved
 PASS  the save file exists
 PASS  the game can be loaded
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
 PASS  loading returns the player to the last saved place ((-28.91438, 0.136918, 17.22343))
 == Problem 13 - ruins, walls & gates outside the city
 PASS  outer landmarks built (8/8)
@@ -203,9 +213,21 @@ PASS  the wall has solid colliders (23)
 PASS  the gate towers exist
 PASS  valley perimeter walls built (4/4)
 PASS  the dungeon/crypt entrance is built
-checks passed: 177
+== Problem 14 - AdvancedCinematicFog (cinematic volumetric fog)
+PASS  AdvancedCinematicFog node exists as child of World
+PASS  fog drives the shared WorldEnvironment
+PASS  fog is enabled on the environment
+PASS  volumetric fog is enabled
+PASS  fog density set on first frame (no black screen)
+PASS  fog colour set on first frame
+PASS  forest Area3D trigger exists
+PASS  tower Area3D trigger exists
+PASS  forest transition starts tweening density
+PASS  fog reached forest density after tween
+PASS  fog reached forest colour after tween
+PASS  fog returned to overworld density
+PASS  dungeon zone event transitions fog
+checks passed: 190
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 4 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)

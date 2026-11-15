@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 177
+checks passed: 190
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -11,7 +11,7 @@ PASS  every villager turns to face the hero:
 PASS  every villager greets the hero out loud: 
 PASS  villagers are solid for the hero
 PASS  walking straight at a villager does not pass through them
-PASS  villagers go about their day (15 of 18 moved)
+PASS  villagers go about their day (17 of 18 moved)
 PASS  no villager is standing inside a building: 
 PASS  at night villagers walk home and go indoors (5 did)
 PASS  quest givers, guards and shopkeepers stay available at night
@@ -204,3 +204,18 @@ PASS  the wall has solid colliders (23)
 PASS  the gate towers exist
 PASS  valley perimeter walls built (4/4)
 PASS  the dungeon/crypt entrance is built
+
+== Problem 14 - AdvancedCinematicFog (cinematic volumetric fog)
+PASS  AdvancedCinematicFog node exists as child of World
+PASS  fog drives the shared WorldEnvironment
+PASS  fog is enabled on the environment
+PASS  volumetric fog is enabled
+PASS  fog density set on first frame (no black screen)
+PASS  fog colour set on first frame
+PASS  forest Area3D trigger exists
+PASS  tower Area3D trigger exists
+PASS  forest transition starts tweening density
+PASS  fog reached forest density after tween
+PASS  fog reached forest colour after tween
+PASS  fog returned to overworld density
+PASS  dungeon zone event transitions fog

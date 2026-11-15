@@ -19,6 +19,12 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [shot] 01_main_menu -> res://docs/screenshots/01_main_menu.png (ok)
 WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
      at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
+WARNING: Volumetric fog can only be enabled when using the Forward+ renderer.
+     at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:344)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
 [shot] 00_reference_stylized_hud -> res://docs/screenshots/00_reference_stylized_hud.png (ok)
 [shot] 02_village_square -> res://docs/screenshots/02_village_square.png (ok)
 [shot] 03_guild_exterior -> res://docs/screenshots/03_guild_exterior.png (ok)
@@ -38,5 +44,3 @@ WARNING: Target object freed before starting, aborting Tweener.
 [shot] all 14 screenshots captured successfully
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 2 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)

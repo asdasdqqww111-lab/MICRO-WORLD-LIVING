@@ -36,6 +36,12 @@ PASS  Floor23 belongs to magical_forest region
 PASS  Floor nodes freed after free()
 WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
      at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
+WARNING: Volumetric fog can only be enabled when using the Forward+ renderer.
+     at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:344)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
 PASS  Manager built the overworld gate portal
 PASS  Manager gate is an Interactable
 PASS  Floor 1 unlocked from the start

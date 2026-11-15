@@ -140,6 +140,12 @@ PASS  newer schema version is refused
 WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
      at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)
 PASS  game.tscn loads
+WARNING: Volumetric fog can only be enabled when using the Forward+ renderer.
+     at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:344)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
 PASS  world root created
 PASS  player created
 PASS  ui root created
@@ -202,7 +208,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 25.6)
+PASS  skeleton takes damage (46.0 -> 33.3)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -220,6 +226,10 @@ PASS  Royal Capital City & Guild populated with 24 >= 24 living NPCs
 PASS  scene state saves
 PASS  dead creatures recorded (3)
 PASS  scene state reloads
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:466)
 PASS  dead creatures stay dead after reload (20 alive vs 23 before)
 PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
@@ -229,5 +239,3 @@ PASS  save/load survives 10 rounds
 === 215 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 8 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)
