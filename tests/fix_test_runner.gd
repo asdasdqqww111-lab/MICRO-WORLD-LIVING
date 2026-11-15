@@ -1130,6 +1130,25 @@ func _test_p14_fog() -> void:
 	var dg_density: float = fog.zone_densities.get(AdvancedCinematicFog.ZoneType.DUNGEON)
 	_check(absf(env.fog_density - dg_density) < 0.005, "dungeon zone event transitions fog")
 
+	# Regression: _apply_zone_visibility("tower") must NOT disable the cinematic
+	# fog. Previously the `elif not in_overworld:` branch turned fog_enabled
+	# off for "tower", so fog vanished inside the tower even though
+	# AdvancedCinematicFog kept tweening. Tower is an open-air vertical zone.
+	fog._on_zone_entered("overworld")
+	await get_tree().create_timer(fog.transition_duration + 0.5).timeout
+	var world_env: Environment = world.environment
+	_check(world_env != null, "world exposes its environment for the regression check")
+	if world_env != null:
+		world._apply_zone_visibility("tower")
+		_check(world_env.fog_enabled, "REGRESSION: _apply_zone_visibility(tower) keeps fog enabled")
+		world._apply_zone_visibility("boss")
+		_check(world_env.fog_enabled, "REGRESSION: _apply_zone_visibility(boss) keeps fog enabled")
+		# Enclosed interiors still disable fog.
+		world._apply_zone_visibility("house")
+		_check(not world_env.fog_enabled, "interior zone still disables fog")
+		world._apply_zone_visibility("dungeon")
+		_check(not world_env.fog_enabled, "dungeon zone still disables fog")
+
 
 func _find_named(root: Node, name: String) -> Node:
 	if root.name == name:

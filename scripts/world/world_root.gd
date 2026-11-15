@@ -240,16 +240,20 @@ func _setup_cinematic_fog() -> void:
 		fog.trigger_zone_transition("forest"))
 
 func _apply_zone_visibility(zone_id: String) -> void:
+	# Tower & boss arena are open-air vertical zones: keep the cinematic fog
+	# enabled there (AdvancedCinematicFog drives it). Only true enclosed
+	# interiors (house/guild) and the crypt disable fog.
+	var is_open_vertical := (zone_id == "tower" or zone_id == "boss")
 	var in_overworld := (zone_id == "" or zone_id == "village" or zone_id == "city")
 	if overworld_root != null:
 		overworld_root.visible = in_overworld
 	if clouds != null:
 		clouds.visible = false
 	if sun != null:
-		sun.visible = in_overworld
-		sun.shadow_enabled = in_overworld and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
+		sun.visible = in_overworld or is_open_vertical
+		sun.shadow_enabled = (in_overworld or is_open_vertical) and SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	if moon != null:
-		moon.visible = in_overworld
+		moon.visible = in_overworld or is_open_vertical
 	if environment != null:
 		if zone_id == "dungeon":
 			environment.background_mode = Environment.BG_COLOR
@@ -258,6 +262,13 @@ func _apply_zone_visibility(zone_id: String) -> void:
 			environment.ambient_light_color = Color(0.24, 0.22, 0.30)
 			environment.ambient_light_energy = 0.78
 			environment.fog_enabled = false
+		elif is_open_vertical:
+			# Tower/boss: sky-lit open air, fog stays on so the cinematic
+			# atmosphere and distant-cull boundaries stay hidden.
+			environment.background_mode = Environment.BG_SKY
+			environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+			environment.ambient_light_energy = 0.5
+			environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 		elif not in_overworld:
 			# Rooms are lit by their own fires and lamps; the ambient term only
 			# keeps the corners from going black.
@@ -274,8 +285,8 @@ func _apply_zone_visibility(zone_id: String) -> void:
 			environment.ambient_light_energy = 0.56
 			environment.fog_enabled = SettingsManager.graphics_preset != SettingsManager.GraphicsPreset.LOW
 	if day_night != null:
-		day_night.outdoors = in_overworld
-		if in_overworld:
+		day_night.outdoors = in_overworld or is_open_vertical
+		if in_overworld or is_open_vertical:
 			day_night.apply_now()
 	InteriorKit.apply_daylight(get_tree(), GameManager.world.hour_float())
 	if house_root != null:
