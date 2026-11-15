@@ -162,6 +162,64 @@ static func build_multimesh(parent: Node3D, mesh_path: String, transforms: Array
 	parent.add_child(instance)
 	return instance
 
+## Builds a MultiMesh split into four bearing quadrants, each quadrant placed at
+## its own centroid so visibility_range_end can cull distant quadrants. A single
+## MultiMesh at the parent origin would measure distance from the world centre and
+## never cull, because the camera sits near the centre of these prop clusters.
+static func _build_quadrant_multimesh(parent: Node3D, mesh_path: String, transforms: Array,
+		node_name: String, centroid: Vector3, cast_shadow: bool = true, vis_end: float = 0.0) -> void:
+	if transforms.is_empty():
+		return
+	var mesh := AssetLibrary.first_mesh(mesh_path)
+	if mesh == null:
+		return
+	var quads: Array = [[], [], [], []]
+	for t: Transform3D in transforms:
+		var pos := t.origin - centroid
+		var angle := atan2(pos.x, -pos.z)
+		var q: int = int(((angle + PI) / TAU) * 4.0) % 4
+		quads[q].append(t)
+	for q: int in 4:
+		if quads[q].is_empty():
+			continue
+		var qc := Vector3.ZERO
+		for t: Transform3D in quads[q]:
+			qc += t.origin
+		qc /= float(quads[q].size())
+		_build_positioned_multimesh(parent, mesh_path, quads[q],
+			"%s_Q%d" % [node_name, q], qc, cast_shadow, vis_end)
+
+## Like build_multimesh, but the node is positioned at `centroid` so that
+## visibility_range_end culls by distance to the geometry cluster rather than
+## to the world origin. Instance transforms are absolute world transforms; they
+## are converted to local (relative to the centroid) before being set.
+static func _build_positioned_multimesh(parent: Node3D, mesh_path: String, transforms: Array,
+		node_name: String, centroid: Vector3, cast_shadow: bool = true, vis_end: float = 0.0) -> MultiMeshInstance3D:
+	if transforms.is_empty():
+		return null
+	var mesh := AssetLibrary.first_mesh(mesh_path)
+	if mesh == null:
+		return null
+	var multimesh := MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	multimesh.mesh = mesh
+	multimesh.instance_count = transforms.size()
+	for i: int in transforms.size():
+		var t := transforms[i] as Transform3D
+		multimesh.set_instance_transform(i, t * Transform3D.IDENTITY.translated(-centroid))
+	var instance := MultiMeshInstance3D.new()
+	instance.name = node_name
+	instance.multimesh = multimesh
+	instance.global_transform = Transform3D.IDENTITY.translated(centroid)
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if cast_shadow \
+		else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if vis_end > 0.0:
+		instance.visibility_range_end = vis_end
+		instance.visibility_range_end_margin = 0.0
+		instance.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	parent.add_child(instance)
+	return instance
+
 # --- 1. Eldoria Village & Outer Landmarks ------------------------------------
 
 static func build_city(parent: Node3D, terrain: Terrain = null) -> Dictionary:
@@ -334,30 +392,64 @@ static func _build_city_walls(parent: Node3D) -> void:
 		cs.position = pos + Vector3(0.0, wall_height * 0.5, 0.0)
 		cs.rotation.y = yaw
 		body.add_child(cs)
-	build_multimesh(parent, hex + "wall_straight.gltf", wall_xforms, "RoyalCityWalls", true, 150.0)
+	# The wall ring is split into four quadrant MultiMeshes, each positioned at
+	# its own centroid, so visibility_range_end can cull the distant quadrants
+	# from the village while keeping the near wall drawn. One shared mesh at the
+	# world origin would cull all-or-nothing and never save triangles.
+	var quad_count := 4
+	var quad_size := CityPlan.WALL_SEGMENTS / quad_count
+	for q: int in quad_count:
+		var quad_xforms: Array = []
+		var quad_pos: Vector3 = Vector3.ZERO
+		var quad_count_segs := 0
+		for i: int in CityPlan.WALL_SEGMENTS:
+			if CityPlan.is_gate_segment(i):
+				continue
+			if i < q * quad_size or i >= (q + 1) * quad_size:
+				continue
+			var bearing2 := float(i) * 360.0 / float(CityPlan.WALL_SEGMENTS)
+			var pos2 := CityPlan.bearing_point(bearing2, apothem)
+			var yaw2 := -deg_to_rad(bearing2)
+			quad_xforms.append(Transform3D(Basis(Vector3.UP, yaw2).scaled(Vector3.ONE * wall_scale), pos2))
+			quad_pos += pos2
+			quad_count_segs += 1
+		if quad_xforms.is_empty():
+			continue
+		quad_pos /= float(quad_count_segs)
+		_build_positioned_multimesh(parent, hex + "wall_straight.gltf", quad_xforms,
+			"RoyalCityWalls_Q%d" % q, quad_pos, false, 40.0)
 
 	# Gate towers: two per gate, flanking a 5.6 m wide opening on the avenue.
 	var tower_scale := 4.6
 	var tower_size := Vector3(1.00, 2.19, 1.15) * tower_scale
 	var tower_shape := BoxShape3D.new()
 	tower_shape.size = Vector3(tower_size.x * 0.94, tower_size.y, tower_size.z * 0.94)
-	var tower_xforms: Array = []
-	var offset := CityPlan.GATE_HALF_OPENING + tower_size.x * 0.5
+	var tower_offset := CityPlan.GATE_HALF_OPENING + tower_size.x * 0.5
 	for g: int in CityPlan.GATE_BEARINGS.size():
 		var b := deg_to_rad(float(CityPlan.GATE_BEARINGS[g]))
 		var centre := CityPlan.gate_position(g)
 		var tangent := Vector3(cos(b), 0.0, sin(b))
 		var outward := Vector3(sin(b), 0.0, -cos(b))
 		var tower_yaw := atan2(outward.x, outward.z)
+		var gate_xforms: Array = []
+		var gate_centre := Vector3.ZERO
+		var gate_count := 0
 		for side: float in [-1.0, 1.0]:
-			var tpos := centre + tangent * (offset * side)
-			tower_xforms.append(Transform3D(Basis(Vector3.UP, tower_yaw).scaled(Vector3.ONE * tower_scale), tpos))
+			var tpos := centre + tangent * (tower_offset * side)
+			gate_xforms.append(Transform3D(Basis(Vector3.UP, tower_yaw).scaled(Vector3.ONE * tower_scale), tpos))
+			gate_centre += tpos
+			gate_count += 1
 			var tcs := CollisionShape3D.new()
 			tcs.shape = tower_shape
 			tcs.position = tpos + Vector3(0.0, tower_size.y * 0.5, 0.0)
 			tcs.rotation.y = tower_yaw
 			body.add_child(tcs)
-	build_multimesh(parent, hex + "building_tower_A_green.gltf", tower_xforms, "RoyalGateTowers", true, 150.0)
+		gate_centre /= float(gate_count)
+		# Each gate's two towers form their own cluster positioned at the gate,
+		# so visibility_range_end culls the distant gates from the village while
+		# the nearest gate still draws when you approach it.
+		_build_positioned_multimesh(parent, hex + "building_tower_A_green.gltf", gate_xforms,
+			"RoyalGateTowers_G%d" % g, gate_centre, false, 24.0)
 
 ## Street furniture, garden trees, farm plots and yard props. Everything is
 ## either on a pavement edge or inside a garden rectangle from CityPlan.
@@ -380,25 +472,33 @@ static func _build_city_furniture(parent: Node3D) -> void:
 		Vector3(e, 0.0, 25.6), Vector3(-e, 0.0, 32.0),
 	]
 	var lantern_xforms: Array = []
+	var lantern_centroid := Vector3.ZERO
 	for lp: Vector3 in lantern_spots:
 		lantern_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.80), lp))
-	build_multimesh(parent, park + "street_lantern.gltf", lantern_xforms, "CityStreetLanternPosts", false, 64.0)
+		lantern_centroid += lp
+	lantern_centroid /= float(lantern_spots.size())
+	_build_quadrant_multimesh(parent, park + "street_lantern.gltf", lantern_xforms, "CityStreetLanternPosts", lantern_centroid, false, 26.0)
 	for i: int in mini(6, lantern_spots.size()):
 		_build_street_lantern_light_only(parent, lantern_spots[i])
 
 	# Benches around the fountain, facing it.
 	var bench_xforms: Array = []
+	var bench_centroid := Vector3.ZERO
 	for i: int in 4:
 		var ang := deg_to_rad(45.0 + 90.0 * float(i))
 		var bp := Vector3(cos(ang), 0.0, sin(ang)) * (CityPlan.PLAZA_RADIUS - 1.5)
 		bench_xforms.append(Transform3D(Basis(Vector3.UP, atan2(-bp.x, -bp.z)).scaled(Vector3.ONE * 0.9), bp))
-	build_multimesh(parent, park + "bench.gltf", bench_xforms, "RoyalCityBenches", false, 48.0)
+		bench_centroid += bp
+	bench_centroid /= 4.0
+	_build_quadrant_multimesh(parent, park + "bench.gltf", bench_xforms, "RoyalCityBenches", bench_centroid, false, 24.0)
 
 	# Royal banners: citadel forecourt and the town side of every gate.
 	var flag_xforms: Array = []
 	var flag_scale := AssetLibrary.SCALE_PROP * 1.18
+	var flag_centroid := Vector3.ZERO
 	for fp: Vector3 in [Vector3(-5.6, 0.0, -11.6), Vector3(5.6, 0.0, -11.6)]:
 		flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * flag_scale), fp))
+		flag_centroid += fp
 	for g: int in CityPlan.GATE_BEARINGS.size():
 		var b := deg_to_rad(float(CityPlan.GATE_BEARINGS[g]))
 		var inward := Vector3(-sin(b), 0.0, cos(b))
@@ -406,7 +506,9 @@ static func _build_city_furniture(parent: Node3D) -> void:
 		for side: float in [-1.0, 1.0]:
 			var fpos := CityPlan.gate_position(g) + inward * 3.6 + tangent * (3.5 * side)
 			flag_xforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * flag_scale), fpos))
-	build_multimesh(parent, hex + "flag_blue.gltf", flag_xforms, "CityRoyalBanners", false, 64.0)
+			flag_centroid += fpos
+	flag_centroid /= float(flag_xforms.size())
+	_build_quadrant_multimesh(parent, hex + "flag_blue.gltf", flag_xforms, "CityRoyalBanners", flag_centroid, false, 30.0)
 
 	# Garden trees (Royal Garden, chapel herb garden, training yard).
 	var tree_spots := [
@@ -415,6 +517,7 @@ static func _build_city_furniture(parent: Node3D) -> void:
 		Vector3(17.2, 1.8, 26.6),
 	]
 	var tree_xforms: Array = []
+	var tree_centroid := Vector3.ZERO
 	var trunks := StaticBody3D.new()
 	trunks.name = "CityGardenTrunks"
 	trunks.collision_layer = 1
@@ -426,11 +529,13 @@ static func _build_city_furniture(parent: Node3D) -> void:
 	for ts: Vector3 in tree_spots:
 		var tpos := Vector3(ts.x, 0.0, ts.z)
 		tree_xforms.append(Transform3D(Basis(Vector3.UP, ts.x * 0.7).scaled(Vector3.ONE * ts.y), tpos))
+		tree_centroid += tpos
 		var tc := CollisionShape3D.new()
 		tc.shape = trunk_shape
 		tc.position = tpos + Vector3(0.0, 1.5, 0.0)
 		trunks.add_child(tc)
-	build_multimesh(parent, park + "tree.gltf", tree_xforms, "CityGardenTrees", true, 70.0)
+	tree_centroid /= float(tree_spots.size())
+	_build_quadrant_multimesh(parent, park + "tree.gltf", tree_xforms, "CityGardenTrees", tree_centroid, false, 34.0)
 
 	# Farm plots behind the south-west houses, next to the windmill.
 	var wheat_xforms: Array = []

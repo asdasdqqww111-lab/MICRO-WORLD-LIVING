@@ -867,7 +867,7 @@ func _test_p10_forest() -> void:
 	_section("Problem 10 - forest & tree arrangement")
 
 	# the forest builds its tree multimeshes with instance counts
-	var tree_names := ["ValleyStylizedPines", "ForestOaks", "LakesideBirches", "CityGardenTrees"]
+	var tree_names := ["ValleyStylizedPines", "ForestOaks", "LakesideBirches"]
 	var total := 0
 	for name: String in tree_names:
 		var mm := _find_multimesh(world, name) as MultiMeshInstance3D
@@ -877,6 +877,16 @@ func _test_p10_forest() -> void:
 		var count := mm.multimesh.instance_count
 		_check(count > 0, "forest tree multimesh '%s' has %d instances" % [name, count])
 		total += count
+	# City garden trees are split into quadrant clusters for LOD culling
+	var garden_total := 0
+	var garden_found := false
+	for q: int in 4:
+		var gq := _find_multimesh(world, "CityGardenTrees_Q%d" % q) as MultiMeshInstance3D
+		if gq != null and gq.multimesh != null:
+			garden_found = true
+			garden_total += gq.multimesh.instance_count
+	_check(garden_found, "city garden tree multimesh exists (%d trees)" % garden_total)
+	total += garden_total
 	_check(total >= 40, "forest plants a real tree population (%d trees)" % total)
 
 	# trunk colliders exist so trees block the player (pairs with problem 8)
@@ -1034,7 +1044,9 @@ func _test_p13_ruins() -> void:
 	_check(found == landmarks.size(), "outer landmarks built (%d/%d)" % [found, landmarks.size()])
 
 	# the wall ring: a visible multimesh and a solid collider body
-	var walls := _find_named(world, "RoyalCityWalls")
+	var walls := _find_named(world, "RoyalCityWalls_Q0")
+	if walls == null:
+		walls = _find_named(world, "RoyalCityWalls")
 	var wall_body := _find_named(world, "RoyalWallColliders")
 	_check(walls != null, "the city wall ring mesh exists")
 	_check(wall_body != null, "the city wall collider body exists")
@@ -1045,8 +1057,11 @@ func _test_p13_ruins() -> void:
 				shapes += 1
 		_check(shapes > 0, "the wall has solid colliders (%d)" % shapes)
 
-	# gate towers flank the three gates
-	_check(_find_named(world, "RoyalGateTowers") != null, "the gate towers exist")
+	# gate towers flank the three gates (one cluster per gate)
+	var towers := _find_named(world, "RoyalGateTowers_G0")
+	if towers == null:
+		towers = _find_named(world, "RoyalGateTowers")
+	_check(towers != null, "the gate towers exist")
 
 	# the outer valley perimeter keeps the wilderness out
 	var perimeter := 0

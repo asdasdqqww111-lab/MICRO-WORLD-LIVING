@@ -19,7 +19,7 @@ extends Interactable
 const SPEED := 1.3
 ## Characters are drawn up to this distance from the camera and animated a
 ## little further out, so nobody is seen frozen.
-const DRAW_DISTANCE := 22.0
+const DRAW_DISTANCE := 16.0
 const ANIMATE_DISTANCE := 27.0
 ## Obstacle probing runs at 5 Hz, not every frame.
 const STEER_INTERVAL := 0.2

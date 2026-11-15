@@ -19,7 +19,7 @@ const VILLAGE_RADIUS := CITY_RADIUS
 const VILLAGE_BLEND := CITY_BLEND
 
 @export var size: float = 240.0
-@export var subdivisions: int = 60
+@export var subdivisions: int = 34
 @export var max_height: float = 23.0
 @export var world_seed: int = 1337
 
