@@ -69,6 +69,7 @@ func _run_all() -> void:
 	await _test_p9_design()
 	await _test_p10_forest()
 	await _test_p11_logic()
+	await _test_p12_nav()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -956,6 +957,64 @@ func _test_p11_logic() -> void:
 	fresh.add_reputation(int(req.get("rep", 0)))
 	fresh.contracts_completed = int(req.get("contracts", 0))
 	_check(fresh.can_promote(1), "guild promotion unlocks once reputation & contracts are met")
+
+
+# --- Problem 12: navigation, screens, settings, save & return-to-place -----
+
+func _test_p12_nav() -> void:
+	_section("Problem 12 - navigation, screens, settings, save & return-to-place")
+
+	# navigation: teleport moves the player
+	var start := player.global_position
+	player.teleport(Vector3(12.0, start.y, -14.0))
+	await _physics(1)
+	_check(absf(player.global_position.x - 12.0) < 0.5 and absf(player.global_position.z - (-14.0)) < 0.5,
+		"teleport moves the player to the target position")
+
+	# navigation: movement (move_and_slide) displaces the player
+	player.velocity = Vector3(5.0, 0.0, 0.0)
+	var pre_x := player.global_position.x
+	for i in 10:
+		player.move_and_slide()
+		await _physics(1)
+	player.velocity = Vector3.ZERO
+	_check(player.global_position.x > pre_x + 0.1, "movement displaces the player (%.2f -> %.2f)" % [pre_x, player.global_position.x])
+
+	# every menu screen opens and closes
+	var screen_names := ["inventory", "skills", "guild", "crafting", "map", "journal", "character", "shop", "pause"]
+	var opened := 0
+	for name: String in screen_names:
+		ui.open_screen(name)
+		await _frames(1)
+		if ui.current_screen != null and ui.current_screen.visible:
+			opened += 1
+		ui.close_current_screen()
+		await _frames(1)
+	_check(opened == screen_names.size(), "all %d menu screens open (%d)" % [screen_names.size(), opened])
+
+	# the settings screen (pause menu) exists and refreshes
+	_check(ui.pause_menu != null and ui.pause_menu.has_method("refresh"), "settings screen exists and refreshes")
+
+	# save & return to last place: save position, reload, verify restoration
+	player.set_zone("village")
+	player.global_position = Vector3(-30.0, player.global_position.y, 18.0)
+	player.rotation.y = 1.2
+	await _physics(6)
+	var saved_pos := player.global_position
+	_check(SaveManager.save_game(SaveManager.DEFAULT_SLOT), "the game can be saved")
+	_check(SaveManager.has_save(SaveManager.DEFAULT_SLOT), "the save file exists")
+	_check(SaveManager.load_game(SaveManager.DEFAULT_SLOT), "the game can be loaded")
+
+	# a fresh game scene restores the saved position on _ready
+	var old := game
+	old.queue_free()
+	await _frames(2)
+	game = (load("res://scenes/game/game.tscn") as PackedScene).instantiate() as Game
+	add_child(game)
+	await _frames(3)
+	player = game.player
+	_check(player.global_position.distance_to(saved_pos) < 0.5 and absf(player.rotation.y - 1.2) < 0.1,
+		"loading returns the player to the last saved place (%s)" % player.global_position)
 
 
 func _find_multimesh(node: Node, name: String) -> Node:
