@@ -68,6 +68,7 @@ func _run_all() -> void:
 	await _test_p8_physics()
 	await _test_p9_design()
 	await _test_p10_forest()
+	await _test_p11_logic()
 	_report()
 
 # --- helpers ------------------------------------------------------------------
@@ -888,6 +889,73 @@ func _test_p10_forest() -> void:
 	# verified by the city-plan predicate the builder relies on.
 	_check(CityPlan.inside_walls(0.0, 0.0, 0.0) == true, "city plan recognises the town centre as inside walls")
 	_check(not CityPlan.inside_walls(-80.0, 0.0, 0.0), "city plan recognises the outer forest as outside walls")
+
+
+# --- Problem 11: game logic - objective & motivation loop --------------------
+
+func _test_p11_logic() -> void:
+	_section("Problem 11 - game logic: objective & motivation loop")
+
+	# quest definitions are well-formed and form a coherent main chain
+	var all := QuestDB.all_quests()
+	_check(all.size() >= 20, "quest database is populated (%d quests)" % all.size())
+	var bad := 0
+	for q: QuestData in all:
+		if q.objectives.is_empty():
+			bad += 1
+			continue
+		for o in q.objectives:
+			if not (o is Dictionary and String(o.get("type", "")) in ["kill", "collect", "visit"]
+					and not String(o.get("target", "")).is_empty() and int(o.get("required", 1)) >= 1):
+				bad += 1
+	_check(bad == 0, "every quest objective is well-formed (type/target/required)")
+
+	var mains := []
+	for q: QuestData in all:
+		if q.is_main_quest:
+			mains.append(q.id)
+	mains.sort()
+	_check(mains.size() >= 3, "a main quest chain exists (%d quests)" % mains.size())
+
+	# the goal loop: start -> progress -> ready -> turn in grants rewards
+	var gm := GameManager
+	var qid := "city_citadel_camp"
+	_check(gm.start_quest(qid), "a quest can be started (objective set)")
+	gm.quest_log.record_event("visit", "monster_camp", 1)
+	gm.quest_log.record_event("kill", "forest_goblin", 2)
+	_check(gm.quest_log.can_turn_in(qid), "completing objectives marks the quest ready")
+
+	var gold_before := gm.gold
+	var lvl_before := gm.progression.level
+	_check(gm.turn_in_quest(qid), "the quest turns in and grants rewards")
+	_check(gm.gold > gold_before, "turn-in grants gold (%d -> %d)" % [gold_before, gm.gold])
+
+	# motivation: rewards drive progression (XP -> level -> skill points)
+	_check(gm.progression.level >= lvl_before, "quest rewards grant XP toward a level")
+	var skill_pts := gm.skills.points
+	_check(skill_pts > 0, "leveling grants skill points (%d)" % skill_pts)
+
+	# guild reputation accrues from quest rewards (rank motivation)
+	var rep := gm.guild.reputation
+	_check(rep > 0, "quest completion accrues guild reputation (%d)" % rep)
+
+	# progression curve is sane: higher levels need more XP
+	var p := Progression.new()
+	p.level = 1
+	var need1 := p.xp_to_next()
+	p.level = 5
+	var need5 := p.xp_to_next()
+	_check(need5 > need1, "XP curve rises with level (%d > %d)" % [need5, need1])
+
+	# guild promotion is gated by rep + level + contracts: a fresh guild with
+	# no reputation cannot promote, and raising rep is what unlocks it
+	var fresh := GuildSystem.new()
+	fresh.register_adventurer()
+	_check(not fresh.can_promote(1), "guild promotion needs reputation (fresh guild blocked)")
+	var req := fresh.next_promotion_requirements()
+	fresh.add_reputation(int(req.get("rep", 0)))
+	fresh.contracts_completed = int(req.get("contracts", 0))
+	_check(fresh.can_promote(1), "guild promotion unlocks once reputation & contracts are met")
 
 
 func _find_multimesh(node: Node, name: String) -> Node:

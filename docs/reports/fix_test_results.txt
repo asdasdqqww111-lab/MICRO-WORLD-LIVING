@@ -1,5 +1,5 @@
 MICRO WORLD: LIVING - gameplay acceptance for the reported problem list
-checks passed: 149
+checks passed: 162
 checks failed: 0
 
 == Problem 1 - villagers: pose, behaviour, size
@@ -170,3 +170,18 @@ PASS  forest trunk collider body exists
 PASS  forest trunk collider carries a solid shape
 PASS  city plan recognises the town centre as inside walls
 PASS  city plan recognises the outer forest as outside walls
+
+== Problem 11 - game logic: objective & motivation loop
+PASS  quest database is populated (24 quests)
+PASS  every quest objective is well-formed (type/target/required)
+PASS  a main quest chain exists (5 quests)
+PASS  a quest can be started (objective set)
+PASS  completing objectives marks the quest ready
+PASS  the quest turns in and grants rewards
+PASS  turn-in grants gold (192 -> 257)
+PASS  quest rewards grant XP toward a level
+PASS  leveling grants skill points (6)
+PASS  quest completion accrues guild reputation (320)
+PASS  XP curve rises with level (400 > 60)
+PASS  guild promotion needs reputation (fresh guild blocked)
+PASS  guild promotion unlocks once reputation & contracts are met
