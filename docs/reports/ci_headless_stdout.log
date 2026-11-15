@@ -193,7 +193,7 @@ PASS  Stylized PBR surface material has Normal Maps & Roughness enabled
 PASS  Phase 2 & 3: Terrain Splatmap, GPU Wind Grass & Chibi Fresnel Rim Shaders present
 PASS  Phase 3: Player character uses Stylized Chibi Knight (res://assets/kaykit_adventurers/Knight.glb)
 PASS  Phase 3: CameraRig configured with FOV=55 and spring_arm=3.6
-FAIL  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
+PASS  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
 PASS  Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial
 PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 45m max distance
 PASS  graphics: viewport MSAA and 3D scale match the active preset after the world is built
@@ -208,7 +208,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.6)
+PASS  skeleton takes damage (46.0 -> 33.0)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -236,9 +236,6 @@ PASS  quest completion survives reload
 PASS  inventory survives reload
 PASS  save/load survives 10 rounds
 
-=== 214 passed, 1 failed ===
-FAILED: Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
+=== 215 passed, 0 failed ===
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 10 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)

@@ -626,6 +626,7 @@ preload_reimporting_scene: end
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
 	reimport: step 5: NotoSans-Medium.ttf
+	reimport: step 6: NotoSans-Bold.ttf
 	reimport: step 7: Cairo-Variable.ttf
 	reimport: step 8: footstep_3.ogg
 	reimport: step 10: footstep_5.ogg
@@ -639,7 +640,6 @@ preload_reimporting_scene: end
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
 	reimport: step 21: book_flip_3.ogg
-	reimport: step 22: book_flip_2.ogg
 	reimport: step 23: book_flip_1.ogg
 	reimport: step 24: belt_handle_1.ogg
 	reimport: step 25: book_open.ogg
@@ -733,6 +733,7 @@ preload_reimporting_scene: end
 	reimport: step 113: chest_gold_dungeon_texture.png
 	reimport: step 114: NotoSansArabic-Medium.ttf
 	reimport: step 115: NotoSans-Medium.ttf
+	reimport: step 116: NotoSans-Bold.ttf
 	reimport: step 117: Cairo-Variable.ttf
 	reimport: step 118: footstep_3.ogg
 	reimport: step 119: footstep_4.ogg

@@ -1,12 +1,12 @@
 MICRO WORLD: LIVING — headless test results (Eldoria Edition v2.0 — Ultra Immersion & Systems Overhaul)
 engine: 4.4.1-stable (official) stable
 rendering method: mobile
-run at: 2026-11-15T14:26:43
-checks passed: 214
-checks failed: 1
+run at: 2026-11-15T14:36:25
+checks passed: 215
+checks failed: 0
 
 renderer metrics (headless dummy driver — see perf_probe_results.txt for GLES3 numbers):
-  fps: 56.0
+  fps: 14.0
   draw calls: 0
   triangles: 0
   nodes: 2550
@@ -215,7 +215,7 @@ PASS  Stylized PBR surface material has Normal Maps & Roughness enabled
 PASS  Phase 2 & 3: Terrain Splatmap, GPU Wind Grass & Chibi Fresnel Rim Shaders present
 PASS  Phase 3: Player character uses Stylized Chibi Knight (res://assets/kaykit_adventurers/Knight.glb)
 PASS  Phase 3: CameraRig configured with FOV=55 and spring_arm=3.6
-FAIL  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
+PASS  Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
 PASS  Phase 1: Stylized Blue Sky & Soft Clouds HDRI bound in PanoramaSkyMaterial
 PASS  Phase 1: DirectionalLight3D configured with Soft Shadows (blur=2.0) & 45m max distance
 PASS  graphics: viewport MSAA and 3D scale match the active preset after the world is built
@@ -230,7 +230,7 @@ PASS  3D QuestWaypoint beacon exists in WorldRoot
 PASS  a forest skeleton exists
 PASS  Target Lock acquires nearest hostile creature
 PASS  player can swing melee combo
-PASS  skeleton takes damage (46.0 -> 32.6)
+PASS  skeleton takes damage (46.0 -> 33.0)
 PASS  skeleton aggroes when hit
 PASS  QuestWaypoint3D resolves active quest target beacon
 PASS  killing 3 skeletons completes the objective
@@ -253,6 +253,3 @@ PASS  player position restored (0.6m off)
 PASS  quest completion survives reload
 PASS  inventory survives reload
 PASS  save/load survives 10 rounds
-
-FAILURES:
-  - Phase 1: WorldEnvironment configured with ACES(1.1), Softlight Glow, Depth Fog(30..150m) & SSAO
