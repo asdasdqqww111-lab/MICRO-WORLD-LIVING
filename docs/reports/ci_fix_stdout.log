@@ -172,9 +172,23 @@ PASS  forest trunk collider body exists
 PASS  forest trunk collider carries a solid shape
 PASS  city plan recognises the town centre as inside walls
 PASS  city plan recognises the outer forest as outside walls
-checks passed: 149
+== Problem 11 - game logic: objective & motivation loop
+PASS  quest database is populated (24 quests)
+PASS  every quest objective is well-formed (type/target/required)
+PASS  a main quest chain exists (5 quests)
+PASS  a quest can be started (objective set)
+PASS  completing objectives marks the quest ready
+PASS  the quest turns in and grants rewards
+PASS  turn-in grants gold (192 -> 257)
+PASS  quest rewards grant XP toward a level
+PASS  leveling grants skill points (6)
+PASS  quest completion accrues guild reputation (320)
+PASS  XP curve rises with level (400 > 60)
+PASS  guild promotion needs reputation (fresh guild blocked)
+PASS  guild promotion unlocks once reputation & contracts are met
+checks passed: 162
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 1 resources still in use at exit (run with --verbose for details).
+ERROR: 3 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:614)

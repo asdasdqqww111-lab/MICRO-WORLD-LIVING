@@ -615,6 +615,7 @@ preload_reimporting_scene: end
 	reimport: step 2: NotoSans-Bold.ttf
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
+	reimport: step 5: NotoSans-Medium.ttf
 	reimport: step 6: NotoSans-Bold.ttf
 	reimport: step 7: Cairo-Variable.ttf
 	reimport: step 8: book_flip_2.ogg
@@ -630,7 +631,6 @@ preload_reimporting_scene: end
 	reimport: step 18: knife_slice_2.ogg
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
-	reimport: step 21: footstep_5.ogg
 	reimport: step 22: footstep_4.ogg
 	reimport: step 23: footstep_3.ogg
 	reimport: step 24: footstep_2.ogg
@@ -642,6 +642,7 @@ preload_reimporting_scene: end
 	reimport: step 30: book_flip_3.ogg
 	reimport: step 31: book_open.ogg
 	reimport: step 32: chop.ogg
+	reimport: step 33: cloth_1.ogg
 	reimport: step 34: cloth_2.ogg
 	reimport: step 35: NotoSansArabic-Medium.ttf
 	reimport: step 36: NotoSans-Medium.ttf
@@ -718,7 +719,6 @@ preload_reimporting_scene: end
 	reimport: step 107: forest_west.png
 	reimport: step 108: craft_screen.png
 	reimport: step 109: NotoSansArabic-Medium.ttf
-	reimport: step 110: NotoSans-Medium.ttf
 	reimport: step 111: NotoSans-Bold.ttf
 	reimport: step 112: Cairo-Variable.ttf
 	reimport: step 113: book_flip_2.ogg

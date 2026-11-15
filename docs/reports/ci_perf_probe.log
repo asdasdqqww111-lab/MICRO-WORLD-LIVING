@@ -22,23 +22,23 @@ engine: 4.4.1-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-15T00:00:14
+run at: 2026-11-15T00:10:37
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  3D draw calls:    92  [OK]
-  total draw calls: 146  [OK]
-  triangles (max):  215313  [OVER]
-  objects:          296
+  3D draw calls:    91  [OK]
+  total draw calls: 145  [OK]
+  triangles (max):  215003  [OVER]
+  objects:          295
   static memory:    190.9 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    97  [OK]
-  total draw calls: 149  [OK]
-  triangles (max):  230787  [OVER]
-  objects:          183
+  3D draw calls:    95  [OK]
+  total draw calls: 147  [OK]
+  triangles (max):  230683  [OVER]
+  objects:          181
   static memory:    199.4 MB
   fps (min, this driver): 1.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
@@ -54,39 +54,39 @@ Zone 4 · River, Stone Bridge & Crystal Lake
   triangles (max):  153425  [OK]
   objects:          130
   static memory:    199.3 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 Zone 5 · Adventurers Guild Grand Hall Interior
   3D draw calls:    51  [OK]
   total draw calls: 103  [OK]
   triangles (max):  47705  [OK]
   objects:          137
   static memory:    199.5 MB
-  fps (min, this driver): 1.0
-Zone 6 · Hero Cottage Interior
-  3D draw calls:    15  [OK]
-  total draw calls: 70  [OK]
-  triangles (max):  12721  [OK]
-  objects:          123
-  static memory:    199.7 MB
-  fps (min, this driver): 3.0
-Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  3D draw calls:    52  [OK]
-  total draw calls: 109  [OK]
-  triangles (max):  71465  [OK]
-  objects:          159
-  static memory:    200.0 MB
   fps (min, this driver): 2.0
+Zone 6 · Hero Cottage Interior
+  3D draw calls:    14  [OK]
+  total draw calls: 69  [OK]
+  triangles (max):  12677  [OK]
+  objects:          122
+  static memory:    199.7 MB
+  fps (min, this driver): 4.0
+Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
+  3D draw calls:    51  [OK]
+  total draw calls: 108  [OK]
+  triangles (max):  71401  [OK]
+  objects:          158
+  static memory:    201.2 MB
+  fps (min, this driver): 4.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
-  all UI visible           total   70 | 3D (visible+shadow)   15 | objects  123
-  touch controls hidden    total   40 | 3D (visible+shadow)   15 | objects   66
-  HUD hidden               total   46 | 3D (visible+shadow)   15 | objects   73
-  HUD + touch hidden       total   16 | 3D (visible+shadow)   15 | objects   16
-  entire UI layer hidden   total   16 | 3D (visible+shadow)   15 | objects   16
+  all UI visible           total   69 | 3D (visible+shadow)   14 | objects  121
+  touch controls hidden    total   39 | 3D (visible+shadow)   14 | objects   64
+  HUD hidden               total   45 | 3D (visible+shadow)   14 | objects   72
+  HUD + touch hidden       total   15 | 3D (visible+shadow)   14 | objects   15
+  entire UI layer hidden   total   15 | 3D (visible+shadow)   14 | objects   15
   => touch controls: 30 draw calls
   => HUD:            24 draw calls
   => other UI nodes: 0 draw calls
-  => non-UI (3D):    16 draw calls
+  => non-UI (3D):    15 draw calls
   HUD per panel (touch hidden, HUD total 24):
   HUD vitals panel (StatsGlassPanel)     12 draw calls
   HUD quest tracker                    not visible
