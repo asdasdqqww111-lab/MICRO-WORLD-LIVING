@@ -314,7 +314,21 @@ TRIGGER، وقناع اللاعب 13 = ENVIRONMENT|NPC|CREATURE)، لكن بلا
 - **أداء:** الضباب الكثيف يحدّد مسافة الرسم/الضباب، ويُكبّل العناصر البعيدة لتفادي التقطيع.
 
 **النتائج:**
-- فحص آلي دائم `_test_p14_fog` (13 فحصاً جديداً، المجموع **190/0** أخضر).
+- فحص آلي دائم `_test_p14_fog` (13 فحصاً جديداً، المجموع **195/0** أخضر، بما في ذلك اختبارات الـ regression للبرج).
 - فحص تشخيصي `tests/_diag/diag_fog.tscn` **13/13** PASS.
 - لقطات: `docs/reports/fog_overworld.png` / `fog_forest.png` / `fog_dungeon.png` (لا شاشة سوداء).
 - APK مبني عبر workflow Android وناجح.
+
+### إصلاحات إضافية لظهور الضباب فعليًا في البرج (اجتُمعت من اختبار APK حقيقي)
+
+الملاحظة: رغم أن الفحص الآلي كان يمر، كان الضباب **لا يظهر فعليًا** في البرج عند تشغيل APK. ثلاثة أسباب جذرية أُصلحت:
+
+1. **Environment خاطئ (السبب الأهم):** `AdvancedCinematicFog._setup_environment_node()` كان يبحث عن `../WorldEnvironment` (طفل World). لكن الـ WorldEnvironment الذي تُعطيه Godot فعليًا هو الذي على عقدة Game (الجد)، لأن الكاميرا طفل Player تحت Game — ولا يُستخدم أي WorldEnvironment ليس سلفًا للكاميرا. فكان الضباب يُدار على بيئة منسية لا تُعرض أبدًا، بينما البيئة الحقيقية ظلت density≈0.0025 (شبه صافٍ). **الإصلاح:** ترتيب أولويات لحل Game-level WorldEnvironment (مرجع WorldRoot أولًا، ثم `../../WorldEnvironment`، ثم `../WorldEnvironment`).
+2. **DayNightCycle يُفسد لون الضباب:** `apply_now()` كان يكتب `fog_light_color` كل إطار، فيُلغي لون المنطقة السينمائي. **الإصلاح:** إضافة `manage_fog_color` يُعطّله WorldRoot عند ربط عقدة الضباب.
+3. **البرج يُعطّل الضباب:** `_apply_zone_visibility("tower")` كان يُدخل البرج في فرع `elif not in_overworld:` الذي يضع `fog_enabled = false`. **الإصلاح:** البرج ومنطقة الزعيم يُعاملان كمنطقة مفتوحة رأسية (`is_open_vertical`)، يحافظان الضباب مع خلفية سماوية وشمس/قمر ظاهرة.
+
+**التحقق من الإصلاح (فحص مرئي `tests/_diag/tower_fog_shot.tscn`):**
+- `SAME ENV OBJECT: true` — AdvancedCinematicFog وWorldRoot يشتركان الآن نفس WorldEnvironment.
+- `world.environment.fog_enabled=true fog_density=0.0700` (منطقة TOWER).
+- `tower floor creature count=5` — الأعداء يظهرون في البرج.
+- لقطات: `docs/reports/tower_fog.png` / `tower_enemies.png`.
