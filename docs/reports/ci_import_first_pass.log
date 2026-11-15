@@ -616,26 +616,27 @@ preload_reimporting_scene: begin: Preparing scenes for reload steps: 1
 preload_reimporting_scene: end
 	reimport: step 0: NotoSansArabic-Medium.ttf
 	reimport: step 1: NotoSans-Medium.ttf
-	reimport: step 2: NotoSans-Bold.ttf
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
 	reimport: step 5: NotoSans-Medium.ttf
-	reimport: step 6: NotoSans-Bold.ttf
 	reimport: step 7: Cairo-Variable.ttf
 	reimport: step 8: book_open.ogg
-	reimport: step 9: book_flip_3.ogg
 	reimport: step 10: book_flip_2.ogg
 	reimport: step 11: book_flip_1.ogg
+	reimport: step 12: belt_handle_1.ogg
 	reimport: step 13: footstep_8.ogg
 	reimport: step 14: footstep_9.ogg
+	reimport: step 15: handle_coins.ogg
 	reimport: step 16: handle_coins_2.ogg
 	reimport: step 17: knife_slice.ogg
 	reimport: step 18: knife_slice_2.ogg
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
 	reimport: step 21: footstep_7.ogg
+	reimport: step 22: footstep_6.ogg
 	reimport: step 23: footstep_5.ogg
 	reimport: step 24: footstep_4.ogg
+	reimport: step 25: footstep_3.ogg
 	reimport: step 26: footstep_2.ogg
 	reimport: step 27: footstep_1.ogg
 	reimport: step 28: footstep_0.ogg
@@ -741,6 +742,7 @@ preload_reimporting_scene: end
 	reimport: step 128: footstep_7.ogg
 	reimport: step 129: footstep_6.ogg
 	reimport: step 130: footstep_5.ogg
+	reimport: step 131: footstep_4.ogg
 	reimport: step 132: footstep_3.ogg
 	reimport: step 133: footstep_2.ogg
 	reimport: step 134: footstep_1.ogg
