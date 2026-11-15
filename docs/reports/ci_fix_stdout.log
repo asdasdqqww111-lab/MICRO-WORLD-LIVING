@@ -227,7 +227,14 @@ PASS  fog reached forest density after tween
 PASS  fog reached forest colour after tween
 PASS  fog returned to overworld density
 PASS  dungeon zone event transitions fog
-checks passed: 190
+PASS  world exposes its environment for the regression check
+PASS  REGRESSION: _apply_zone_visibility(tower) keeps fog enabled
+PASS  REGRESSION: _apply_zone_visibility(boss) keeps fog enabled
+PASS  interior zone still disables fog
+PASS  dungeon zone still disables fog
+checks passed: 195
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
