@@ -113,6 +113,9 @@ func _test_p1_characters() -> void:
 	var not_facing: PackedStringArray = []
 	var silent: PackedStringArray = []
 	for npc: VillageNPC in npcs:
+		# Reset the greet cooldown so a greeting is not blocked by an earlier
+		# interaction with this NPC in a previous test section (22 s cooldown).
+		npc._greet_cooldown = 0.0
 		player.teleport(npc.global_position + Vector3(1.1, 0.3, 1.1), "village")
 		await _frames(24)
 		if _in_bind_pose(npc.visual):
