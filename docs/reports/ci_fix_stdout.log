@@ -186,9 +186,16 @@ PASS  quest completion accrues guild reputation (320)
 PASS  XP curve rises with level (400 > 60)
 PASS  guild promotion needs reputation (fresh guild blocked)
 PASS  guild promotion unlocks once reputation & contracts are met
-checks passed: 162
+== Problem 12 - navigation, screens, settings, save & return-to-place
+PASS  teleport moves the player to the target position
+PASS  movement displaces the player (12.00 -> 12.83)
+PASS  all 9 menu screens open (9)
+PASS  settings screen exists and refreshes
+PASS  the game can be saved
+PASS  the save file exists
+PASS  the game can be loaded
+PASS  loading returns the player to the last saved place ((-28.92046, 0.001735, 17.21567))
+checks passed: 170
 checks failed: 0
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 3 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)

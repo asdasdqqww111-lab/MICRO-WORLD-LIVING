@@ -612,7 +612,6 @@ preload_reimporting_scene: begin: Preparing scenes for reload steps: 1
 preload_reimporting_scene: end
 	reimport: step 0: NotoSansArabic-Medium.ttf
 	reimport: step 1: NotoSans-Medium.ttf
-	reimport: step 2: NotoSans-Bold.ttf
 	reimport: step 3: Cairo-Variable.ttf
 	reimport: step 4: NotoSansArabic-Medium.ttf
 	reimport: step 5: NotoSans-Medium.ttf
@@ -631,6 +630,7 @@ preload_reimporting_scene: end
 	reimport: step 18: knife_slice_2.ogg
 	reimport: step 19: metal_click.ogg
 	reimport: step 20: metal_pot_1.ogg
+	reimport: step 21: footstep_5.ogg
 	reimport: step 22: footstep_4.ogg
 	reimport: step 23: footstep_3.ogg
 	reimport: step 24: footstep_2.ogg
@@ -705,7 +705,6 @@ preload_reimporting_scene: end
 	reimport: step 93: tiny_treats_texture_1.png
 	reimport: step 94: stone_wall_albedo.jpg
 	reimport: step 95: stone_wall_normal.jpg
-	reimport: step 96: 05_forest_exploration.png
 	reimport: step 97: halloweenbits_texture.png
 	reimport: step 98: 04_guild_interior.png
 	reimport: step 99: 03_guild_exterior.png
@@ -719,6 +718,7 @@ preload_reimporting_scene: end
 	reimport: step 107: forest_west.png
 	reimport: step 108: craft_screen.png
 	reimport: step 109: NotoSansArabic-Medium.ttf
+	reimport: step 110: NotoSans-Medium.ttf
 	reimport: step 111: NotoSans-Bold.ttf
 	reimport: step 112: Cairo-Variable.ttf
 	reimport: step 113: book_flip_2.ogg
@@ -732,11 +732,9 @@ preload_reimporting_scene: end
 	reimport: step 121: handle_coins_2.ogg
 	reimport: step 122: knife_slice.ogg
 	reimport: step 123: knife_slice_2.ogg
-	reimport: step 124: metal_click.ogg
 	reimport: step 125: metal_pot_1.ogg
 	reimport: step 126: footstep_5.ogg
 	reimport: step 127: footstep_4.ogg
-	reimport: step 128: footstep_3.ogg
 	reimport: step 129: footstep_2.ogg
 	reimport: step 130: footstep_1.ogg
 	reimport: step 131: footstep_0.ogg

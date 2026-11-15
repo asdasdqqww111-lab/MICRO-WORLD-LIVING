@@ -22,32 +22,32 @@ engine: 4.4.1-stable (official)
 rendering method: mobile
 video adapter: llvmpipe (LLVM 21.1.8, 256 bits)
 driver: 1.4.335
-run at: 2026-11-15T00:10:37
+run at: 2026-11-15T00:26:50
 
 budget: draw calls < 300 · triangles < 180k · target 60 FPS
 
 Zone 1 · Eldoria Village Square & Guild Exterior
-  3D draw calls:    91  [OK]
-  total draw calls: 145  [OK]
-  triangles (max):  215003  [OVER]
-  objects:          295
+  3D draw calls:    92  [OK]
+  total draw calls: 146  [OK]
+  triangles (max):  215313  [OVER]
+  objects:          296
   static memory:    190.9 MB
-  fps (min, this driver): 2.0
+  fps (min, this driver): 1.0
   creatures in world: 26
 Zone 2 · Active Combat (Village + 3 Skeletons)
-  3D draw calls:    95  [OK]
-  total draw calls: 147  [OK]
-  triangles (max):  230683  [OVER]
-  objects:          181
+  3D draw calls:    96  [OK]
+  total draw calls: 148  [OK]
+  triangles (max):  230735  [OVER]
+  objects:          182
   static memory:    199.4 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 Zone 3 · Western Woodland (MultiMesh Trees + Undergrowth)
-  3D draw calls:    38  [OK]
-  total draw calls: 90  [OK]
-  triangles (max):  110303  [OK]
-  objects:          126
+  3D draw calls:    19  [OK]
+  total draw calls: 71  [OK]
+  triangles (max):  98651  [OK]
+  objects:          107
   static memory:    199.2 MB
-  fps (min, this driver): 1.0
+  fps (min, this driver): 2.0
 Zone 4 · River, Stone Bridge & Crystal Lake
   3D draw calls:    47  [OK]
   total draw calls: 99  [OK]
@@ -67,19 +67,19 @@ Zone 6 · Hero Cottage Interior
   total draw calls: 69  [OK]
   triangles (max):  12677  [OK]
   objects:          122
-  static memory:    199.7 MB
-  fps (min, this driver): 4.0
+  static memory:    199.6 MB
+  fps (min, this driver): 3.0
 Zone 7 · Sunken Crypt Dungeon & Boss Sanctum
-  3D draw calls:    51  [OK]
-  total draw calls: 108  [OK]
-  triangles (max):  71401  [OK]
-  objects:          158
-  static memory:    201.2 MB
-  fps (min, this driver): 4.0
+  3D draw calls:    52  [OK]
+  total draw calls: 109  [OK]
+  triangles (max):  71465  [OK]
+  objects:          159
+  static memory:    199.9 MB
+  fps (min, this driver): 3.0
 
 UI DRAW-CALL BREAKDOWN (Hero Cottage Interior, peak per frame)
-  all UI visible           total   69 | 3D (visible+shadow)   14 | objects  121
-  touch controls hidden    total   39 | 3D (visible+shadow)   14 | objects   64
+  all UI visible           total   69 | 3D (visible+shadow)   14 | objects  122
+  touch controls hidden    total   39 | 3D (visible+shadow)   14 | objects   65
   HUD hidden               total   45 | 3D (visible+shadow)   14 | objects   72
   HUD + touch hidden       total   15 | 3D (visible+shadow)   14 | objects   15
   entire UI layer hidden   total   15 | 3D (visible+shadow)   14 | objects   15
@@ -128,5 +128,3 @@ SHADOW / LOD: casters=24  shadow_off=548  with_visibility_range=531
 --- offenders done ---
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
-ERROR: 1 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:614)

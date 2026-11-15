@@ -66,3 +66,7 @@ PASS  Exiting hides the tower interior
 PASS  Exit returns the player to the overworld zone
 
 === TOWER SUITE: 62 passed, 0 failed ===
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2378)
+ERROR: 7 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
